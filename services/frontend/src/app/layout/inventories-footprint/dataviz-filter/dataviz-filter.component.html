@@ -1,0 +1,123 @@
+<div
+    class="filter-component"
+    (click)="toggle()"
+    label="Show Overlay"
+    tabindex="0"
+    role="button"
+    [attr.aria-label]="'common.access-filters' | translate"
+>
+    <div>
+        <img src="assets/images/icons/icon-filter.svg" alt="" />
+        <span>{{ "inventories-footprint.filter" | translate }}</span>
+    </div>
+    <img src="assets/images/icons/icon-accordion-fold.svg" alt="" />
+</div>
+<p-overlay
+    [(visible)]="overlayVisible"
+    [responsive]="{
+        breakpoint: '640px',
+        direction: 'bottom',
+        contentStyleClass: 'h-20rem'
+    }"
+    contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
+>
+    <p-tabView>
+        <p-tabPanel
+            header="{{ 'inventories-footprint.filter-tabs.country' | translate }}"
+            [selected]="true"
+        >
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <ul>
+                    <li *ngFor="let country of filters.countries">
+                        <p-checkbox
+                            ariaLabel="{{ country }}"
+                            name="groupname"
+                            value="{{ country }}"
+                            label="{{
+                                country === 'All'
+                                    ? ('common.all' | translate)
+                                    : country === 'Empty'
+                                    ? ('common.empty' | translate)
+                                    : country
+                            }}"
+                            [(ngModel)]="selectedCountries"
+                            (ngModelChange)="onFilterUpdate('country', country)"
+                        ></p-checkbox>
+                    </li>
+                </ul>
+            </p-scrollPanel>
+        </p-tabPanel>
+        <p-tabPanel header="{{ 'inventories-footprint.filter-tabs.entity' | translate }}">
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <div
+                    *ngFor="let entity of filters.entities"
+                    class="checkbox-list"
+                    style="display: flex; flex-direction: column"
+                >
+                    <p-checkbox
+                        name="groupname"
+                        value="{{ entity }}"
+                        label="{{
+                            entity === 'All'
+                                ? ('common.all' | translate)
+                                : entity === 'Empty'
+                                ? ('common.empty' | translate)
+                                : entity
+                        }}"
+                        [attr.aria-label]="entity"
+                        [(ngModel)]="selectedEntities"
+                        (ngModelChange)="onFilterUpdate('entity', entity)"
+                    ></p-checkbox>
+                </div>
+            </p-scrollPanel>
+        </p-tabPanel>
+        <p-tabPanel
+            header="{{ 'inventories-footprint.filter-tabs.equipment' | translate }}"
+        >
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <div
+                    *ngFor="let equipment of filters.equipments"
+                    class="checkbox-list"
+                    style="display: flex; flex-direction: column"
+                >
+                    <p-checkbox
+                        name="groupname"
+                        value="{{ equipment }}"
+                        label="{{
+                            equipment === 'All'
+                                ? ('common.all' | translate)
+                                : equipment === 'Empty'
+                                ? ('common.empty' | translate)
+                                : equipment
+                        }}"
+                        [(ngModel)]="selectedEquipments"
+                        (ngModelChange)="onFilterUpdate('equipment', equipment)"
+                    ></p-checkbox>
+                </div>
+            </p-scrollPanel>
+        </p-tabPanel>
+        <p-tabPanel header="{{ 'inventories-footprint.filter-tabs.status' | translate }}">
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <div
+                    *ngFor="let status of filters.status"
+                    class="checkbox-list"
+                    style="display: flex; flex-direction: column"
+                >
+                    <p-checkbox
+                        name="groupname"
+                        value="{{ status }}"
+                        label="{{
+                            status === 'All'
+                                ? ('common.all' | translate)
+                                : status === 'Empty'
+                                ? ('common.empty' | translate)
+                                : status
+                        }}"
+                        [(ngModel)]="selectedStatus"
+                        (ngModelChange)="onFilterUpdate('status', status)"
+                    ></p-checkbox>
+                </div>
+            </p-scrollPanel>
+        </p-tabPanel>
+    </p-tabView>
+</p-overlay>

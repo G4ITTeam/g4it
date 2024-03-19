@@ -1,0 +1,81 @@
+databaseChangeLog:
+  -  property:
+       dbms:  h2,postgresql
+       name:  now
+       value:  now()
+  - changeSet:
+      id: create-organization-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: organization
+            columns:
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: organization_pk
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-organization-domain-mapping-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: organization_domain_mapping
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: organization_domain_mapping_pk
+              - column:
+                  name: organization
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: organizationdomainmapping-organization-fk
+                    references: organization(name)
+              - column:
+                  name: domain
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: insert-organization-ssg
+      author: G4IT Dev Team
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: SSG
+              - column:
+                  name: creation_date
+                  value: ${now}
+            tableName: organization
+        - insert:
+            columns:
+              - column:
+                  name: organization
+                  value: SSG
+              - column:
+                  name: domain
+                  value: soprasteria.com
+              - column:
+                  name: creation_date
+                  value: ${now}
+            tableName: organization_domain_mapping

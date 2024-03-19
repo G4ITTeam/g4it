@@ -1,0 +1,629 @@
+databaseChangeLog:
+  - property:
+      dbms: h2,postgresql
+      name: now
+      value: now()
+  - property:
+      dbms: h2,postgresql
+      name: default_organization
+      value: 'DEMO'
+
+  - changeSet:
+      id: create-subscriber
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_subscriber
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: subscriber-pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: SSG
+              - column:
+                  name: creation_date
+                  value: ${now}
+              - column:
+                  name: last_update_date
+                  value: ${now}
+            tableName: g4it_subscriber
+
+  - changeSet:
+      id: update-subscriber
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_subscriber
+            columns:
+              - column:
+                  name: storage_retention_day_export
+                  type: integer
+              - column:
+                  name: storage_retention_day_output
+                  type: integer
+
+  - changeSet:
+      id: update-subscriber-data-retention
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_subscriber
+            columns:
+              - column:
+                  name: data_retention_day
+                  type: integer
+
+  - changeSet:
+      id: drop-organization-mapping
+      author: G4IT Dev Team
+      changes:
+        - dropTable:
+            tableName: organization_domain_mapping
+
+  - changeSet:
+      id: drop-digital-service-organization-fk
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            constraintName: digitalservice_organization_fk
+            baseTableName: digital_service
+
+  - changeSet:
+      id: modify-organization
+      author: G4IT Dev Team
+      changes:
+        - dropPrimaryKey:
+            constraintName: organization_pk
+            tableName: organization
+        - addColumn:
+            tableName: organization
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: organization_pk
+              - column:
+                  name: subscriber_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: organization-subscriber-fk
+                    references: g4it_subscriber(id)
+                    onDelete: cascade
+        - sql:
+            sql: update organization set
+              subscriber_id = (select id from g4it_subscriber where name = 'SSG'),
+              name = '${default_organization}',
+              last_update_date = CURRENT_DATE
+              ;
+        - addNotNullConstraint:
+            columnDataType: bigint
+            columnName: subscriber_id
+            constraintName: subscriber_id_not_nullable
+            tableName: organization
+        - addUniqueConstraint:
+            columnNames: subscriber_id, name
+            constraintName: organization_subscriber_unique
+            tableName: organization
+        - renameTable:
+            newTableName: g4it_organization
+            oldTableName: organization
+
+  - changeSet:
+      id: update-organization
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_organization
+            columns:
+              - column:
+                  name: storage_retention_day_export
+                  type: integer
+              - column:
+                  name: storage_retention_day_output
+                  type: integer
+
+  - changeSet:
+      id: update-organization-data-retention
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_organization
+            columns:
+              - column:
+                  name: data_retention_day
+                  type: integer
+
+  - changeSet:
+      id: create-user-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: g4ituser_pk
+              - column:
+                  name: username
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+        - addUniqueConstraint:
+            columnNames: username
+            constraintName: username_unique
+            tableName: g4it_user
+
+  - changeSet:
+      id: insert-into-user
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql: insert into g4it_user (username, creation_date, last_update_date)
+              select distinct user_name as username, CURRENT_DATE as creation_date, CURRENT_DATE as last_update_date from digital_service
+              ;
+            comment: Insert user already exist
+
+  - changeSet:
+      id: create-role-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_role
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: role_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: rolename_unique
+            tableName: g4it_role
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_INVENTORY
+            tableName: g4it_role
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_DIGITAL_SERVICE
+            tableName: g4it_role
+
+  - changeSet:
+      id: create-user-organization
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_user_organization
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_organization_pk
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: userorganization-user-fk
+                    references: g4it_user(id)
+              - column:
+                  name: organization_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: userorganization-organization-fk
+                    references: g4it_organization(id)
+              - column:
+                  name: default_flag
+                  type: boolean
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: user_id, organization_id, default_flag
+            constraintName: userorganization_unique
+            tableName: g4it_user_organization
+        - sql:
+            sql: insert into g4it_user_organization (user_id, organization_id, default_flag)
+              select u.id, o.id, true from g4it_user u, g4it_organization o
+              ;
+
+  - changeSet:
+      id: create-user-role-organization
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_user_role_organization
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_role_organization_pk
+              - column:
+                  name: user_organization_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: userroleorganization-userorganization-fk
+                    references: g4it_user_organization(id)
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: userroleorganization-role-fk
+                    references: g4it_role(id)
+        - sql:
+            sql:
+              insert into g4it_user_role_organization (user_organization_id, role_id)
+              select u.id, r.id from g4it_user_organization u, g4it_role r
+              ;
+
+  - changeSet:
+      id: create-user-subscriber
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_user_subscriber
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_subscriber_pk
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: usersubscriber-user-fk
+                    references: g4it_user(id)
+              - column:
+                  name: subscriber_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: usersubscriber-subscriber-fk
+                    references: g4it_subscriber(id)
+              - column:
+                  name: default_flag
+                  type: boolean
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: user_id, subscriber_id, default_flag
+            constraintName: usersubscriber_unique
+            tableName: g4it_user_subscriber
+        - sql:
+            sql: insert into g4it_user_subscriber (user_id, subscriber_id, default_flag)
+              select u.id, s.id, true from g4it_user u, g4it_subscriber s
+              ;
+
+  - changeSet:
+      id: link-digital-service-to-user
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: digitalservice-user-fk
+                    references: g4it_user(id)
+                    onDelete: cascade
+              - column:
+                  name: organization_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: digitalservice-organization-fk
+                    references: g4it_organization(id)
+                    onDelete: cascade
+        - sql:
+            sql: update digital_service d set user_id = (select u.id from g4it_user u where u.username = d.user_name)
+              ;
+        - sql:
+            sql: update digital_service d set organization_id = (select o.id from g4it_organization o where o.name = '${default_organization}')
+              ;
+        - dropColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: user_name
+              - column:
+                  name: organization
+        - addNotNullConstraint:
+            columnDataType: bigint
+            columnName: user_id
+            constraintName: digitalservice-user-nn
+            tableName: digital_service
+
+  - changeSet:
+      id: dropIndex-inventory
+      author: G4IT Dev Team
+      changes:
+        - dropIndex:
+            indexName: idx_inv_org_inventorydate
+            tableName: inventory
+
+  - changeSet:
+      id: link-inventory-to-organization
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: organization_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: inventory-organization-fk
+                    references: g4it_organization(id)
+                    onDelete: cascade
+        - sql:
+            sql: update inventory i set organization_id = (select o.id from g4it_organization o where o.name = '${default_organization}')
+              ;
+        - dropColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: organisation
+        - addNotNullConstraint:
+            columnDataType: bigint
+            columnName: organization_id
+            constraintName: inventory-organization-nn
+            tableName: inventory
+
+  - changeSet:
+      id: recreate-index-inventory
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: inventory
+            indexName: idx_inv_org_inventorydate
+            unique: false
+            columns:
+              - column:
+                  name: organization_id
+              - column:
+                  name: inventory_date
+
+  - changeSet:
+      id: rename-default-subscriber
+      author: G4IT Dev Team
+      changes:
+        - update:
+            columns:
+              - column:
+                  name: name
+                  value: 'SOPRA-STERIA-GROUP'
+            tableName: g4it_subscriber
+            where: name='SSG'
+
+  - changeSet:
+      id: rename-organization-to-default-in-indicators-and-entry-numecoeval-table
+      author: G4IT Dev Team
+      changes:
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_equipement_physique
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_data_center
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_equipement_virtuel
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_application
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_messagerie
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_entite
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: en_donnees_entrees
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: ind_indicateur_impact_equipement_physique
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: ind_indicateur_impact_equipement_virtuel
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: ind_indicateur_impact_reseau
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: ind_indicateur_impact_application
+            where: nom_organisation='SSG'
+        - update:
+            columns:
+              - column:
+                  name: nom_organisation
+                  value: 'DEMO'
+            tableName: ind_indicateur_impact_messagerie
+            where: nom_organisation='SSG'
+
+  - changeSet:
+      id: add-not-null-constraint-for-digital-service-organization
+      author: G4IT Dev Team
+      changes:
+        - addNotNullConstraint:
+            columnDataType: bigint
+            columnName: organization_id
+            constraintName: digitalservice_organization_nn
+            tableName: digital_service
+
+  - changeSet:
+      id: unique-constraint-review
+      author: G4IT Dev Team
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: subscriber_unique
+            tableName: g4it_subscriber
+        - dropUniqueConstraint:
+            constraintName: userorganization_unique
+            tableName: g4it_user_organization
+        - addUniqueConstraint:
+            columnNames: user_id, organization_id
+            constraintName: userorganization_unique
+            tableName: g4it_user_organization
+        - dropUniqueConstraint:
+            constraintName: usersubscriber_unique
+            tableName: g4it_user_subscriber
+        - addUniqueConstraint:
+            columnNames: user_id, subscriber_id
+            constraintName: usersubscriber_unique
+            tableName: g4it_user_subscriber
+
+  - changeSet:
+      id: add-new-roles-in-role-table
+      author: G4IT Dev Team
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_INVENTORY_READ
+            tableName: g4it_role
+            where: name='ROLE_INVENTORY'
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_DIGITAL_SERVICE_READ
+            tableName: g4it_role
+            where: name='ROLE_DIGITAL_SERVICE'
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_INVENTORY_WRITE
+            tableName: g4it_role
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_DIGITAL_SERVICE_WRITE
+            tableName: g4it_role
+
+  - changeSet:
+      id: add-new-roles-mapping
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql:
+              insert into g4it_user_role_organization (user_organization_id, role_id)
+              select u.id, r.id from g4it_user_organization u, g4it_user_role_organization uro, g4it_role r
+              where uro.user_organization_id = u.id
+              and uro.role_id in (select id from g4it_role gir where name = 'ROLE_INVENTORY')
+              and r.name like 'ROLE_INVENTORY_%'
+              except
+              select u.id, uro.role_id  from g4it_user_organization u
+              inner join g4it_user_role_organization uro on uro.user_organization_id = u.id
+              inner join g4it_role r on r.id  = uro.role_id
+              where r.name like 'ROLE_INVENTORY_%';
+        - sql:
+            sql:
+              insert into g4it_user_role_organization (user_organization_id, role_id)
+              select u.id, r.id from g4it_user_organization u, g4it_user_role_organization uro, g4it_role r
+              where uro.user_organization_id = u.id
+              and uro.role_id in (select id from g4it_role gir where name = 'ROLE_DIGITAL_SERVICE')
+              and r.name like 'ROLE_DIGITAL_SERVICE_%'
+              except
+              select u.id, uro.role_id  from g4it_user_organization u
+              inner join g4it_user_role_organization uro on uro.user_organization_id = u.id
+              inner join g4it_role r on r.id  = uro.role_id
+              where r.name like 'ROLE_DIGITAL_SERVICE_%';

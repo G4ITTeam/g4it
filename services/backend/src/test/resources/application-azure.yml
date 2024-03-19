@@ -1,0 +1,19 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://sts.windows.net/${AZURE_TENANT_ID}/
+  cloud:
+    azure:
+      profile:
+        subscription-id: ${AZURE_SUBSCRIPTION_ID}
+        tenant-id: ${AZURE_TENANT_ID}
+      keyvault:
+        credential:
+          client-id: ${AZURE_CLIENT_ID}
+          client-secret: ${AZURE_CLIENT_SECRET}
+        secret:
+          endpoint: ${SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT}
+      storage:
+        connectionstring: ${SPRING_CLOUD_AZURE_STORAGE_CONNECTIONSTRING}

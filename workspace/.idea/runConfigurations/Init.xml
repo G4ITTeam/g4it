@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Init" type="CompoundRunConfigurationType">
+    <toRun name="backend [generate-sources]" type="MavenRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

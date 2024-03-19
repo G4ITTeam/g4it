@@ -1,0 +1,133 @@
+<div class="footprint-digital-dashboard-container">
+    <div class="left-critere-menu-dashboard">
+        <div class="impacts-title">
+            {{ "digital-services.impacts" | translate }}
+        </div>
+        <p-card class="rmv-padding-card">
+            <div class="round-button-container">
+                <button
+                    [class]="
+                        selectedUnit === 'Raw' ? 'round-button-selected' : 'round-button'
+                    "
+                    (click)="selectedUnit = 'Raw'"
+                >
+                    {{ "digital-services.raw" | translate }}
+                </button>
+                <button
+                    [class]="
+                        selectedUnit === 'Peopleeq'
+                            ? 'round-button-selected'
+                            : 'round-button'
+                    "
+                    (click)="selectedUnit = 'Peopleeq'"
+                >
+                    {{ "common.peopleeq" | translate }}
+                </button>
+            </div>
+        </p-card>
+        <br />
+        <app-impact-button
+            *ngFor="let impact of impacts"
+            [impact]="impact.name"
+            [impactText]="impact.title"
+            [impactUnite]="impact.unite"
+            [value]="selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw"
+            [selectedCriteria]="selectedCriteria"
+            [selectedUnit]="selectedUnit"
+            (selectedCriteriaChange)="handleChartChange($event)"
+            class="impact-button-criteria"
+        ></app-impact-button>
+    </div>
+    <div class="digital-service-chart-container">
+        <div *ngIf="chartType == 'bar' && barChartChild == true">
+            <h4 (click)="barChartChild = false">
+                <img
+                    src="assets/images/icons/icon-green-arrow-left.svg"
+                    alt=""
+                    class="button-icon"
+                />
+                {{ getCriteriaTranslation(selectedCriteria) }} /
+                {{ getTNSTranslation(selectedParam) }}
+            </h4>
+            <h3 *ngIf="selectedParam === 'Server'">
+                {{ selectedDetailName }}
+            </h3>
+            <h3 *ngIf="selectedParam === 'Terminal'">
+                {{ selectedDetailParam }}
+            </h3>
+        </div>
+        <div *ngIf="chartType == 'bar' && barChartChild == false">
+            <h4 (click)="chartType = 'pie'">
+                <img
+                    src="assets/images/icons/icon-green-arrow-left.svg"
+                    alt=""
+                    class="button-icon"
+                />
+                {{ getCriteriaTranslation(selectedCriteria) }}
+            </h4>
+            <h3>
+                {{ getTNSTranslation(selectedParam) }}
+            </h3>
+        </div>
+        <div *ngIf="chartType == 'pie'">
+            <h4
+                (click)="
+                    this.chartType = 'radial'; this.selectedCriteria = 'Global Vision'
+                "
+            >
+                <img
+                    src="assets/images/icons/icon-green-arrow-left.svg"
+                    alt=""
+                    class="button-icon"
+                />
+                {{ "criteria.global-vision.title" | translate }}
+            </h4>
+            <h3>
+                {{ getCriteriaTranslation(selectedCriteria) }}
+            </h3>
+        </div>
+        <div *ngIf="chartType == 'radial'">
+            <h3 style="margin-top: 31px">
+                {{ getCriteriaTranslation(selectedCriteria) }}
+            </h3>
+        </div>
+        <div *ngIf="noData; else chart" class="no-data-round no-data-digital-service">
+            <p class="grey-text text-round-empty">
+                {{ "common.no-data" | translate }}
+            </p>
+        </div>
+        <ng-template #chart>
+            <app-radial-chart
+                *ngIf="chartType == 'radial'"
+                [globalVisionChartData]="globalVisionChartData"
+            ></app-radial-chart>
+            <app-pie-chart
+                *ngIf="chartType == 'pie'"
+                [globalVisionChartData]="globalVisionChartData"
+                [selectedCriteria]="selectedCriteria"
+                (selectedParamChange)="selectedParam = $event"
+                (chartTypeChange)="chartType = $event"
+            ></app-pie-chart>
+            <app-bar-chart
+                *ngIf="chartType == 'bar'"
+                [barChartChild]="barChartChild"
+                [selectedParam]="selectedParam"
+                [selectedDetailParam]="selectedDetailParam"
+                [selectedDetailName]="selectedDetailName"
+                [selectedCriteria]="selectedCriteria"
+                [networkData]="networkData"
+                [serverData]="serverData"
+                [terminalData]="terminalData"
+                (barChartChildChange)="barChartChild = $event"
+                (selectedDetailParamChange)="selectedDetailParam = $event"
+                (selectedDetailNameChange)="selectedDetailName = $event"
+            ></app-bar-chart>
+        </ng-template>
+    </div>
+    <div class="information-car-digital-service">
+        <app-information-card-long
+            [title]="getTitleOrContent('title')"
+            [content]="getTitleOrContent('content')"
+        ></app-information-card-long>
+    </div>
+</div>

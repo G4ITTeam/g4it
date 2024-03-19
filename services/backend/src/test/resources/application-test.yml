@@ -1,0 +1,43 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:h2:mem:green;MODE=PostgreSQL
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:/db/changelog/test-master.yml
+  sql:
+    init:
+      platform: h2
+
+filesystem.local.path: "./target/local-filesystem/"
+
+num-eco-eval:
+  base-url: http://localhost/
+num-eco-eval-referential:
+  base-url: http://localhost-ref/
+
+#batch configs
+evaluation:
+  batch:
+    chunk: 10
+    page-size: 10
+loading:
+  batch:
+    chunk: 10
+    page-size: 10
+    valid-data-writing-enable: true
+export:
+  batch:
+    chunk: 10
+    page-size: 10
+

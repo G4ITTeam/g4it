@@ -1,0 +1,555 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-digital-service-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: digital_service_pk
+                    valueComputed: UUID()
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: organization
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: digitalservice_organization_fk
+                    references: organization(name)
+              - column:
+                  name: user_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_calculation_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-terminal-referential
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_device_type
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: device_type_ref_id_pk
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: reference
+                  type: varchar(255)
+              - column:
+                  name: external_referential_description
+                  type: text
+              - column:
+                  name: lifespan
+                  type: number
+              - column:
+                  name: source
+                  type: text
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: varchar(255)
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: lifespan
+                  type: double
+              - column:
+                  header: source
+                  type: text
+            file: db/changelog/data/ref_terminal_device_type.csv
+            primaryKey: id
+            tableName: ref_device_type
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: create-terminal-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: terminal
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: terminal_pk
+                    valueComputed: UUID()
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: terminal-ditalservice-fk
+                    references: digital_service(uid)
+              - column:
+                  name: device_type
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: terminal-devicetype-fk
+                    references: ref_device_type(id)
+              - column:
+                  name: country
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number_of_users
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: daily_usage_time_per_user
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-network-type-ref-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_network_type
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: network_type_ref_id_pk
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: reference
+                  type: varchar(255)
+              - column:
+                  name: external_referential_description
+                  type: text
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: annual_quantity_of_go
+                  type: integer
+              - column:
+                  name: country
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: text
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: varchar(255)
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: type
+                  type: varchar(255)
+              - column:
+                  header: annual_quantity_of_go
+                  type: integer
+              - column:
+                  header: country
+                  type: varchar(255)
+              - column:
+                  header: source
+                  type: text
+            file: db/changelog/data/ref_network_type.csv
+            primaryKey: id
+            tableName: ref_network_type
+            separator: ;
+            encoding: UTF-8
+  - changeSet:
+      id: create-network-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: network
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: network_pk
+                    valueComputed: UUID()
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: network-ditalservice-fk
+                    references: digital_service(uid)
+              - column:
+                  name: network_type
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: network-networktype-fk
+                    references: ref_network_type(id)
+              - column:
+                  name: daily_quantity_of_gb_exchanged
+                  type: double
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-server-host-ref-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_server_host
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: server_host_ref_id_pk
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: reference
+                  type: varchar(255)
+              - column:
+                  name: external_referential_description
+                  type: text
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: nb_of_vcpu
+                  type: int
+              - column:
+                  name: total_disk
+                  type: int
+              - column:
+                  name: lifespan
+                  type: double
+        - loadData:
+            columns:
+              - column:
+                  header: description
+                  type: varchar(255)
+              - column:
+                  header: reference
+                  type: text
+              - column:
+                  header: external_referential_description
+                  type: text
+              - column:
+                  header: type
+                  type: varchar(255)
+              - column:
+                  header: nb_of_vcpu
+                  type: int
+              - column:
+                  header: total_disk
+                  type: int
+              - column:
+                  header: lifespan
+                  type: double
+            file: db/changelog/data/ref_server_host.csv
+            primaryKey: id
+            tableName: ref_server_host
+            separator: ;
+            encoding: UTF-8
+
+  - changeSet:
+      id: create-datacenter-digital-service-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: datacenter_digital_service
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: datacenter_digital_service_pk
+                    valueComputed: UUID()
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    foreignKeyName: datacenter-ditalservice-fk
+                    references: digital_service(uid)
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: pue
+                  type: double
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-server-characteristic-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: server_characteristic
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: server_characteristic_pk
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: characteristic_value
+                  type: int
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-server-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: server
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: server_pk
+                    valueComputed: UUID()
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: server-digitalservice-fk
+                    references: digital_service(uid)
+              - column:
+                  name: server_characteristic_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: server-characteristic-fk
+                    references: server_characteristic(id)
+              - column:
+                  name: datacenter_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: server-datacenterditalservice-fk
+                    references: datacenter_digital_service(uid)
+              - column:
+                  name: server_host_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: server-serverhost-fk
+                    references: ref_server_host(id)
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mutualization_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lifespan
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: annual_electricity_consumption
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: annual_operating_time
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-virtual-equipment-characteristic-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: virtual_equipment_characteristic
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: virtual_equipment_characteristic_pk
+              - column:
+                  name: type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: characteristic_value
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-virtual-equipment-digital-service-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: virtual_equipment_digital_service
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: virtual_equipment_digital_service_pk
+                    valueComputed: UUID()
+              - column:
+                  name: server_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: virtualequipmentditalservice-server-fk
+                    references: server(uid)
+              - column:
+                  name: virtual_equipment_characteristic_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: virtualequipment-virtualequipmentcharacteristic-fk
+                    references: virtual_equipment_characteristic(id)
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: annual_usage_time
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: rename-and-recalculate-values-network-terminal-daily-to-yearly
+      author: G4IT Dev Team
+      changes:
+        - renameColumn:
+            columnDataType: int
+            newColumnName: yearly_quantity_of_gb_exchanged
+            oldColumnName: daily_quantity_of_gb_exchanged
+            schemaName: public
+            tableName: network
+        - renameColumn:
+            columnDataType: int
+            newColumnName: yearly_usage_time_per_user
+            oldColumnName: daily_usage_time_per_user
+            schemaName: public
+            tableName: terminal
+        - sql: UPDATE public.network SET yearly_quantity_of_gb_exchanged = yearly_quantity_of_gb_exchanged * 365;
+        - sql: UPDATE public.terminal SET yearly_usage_time_per_user = yearly_usage_time_per_user * 365 / 60;

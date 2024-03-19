@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-entry-table.yml
+  - include:
+      file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-ref.yml
+  - include:
+      file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-indicateur.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-master.yml

@@ -1,0 +1,34 @@
+<div class="header-footprint">
+    <div>
+        <div
+            class="green-dashboard-title"
+            [routerLink]="changePageToInventories()"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'inventories.return' | translate"
+        >
+            <img
+                src="assets/images/icons/icon-green-arrow-left.svg"
+                alt=""
+                class="button-icon"
+            />
+            {{ "inventories.title" | translate }}
+        </div>
+        <span
+            *ngIf="inventoryType === types.INFORMATION_SYSTEM"
+            class="h2-title"
+            tabIndex="0"
+            >{{ inventoryName | monthYear }}</span
+        >
+        <span *ngIf="inventoryType === types.SIMULATION" class="h2-title" tabIndex="0">{{
+            inventoryName
+        }}</span>
+    </div>
+    <div>
+        <p-button styleClass="black-button" (click)="confirmExport($event)" *ngIf="userService.isAllowedInventoryWrite$ | async">
+            <img src="assets/images/icons/icon-export.svg" alt="" class="button-icon" />
+            {{ "inventories-footprint.header.export" | translate }}
+        </p-button>
+        <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
+    </div>
+</div>

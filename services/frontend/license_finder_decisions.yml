@@ -1,0 +1,487 @@
+---
+- - :restrict
+  - GPL
+  - :who: CDK Team
+    :why: GPL without ClassPathException is not usable in commercial software
+    :versions: []
+    :when: 2016-04-22 09:02:08.268342351 Z
+- - :permit
+  - Apache Software Licenses
+  - :who: CDK Team
+    :why: Apache licenses are compatible for commercial products
+    :versions: []
+    :when: 2016-11-16 09:28:52.164639094 Z
+- - :permit
+  - Apache
+  - :who: CDK Team
+    :why: Apache 1.x is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 09:40:13.956655245 Z
+- - :permit
+  - Apache 2.0
+  - :who: CDK Team
+    :why: Apache 2.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 07:36:30.630987701 Z
+- - :permit
+  - Apache License, Version 2.0
+  - :who: CDK Team
+    :why: Apache 2.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 09:35:49.136622944 Z
+- - :permit
+  - Apache Software License - Version 2.0
+  - :who: CDK Team
+    :why: Apache 2.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 09:41:51.114322314 Z
+- - :permit
+  - Eclipse Public License 1.0
+  - :who: CDK Team
+    :why: Eclipse license is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 09:27:57.824516151 Z
+- - :permit
+  - Eclipse Public License - Version 1.0
+  - :who: CDK Team
+    :why: Eclipse license is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 09:43:52.612759038 Z
+- - :permit
+  - Eclipse Public License - v 1.0
+  - :who: CDK Team
+    :why: Eclipse license is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 10:44:57.680284665 Z
+- - :permit
+  - Eclipse Public License v2.0
+  - :who: CDK Team
+    :why: Eclipse license is a compatible license for commercial products
+    :versions: []
+    :when: 2021-08-25 11:39:55:973842156 Z
+- - :permit
+  - GNU Lesser General Public License
+  - :who: CDK Team
+    :why: LGPL license is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 10:58:42.117148117 Z
+- - :permit
+  - The MIT License
+  - :who: CDK Team
+    :why: MIT is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 07:37:33.328122231 Z
+- - :permit
+  - MIT
+  - :who: CDK Team
+    :why: MIT is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 07:37:44.187789191 Z
+- - :permit
+  - Public Domain
+  - :who: CDK Team
+    :why: Public Domain is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 07:37:52.647825887 Z
+- - :permit
+  - The BSD License
+  - :who: CDK Team
+    :why: BSD is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 09:19:44.593900600 Z
+- - :permit
+  - BSD
+  - :who: CDK Team
+    :why: BSD is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 09:34:21.426858918 Z
+- - :permit
+  - New BSD License
+  - :who: CDK Team
+    :why: BSD is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 10:57:11.897048117 Z
+- - :permit
+  - BSD License 3
+  - :who: CDK Team
+    :why: BSD is a compatible license for commercial products
+    :versions: []
+    :when: 2021-08-25 11:39:55:973842156 Z
+- - :permit
+  - Common Public License Version 1.0
+  - :who: CDK Team
+    :why: Public Domain is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 09:42:07.253361325 Z
+- - :permit
+  - CPL
+  - :who: CDK Team
+    :why: Public Domain is a compatible license for commercial products
+    :versions: []
+    :when: 2016-04-22 09:45:38.230716804 Z
+- - :permit
+  - GPL2 w/ CPE
+  - :who: CDK Team
+    :why: GPL2 with ClassPathException is a compatible license for commercial products
+      if used as libraries
+    :versions: []
+    :when: 2016-04-22 10:05:30.160157900 Z
+- - :permit
+  - CDDL + GPLv2 with classpath exception
+  - :who: CDK Team
+    :why: Common Development and Distribution License and GPL2 with ClassPathException
+      are compatible license for commercial products if used as libraries
+    :versions: []
+    :when: 2016-11-16 08:52:38.809434047 Z
+- - :permit
+  - CDDL or GPLv2 with exceptions
+  - :who: CDK Team
+    :why: Common Development and Distribution License and GPL2 with ClassPathException
+      are compatible license for commercial products if used as libraries
+    :versions: []
+    :when: 2016-11-16 09:22:29.454132459 Z
+- - :permit
+  - CDDL 1.0
+  - :who: CDK Team
+    :why: Common Development and Distribution License 1.0 is a compatible license
+      for commercial products if used as libraries
+    :versions: []
+    :when: 2016-11-16 08:53:52.746956837 Z
+- - :permit
+  - CDDL 1.1
+  - :who: CDK Team
+    :why: Common Development and Distribution License 1.1 is a compatible license
+      for commercial products if used as libraries
+    :versions: []
+    :when: 2016-11-16 08:53:52.746956837 Z
+- - :permit
+  - Common Development and Distribution License
+  - :who: CDK Team
+    :why: Common Development and Distribution License is a compatible license for
+      commercial products if used as libraries
+    :versions: []
+    :when: 2016-11-16 10:58:19.223703460 Z
+- - :permit
+  - GNU General Public License, Version 2 with the Classpath Exception
+  - :who: CDK Team
+    :why: GNU General Public License, Version 2 with the Classpath Exception is a
+      compatible license for commercial products if used as libraries
+    :versions: []
+    :when: 2016-11-16 10:58:19.223703460 Z
+- - :permit
+  - The JSON License
+  - :who: CDK Team
+    :why: The JSON License is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 09:22:53.281685112 Z
+- - :permit
+  - The PostgreSQL License
+  - :who: CDK Team
+    :why: The PostgreSQL license is a compatible license for commercial products
+    :versions: []
+    :when: 2016-11-16 09:30:16.713019567 Z
+- - :permit
+  - ISC
+  - :who: Alioune SY
+    :why: ISC is also known as OpenBSD which is a compatible license for commercial
+      products
+    :versions: []
+    :when: 2017-08-14 12:53:29.016655510 Z
+- - :permit
+  - NEW BSD
+  - :who: Alioune SY
+    :why: NEW BSD license is a compatible license for commercial products
+    :versions: []
+    :when: 2017-08-14 12:54:30.985973262 Z
+- - :permit
+  - Simplified BSD
+  - :who: Alioune SY
+    :why: Simplified BSD is a compatible license for commercial products
+    :versions: []
+    :when: 2017-08-14 12:54:48.444384257 Z
+- - :ignore_group
+  - devDependencies
+  - :who: Alioune SY
+    :why: Development dependencies are not part of the final package
+    :versions: []
+    :when: 2017-09-11 11:50:18.532027177 Z
+- - :permit
+  - Unlicense
+  - :who: Alioune SY
+    :why: Unlicense is compatible with a commercial usage
+    :versions: []
+    :when: 2017-10-03 15:40:50.064093687 Z
+- - :permit
+  - Apache License V2
+  - :who: Antoine OZENNE
+    :why: Apache License V2 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:32:18.203099000 Z
+- - :permit
+  - ASF 2.0
+  - :who: Antoine OZENNE
+    :why: ASF 2.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:33:35.077867000 Z
+- - :permit
+  - Atomikos multiple licensing scheme
+  - :who: Antoine OZENNE
+    :why: Atomikos multiple licensing scheme is a compatible license for commercial
+      products
+    :versions: []
+    :when: 2017-11-06 08:33:49.318947000 Z
+- - :permit
+  - BSD style
+  - :who: Antoine OZENNE
+    :why: BSD style is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:34:25.223510000 Z
+- - :permit
+  - BSD-2-Clause, BSD-3-Clause, BSD-3-Clause-Clear
+  - :who: Antoine OZENNE
+    :why: BSD-2-Clause, BSD-3-Clause, BSD-3-Clause-Clear is a compatible license for
+      commercial products
+    :versions: []
+    :when: 2017-11-06 08:36:20.223213000 Z
+- - :permit
+  - BSD-like
+  - :who: Antoine OZENNE
+    :why: BSD-like is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:36:45.348001000 Z
+- - :permit
+  - CC-BY-3.0
+  - :who: Antoine OZENNE
+    :why: CC-BY-3.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:37:34.435887000 Z
+- - :permit
+  - CC-BY-4.0
+  - :who: Antoine OZENNE
+    :why: CC-BY-4.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:37:44.626568000 Z
+- - :permit
+  - EDL 1.0
+  - :who: CDK Team
+    :why: EDL is a compatible license for commercial products
+    :versions: []
+    :when: 2021-08-25 11:39:55:973842156 Z
+- - :permit
+  - Eclipse Distribution License - v 1.0
+  - :who: CDK Team
+    :why: EDL (Eclipse Distribution License) is a compatible license for commercial
+      products
+    :versions: []
+    :when: 2021-08-25 11:39:55:973842156 Z
+- - :permit
+  - Unlicensed
+  - :who: Antoine OZENNE
+    :why: Unlicensed is compatible for commercial products
+    :versions: []
+    :when: 2017-11-06 08:40:15.240886000 Z
+- - :permit
+  - UNLICENSED
+  - :who: Antoine OZENNE
+    :why: UNLICENSED is compatible for commercial products
+    :versions: []
+    :when: 2017-11-06 08:40:43.156879000 Z
+- - :permit
+  - WTFPL
+  - :who: Antoine OZENNE
+    :why: WTFPL is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:41:16.977615000 Z
+- - :permit
+  - X11, Expat, MIT/X11
+  - :who: Antoine OZENNE
+    :why: X11, Expat, MIT/X11 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:42:28.476339000 Z
+- - :permit
+  - CDDL/GPLv2+CE
+  - :who: Antoine OZENNE
+    :why: CDDL/GPLv2+CE is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:43:07.023188000 Z
+- - :permit
+  - Apache 2.0 License
+  - :who: Antoine OZENNE
+    :why: Apache 2.0 License is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:47:25.186026000 Z
+- - :unpermit
+  - X11, Expat, MIT/X11
+  - :who: Antoine OZENNE
+    :why: X11, Expat, MIT/X11 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:48:48.448110000 Z
+- - :permit
+  - X11
+  - :who: Antoine OZENNE
+    :why: X11, Expat, MIT/X11 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:49:02.102970000 Z
+- - :permit
+  - Expat
+  - :who: Antoine OZENNE
+    :why: Expat is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:49:31.650968000 Z
+- - :unpermit
+  - X11
+  - :who: Antoine OZENNE
+    :why: X11, Expat, MIT/X11 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:49:42.571039000 Z
+- - :permit
+  - X11
+  - :who: Antoine OZENNE
+    :why: X11 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:49:52.740237000 Z
+- - :permit
+  - MIT/X11
+  - :who: Antoine OZENNE
+    :why: MIT/X11 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:50:13.259304000 Z
+- - :unpermit
+  - BSD-2-Clause, BSD-3-Clause, BSD-3-Clause-Clear
+  - :who: Antoine OZENNE
+    :why: BSD-2-Clause, BSD-3-Clause, BSD-3-Clause-Clear is a compatible license for
+      commercial products
+    :versions: []
+    :when: 2017-11-06 08:50:38.342187000 Z
+- - :permit
+  - BSD-2-Clause
+  - :who: Antoine OZENNE
+    :why: BSD-2-Clause is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:51:01.375195000 Z
+- - :permit
+  - BSD-3-Clause
+  - :who: Antoine OZENNE
+    :why: BSD-3-Clause is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:51:24.301927000 Z
+- - :permit
+  - BSD-3-Clause-Clear
+  - :who: Antoine OZENNE
+    :why: BSD-3-Clause-Clear is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:51:42.460140000 Z
+- - :permit
+  - BSD 3-Clause
+  - :who: Antoine OZENNE
+    :why: BSD 3-Clause is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:52:18.108365000 Z
+- - :permit
+  - The Apache License, Version 2.0
+  - :who: Antoine OZENNE
+    :why: The Apache License, Version 2.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:54:13.485645000 Z
+- - :permit
+  - The New BSD License
+  - :who: Antoine OZENNE
+    :why: The New BSD License is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:57:20.613659000 Z
+- - :permit
+  - CDDL License
+  - :who: Antoine OZENNE
+    :why: CDDL License is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-06 08:59:15.501110000 Z
+- - :permit
+  - Common Development and Distribution License (CDDL) v1.0
+  - :who: Antoine OZENNE
+    :why: Common Development and Distribution License (CDDL) v1.0 is a compatible
+      license for commercial products
+    :versions: []
+    :when: 2017-11-06 09:01:22.329574000 Z
+- - :permit
+  - Public Domain, per Creative Commons CC0
+  - :who: Antoine OZENNE
+    :why: Public Domain, per Creative Commons CC0 is a compatible license for commercial
+      products
+    :versions: []
+    :when: 2017-11-06 09:04:29.667133000 Z
+- - :permit
+  - BSD 3-clause
+  - :who: Antoine OZENNE
+    :why: BSD 3-clause is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-13 07:53:42.617980000 Z
+- - :permit
+  - BSD licence
+  - :who: Antoine OZENNE
+    :why: BSD licence is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-13 08:10:51.662439000 Z
+- - :license
+  - dom4j
+  - Public domain
+  - :who: Antoine OZENNE
+    :why: dom4j's licence is Public Domain
+    :versions: []
+    :when: 2017-11-13 08:32:45.139457000 Z
+- - :permit
+  - Public domain
+  - :who: Antoine OZENNE
+    :why: Public domain is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-13 09:18:36.471068000 Z
+- - :permit
+  - Mozilla Public License Version 2.0
+  - :who: Antoine OZENNE
+    :why: Mozilla Public License Version 2.0 is a compatible license for commercial
+      products
+    :versions: []
+    :when: 2017-11-15 07:39:38.802224000 Z
+- - :permit
+  - MPL 2.0 or EPL 1.0
+  - :who: Antoine OZENNE
+    :why: MPL 2.0 or EPL 1.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-15 07:42:27.129535000 Z
+- - :permit
+  - AL 2.0
+  - :who: Antoine OZENNE
+    :why: AL 2.0 is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-15 07:42:51.086520000 Z
+- - :permit
+  - GNU General Public Library
+  - :who: Antoine OZENNE
+    :why: GNU General Public Library is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-15 08:37:07.587168000 Z
+- - :permit
+  - COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0
+  - :who: Antoine OZENNE
+    :why: COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0 is a compatible
+      license for commercial products
+    :versions: []
+    :when: 2017-11-15 08:37:47.618869000 Z
+- - :permit
+  - Eclipse Public License (EPL), Version 1.0
+  - :who: Antoine OZENNE
+    :why: Eclipse Public License (EPL), Version 1.0 is a compatible license for commercial
+      products
+    :versions: []
+    :when: 2017-11-15 08:39:02.459966000 Z
+- - :permit
+  - Gatling Highcharts License
+  - :who: Antoine OZENNE
+    :why: Gatling Highcharts License is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-17 11:09:23.282612000 Z
+- - :permit
+  - Bouncy Castle Licence
+  - :who: Antoine OZENNE
+    :why: Bouncy Castle Licence is a compatible license for commercial products
+    :versions: []
+    :when: 2017-11-17 11:09:58.807952000 Z

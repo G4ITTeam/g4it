@@ -1,0 +1,9 @@
+nomApplication;typeEnvironnement;nomEquipementVirtuel;domaine;sousDomaine;nomEntite;nomEquipementPhysique
+Application 1;Recette;VM 1;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 1;Recette;VM 2;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 1;Production;VM 3;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 1;Production;VM 4;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 1;Production;VM 5;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 2;Dev;VM 6;Domaine 1;Sous Domaine 2;SSG;Serveur 2
+Application 2;Integ;VM 6;Domaine 1;Sous Domaine 2;SSG;Serveur 2
+Application 2;Recette;VM 6;Domaine 1;Sous Domaine 2;SSG;Serveur 2

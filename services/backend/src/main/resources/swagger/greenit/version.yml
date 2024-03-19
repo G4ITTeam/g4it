@@ -1,0 +1,26 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Version
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: version
+    description: Endpoint for version retrieving
+
+paths:
+  /version:
+    get:
+      tags:
+        - version
+      summary: Get version information
+      operationId: getVersion
+      responses:
+        '200':
+          description: Return version information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionRest"
+        '500':
+          $ref: "#/components/responses/InternalServerError"

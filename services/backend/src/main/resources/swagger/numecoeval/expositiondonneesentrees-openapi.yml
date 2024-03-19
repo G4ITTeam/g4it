@@ -1,0 +1,569 @@
+openapi: 3.0.1
+info:
+  title: NumEcoEval - API données d'entrées
+  version: v0
+  license:
+    name: Apache 2.0
+  description: |
+    API permettant l'import de données dans le système NumEcoEval. \
+    L'import de données seul ne permet pas d'importer et impose de soumettre la demande de calcul après l'import des données.
+tags:
+  - name: Imports
+    description: Endpoints liés à l'import de données dans NumEcoEval
+  - name: Calculs
+    description: Endpoints liés au déclenchement de calcul dans NumEcoEval
+paths:
+  /entrees/calculs/statut:
+    get:
+      summary: Endpoint de récupération du statut des calculs.
+      description: |
+        Endpoint de récupération du statut des calculs.
+      tags:
+        - Calculs
+      operationId: statutPourCalcul
+      parameters:
+        - in: query
+          name: nomLot
+          schema:
+            type: string
+          required: true
+          description: Nom lot
+        - in: query
+          name: nomOrganisation
+          schema:
+            type: string
+          required: true
+          description: Nom Organisation
+      responses:
+        "500":
+          description: Erreur interne du service
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "400":
+          description: Contenu de la soumission incorrecte
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "200":
+          description: Rapport d'import des données d'entrées
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/StatutCalculRest"
+  /entrees/calculs/soumission:
+    post:
+      summary: Endpoint de soumission de données d'entrées pour lancer les calculs dans NumEcoEval.
+      description: |
+        Endpoint de soumission de données d'entrées pour lancer les calculs dans NumEcoEval.
+      tags:
+        - Calculs
+      operationId: soumissionPourCalcul
+      parameters:
+        - in: query
+          name: mode
+          schema:
+            $ref: "#/components/schemas/ModeRest"
+          required: false
+          description: Mode de traitement, SYNC ou ASYNC
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/DemandeCalculRest"
+      responses:
+        "500":
+          description: Erreur interne du service
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "400":
+          description: Contenu de la soumission incorrecte
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "200":
+          description: Rapport d'import des données d'entrées
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/RapportDemandeCalculRest"
+  /entrees/calculs/rejeu:
+    post:
+      summary: Endpoint de rejeu des calculs à partir des données d'entrées pour relancer les calculs dans NumEcoEval.
+      description: |
+        Endpoint de rejeu des calculs à partir des données d'entrées pour relancer les calculs dans NumEcoEval.
+      tags:
+        - Calculs
+      operationId: rejeuCalcul
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/DemandeCalculRest"
+      responses:
+        "500":
+          description: Erreur interne du service
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "400":
+          description: Contenu de la soumission incorrecte
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "200":
+          description: Rapport d'import des données d'entrées
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/RapportDemandeCalculRest"
+  /entrees/json:
+    post:
+      tags:
+        - Imports
+      summary: Soumission de données d'entrées au format CSV pour calcul d'indicateurs
+      description: |
+        Endpoint de soumission des données d'entrées au format JSON pour le calcul d'indicateurs. \
+        La taille totale de tout le contenu JSON ne doit pas dépasser 10 Mo.
+      operationId: importJson
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/DonneesEntreeRest"
+      responses:
+        "500":
+          description: Erreur interne du service
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "400":
+          description: Contenu de la soumission incorrecte
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "200":
+          description: Rapport d'import des données d'entrées
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RapportImportRest"
+  /entrees/csv:
+    post:
+      tags:
+        - Imports
+      summary: Soumission de données d'entrées au format CSV pour calcul d'indicateurs
+      description: |
+        Endpoint de soumission des données d'entrées au format CSV pour le calcul d'indicateurs. \
+        La taille totale de tous les fichiers ne doit pas dépasser 10 Mo. \
+        Le séparateur des fichiers CSV est le point-virgule (;). \
+        Le Header du CSV des data centers est : nomCourtDatacenter;nomLongDatacenter;pue;localisation;nomSourceDonnee \
+        Le Header du CSV des équipements physiques est : modele;quantite;nomEquipementPhysique;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;nbJourUtiliseAn;consoElecAnnuelle;nomSourceDonnee \
+        Le Header du CSV des équipements virtuels est : nomEquipementVirtuel;nomEquipementPhysique;vCPU;cluster;nomSourceDonnee;nomSourceEquipementPhysique;consoElecAnnuelle;typeEqv;capaciteStockage;cleRepartition \
+        Le Header du CSV des application est : nomApplication;typeEnvironnement;nomEquipementVirtuel;nomEquipementPhysique;domaine;sousDomaine;nomSourceDonnee;typeEqv;nomSourceEquipementVirtuel;capaciteStockage;cleRepartition \
+        Le Header du CSV de la messagerie est : nombreMailEmis;nombreMailEmisXDestinataires;volumeTotalMailEmis;MoisAnnee;nomSourceDonnee \
+        Le Header du CSV des entités est : nomEntite;nbCollaborateurs;responsableEntite;responsableNumeriqueResponsable;nomSourceDonnee
+
+      operationId: importCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - nomLot
+              properties:
+                csvDataCenter:
+                  type: string
+                  format: binary
+                csvEquipementPhysique:
+                  type: string
+                  format: binary
+                csvEquipementVirtuel:
+                  type: string
+                  format: binary
+                csvApplication:
+                  type: string
+                  format: binary
+                csvMessagerie:
+                  type: string
+                  format: binary
+                csvEntite:
+                  type: string
+                  format: binary
+                dateLot:
+                  type: string
+                nomOrganisation:
+                  type: string
+                nomLot:
+                  type: string
+      responses:
+        "500":
+          description: Erreur interne du service
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "400":
+          description: Contenu de la soumission incorrecte
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ErreurRest"
+        "200":
+          description: Rapport d'import des données d'entrées
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RapportImportRest"
+components:
+  schemas:
+    StatutTraitement:
+      description: Statut de traitement des données d'entrées dans NumEcoEval
+      type: string
+      enum:
+        - EN_ATTENTE
+        - A_INGERER
+        - INGERE
+        - TRAITE
+        - A_REJOUER
+        - EN_ERREUR
+    DemandeCalculRest:
+      description: Objet à soumettre pour une demande de calcul
+      required:
+        - nomLot
+      properties:
+        nomLot:
+          description: "Nom du lot rattaché"
+          type: string
+    ModeRest:
+      type: string
+      enum:
+        - ASYNC
+        - SYNC
+      default: ASYNC
+    StatutCalculRest:
+      description: Statut des calculs.
+      properties:
+        statut:
+          description: "Statut global des calculs"
+          type: string
+          enum:
+            - TERMINE
+            - EN_COURS
+        etat:
+          description: "Etat des calculs"
+          type: string
+        equipementPhysique:
+          description: "Bloc equipement physique"
+          $ref: '#/components/schemas/VolumeRest'
+        messagerie:
+          description: "Bloc messagerie"
+          $ref: '#/components/schemas/VolumeRest'
+    VolumeRest:
+      description: Volume
+      type: object
+      properties:
+        nbEnCours:
+          type: integer
+        nbTraite:
+          type: integer
+    RapportDemandeCalculRest:
+      description: Rapport de la demande de calcul.
+      properties:
+        nomLot:
+          description: "Nom du lot rattaché"
+          type: string
+        nbrDataCenter:
+          description: Nombre de Data Center concernés
+          type: integer
+        nbrEquipementPhysique:
+          description: Nombre d'équipements physiques concernés
+          type: integer
+        nbrEquipementVirtuel:
+          description: Nombre d'équipements physiques concernés
+          type: integer
+        nbrApplication:
+          description: Nombre d'application concernées
+          type: integer
+        nbrMessagerie:
+          description: Nombre d'éléments de messagerie concernés
+          type: integer
+    ErreurRest:
+      description: Objet standard pour les réponses en cas d'erreur d'API
+      type: object
+      properties:
+        code:
+          description: Code de l'erreur
+          type: string
+        message:
+          description: Message de l'erreur
+          type: string
+        status:
+          description: Code Statut HTTP de la réponse
+          type: integer
+        timestamp:
+          description: Date & Heure de l'erreur
+          type: string
+          format: date-time
+    RapportImportRest:
+      description: Rapport d'import pour un fichier
+      type: object
+      properties:
+        fichier:
+          description: Fichier concerné par le rapport
+          type: string
+        erreurs:
+          description: Erreurs du fichier
+          type: array
+          items:
+            type: string
+        avertissements:
+          description: Avertissements du fichier
+          type: array
+          items:
+            type: string
+        nbrLignesImportees:
+          description: Nombre de lignes importées
+          type: integer
+    DonneesEntreeRest:
+      description: Données d'entres de NumEcoEval
+      type: object
+      required:
+        - dateLot
+        - nomOrganisation
+      properties:
+        nomOrganisation:
+          description: Nom de l'organisation rattachée au données
+          type: string
+        nomLot:
+          description: "Nom du lot rattaché"
+          type: string
+        dateLot:
+          description: Date de lot rattachée au données
+          type: string
+        dataCenters:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataCenterRest"
+        equipementsPhysiques:
+          type: array
+          items:
+            $ref: "#/components/schemas/EquipementPhysiqueRest"
+        messageries:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessagerieRest"
+        entites:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntiteRest"
+    DataCenterRest:
+      description: Représentation d'un DataCenter dans NumEcoEval
+      properties:
+        nomCourtDatacenter:
+          description: ""
+          type: string
+        nomLongDatacenter:
+          description: ""
+          type: string
+        pue:
+          description: ""
+          type: number
+        localisation:
+          description: ""
+          type: string
+        nomEntite:
+          description: ""
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string
+    EquipementPhysiqueRest:
+      description: Représentation d'un équipement physique dans NumEcoEval
+      properties:
+        nomEquipementPhysique:
+          description: ""
+          type: string
+        modele:
+          description: ""
+          type: string
+        type:
+          description: ""
+          type: string
+        statut:
+          description: ""
+          type: string
+        paysDUtilisation:
+          description: ""
+          type: string
+        utilisateur:
+          description: ""
+          type: string
+        dateAchat:
+          description: ""
+          type: string
+          format: date
+        dateRetrait:
+          description: ""
+          type: string
+          format: date
+        nbCoeur:
+          description: ""
+          type: string
+        nomCourtDatacenter:
+          description: ""
+          type: string
+        nbJourUtiliseAn:
+          description: ""
+          type: number
+        goTelecharge:
+          description: ""
+          type: number
+        quantite:
+          description: ""
+          type: number
+        serveur:
+          description: ""
+          type: boolean
+        nomEntite:
+          description: ""
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string
+        equipementsVirtuels:
+          description: ""
+          items:
+            $ref: "#/components/schemas/EquipementVirtuelRest"
+    EquipementVirtuelRest:
+      description: Représentation d'un équipement virtuel dans NumEcoEval
+      properties:
+        nomEquipementVirtuel:
+          description: ""
+          type: string
+        nomEquipementPhysique:
+          description: ""
+          type: string
+        vCPU:
+          description: ""
+          type: integer
+        cluster:
+          description: ""
+          type: string
+        nomEntite:
+          description: ""
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string
+        nomSourceDonneeEquipementPhysique:
+          description: "Nom de la source de la donnée pour l'équipement physique"
+          type: string
+        applications:
+          description: ""
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationRest"
+        typeEqv:
+          description: |
+            Le type d'équipement virtuel contient "calcul", "stockage" ou null.
+            Peut être omis entièrement si ce n'est pas applicable.
+          type: string
+        capaciteStockage:
+          description: |
+            Capacité de stockage de l'équipement virtuel en To.
+          type: number
+          format: double
+        cleRepartition:
+          description: |
+            La clé de repartition est exprimée comme une fraction.
+          type: number
+          format: double
+        consoElecAnnuelle:
+          description: |
+            Consommation électrique annuelle de l'équipement virtuel.
+          type: number
+          format: double
+    ApplicationRest:
+      description: Représentation d'une application dans NumEcoEval
+      properties:
+        nomApplication:
+          description: ""
+          type: string
+        typeEnvironnement:
+          description: ""
+          type: string
+        nomEquipementVirtuel:
+          description: ""
+          type: string
+        domaine:
+          description: ""
+          type: string
+        sousDomaine:
+          description: ""
+          type: string
+        nomEntite:
+          description: ""
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string
+        nomSourceDonneeEquipementVirtuel:
+          description: "Nom de la source de la donnée pour l'équipement virtuel"
+          type: string
+    MessagerieRest:
+      description: Représentation d'éléments de messagerie dans NumEcoEval
+      properties:
+        nombreMailEmis:
+          description: ""
+          type: integer
+        nombreMailEmisXDestinataires:
+          description: ""
+          type: integer
+        volumeTotalMailEmis:
+          description: ""
+          type: integer
+        moisAnnee:
+          description: "Mois et Année rattachés au données, format MMAAAA"
+          type: integer
+        nomEntite:
+          description: ""
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string
+    EntiteRest:
+      description: Représentation d'une entité dans NumEcoEval
+      properties:
+        nomEntite:
+          description: "Nom de l'entité"
+          type: string
+        nbCollaborateurs:
+          description: "Nombre de collaborateur de l'entité"
+          type: integer
+        responsableEntite:
+          description: "Nom du responsable de l'entité"
+          type: string
+        responsableNumeriqueDurable:
+          description: "Nom du responsable du numérique durable dans l'entité"
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string

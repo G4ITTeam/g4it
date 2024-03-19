@@ -1,0 +1,26 @@
+<div class="form-element">
+    <p-dropdown
+        appendTo="body"
+        [(ngModel)]="type"
+        [options]="fileTypes"
+        optionLabel="text"
+        class="p-inputtext-sm type-dropdown"
+    ></p-dropdown>
+    <p-fileUpload
+        #fileUpload
+        class="download-file-button"
+        id="file"
+        mode="basic"
+        chooseLabel="{{ fileUploadText }}"
+        accept=".csv"
+        [customUpload]="true"
+        (onSelect)="onFileChange($event)"
+    >
+    </p-fileUpload>
+    <p-button
+        class="no-background-button"
+        styleClass="p-button-text"
+        icon="pi pi-times"
+        (click)="onDeleteButton()"
+    ></p-button>
+</div>

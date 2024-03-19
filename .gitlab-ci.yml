@@ -1,0 +1,49 @@
+variables:
+  ONLY: 
+    value: ""
+    description: "Only build some components: frontend or backend. Or both with space."
+
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: always
+    - if: $CI_COMMIT_BRANCH == 'main'
+      when: always
+    - if: $CI_COMMIT_TAG
+      when: always
+    - when: never
+
+child:
+  stage: build
+  variables:
+    COMPONENT: $COMPONENT
+  trigger:
+    include: "services/${COMPONENT}/.gitlab-ci.yml"
+    strategy: depend
+  rules:
+    - if: $COMPONENT =~ $ONLY
+      when: always
+    - if: $CI_COMMIT_TAG
+      when: always
+    - if: $ONLY == ""
+      changes:
+        - services/$COMPONENT/**/*
+  parallel:
+    matrix:
+    - COMPONENT: [ backend, frontend ]
+
+deployment:
+  stage: deploy
+  trigger:
+    project: deployment-aks
+    strategy: depend
+  variables:
+    ENVIRONMENT_NAME: int
+    COMPONENT_IMAGE_TAG_0: main
+    COMPONENT_IMAGE_TAG_1: main
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: manual

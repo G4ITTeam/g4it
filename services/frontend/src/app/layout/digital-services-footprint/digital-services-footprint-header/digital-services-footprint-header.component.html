@@ -1,0 +1,61 @@
+<div class="header-footprint-digital">
+    <div>
+        <div
+            class="green-dashboard-title"
+            [routerLink]="changePageToDigitalServices()"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'digital-services.return' | translate"
+        >
+            <img
+                src="assets/images/icons/icon-green-arrow-left.svg"
+                alt=""
+                class="button-icon"
+            />
+            {{ "digital-services.title" | translate }}
+        </div>
+        <div class="input-title">
+            <p-inplace
+                [closable]="true"
+                [preventClick]="digitalService.name === ''"
+                (onDeactivate)="onNameUpdate(digitalService.name)"
+            >
+                <ng-template pTemplate="display">
+                    <span class="h2-title">{{ digitalService.name }}</span>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <input
+                        type="text"
+                        class="h2-title"
+                        style="margin-right: 10px"
+                        pInputText
+                        [(ngModel)]="digitalService.name"
+                        [required]="true"
+                    />
+                </ng-template>
+                <ng-template pTemplate="closeicon">
+                    <i class="pi pi-check"></i>
+                </ng-template>
+            </p-inplace>
+        </div>
+    </div>
+    <div>
+        <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            styleClass="black-button"
+            [disabled]="disableCalcul"
+            (onClick)="launchCalcul()"
+        >
+            {{ "common.calculate" | translate }}
+        </p-button>
+        <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            styleClass="p-button-text p-button-rounded p-button-danger margin-left-15"
+            (click)="confirmDelete($event)"
+        >
+            <img
+                src="assets/images/icons/icon-trash-digital.svg"
+                alt="{{ 'common.delete' | translate }} {{ digitalService.name }}"
+            />
+        </p-button>
+        <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
+    </div>
+</div>

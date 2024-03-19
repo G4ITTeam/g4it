@@ -1,0 +1,2 @@
+nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
+Serveur 1;Sopra Steria Group;mockData;rack-server-with-hdd;1;ServeurCalcul;actif;365;FR;;2015-01-18;;10;Datacenter 70;1000;200;dell;200;200;i9

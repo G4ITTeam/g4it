@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-sip_ref-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_sustainable_individual_package
+            columns:
+              - column:
+                  name: criteria
+                  type: varchar(255)
+              - column:
+                  name: planetary_boundary
+                  type: float
+              - column:
+                  name: source
+                  type: text
+              - column:
+                  name: individual_sustainable_package
+                  type: float
+        - loadData:
+            columns:
+              - column:
+                  header: criteria
+                  type: varchar(255)
+              - column:
+                  header: planetary_boundary
+                  type: numeric
+              - column:
+                  header: source
+                  type: text
+              - column:
+                  header: individual_sustainable_package
+                  type: numeric
+            file: db/changelog/data/ref_sustainable_individual_package.csv
+            primaryKey: id
+            tableName: ref_sustainable_individual_package
+            separator: ;
+            encoding: UTF-8

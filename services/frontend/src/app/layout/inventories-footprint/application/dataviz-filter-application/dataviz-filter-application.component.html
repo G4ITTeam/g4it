@@ -1,0 +1,104 @@
+<div
+    class="filter-component"
+    (click)="toggle()"
+    label="Show Overlay"
+    tabindex="0"
+    role="button"
+    aria-label="Access filters for your footprint data"
+>
+    <div>
+        <img src="assets/images/icons/icon-filter.svg" alt="" />
+        <span>{{ "inventories-footprint.filter" | translate }}</span>
+    </div>
+    <img src="assets/images/icons/icon-accordion-fold.svg" alt="" />
+</div>
+<p-overlay
+    [(visible)]="overlayVisible"
+    [responsive]="{
+        breakpoint: '640px',
+        direction: 'bottom',
+        contentStyleClass: 'h-20rem'
+    }"
+    contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
+>
+    <p-tabView>
+        <p-tabPanel
+            header="{{
+                'inventories-footprint.filter-tabs-application.environnement' | translate
+            }}"
+            [selected]="true"
+        >
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <div *ngFor="let env of filters.environments" class="field-checkbox">
+                    <p-checkbox
+                        name="groupname"
+                        value="{{ env }}"
+                        label="{{ env }}"
+                        [(ngModel)]="selectedEnvironnement"
+                        (ngModelChange)="onFilterUpdate('environnement', env)"
+                    ></p-checkbox>
+                </div>
+            </p-scrollPanel>
+        </p-tabPanel>
+        <p-tabPanel
+            header="{{
+                'inventories-footprint.filter-tabs-application.equipment' | translate
+            }}"
+        >
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <div
+                    *ngFor="let equipment of filters.types"
+                    class="checkbox-list"
+                    style="display: flex; flex-direction: column"
+                >
+                    <p-checkbox
+                        name="groupname"
+                        value="{{ equipment }}"
+                        label="{{ equipment }}"
+                        [attr.aria-label]="equipment"
+                        [(ngModel)]="selectedEquipment"
+                        (ngModelChange)="onFilterUpdate('equipment', equipment)"
+                    ></p-checkbox>
+                </div>
+            </p-scrollPanel>
+        </p-tabPanel>
+        <p-tabPanel
+            header="{{
+                'inventories-footprint.filter-tabs-application.lifecycle' | translate
+            }}"
+        >
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <div
+                    *ngFor="let lifecycle of filters.lifeCycles"
+                    class="checkbox-list"
+                    style="display: flex; flex-direction: column"
+                >
+                    <p-checkbox
+                        name="groupname"
+                        value="{{ lifecycle }}"
+                        label="{{ lifecycle }}"
+                        [(ngModel)]="selectedlifecycle"
+                        (ngModelChange)="onFilterUpdate('lifecycle', lifecycle)"
+                    ></p-checkbox>
+                </div>
+            </p-scrollPanel>
+        </p-tabPanel>
+        <p-tabPanel
+            header="{{
+                'inventories-footprint.filter-tabs-application.domain' | translate
+            }}"
+        >
+            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
+                <p-tree
+                    class="role-tree-view"
+                    [value]="domains"
+                    selectionMode="checkbox"
+                    [(selection)]="selectedValuesFilterDomain"
+                    [propagateSelectionDown]="true"
+                    (onNodeSelect)="nodeSelect($event)"
+                    (onNodeUnselect)="nodeUnselect($event)"
+                ></p-tree>
+            </p-scrollPanel>
+        </p-tabPanel>
+    </p-tabView>
+</p-overlay>

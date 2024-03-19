@@ -1,0 +1,7 @@
+nomEquipementVirtuel;nomEquipementPhysique;vCPU;nomEntite;typeEqv
+VM 1;Serveur 9;1;SSG;calcul
+VM 2;Serveur 10;2;SSG;calcul
+VM 3;Serveur 10;3;SSG;calcul
+VM 4;Serveur 11;1.5;SSG;calcul
+VM 5;Serveur 11;24.340;SSG;calcul
+VM 6;Serveur 11;1;SSG;calcul

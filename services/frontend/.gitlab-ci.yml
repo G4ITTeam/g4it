@@ -1,0 +1,73 @@
+include:
+  - project: "dep/library/ci-library"
+    ref: production
+    file: "main.yml"
+
+variables:
+  PROJECT_ROOT_DIR: "services/frontend"
+  DISABLE_PROMOTE_IMAGE: "true"
+  PROJ_FILE_PATH: "package.json"
+  ANGULAR_CLI_VERSION: "17.0.9"
+
+build-application:
+  extends: .job-with-web-requests
+  image: ${CI_REGISTRY}/dep/library/project-oci-images/build-angular-node-v20:update3
+  script: |
+    cd "${PROJECT_ROOT_DIR}"
+    npm ci
+    npm run build
+  cache:
+    # cache node_modules & dist folders for pipeline performances
+    policy: pull-push
+    untracked: false
+    paths:
+      - $PROJECT_ROOT_DIR/node_modules/
+      - $PROJECT_ROOT_DIR/dist/
+  artifacts:
+    paths:
+      - $PROJECT_ROOT_DIR/dist/
+
+.test-application:
+  extends: .job-with-web-requests
+
+test-application:
+  extends: .test-application
+  image: !reference [build-application, image]
+  script:
+    - cd "${PROJECT_ROOT_DIR}"
+    - npm link @angular/cli@${ANGULAR_CLI_VERSION}
+    - npm run test:ci
+  coverage: '/Statements\s+:\s(\d+.?\d+)%/'
+  # need to explicitly set the same paths: as for the build-application (and same dependencies) for it to work
+  cache:
+    paths:
+      - $PROJECT_ROOT_DIR/node_modules/
+      - $PROJECT_ROOT_DIR/dist/
+    policy: pull
+  artifacts:
+    when: always
+    paths:
+      - $PROJECT_ROOT_DIR/coverage/
+    reports:
+      junit: $PROJECT_ROOT_DIR/test_report/**/**.xml
+
+build-image:
+  extends: .job-with-web-requests
+  stage: build-image
+  variables:
+    BUILD_REGISTRY: $CI_REGISTRY
+    BUILD_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
+    BUILD_REGISTRY_USER: $CI_REGISTRY_USER
+    BUILD_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    KANIKO_OPTIONS: ""
+    DOCKERFILE_CONTEXT_DIR: "."
+  image:
+    # Use debug to have sh
+    name: ${CI_REGISTRY}/dep/library/devops-images/kaniko:v1.18.0-debug-update1
+    entrypoint: [ "" ]
+  script:
+    - !reference [ .build-image, script ]
+  interruptible: true
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX'
+      when: always

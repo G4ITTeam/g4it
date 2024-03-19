@@ -1,0 +1,21 @@
+<svg width="48" height="48" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+<defs>
+<clipPath id="clip0_727_11108">
+<rect fill="white" height="48" id="svg_1" width="48"/>
+</clipPath>
+</defs>
+<g class="layer">
+<title>Layer 1</title>
+<g clip-path="url(#clip0_727_11108)" id="svg_2">
+<path clip-rule="evenodd" d="m34.21,34.24l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_3" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m34.21,20.55l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_4" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m34.21,6.85l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_5" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m20.13,34.24l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_6" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m20.13,20.55l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_7" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m20.13,6.85l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_8" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m6.04,34.24l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_9" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m6.04,20.55l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_10" stroke="black" stroke-linejoin="round"/>
+<path clip-rule="evenodd" d="m6.04,6.85l7.83,0l0,7.61l-7.83,0l0,-7.61z" fill="white" fill-rule="evenodd" id="svg_11" stroke="black" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

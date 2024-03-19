@@ -1,0 +1,16 @@
+nomApplication;typeEnvironnement;nomEquipementVirtuel;nomSourceDonneeEquipementVirtuel;domaine;sousDomaine;nomEntite;nomSourceDonnee
+Application 1;Recette;VM 48;;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 1;Recette;VM 49;Source name vm49;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 2;Dev;VM 52;;Domaine 1;Sous Domaine 2;SSG;Serveur 2
+Application 2;Integ;VM 53;;Domaine 1;Sous Domaine 2;SSG;
+Application 3;Dev;VM 52;;Domaine 1;Sous Domaine 2;SSG;Serveur 2
+Application 3;Integ;VM 53;;Domaine 1;Sous Domaine 2;SSG;
+Application 2;Recette;VM 54;;Domaine 1;Sous Domaine 2;SSG;
+Application 4;Recette;VM 55;;Domaine 1;Sous Domaine 1;SSG;
+Application 1;Recette;VM 48;;Domaine 1;Sous Domaine 1;SSG;Serveur 2
+Application 1;Produc!tion;VM 54;;Domaine 1;Sous Domaine 1;SSG;Serveur 233
+Application 2;Dev;VM 53;;Domaine 1;Sous Domaine 2;SS&G;Serrrveur 2
+Application 1;Recette;VM 52;;Domaine 1;Sous Domaine 1;SSG;Desktop 25
+Application 1;Production;VM 51;;Domaine 1;S&ous Domaine 1;SSG;Serveur 49
+Application 1;Production;VM 50;;DomaineŠ1;Sous Domaine 1;SSG;Serveur 70
+Application 2;Dev;VM 52;;Domaine 1;Sous Domaine 2;SSG;Serveur 2

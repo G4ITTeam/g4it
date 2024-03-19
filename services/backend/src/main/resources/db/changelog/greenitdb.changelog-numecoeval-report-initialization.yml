@@ -1,0 +1,166 @@
+databaseChangeLog:
+  - changeSet:
+      logicalFilePath: db/changelog/greenitdb.changelog-inventory-initialization.yml
+      id: create-numecoeval-report
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: numecoeval_input_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: numecoeval_input_report_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: report_inventory_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: file
+                  type: varchar(255)
+              - column:
+                  name: organisation
+                  type: varchar(255)
+              - column:
+                  name: import_lines_number
+                  type: integer
+              - column:
+                  name: report_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+  - changeSet:
+      id: remove-link-input-report-inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: numecoeval_input_report
+            columns:
+              - column:
+                  name: batch_name
+                  type: varchar(36)
+        - sql:
+            update numecoeval_input_report nr
+            set batch_name = (select er.batch_name
+            from g4it_evaluation_report er
+            where nr.inventory_id = er.inventory_id
+            and nr.last_update_date between er.create_time and er.end_time)
+            ;
+          comment: Update numecoeval input report with batchname
+        - dropColumn:
+            tableName: numecoeval_input_report
+            columns:
+              - column:
+                  name: organisation
+              - column:
+                  name: inventory_id
+
+  - changeSet:
+      logicalFilePath: db/changelog/greenitdb.changelog-inventory-initialization.yml
+      id: create-numecoeval-error-report
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: numecoeval_input_error_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: numecoeval_error_report_pk
+              - column:
+                  name: numecoeval_report_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: numecoevalinputreporterror-numecoevalinputreport-fk
+                    references: numecoeval_input_report(id)
+              - column:
+                  name: error
+                  type: text
+
+  - changeSet:
+      logicalFilePath: db/changelog/greenitdb.changelog-inventory-initialization.yml
+      id: change-fk-numecoeval-input-error-report-to-numecoeval-input-report
+      author: G4IT Dev Team
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: numecoeval_input_error_report
+            constraintName: numecoevalinputreporterror-numecoevalinputreport-fk
+        - addForeignKeyConstraint:
+            baseTableName: numecoeval_input_error_report
+            baseColumnNames: numecoeval_report_id
+            referencedTableName: numecoeval_input_report
+            referencedColumnNames: id
+            onDelete: cascade
+            constraintName: numecoevalinputreporterror-numecoevalinputreport-fk
+
+  - changeSet:
+      logicalFilePath: db/changelog/greenitdb.changelog-inventory-initialization.yml
+      id: create-numecoeval-calculation-report
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: numecoeval_calculation_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: numecoeval_calculation_report_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: numecoeval_calculation_report_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: batch_name
+                  type: varchar(255)
+              - column:
+                  name: datacenter_number
+                  type: integer
+              - column:
+                  name: physical_equipment_number
+                  type: integer
+              - column:
+                  name: virtual_equipment_number
+                  type: integer
+              - column:
+                  name: application_number
+                  type: integer
+              - column:
+                  name: messaging_number
+                  type: integer
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: remove-link-calculation-report-inventory
+      author: G4IT Dev Team
+      changes:
+        - dropColumn:
+            tableName: numecoeval_calculation_report
+            columns:
+              - column:
+                  name: inventory_id

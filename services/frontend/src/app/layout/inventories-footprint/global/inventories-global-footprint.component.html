@@ -1,0 +1,46 @@
+<div class="footprint-dashboard-container">
+    <div class="chart-container">
+        <div>
+            <h3>
+                {{ "inventories-footprint.global.global-vision" | translate }} <br />
+                ({{ "common.peopleeq" | translate }})
+            </h3>
+            <p-card class="rmv-padding-card">
+                <div class="round-button-container">
+                    <button
+                        *ngFor="let dimension of dimensions"
+                        [class]="
+                            (filterRepo.selectedView$ | async) === dimension
+                                ? 'round-button-selected'
+                                : 'round-button'
+                        "
+                        (click)="filterRepo.updateSelectedView(dimension)"
+                    >
+                        {{
+                            "inventories-footprint.round-button." + dimension | translate
+                        }}
+                    </button>
+                </div>
+            </p-card>
+        </div>
+        <div *ngIf="noData; else chart" class="no-data-round">
+            <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+        </div>
+        <ng-template #chart>
+            <div
+                echarts
+                class="bar-polar-stack-radial m-0"
+                [options]="options"
+                style="height: 51vh;"
+            ></div>
+        </ng-template>
+    </div>
+    <div>
+        <app-information-card
+            [title]="'inventories-footprint.global.info-fis-title' | translate"
+            [content]="'inventories-footprint.global.info-fis-text' | translate"
+        ></app-information-card>
+        <app-datacenter-stats></app-datacenter-stats>
+        <app-physicalequipment-stats></app-physicalequipment-stats>
+    </div>
+</div>

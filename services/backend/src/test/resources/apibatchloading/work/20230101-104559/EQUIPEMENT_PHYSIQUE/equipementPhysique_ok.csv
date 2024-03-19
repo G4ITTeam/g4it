@@ -1,0 +1,2 @@
+nomEquipementPhysique;nomOrganisation;nomEntite;sourceDonnee;fabricant;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;tailleDuDisque;tailleMemoire;typeDeProcesseur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle
+Serveur;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;;200;400

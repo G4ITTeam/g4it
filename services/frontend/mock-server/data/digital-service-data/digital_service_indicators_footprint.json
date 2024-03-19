@@ -1,0 +1,107 @@
+[
+    {
+        "tier": "Server",
+        "impacts": [
+            {
+                "criteria": "particulate-matter",
+                "sipValue": 0.39,
+                "unitValue": 35,
+                "unit": "Disease incidence"
+            },
+            {
+                "criteria": "acidification",
+                "sipValue": 0.58,
+                "unitValue": 55,
+                "unit": "mol H+ eq"
+            },
+            {
+                "criteria": "ionising-radiation",
+                "sipValue": 0.16,
+                "unitValue": 2,
+                "unit": "kBq U-235 eq"
+            },
+            {
+                "criteria": "resource-use",
+                "sipValue": 0.12,
+                "unitValue": 13,
+                "unit": "kg Sb eq"
+            },
+            {
+                "criteria": "climate-change",
+                "sipValue": 0.44,
+                "unitValue": 44,
+                "unit": "kg CO2 eq"
+            }
+        ]
+    },
+    {
+        "tier": "Network",
+        "impacts": [
+            {
+                "criteria": "particulate-matter",
+                "sipValue": 0.3,
+                "unitValue": 35,
+                "unit": "Disease incidence"
+            },
+            {
+                "criteria": "acidification",
+                "sipValue": 0.1,
+                "unitValue": 20,
+                "unit": "mol H+ eq"
+            },
+            {
+                "criteria": "ionising-radiation",
+                "sipValue": 0.99,
+                "unitValue": 15,
+                "unit": "kBq U-235 eq"
+            },
+            {
+                "criteria": "resource-use",
+                "sipValue": 0.26,
+                "unitValue": 8,
+                "unit": "kg Sb eq"
+            },
+            {
+                "criteria": "climate-change",
+                "sipValue": 0.22,
+                "unitValue": 16,
+                "unit": "kg CO2 eq"
+            }
+        ]
+    },
+    {
+        "tier": "Terminal",
+        "impacts": [
+            {
+                "criteria": "particulate-matter",
+                "sipValue": 0.1,
+                "unitValue": 25,
+                "unit": "Disease incidence"
+            },
+            {
+                "criteria": "acidification",
+                "sipValue": 0.7,
+                "unitValue": 40,
+                "unit": "mol H+ eq"
+            },
+            {
+                "criteria": "ionising-radiation",
+                "sipValue": 0.4,
+                "unitValue": 22,
+                "unit": "kBq U-235 eq"
+            },
+            {
+                "criteria": "resource-use",
+                "sipValue": 0.9,
+                "unitValue": 25,
+                "unit": "kg Sb eq"
+            },
+            {
+                "criteria": "climate-change",
+                "sipValue": 0.2,
+                "unitValue": 54,
+                "unit": "kg CO2 eq"
+            }
+        ]
+    }
+]

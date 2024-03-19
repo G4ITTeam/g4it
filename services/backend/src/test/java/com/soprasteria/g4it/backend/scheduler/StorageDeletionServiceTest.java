@@ -1,0 +1,98 @@
+/*
+ * G4IT
+ * Copyright 2023 Sopra Steria
+ *
+ * This product includes software developed by
+ * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
+ */ 
+package com.soprasteria.g4it.backend.scheduler;
+
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
+import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+public class StorageDeletionServiceTest {
+
+    @InjectMocks
+    StorageDeletionService storageDeletionService;
+
+    @Mock
+    OrganizationRepository organizationRepository;
+
+    @Mock
+    FileDeletionService fileDeletionService;
+
+    @Test
+    void testStorageDeletionService_zeroOrganization() {
+        Mockito.when(organizationRepository.findAll()).thenReturn(List.of());
+        storageDeletionService.executeDeletion();
+    }
+
+    @Test
+    void testStorageDeletionService_organizationAndSubscriberChosen() {
+
+        ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayExport", 100);
+        ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayOutput", 300);
+
+        List<Organization> organizations = List.of(Organization.builder()
+                .storageRetentionDayExport(10) // value chosen
+                .subscriber(Subscriber.builder()
+                        .name("sub")
+                        .storageRetentionDayExport(10000)
+                        .storageRetentionDayOutput(30000) // value chosen
+                        .build())
+                .name("org")
+                .build());
+
+        Mockito.when(organizationRepository.findAll()).thenReturn(organizations);
+        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(0);
+
+        // EXECUTE
+        storageDeletionService.executeDeletion();
+
+        verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.EXPORT), eq(10));
+        verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.OUTPUT), eq(30000));
+    }
+
+    @Test
+    void testStorageDeletionService_defaultChosen() {
+
+        ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayExport", 100);
+        ReflectionTestUtils.setField(storageDeletionService, "storageRetentionDayOutput", 300); // value chosen
+
+        List<Organization> organizations = List.of(Organization.builder()
+                .storageRetentionDayExport(10) // value chosen
+                .subscriber(Subscriber.builder()
+                        .name("sub")
+                        .build())
+                .name("org")
+                .build());
+
+        Mockito.when(organizationRepository.findAll()).thenReturn(organizations);
+        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(0);
+
+        // EXECUTE
+        storageDeletionService.executeDeletion();
+
+        verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.EXPORT), eq(10));
+        verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.OUTPUT), eq(300));
+    }
+
+}

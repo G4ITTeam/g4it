@@ -1,0 +1,269 @@
+filesystem.config.headers:
+  application:
+    - name : "nomApplication"
+      optional: false
+    - name : "typeEnvironnement"
+      optional: false
+    - name : "nomEquipementVirtuel"
+      optional: false
+    - name : "nomSourceDonneeEquipementVirtuel"
+      optional: true
+    - name : "domaine"
+      optional: true
+    - name : "sousDomaine"
+      optional: true
+    - name : "nomEntite"
+      optional: true
+    - name : "nomSourceDonnee"
+      optional: true
+  datacenter:
+    - name : "nomCourtDatacenter"
+      optional: false
+    - name : "nomLongDatacenter"
+      optional: true
+    - name : "pue"
+      optional: true
+    - name : "localisation"
+      optional: false
+    - name : "nomEntite"
+      optional: true
+    - name : "nomSourceDonnee"
+      optional: true
+  equipementPhysique:
+    - name : "nomEquipementPhysique"
+      optional: false
+    - name : "nomEntite"
+      optional: true
+    - name : "nomSourceDonnee"
+      optional: true
+    - name : "modele"
+      optional: false
+    - name : "quantite"
+      optional: false
+    - name : "type"
+      optional: false
+    - name : "statut"
+      optional: true
+    - name : "nbJourUtiliseAn"
+      optional: true
+    - name : "paysDUtilisation"
+      optional: false
+    - name : "utilisateur"
+      optional: true
+    - name : "dateAchat"
+      optional: true
+    - name : "dateRetrait"
+      optional: true
+    - name : "nbCoeur"
+      optional: true
+    - name : "nomCourtDatacenter"
+      optional: true
+    - name : "goTelecharge"
+      optional: true
+    - name : "consoElecAnnuelle"
+      optional: true
+    - name: "fabricant"
+      optional: true
+    - name: "tailleDuDisque"
+      optional: true
+    - name: "tailleMemoire"
+      optional: true
+    - name: "typeDeProcesseur"
+      optional: true
+  equipementVirtuel:
+    - name : "nomEquipementVirtuel"
+      optional: false
+    - name : "nomEquipementPhysique"
+      optional: false
+    - name : "nomSourceDonneeEquipementPhysique"
+      optional: true
+    - name : "vCPU"
+      optional: true
+    - name : "nomEntite"
+      optional: true
+    - name : "cluster"
+      optional: true
+    - name : "consoElecAn"
+      optional: true
+    - name : "typeEqv"
+      optional: false
+    - name: "cleRepartition"
+      optional: true
+    - name: "nomSourceDonnee"
+      optional: true
+    - name: "capaciteStockage"
+      optional: true
+  inventory:
+    - name: "id"
+      optional: false
+    - name: "inventoryName"
+      optional: false
+    - name: "organization"
+      optional: false
+    - name: "creationDate"
+      optional: false
+    - name: "lastUpdateDate"
+      optional: false
+    - name: "dataCenterCount"
+      optional: false
+    - name: "physicalEquipmentCount"
+      optional: false
+    - name: "virtualEquipmentCount"
+      optional: false
+    - name: "applicationCount"
+      optional: false
+  physicalEquipmentIndicator:
+    - name: "inventoryName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "batchDate"
+      optional: false
+    - name: "batchName"
+      optional: false
+    - name: "acvStep"
+      optional: false
+    - name: "criteria"
+      optional: false
+    - name: "source"
+      optional: false
+    - name: "indicatorStatus"
+      optional: false
+    - name: "trace"
+      optional: false
+    - name: "calculationVersion"
+      optional: false
+    - name: "averagePowerConsumption"
+      optional: false
+    - name: "unitImpact"
+      optional: false
+    - name: "quantity"
+      optional: false
+    - name: "physicalEquipmentStatus"
+      optional: false
+    - name: "equipmentType"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "entityName"
+      optional: false
+    - name: "organizationName"
+      optional: false
+    - name: "dataSourceName"
+      optional: false
+    - name: "equipmentName"
+      optional: false
+    - name: "entityNameDiscriminator"
+      optional: false
+    - name: "batchDateDiscriminator"
+      optional: false
+    - name: "organizationNameDiscriminator"
+      optional: false
+    - name: "dataSourceNameDiscriminator"
+      optional: false
+    - name: "sipImpact"
+      optional: false
+  virtualEquipmentIndicator:
+    - name: "inventoryName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "batchDate"
+      optional: false
+    - name: "batchName"
+      optional: false
+    - name: "acvStep"
+      optional: false
+    - name: "criteria"
+      optional: false
+    - name: "organizationName"
+      optional: false
+    - name: "dataSourceName"
+      optional: false
+    - name: "equipmentName"
+      optional: false
+    - name: "virtualEquipmentName"
+      optional: false
+    - name: "entityName"
+      optional: false
+    - name: "source"
+      optional: false
+    - name: "indicatorStatus"
+      optional: false
+    - name: "trace"
+      optional: false
+    - name: "calculationVersion"
+      optional: false
+    - name: "unitImpact"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "averagePowerConsumption"
+      optional: false
+    - name: "cluster"
+      optional: false
+    - name: "batchDateDiscriminator"
+      optional: false
+    - name: "organizationNameDiscriminator"
+      optional: false
+    - name: "entityNameDiscriminator"
+      optional: false
+    - name: "dataSourceNameDiscriminator"
+      optional: false
+    - name: "sipImpact"
+      optional: false
+  applicationIndicator:
+    - name: "inventoryName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "batchDate"
+      optional: false
+    - name: "batchName"
+      optional: false
+    - name: "acvStep"
+      optional: false
+    - name: "criteria"
+      optional: false
+    - name: "organizationName"
+      optional: false
+    - name: "dataSourceName"
+      optional: false
+    - name: "applicationName"
+      optional: false
+    - name: "environmentType"
+      optional: false
+    - name: "physicalEquipmentName"
+      optional: false
+    - name: "virtualEquipmentName"
+      optional: false
+    - name: "entityName"
+      optional: false
+    - name: "source"
+      optional: false
+    - name: "indicatorStatus"
+      optional: false
+    - name: "trace"
+      optional: false
+    - name: "calculationVersion"
+      optional: false
+    - name: "domain"
+      optional: false
+    - name: "subDomain"
+      optional: false
+    - name: "unitImpact"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "averagePowerConsumption"
+      optional: false
+    - name: "batchDateDiscriminator"
+      optional: false
+    - name: "organizationNameDiscriminator"
+      optional: false
+    - name: "entityNameDiscriminator"
+      optional: false
+    - name: "dataSourceNameDiscriminator"
+      optional: false
+    - name: "sipImpact"
+      optional: false

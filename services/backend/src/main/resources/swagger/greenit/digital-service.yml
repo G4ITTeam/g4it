@@ -1,0 +1,171 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Digital Service
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: digital-service
+    description: All endpoint for digital service
+  - name: digital-service referential
+    description: All endpoint for digital service referential
+paths:
+  /{subscriber}/{organization}/digital-services:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+    post:
+      tags:
+        - digital-service
+      summary: Create a new digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: createDigitalService
+      responses:
+        '201':
+          description: Return the digital service created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      tags:
+        - digital-service
+      summary: Get the digital service list
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalServices
+      responses:
+        '200':
+          description: Return the digital service list for connected user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+    delete:
+      tags:
+        - digital-service
+      summary: Delete a digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: deleteDigitalService
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      tags:
+        - digital-service
+      summary: Get a digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalService
+      responses:
+        '200':
+          description: The digital service requested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - digital-service
+      summary: Update a digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: updateDigitalService
+      requestBody:
+        description: Mandatory digital service to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DigitalServiceRest"
+      responses:
+        '200':
+          description: The updated digital service list for connected user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DigitalServiceRest"
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/evaluation:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - in: path
+        name: digitalServiceUid
+        schema:
+          type: string
+        required: true
+        description: The digital service UID.
+    post:
+      tags:
+        - digital-service
+      summary: Launch NumEcoEval calculations
+      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: runCalculations
+      responses:
+        '202':
+          description: Calculation in progress
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/datacenters:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - in: path
+        name: digitalServiceUid
+        schema:
+          type: string
+        required: true
+        description: The digital service UID.
+    get:
+      tags:
+        - digital-service
+      summary: Get digital service's datacenters
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalServiceDatacenters
+      responses:
+        '200':
+          description: datacenter list linked to digital service
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServerDatacenterRest"
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

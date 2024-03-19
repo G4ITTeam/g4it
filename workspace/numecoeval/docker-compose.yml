@@ -1,0 +1,54 @@
+# Les variables globales sont présentes dans le fichier .env
+# - POSTGRES (user, password)
+
+version: "3"
+networks:
+  numecoeval: {}
+
+services:
+  # Kafka basé sur la documentation officielle de Bitnami
+  ## https://github.com/bitnami/containers/blob/main/bitnami/kafka/docker-compose.yml
+  ## https://hub.docker.com/r/bitnami/kafka/
+  kafka:
+    image: docker.io/bitnami/kafka:3.6
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - "numecoeval_kafka_data:/bitnami"
+    environment:
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_BROKER_ID: 1
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_KRAFT_CLUSTER_ID: r4zt_wrqTRuT7W2NJsB_GB
+    networks:
+      - numecoeval
+  
+  # Postgres basé sur la documentation officielle de Postgres sur Dockerhub
+  ## https://hub.docker.com/_/postgres
+  postgresdb:
+    image: docker.io/postgres:15
+    container_name: postgresdb
+    hostname: postgresdb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - "numecoeval_postgres_data:/var/lib/postgresql/data"
+    networks:
+      - numecoeval
+
+volumes:
+  numecoeval_kafka_data:
+    driver: local
+  numecoeval_postgres_data:
+    driver: local

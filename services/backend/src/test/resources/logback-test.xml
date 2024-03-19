@@ -1,0 +1,15 @@
+<configuration scan="true" scanPeriod="30 seconds">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %level %logger{35} - %msg%n</Pattern>
+        </layout>
+    </appender>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="liquibase" level="ERROR"/>
+    <logger name="com.zaxxer" level="WARN"/>
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

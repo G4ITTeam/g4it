@@ -1,0 +1,427 @@
+{
+    "common": {
+        "yes": "Oui",
+        "no": "Non",
+        "powered-by": "Maintenu par ",
+        "powered-by-sopra": "Maintenu par Sopra Steria",
+        "open-time": "4h00 - 19h00",
+        "lang": "Langue",
+        "open-hours": "Heures d'ouverture",
+        "french": "Français",
+        "french-button": "Sélectionner traduction française",
+        "english": "Anglais",
+        "english-button": "Sélectionner traduction anglaise",
+        "cancel": "Annuler",
+        "edition": "Édition",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "create": "Créer",
+        "save": "Sauvegarder",
+        "upload": "Charger",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "mandatory": "est obligatoire",
+        "calculate": "CALCULER",
+        "duplicate": "DUPLIQUER",
+        "add": "Ajouter",
+        "peopleeq": "Hab. eq.",
+        "peopleeq-min": "hab. eq.",
+        "no-data": "Aucun résultats disponibles",
+        "loading": "Chargement en cours",
+        "choose-csv": "Importer un ficher .csv",
+        "week": {
+            "monday": "Lundi",
+            "tuesday": "Mardi",
+            "wednesday": "Mercredi",
+            "thursday": "Jeudi",
+            "friday": "Vendredi",
+            "saturday": "Samedi",
+            "sunday": "Dimanche"
+        },
+        "selected": "Sélectionné",
+        "not-selected": "Non sélectionné",
+        "parameters": "Paramètres",
+        "homepage": "Page d'accueil",
+        "access-filters": "Accéder aux filtres de mes indicateurs",
+        "refresh": "Actualiser",
+        "all": "Tout sélectionner",
+        "empty": "Non renseigné",
+        "organization-management": "Gestion des organisations",
+        "list-of": "Liste de ",
+        "organizations": "organisations ",
+        "change-organization": "Choisir l'organisation ",
+        "accessibility": {
+            "fold": "Voir plus de détails pour l'inventaire de",
+            "unfold": "Cacher le détail de l'inventaire de",
+            "delete": "Supprimer l'inventaire de",
+            "app": "Voir l'impact des applications pour l'inventaire de",
+            "updateInProgress": "Estimation en cours, {{value}}% déjà atteints'",
+            "eq": "Voir l'impact des équipements pour l'inventaire de",
+            "refresh": "Rafraichir les informations pour l'inventaire de"
+        },
+        "versions": "Versions",
+        "updateInProgress": "mise à jour en cours"
+    },
+    "digital-services": {
+        "title": "Mes Services Numériques",
+        "add": "Evaluer Un Nouveau Service",
+        "empty-digital-services": "Vous n'avez pas de service numérique.",
+        "impacts": "IMPACTS",
+        "raw": "Unité",
+        "Terminal": "Terminaux",
+        "Server": "Serveurs",
+        "Network": "Réseaux",
+        "visualize": "Visualiser",
+        "lifecycle": "Cycle de vie",
+        "vm": "MV",
+        "country": "Pays",
+        "type": "Type",
+        "popup": {
+            "delete-question": "Êtes-vous sûr de vouloir supprimer le service numérique",
+            "delete-text": "Toutes les informations et les indicateurs d'impact associés seront définitivement supprimés."
+        },
+        "return": "Retourner à la liste de mes services numériques"
+    },
+    "digital-services-terminals": {
+        "new": "Nouveau terminal",
+        "devices": "Terminaux",
+        "device": "Terminal",
+        "add": "+ Ajouter un terminal",
+        "id": "#",
+        "type": "Type de terminal",
+        "country": "Pays",
+        "nb-user": "Nombre d'utilisateurs",
+        "yearly-usage": "Temps moyen passé par utilisateur et par an",
+        "hours": "heures",
+        "table-yearly-usage": "Temps d'utilisation annuel par utilisateur"
+    },
+    "digital-services-networks": {
+        "new": "Nouveau Réseau",
+        "networks": "Réseaux",
+        "network": "Réseau",
+        "add": "+ AJOUTER UN RÉSEAU",
+        "id": "#",
+        "type": "Type",
+        "yearly-go": "Quantité totale de Go échangés par an pour tous les utilisateurs",
+        "table-yearly-go": "Quantité annuelle de Go échangés"
+    },
+    "digital-services-servers": {
+        "Dedicated": "Dédié",
+        "Shared": "Partagé",
+        "Compute": "Calcul",
+        "Storage": "Stockage",
+        "server-type": {
+            "Dedicated-Compute": "Calcul Dédié",
+            "Dedicated-Storage": "Stockage Dédié",
+            "Shared-Compute": "Calcul Partagé",
+            "Shared-Storage": "Stockage Partagé"
+        },
+        "edit": "Édition Serveur",
+        "new": "Nouveau Serveur",
+        "servers": "Serveurs",
+        "server": "Serveur",
+        "add-button": "+ AJOUTER UN SERVEUR",
+        "id": "#",
+        "name": "Nom",
+        "allocation": "Allocation",
+        "type": "Type",
+        "quantity": "Quantité",
+        "vms": "MVs",
+        "quantity.vm": "Quantité (+VMs)",
+        "host": "Hôte",
+        "hosting-efficiency": "Éfficacité de l'hébergement",
+        "Good": "Bonne",
+        "Medium": "Moyenne",
+        "Bad": "Mauvaise",
+        "datacenter": "Datacenter",
+        "total.vcpu": "Total vCPU",
+        "total.disk": "Capacité totale du disque (Go)",
+        "lifespan": "Durée de vie (années)",
+        "electricity": "Consommation électrique à l'année (kwH)",
+        "usage.time": "Temps d'utilisation annuel (heure)",
+        "pue": "PUE",
+        "country": "Pays",
+        "additional": "Paramètres additionnels",
+        "add": {
+            "datacenter": "Ajouter un Datacenter",
+            "vm": "+ Ajouter une MV"
+        },
+        "vm": "Machines Virtuelles",
+        "vcpu": "vCPU",
+        "disk": "Disque",
+        "error.vcpu": "La somme des vCPUs des MVs dépasse la capacité du serveur",
+        "error.disk": "La capacité de stockage des machines virtuelles dépasse les capacités du serveur",
+        "pue.rule": "doit être >= 1"
+    },
+    "Jan": "janv",
+    "Feb": "févr",
+    "Mar": "mars",
+    "Apr": "avril",
+    "May": "mai",
+    "Jun": "juin",
+    "Jul": "juil",
+    "Aug": "août",
+    "Sep": "sept",
+    "Oct": "oct",
+    "Nov": "nov",
+    "Dec": "déc",
+    "inventories": {
+        "headerForIS": "MON SYSTEME D'INFORMATION",
+        "headerForSimulation": "MES SIMULATIONS",
+        "searchSimulator": "Recherche par nom",
+        "duplicateSimulation": "La simulation existe déjà",
+        "nameValidation": "Les caractères spéciaux ne sont pas autorisés",
+        "inventory": "Inventaire",
+        "title": "Mon Impact",
+        "add": "Nouvel Inventaire",
+        "created": "créé",
+        "details.equipment": "EQUIPEMENT",
+        "details.application": "APPLICATION",
+        "inventory-date": "La date d'inventaire",
+        "no-inventory": "Vous n'avez pas d'inventaire enregistré sur la plateforme.",
+        "evaluation_batch_status": {
+            "data_extraction": "Extraction des données pour l'évaluation",
+            "data_exposition": "Soumission des données à NumEcoEval en cours",
+            "calculation_submission": "Lancement du calcul",
+            "calculation_in_progress": "Calcul en cours"
+        },
+        "history": {
+            "loadings": "HISTORIQUE DES CHARGEMENTS",
+            "estimations": "HISTORIQUE DES ESTIMATIONS"
+        },
+        "load-files-button": "Charger",
+        "load-files-on": "Charger sur",
+        "launch-estimate": "LANCER L'ESTIMATION",
+        "update-estimate": "ESTIMER",
+        "loading-date": "Chargement du ",
+        "estimate-date": "Estimation du ",
+        "results": "Resultats",
+        "no-results": "Resultats indisponibles",
+        "dc": "Datacenters",
+        "eq-phys": "Équipements",
+        "eq-virt": "Éqts. Virtuels",
+        "app": "Applications",
+        "date": "Date\nMM/YYYY",
+        "type": {
+            "is-version": "Version du SI",
+            "simulation": "Simulation",
+            "dc": "Datacenter",
+            "eq-phys": "Équipement Physique",
+            "eq-virt": "Équipement Virtuel",
+            "app": "Application"
+        },
+        "popup": {
+            "delete-question": "Êtes-vous sûr de vouloir supprimer l'inventaire",
+            "delete-text": "Si vous confirmez, toutes les informations de l'inventaire et les indicateurs d'impacts associés seront définitivement supprimés.",
+            "estimate": "Vous êtes sur le point de commencer le calcul de l'impact environnemental de votre inventaire. Ce calcul prendra plusieurs minutes et mobilisera nos serveurs, générant ainsi un impact environnemental. Soyons économes dans son utilisation ! Confirmez-vous cette action ?"
+        },
+        "return": "Retourner à la liste de mes inventaires",
+        "details-alt.equipment": "Accéder aux indicateurs des équipements de",
+        "details-alt.application": "Accéder aux indicateurs des applications de",
+        "download-result": "Download integration result file for",
+        "creation-successful": "Inventaire créé avec succès",
+        "new-inventory-choose": "Choisissez entre une version du SI et une simulation",
+        "input-simulation-aria": "Ecrivez le nom de votre simulation"
+    },
+    "inventories-footprint": {
+        "filter": "Filtrer ma visualisation",
+        "filter-tabs": {
+            "country": "Pays",
+            "entity": "Entités",
+            "equipment": "Équipements",
+            "status": "Statuts"
+        },
+        "filter-tabs-application": {
+            "environnement": "Environnement",
+            "equipment": "Équipements",
+            "lifecycle": "Cycle de vie",
+            "domain": "Domaine"
+        },
+        "header": {
+            "manage": "Manage inventories",
+            "export": "Exporter mes resultats"
+        },
+        "round-button": {
+            "acvStep": "Cycle de vie",
+            "country": "Pays",
+            "entity": "Entités",
+            "equipment": "Équipements",
+            "status": "Statuts"
+        },
+        "global": {
+            "global-vision": "Vision Globale",
+            "info-fis-title": "Quel est la signification d'équivalent habitant ?",
+            "info-fis-text": "Si chaque être humain respectait les limites planétaires, chacun d'entre nous disposerait d'un forfait individuel qui garantirait l'équilibre soutenable du système : le concept d'équivalent humain (Hab. eq.) représente le nombre de personnes respectant ce forfait individuel soutenable. Il a été obtenu en divisant la limite de la planète pour chaque critère (réf. Rapport technique du CCR - Consommation et empreinte du consommateur : méthodologie et résultats) par le nombre d'habitants de la Terre.",
+            "datacenter": "DATA CENTER",
+            "datacenters": "Datacenters",
+            "ave-pue": "PUE Moyen",
+            "years": "années",
+            "ave-age": "Age Moyen",
+            "low-carbon": "Faible Impact",
+            "equipment": "ÉQUIPEMENT",
+            "equipments": "Équipements",
+            "tooltip": {
+                "nb-dc": "Nombre de datacenters",
+                "ave-pue": "PUE moyen pondéré par le nombre d'équipements physiques hébergés dans les datacenters",
+                "nb-eq": "Nombre d'équipements physiques",
+                "low-carbon": "% d'équipements utilisés dans un pays avec un mix énergétique faible en carbone (< 0,1 kg de CO2 éq.)",
+                "ave-age": "Temps moyen entre la date achat et la date de calcul de l’empreinte (ou la date de sortie de l’organisation) lorsque les informations sont disponibles"
+            }
+        },
+        "application": {
+            "applications.title": "APPLICATIONS",
+            "applications": "applications",
+            "graph-title-global": "Vision Multicritères des impacts en équivalent habitant",
+            "graph-global": "Graphique multicritère des impacts en équivalent habitant",
+            "graph-critere": "Graphique des impacts du critère en équivalent habitant",
+            "graph-lifecycle": "Graphique des impacts regroupés selon leur étape de cycle de vie",
+            "graph-env": "Graphique des impacts regroupés selon leur environnement",
+            "tooltip": {
+                "nb-app": "Nombre d'applications",
+                "nb-sd": "Nombre de sous-domaines",
+                "impact": "Impact moyen",
+                "app-impact": "Impact de l'application",
+                "cluster": "Cluster",
+                "equipment": "Equipement",
+                "environnement": "Environnement"
+            },
+            "graph-mc": "Vue multicritères",
+            "graph-cv": "Vue critère",
+            "application.avg": "IMPACT MOYEN",
+            "app.impact": "IMPACT DE L'APPLICATION",
+            "critere": {
+                "graph.title": "impact en équivalent habitant"
+            },
+            "application-view": "Graphique application pour",
+            "subdomain-view": "Graphique sous domaine pour",
+            "domain-view": "Graphique domain pour",
+            "selected-infos": "Impacts en équivalent habitant pour"
+        },
+        "critere": {
+            "repartition": "Répartition",
+            "particulate-matter": {
+                "title": "Émissions de particules fines",
+                "text": "Particules microscopiques en suspension dans l'air ambiant. Elles sont assez fines pour pénétrer dans les voies respiratoires et avoir un effet nocif sur la santé.",
+                "unite": "Occurence des maladies"
+            },
+            "acidification": {
+                "title": "Acidification (éq. mol. H+)",
+                "text": "L'émission de composés soufrés (principalement due aux processus de combustion dans la production d'électricité, le chauffage et les transports) génère l'acidification des océans, de l'atmosphère et des sols, qui perturbe les écosystèmes.",
+                "unite": "éq. mol H<sup>+</sup>"
+            },
+            "resource-use": {
+                "title": "Épuisement des ressources naturelles (kg éq. Sb)",
+                "text": "Ressources non vivantes naturellement présentes dans l'environnement. Parmi elles, les terres rares, dont l'extraction croissante entraîne la libération de polluants toxiques, sont en quantités limitées.",
+                "unite": "kg éq. Sb"
+            },
+            "climate-change": {
+                "title": "Changement climatique (kg éq. CO2)",
+                "text": "Phénomène climatique mondial caractérisé par une augmentation générale des températures moyennes, modifiant de manière permanente les équilibres météorologiques et les écosystèmes.",
+                "unite": "kg éq. CO<sub>2</sub>"
+            },
+            "ionising-radiation": {
+                "title": "Radiations ionisantes (éq. kBq U235)",
+                "text": "Certains rayonnements possèdent une énergie suffisante pour transformer les atomes qu'ils traversent. Même à faibles doses, elle peut entraîner des risques d'effets à long terme, comme le cancer.",
+                "unite": "éq. KBq U<sub>235</sub>"
+            }
+        },
+        "export-message": "Si vous confirmez votre demande, l'export de vos données sera mis à disposition dans les 48 heures, conformément aux modalités convenues avec votre consultant Sopra Steria. Confirmez-vous ?"
+    },
+    "error-page": {
+        "title": {
+            "service-unavailable": "Service indisponible",
+            "access-denied": "Accès refusé"
+        },
+        "text": {
+            "service-unavailable": "Nous sommes désolés pour la gêne occasionnée, mais notre service est indisponible pour le moment. Veuillez réessayer plus tard.",
+            "access-denied": "Nous sommes désolés pour la gêne occasionnée, mais vos identifiants ne vous permettent pas d'accéder au service."
+        }
+    },
+    "toast-errors": {
+        "subscriber-or-organization-not-found": {
+            "title": "Aucun souscripteur ou organisation trouvé",
+            "text": "Demandez à votre administrateur de vous rattacher à une organisation"
+        }
+    },
+    "digital-services-cards": {
+        "global-vision": {
+            "title": "Vers l'écoconception de votre service",
+            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>exemple</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>ici</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>cliquez ici</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
+        },
+        "climate-change": {
+            "title": "Pourquoi le changement climatique est-il important et comment agir ?",
+            "content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "acidification": {
+            "title": "Pourquoi l'acidification est-elle importante et comment agir ?",
+            "content": "<strong>Acidification (mol H<sup>+</sup> éq.) :</strong> ce critère mesure l'excès cumulé d'ions H+ produits par les émissions de composés soufrés (principalement dus aux processus de combustion dans la production d'électricité, le chauffage et les transports), générant l'acidification des océans, de l'atmosphère et des sols, perturbant les écosystèmes. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "resource-use": {
+            "title": "Pourquoi l'utilisation des ressources est-elle importante et comment agir ?",
+            "content": "<strong>Utilisation des ressources (kg Sb éq.) :</strong> ce critère mesure l'épuisement des ressources abiotiques par rapport à la réserve ultime. Les ressources abiotiques correspondent à toutes les matières premières qui ne proviennent pas d'organismes vivants et qui ne sont pas renouvelables. Leur épuisement prive les générations futures. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "particulate-matter": {
+            "title": "Pourquoi l'émission de particules est-elle importante et comment agir ?",
+            "content": "<strong>Émission de particules (Occurence des maladies) :</strong> ce critère mesure l'impact sur la santé humaine (occurence des maladies) causé par des particules microscopiques en suspension dans l'air ambiant (suffisamment fines pour pénétrer dans les voies respiratoires et avoir un effet nocif sur la santé) et ses précurseurs (par exemple, les oxydes de soufre et d'azote). <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "ionising-radiation": {
+            "title": "Pourquoi les radiations ionisantes sont-elles importantes et comment agir ?",
+            "content": "<strong>Radiations ionisantes (kBq U<sub>235</sub> éq.) :</strong> ce critère mesure l'efficacité de l'exposition humaine par rapport à l'Uranium 235, qui produit des ionisations dans la matière à travers laquelle il passe. Même à de faibles doses, cela peut entraîner des risques d'effets à long terme tels que le cancer. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "terminal": {
+            "title": "Analyse et levier de l'écoconception",
+            "content": "Vous regardez ici l'impact des terminaux utilisant votre service numérique.​ <br> <br> La méthode de calcul qui fait actuellement référence dans les méthodes d'ACV prend en compte le type d'équipement sollicité, sa localisation et le temps de parcours utilisateurs. ​<br> <br> Le type d'équipement sur lequel le service est consommé a une influence sur l'impact à la fabrication, à la distribution et à la fin de vie du matériel : plus l'équipement est imposant et complexe, plus ses impacts sont importants. Pour réduire l'impact, vous pouvez faire en sorte que votre service tourne sur des terminaux avec de petits écrans, sur des équipements anciens (OS sup à 5 ans, …) et peu performants; vous contribuerez alors à réduire le renouvellement du matériel…et la fracture numérique. ​<br> <br> La localisation des utilisateurs influe sur l'impact du service. Il est directement lié aux modes de production de l'énergie électrique consommée lors de la phase d'utilisation du service.  (<a href='https://ourworldindata.org/electricity-mix' target='_blank'>pour en savoir plus</a>).​ <br> <br> Enfin, vous pouvez faire en sorte d'optimiser le parcours utilisateur en éliminant les fonctionnalités qui n'apportent que peu ou pas de valeur, ce qui permettra aussi d'alléger les infrastructures nécessaires."
+        },
+        "network": {
+            "title": "Analyse et levier de l'écoconception",
+            "content": "Ce graphique représente l'impact lié aux données échangées sur le réseau.​ <br> <br> Cet impact est proportionnel à la quantité de Go échangés sur le réseau pour le mobile, et en ce qui concerne la partie fixe, l'impact influe surtout sur le dimensionnement du réseau (fibre ou cuivre)​ <br> <br> Il est généralement préférable de favoriser la sollicitation d'un réseau fixe qui est moins impactant que le réseau mobile si on ramène l'impact au nombre de Go échangés (voir <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>ici</a> et <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>ici</a>). ​<br> <br> Pour réduire cet impact, réduisez au maximum la quantité de données échangées en :​ <br> <br> - Questionnant le besoin (la présence d'une vidéo est-elle nécessaire (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>en savoir plus</a>)? Un texte peut-il remplacer une image? La HD est-elle indispensable? ​<br> <br> - Optimisant les formats (taille et compression des images) ​<br> <br> - Respectant les bonnes pratiques (ne pas lancer automatiquement les vidéos, éviter le défilement infini des pages, utiliser des polices de caractères standard, etc.) (<a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>en savoir plus</a>)"
+        },
+        "server": {
+            "title": "Analyse et levier de l'écoconception",
+            "content": "Voici la répartition des impacts liés à l'hébergement de votre service. Ce graphique vous permet de détecter les serveurs sur lesquels vous devez focaliser votre attention.​ <br> <br>Pour réduire l'impact des serveurs, vos leviers d'actions sont relatifs à :​ <br> <br>- L'équipement physique mobilisé : remplacement du serveur dédié par l'un des VM pour mutualiser les ressources, ajuster au plus près des besoins les caractéristiques du serveur telles que sa puissance de calcul, sa RAM, sa capacité de stockage, etc. ​<br> <br>- La manière dont vous les utilisez : arrêt en dehors des plages d'utilisation, autoscaling, taux de charge (même s'il n'est pas encore pris en compte dans le calcul), durée de conservation des datas, l'utilisation de caches, etc. ​<br> <br>- La manière dont il est maintenu par les équipes de l'infrastructure : durée de vie du matériel, mutualisation des ressources, efficience du datacenter, etc. ​<br> <br>Vous pouvez cliquer sur le graphique pour préciser les leviers que vous pouvez mobiliser sur vos serveurs"
+        },
+        "server-lifecycle": {
+            "title": "Analyse et levier de l'écoconception",
+            "content": "Voici la répartition de l'impact de votre serveur selon l'étape de son cycle de vie. ​<br> <br>Pour réduire l'impact à l'utilisation, vous devez réduire la quantité d'énergie consommée par votre serveur ou votre VM. Pour ce faire, vous pouvez migrer vers un datacenter plus efficient (c'est-à-dire, avec un <a href='https://fr.wikipedia.org/wiki/Coefficient_d%27utilisation_énergétique' target='_blank'>PUE</a> plus bas et situé dans un pays dont le mix électrique a moins d'impact – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>voir le tableau sur l'impact des mélanges électriques</a>).​ ​<br> <br>Pour un serveur de calcul, il s'agit de réduire la quantité de calculs effectués (en sélectionnant des <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>technologies moins gourmandes</a>, en supprimant des fonctionnalités, en optimisant les traitements… <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>voir plus</a>).​ ​<br> <br>Pour un serveur de stockage, l'objectif est principalement de réduire les opérations de lecture/écriture et d'optimiser les taux de remplissage pour limiter le nombre de serveurs requis. ​<br> <br>Pour les autres impacts, les leviers dépendent des serveurs, de leur durée de vie, de leur niveau de mutualisation, et de leur type. "
+        }
+    },
+    "acvStep": {
+        "TRANSPORTATION": "Distribution",
+        "MANUFACTURING": "Fabrication",
+        "END_OF_LIFE": "Fin de vie",
+        "USING": "Utilisation"
+    },
+    "criteria": {
+        "global-vision": {
+            "title": "Vision Globale"
+        },
+        "multi-criteria": {
+            "title": "Multicritère"
+        },
+        "climate-change": {
+            "title": "Changement climatique",
+            "name": "Climate change",
+            "unite": "kg éq. CO<sub>2</sub>"
+        },
+        "acidification": {
+            "title": "Acidification",
+            "name": "Acidification",
+            "unite": "éq. mol H<sup>+</sup>"
+        },
+        "resource-use": {
+            "title": "Épuisement ressources",
+            "name": "Resource use",
+            "unite": "kg éq. Sb"
+        },
+        "particulate-matter": {
+            "title": "Émission de particules",
+            "name": "Particulate matter",
+            "unite": "Occurence des maladies"
+        },
+        "ionising-radiation": {
+            "title": "Radiations ionisantes",
+            "name": "Ionising radiation",
+            "unite": "éq. KBq U<sub>235</sub>"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+<div class="information-card" id="information-card">
+    <div>
+        <div style="display: flex; flex-direction: row; align-items: start">
+            <div class="primary-round">
+                <img src="assets/images/icons/icon-information.svg" alt="" />
+            </div>
+            <h3
+                style="margin-left: 50px; margin-right: 10px"
+                [innerHTML]="renderHTML(title)"
+                tabIndex="0"
+            ></h3>
+        </div>
+    </div>
+    <p [innerHTML]="renderHTML(content)" tabIndex="0"></p>
+</div>

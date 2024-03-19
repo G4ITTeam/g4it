@@ -1,0 +1,46 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Security
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: user
+    description: All endpoint for an user
+
+security:
+  - Oauth2Authentication: ['inventory']
+  - BearerAuth: [ ]
+
+paths:
+  /users/me:
+    get:
+      tags:
+        - user
+      summary: Get user information
+      operationId: getUser
+      responses:
+        '200':
+          description: Return user information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    Oauth2Authentication:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize
+          scopes:
+            inventory: manage inventory
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

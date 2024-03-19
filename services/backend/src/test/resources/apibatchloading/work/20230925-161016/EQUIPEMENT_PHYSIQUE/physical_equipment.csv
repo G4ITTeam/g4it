@@ -1,0 +1,31 @@
+nomEquipementPhysique;nomOrganisation;nomEntite;sourceDonnee;fabricant;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;tailleDuDisque;tailleMemoire;typeDeProcesseur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle
+Serveur 9;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;2;Serveur 2;actif;300;FR;;2018-07-06;;5;2000;500;i9;Datacenter 9;200;400
+Serveur 10;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;Serveur 2;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;200;400
+Desktop 3;SSG;Sopra Steria Group;mockData;HP;HP ProDesk 400 G1 MT;1;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;;;;0;0
+Desktop 4;SSG;Sopra Steria Group;mockData;HP;HP ProDesk 400 G1 MT;1;Desktop;actif;215;FR;Kylian Mbappé;2015-04-01;;;;;;;0;0
+Laptop 4;SSG;Sopra Steria Group;mockData;HP;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Raymond Domenech;2015-04-01;;;;;;;10;350
+Laptop 5;SSG;Sopra Steria Group;mockData;HP;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;2015-04-01;;;;;;;120;100
+Laptop 6;SSG;Sopra Steria Group;mockData;HP;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Didier Deschamp;2017-06-26;2019-09-30;;;;;;260;10
+Ecran 2;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 11;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400
+Ecran 1;SSG;Sopra Steria Group;mockData;HP;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;;;;20
+Serveur 12;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;2000;500;i7;Datacenter 9;300;400
+Serveur 7;SSG;Sopra Steria Group;mockData;dell;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;2000;500;i7;Datacenter 5;300;400

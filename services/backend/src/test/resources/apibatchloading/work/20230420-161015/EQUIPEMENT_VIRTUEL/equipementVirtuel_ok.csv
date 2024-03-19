@@ -1,0 +1,13 @@
+nomEquipementVirtuel;nomEquipementPhysique;nomSourceDonneeEquipementPhysique;cleRepartition;vCPU;typeEqv;capaciteStockage;nomEntite;cluster;consoElecAn;nomSourceDonnee
+VM 48;Serveur 9;MockData;3.3;1;calcul;3;SSG;cluster1;1;Mock
+VM 49;Serveur 10;MockData;3.3;2;calcul;3;SSG;cluster1;1;Mock
+VM 50;Serveur 10;MockData;3.3;3;calcul;3;SSG;cluster1;1;Mock
+VM 51;Serveur 11;MockData;3.3;1.3;calcul;3;SSGé;cluster1;1;Mock
+VM 52;Serveur 11;MockData;3.3;1.3;calcul;3;SSGé;cluster1;1;Mock
+VM 53;Serveur 11;MockData;3.3;24.340;calcul;3;SSG;cluster1;1;Mock
+VM 54;Serveur 11;MockData;3.3;1;calcul;3;SSG;cluster1;1;Mock
+VMà;Serveur 7;MockData;3.3;1;calcul;3;SSG;cluster1;1;Mock
+VM 55;Serveur 7;MockData;3.3;1;calcul;3;SSGé;cluster1;1;Mock
+VM 56;Serveur 11;MockData;3.3;1.3;calcul;3;SSGé;cluster1;1;Mock
+VM 57;Serveur 7;MockData;3.3;5;calcul;;SSG;cluster1;1;Mock
+VM 58;Serveur 7;MockData;;5;calcul;3;SSG;cluster1;1;Mock

@@ -1,0 +1,1484 @@
+openapi: 3.0.1
+info:
+  title: API des référentiels de NumEcoEval
+  description: |
+    Endpoints permettant de manipuler les référentiels de NumEcoEval.
+    Les endpoints CRUD sont générés via Spring DataRest.
+
+    Les endpoints d'export CSV permettent d'exporter l'intégralité d'un référentiel
+    sous forme de fichier CSV ré-importable via les endpoints d'imports.
+
+    Les endpoints d'import fonctionnent en annule & remplace et supprimeront l'intégralité
+    du référentiel et utiliseront le contenu du CSV pour peupler le référentiel.
+
+    Les endpoints internes sont utilisés par les différents modules de NumEcoEval.
+  license:
+    name: Apache 2.0
+    url: https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/api-referentiel/-/blob/main/LICENSE.txt
+  version: v0.0.1
+externalDocs:
+  description: NumEcoEval Documentation
+  url: https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/docs
+paths:
+  /referentiel/typeEquipement/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les impacts des types d'équipements sous format csv
+      operationId: exportTypeEquipementCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel Type Equipement par csv : annule et remplace.'
+      operationId: importTypeEquipementCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/mixelecs/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les impacts des mix électrique sous format csv
+      operationId: exportImpactEquipementCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel ImpactEquipement par csv : annule et remplace.'
+      operationId: importImpactEquipementCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactreseaux/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les impacts réseaux sous format csv
+      operationId: exportImpactReseauxCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel ImpactReseau par csv : annule et remplace.'
+      operationId: importImpactReseauxCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactequipements/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les impacts d'équipements sous format csv
+      operationId: exportImpactEquipementCSV_1
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel ImpactEquipement par csv : annule et remplace.'
+      description: 'Alimentation du référentiel ImpactEquipement par csv : annule et remplace.'
+      operationId: importImpactEquipementCSV_1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactMessagerie/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les impacts de messagerie sous format csv
+      operationId: exportImpactMessagerieCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel Impact Messagerie par csv : annule et remplace.'
+      description: 'Alimentation du référentiel Impact Messagerie par csv : annule et remplace.'
+      operationId: importImpactMessagerieCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/hypotheses/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les hypothèses sous format csv
+      operationId: exportHypothesesCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation des Hypothèses par csv : annule et remplace.'
+      description: 'Alimentation des Hypothèses par csv : annule et remplace.'
+      operationId: importHypothesesCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/etapes/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les etapes sous format csv
+      operationId: exportEtapesCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation Etape ACV par csv : annule et remplace.'
+      description: 'Alimentation Etape ACV par csv : annule et remplace.'
+      operationId: importEtapesCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/criteres/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les criteres sous format csv
+      operationId: exportCriteresCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: Alimentation des Criteres par csv  (annule et remplace).
+      description: Alimentation des Criteres par csv  (annule et remplace).
+      operationId: importCriteresCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/correspondanceRefEquipement/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les correspondances de RefEquipement sous format csv
+      operationId: exportCorrespondanceRefEquipementCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel des correspondances de RefEquipement par csv : annule et remplace.'
+      operationId: importCorrespondanceRefEquipementCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /version:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération de la version courante
+      description: |
+        Endpoint interne utilisé pour connaître la version installée
+      operationId: getVersion
+      responses:
+        '200':
+          description: Version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/typesEquipement:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération de tous les types d'équipement
+      description: |
+        Endpoint interne utilisé à la réception de données d'entrées par le module api-expositiondonneesentrees de NumEcoEval.
+        Renvoie l'intégralité des types d'équipements utilisables par NumEcoEval.
+
+        Les types d'équipement servent notamment à alimenter la durée de vie par défaut des équipements
+        reçues.
+      operationId: getAllTypeEquipement
+      responses:
+        '200':
+          description: Types Equipement
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeEquipementDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Types Equipement  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/typesEquipement/{type}:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'un type d'équipement via son type
+      description: |
+        V2 - Endpoint interne utilisé à l'enrichissement données pour un équipement physique.
+      operationId: getTypeEquipement
+      parameters:
+        - name: type
+          in: path
+          description: type recherché
+          required: true
+          schema:
+            type: string
+            description: type recherché
+      responses:
+        '200':
+          description: Types Equipement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TypeEquipementDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Types Equipement non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/mixelecs:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'un Mix électrique
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Récupération d'un mix électrique en fonction de paramètres:
+        <ul>
+            <li>Le pays de l'équipement: pays</li>
+            <li>Le critère d'impact: critere</li>
+        </ul>
+        .
+      operationId: getMixElectrique
+      parameters:
+        - name: pays
+          in: query
+          description: Pays recherché
+          required: true
+          schema:
+            type: string
+            description: Pays recherché
+        - name: critere
+          in: query
+          description: Nom du critère d'impact écologique
+          required: true
+          schema:
+            type: string
+            description: Nom du critère d'impact écologique
+      responses:
+        '200':
+          description: mix Electrique trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MixElectriqueDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: mix Electrique  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/mixelecs/{pays}:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération de Mix électriques par pays
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Récupération de mix électriques en fonction de paramètres:
+        <ul>
+            <li>Le pays de l'équipement: pays</li>
+        </ul>
+        Cas spécifique avec pays = _all pour retourner tous les Mix electriques.
+      operationId: getMixElectriqueParPays
+      parameters:
+        - name: pays
+          in: path
+          description: Pays recherché
+          required: true
+          schema:
+            type: string
+            description: Pays recherché
+      responses:
+        '200':
+          description: mix Electrique trouvé
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MixElectriqueDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: mix Electrique  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactsMessagerie:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération des impacts de messagerie
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Renvoie l'intégralité des impacts de messagerie.
+      operationId: getAllImpactMessagerie
+      responses:
+        '200':
+          description: ' Référentiel Impact Messagerie'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ImpactMessagerieDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: ' Référentiel Impact Messagerie  non trouvé'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactsMessagerie/{critere}:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'un impact de messagerie
+      description: |
+        Endpoint interne utilisé dans l'enrichissement des données pour un calcul dans le module api-enrichissement de NumEcoEval.
+        Renvoie un élément du référentiel des impacts de messagerie.
+      operationId: getImpactMessagerie
+      parameters:
+        - name: critere
+          in: path
+          description: Critère recherché
+          required: true
+          schema:
+            type: string
+            description: Critère recherché
+      responses:
+        '200':
+          description: ' Référentiel Impact Messagerie'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImpactMessagerieDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: ' Référentiel Impact Messagerie  non trouvé'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactreseaux:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'un Impact Réseau
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Récupération d'un impact écologique vis à vis de l'usage du réseau en fonction de 3 paramètres:
+        <ul>
+            <li>La référence d'impact réseau: refReseau</li>
+            <li>Le critère d'impact: critere</li>
+            <li>L'étape ACV: etapeACV</li>
+        </ul>
+        .
+      operationId: getImpactReseau
+      parameters:
+        - name: refReseau
+          in: query
+          description: Référence de réseau recherché
+          required: true
+          schema:
+            type: string
+            description: Référence de réseau recherché
+        - name: critere
+          in: query
+          description: Nom du critère d'impact écologique
+          required: true
+          schema:
+            type: string
+            description: Nom du critère d'impact écologique
+        - name: etapeacv
+          in: query
+          description: Code de l'étape ACV
+          required: true
+          schema:
+            type: string
+            description: Code de l'étape ACV
+      responses:
+        '200':
+          description: impact reseau trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImpactReseauDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Impact Reseau  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/impactequipements:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'un Impact Equipement
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Récupération d'un impact équipement en fonction de 3 paramètres:
+        <ul>
+            <li>La référence d'équipement: refEquipement</li>
+            <li>Le critère d'impact: critere</li>
+            <li>L'étape ACV: etapeACV</li>
+        </ul>
+        .
+      operationId: getImpactEquipement
+      parameters:
+        - name: refEquipement
+          in: query
+          description: Référence de l'équipement recherché
+          required: true
+          schema:
+            type: string
+            description: Référence de l'équipement recherché
+        - name: critere
+          in: query
+          description: Nom du critère d'impact écologique
+          required: true
+          schema:
+            type: string
+            description: Nom du critère d'impact écologique
+        - name: etapeacv
+          in: query
+          description: Code de l'étape ACV
+          required: true
+          schema:
+            type: string
+            description: Code de l'étape ACV
+      responses:
+        '200':
+          description: impact equipement trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImpactEquipementDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Impact Equipement  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/hypothese:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'une hypothèse par son code
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Renvoie une hypothèse en fonction de sa clé.
+      operationId: getHypothese
+      parameters:
+        - name: cle
+          in: query
+          description: Clé de l'hypothèse
+          required: true
+          schema:
+            type: string
+            description: Clé de l'hypothèse
+      responses:
+        '200':
+          description: Hypothèse trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HypotheseDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Hypothèse non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/etapes:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération de toutes les étapes ACV
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Renvoie l'intégralité des étapes du cycle de vie (étapes ACV) des équipements.
+      operationId: getAllEtapes
+      responses:
+        '200':
+          description: etape acv non trouvé
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EtapeDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Impact Reseau  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/criteres:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération de tous les critères d'impacts écologiques
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+      operationId: getAllCriteres
+      responses:
+        '200':
+          description: impact reseau trouvé
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CritereDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Impact Reseau  non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/correspondanceRefEquipement:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'une correspondance de refEquipement à partir d'un modèle d'équipement.
+      description: |
+        Endpoint interne utilisé dans l'import de données d'entrées dans NumEcoEval
+        pour déterminer la référence d'équipement à utiliser dans les référentiels'.
+      operationId: getCorrespondanceRefEquipement
+      parameters:
+        - name: modele
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Correspondance trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrespondanceRefEquipementDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Correspondance non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+components:
+  schemas:
+    ErrorResponseDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Code de l'erreur
+          format: int32
+        message:
+          type: string
+          description: Message de l'erreur
+        status:
+          type: string
+          description: Statut HTTP de la réponse
+          enum:
+            - 100 CONTINUE
+            - 101 SWITCHING_PROTOCOLS
+            - 102 PROCESSING
+            - 103 EARLY_HINTS
+            - 103 CHECKPOINT
+            - 200 OK
+            - 201 CREATED
+            - 202 ACCEPTED
+            - 203 NON_AUTHORITATIVE_INFORMATION
+            - 204 NO_CONTENT
+            - 205 RESET_CONTENT
+            - 206 PARTIAL_CONTENT
+            - 207 MULTI_STATUS
+            - 208 ALREADY_REPORTED
+            - 226 IM_USED
+            - 300 MULTIPLE_CHOICES
+            - 301 MOVED_PERMANENTLY
+            - 302 FOUND
+            - 302 MOVED_TEMPORARILY
+            - 303 SEE_OTHER
+            - 304 NOT_MODIFIED
+            - 305 USE_PROXY
+            - 307 TEMPORARY_REDIRECT
+            - 308 PERMANENT_REDIRECT
+            - 400 BAD_REQUEST
+            - 401 UNAUTHORIZED
+            - 402 PAYMENT_REQUIRED
+            - 403 FORBIDDEN
+            - 404 NOT_FOUND
+            - 405 METHOD_NOT_ALLOWED
+            - 406 NOT_ACCEPTABLE
+            - 407 PROXY_AUTHENTICATION_REQUIRED
+            - 408 REQUEST_TIMEOUT
+            - 409 CONFLICT
+            - 410 GONE
+            - 411 LENGTH_REQUIRED
+            - 412 PRECONDITION_FAILED
+            - 413 PAYLOAD_TOO_LARGE
+            - 413 REQUEST_ENTITY_TOO_LARGE
+            - 414 URI_TOO_LONG
+            - 414 REQUEST_URI_TOO_LONG
+            - 415 UNSUPPORTED_MEDIA_TYPE
+            - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+            - 417 EXPECTATION_FAILED
+            - 418 I_AM_A_TEAPOT
+            - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+            - 420 METHOD_FAILURE
+            - 421 DESTINATION_LOCKED
+            - 422 UNPROCESSABLE_ENTITY
+            - 423 LOCKED
+            - 424 FAILED_DEPENDENCY
+            - 425 TOO_EARLY
+            - 426 UPGRADE_REQUIRED
+            - 428 PRECONDITION_REQUIRED
+            - 429 TOO_MANY_REQUESTS
+            - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+            - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+            - 500 INTERNAL_SERVER_ERROR
+            - 501 NOT_IMPLEMENTED
+            - 502 BAD_GATEWAY
+            - 503 SERVICE_UNAVAILABLE
+            - 504 GATEWAY_TIMEOUT
+            - 505 HTTP_VERSION_NOT_SUPPORTED
+            - 506 VARIANT_ALSO_NEGOTIATES
+            - 507 INSUFFICIENT_STORAGE
+            - 508 LOOP_DETECTED
+            - 509 BANDWIDTH_LIMIT_EXCEEDED
+            - 510 NOT_EXTENDED
+            - 511 NETWORK_AUTHENTICATION_REQUIRED
+        timestamp:
+          type: string
+          description: Date & Heure de l'erreur
+          format: date-time
+      description: Objet standard pour les réponses en cas d'erreur d'API
+    RapportImportDTO:
+      type: object
+      properties:
+        fichier:
+          type: string
+        erreurs:
+          type: array
+          items:
+            type: string
+        nbrLignesImportees:
+          type: integer
+          format: int64
+    VersionDTO:
+      type: object
+      properties:
+        version:
+          type: string
+          description: La version
+      description: Version applicative
+    TypeEquipementDTO:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type de l'équipment physique, clé du référentiel
+        serveur:
+          type: boolean
+          description: Flag indiquant si l'équipement physique est un serveur
+        commentaire:
+          type: string
+          description: Commentaire de l'entrée dans le référentiel
+        dureeVieDefaut:
+          type: number
+          description: Durée de vie par défaut de ce type d'équipement physique
+          format: double
+        source:
+          type: string
+          description: Source de l'information du référentiel
+        refEquipementParDefaut:
+          type: string
+          description: Référence de l'équipement par défaut, permet des correspondances en cas d'absence de correspondance direct
+      description: Référentiel des types d'équipements physiques utilisables dans le système. La clé du référentiel est le champ type.
+    MixElectriqueDTO:
+      type: object
+      properties:
+        pays:
+          type: string
+          description: Pays concerné, fait partie de la clé du référentiel
+        raccourcisAnglais:
+          type: string
+          description: Code du pays concerné en anglais
+        critere:
+          type: string
+          description: Critère d'impact écologique concerné, fait partie de la clé du référentiel
+        valeur:
+          type: number
+          description: Valeur du référentiel
+          format: double
+        source:
+          type: string
+          description: Source de la valeur du référentiel
+      description: Référentiel des mix électrique couvrant l'usage de l'électricité vis à vis du pays d'utilisation de l'équipement. La clé du référentiel est composé des champs pays et critere.
+    ImpactMessagerieDTO:
+      type: object
+      properties:
+        constanteCoefficientDirecteur:
+          type: number
+          description: Coefficient directeur de la fonction affine
+          format: double
+        constanteOrdonneeOrigine:
+          type: number
+          description: Constante de la fonction affine
+          format: double
+        critere:
+          type: string
+          description: Critère de l'impact écologique d'une messagerie, clé du référentiel
+        source:
+          type: string
+          description: Source de l'impact écologique d'une messagerie
+      description: Référentiel de l'impact écologique d'une messagerie. La clé est le champ critere. Chaque entrée représente les composants d'une fonction affine (Ax+b).
+    ImpactReseauDTO:
+      type: object
+      properties:
+        refReseau:
+          type: string
+          description: Référence de l'usage du réseau, fait partie de la clé du référentiel
+        etapeACV:
+          type: string
+          description: Étape ACV concerné pour l'usage du réseau, fait partie de la clé du référentiel
+        critere:
+          type: string
+          description: Critère d'impact écologique concerné pour l'usage du réseau, fait partie de la clé du référentiel
+        unite:
+          type: string
+          description: Unité de l'impact écologique concerné pour l'usage du réseau. Champ Déprécié
+          deprecated: true
+        source:
+          type: string
+          description: Source de l'impact écologique
+        valeur:
+          type: number
+          description: Valeur de l'impact écologique
+          format: double
+        consoElecMoyenne:
+          type: number
+          description: Consommation électrique moyenne de l'impact écologique
+          format: double
+      description: Référentiel de l'impact écologique d'un équipement physique vis à vis de l'usage du réseau dans les référentiels. La clé est composé des champs refReseau, etapeACV et critere.
+    ImpactEquipementDTO:
+      type: object
+      properties:
+        refEquipement:
+          type: string
+          description: Référence de l'équipement physique, fait partie de la clé dans le référentiel
+        etape:
+          type: string
+          description: Étape ACV concernée, fait partie de la clé dans le référentiel
+        critere:
+          type: string
+          description: Critère d'impact écologique concerné, fait partie de la clé dans le référentiel
+        source:
+          type: string
+          description: Source de l'impact écologique pour cette équipement physique
+        type:
+          type: string
+          description: Type de l'équipement physique concerné
+        valeur:
+          type: number
+          description: Valeur de l'impact écologique
+          format: double
+        consoElecMoyenne:
+          type: number
+          description: Consommation électrique moyenne
+          format: double
+        description:
+          type: string
+          description: Description de l'entrée dans le référentiel
+      description: Référentiel de l'impact écologique d'un équipement physique dans les référentiels. La clé est composé des champs refEquipement, etape et critere.
+    HypotheseDTO:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code de l'hypothèse, clé du référentiel
+        valeur:
+          type: string
+          description: Valeur de l'hypothèse
+        source:
+          type: string
+          description: Source de l'hypothèse
+      description: Référentiel des hypothèses utilisées pour les calculs
+    EtapeDTO:
+      type: object
+      properties:
+        code:
+          pattern: '[A-Z]+'
+          type: string
+          description: Code de l'étape. Ne contient que des majuscules, clé du référentiel
+        libelle:
+          type: string
+          description: Libellé de l'étape
+      description: Référentiel d'étape dans le cycle de vie d'un équipement (Etape ACV)
+    CritereDTO:
+      type: object
+      properties:
+        nomCritere:
+          type: string
+          description: Nom du critère d'impact écologique, clé du référentiel
+        unite:
+          type: string
+          description: Unité du critère d'impact écologique
+        description:
+          type: string
+          description: Description du critère d'impact écologique
+      description: Référentiel de critère d'impact écologique
+    CorrespondanceRefEquipementDTO:
+      type: object
+      properties:
+        modeleEquipementSource:
+          type: string
+          description: Modèle de l'équipement, clé du référentiel
+        refEquipementCible:
+          type: string
+          description: Référence d'équipement correspondant au modèle de l'équipement
+      description: Référentiel de correspondance entre un modèle d'équipement physique et une référence d'équipement dans les référentiels.

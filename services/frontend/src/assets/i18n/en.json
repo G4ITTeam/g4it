@@ -1,0 +1,429 @@
+{
+    "common": {
+        "yes": "Yes",
+        "no": "No",
+        "powered-by": "Powered By ",
+        "powered-by-sopra": "Powered By Sopra Steria",
+        "open-time": "4am - 7pm UTC",
+        "lang": "Language",
+        "open-hours": "Service opening hours",
+        "french": "French",
+        "french-button": "Select French language",
+        "english": "English",
+        "english-button": "Select English language",
+        "cancel": "Cancel",
+        "edition": "Edition",
+        "edit": "Edit",
+        "delete": "Delete",
+        "create": "Create",
+        "save": "Save",
+        "upload": "Upload",
+        "next": "Next",
+        "previous": "Previous",
+        "mandatory": "is mandatory",
+        "calculate": "CALCULATE",
+        "duplicate": "DUPLICATE",
+        "add": "Add",
+        "peopleeq": "People eq.",
+        "peopleeq-min": "people. eq.",
+        "no-data": "No results available",
+        "loading": "Loading in progress",
+        "choose-csv": "Choose a .csv file",
+        "week": {
+            "monday": "Monday",
+            "tuesday": "Tuesday",
+            "wednesday": "Wednesday",
+            "thursday": "Thursday",
+            "friday": "Friday",
+            "saturday": "Saturday",
+            "sunday": "Sunday"
+        },
+        "selected": "Selected",
+        "not-selected": "Not selected",
+        "parameters": "Parameters",
+        "homepage": "Homepage",
+        "access-filters": "Access filters for your footprint data",
+        "refresh": "Refresh",
+        "details-alt": "Access footprint data of",
+        "all": "All",
+        "empty": "Empty",
+        "organization-management": "Organization Management",
+        "list-of": "List of ",
+        "organizations": "organizations ",
+        "change-organization": "Change organization to ",
+        "accessibility": {
+            "fold": "See more for inventory of",
+            "unfold": "Hide details for inventory of",
+            "delete": "Delete inventory of",
+            "app": "View applications' detail for inventory of",
+            "updateInProgress": "Estimation in progress, {{value}}% already achieved",
+            "eq": "View equipments' detail for inventory of",
+            "refresh": "Refresh inventory informations of"
+        },
+        "versions": "Versions",
+        "updateInProgress": "update in progress"
+    },
+    "digital-services": {
+        "title": "My Digital Services",
+        "add": "Evaluate New Service",
+        "empty-digital-services": "You do not have any digital service.",
+        "impacts": "IMPACTS",
+        "raw": "Raw value",
+        "peopleeq": "People eq.",
+        "Terminal": "Terminals",
+        "Server": "Servers",
+        "Network": "Networks",
+        "visualize": "Visualize",
+        "lifecycle": "Lifecycle",
+        "vm": "Vm",
+        "country": "Country",
+        "type": "Type",
+        "popup": {
+            "delete-question": "Are you sure you want to delete the digital service",
+            "delete-text": "All information and associated footprint indicators will be definitely deleted."
+        },
+        "return": "Return to my digital services list"
+    },
+    "digital-services-terminals": {
+        "new": "New Device",
+        "devices": "Devices",
+        "device": "Device",
+        "add": "+ ADD DEVICE",
+        "id": "#",
+        "type": "Type of device",
+        "country": "Country",
+        "nb-user": "Number of users",
+        "yearly-usage": "Average time spend per user per years",
+        "hours": "hours",
+        "table-yearly-usage": "Yearly usage time per user"
+    },
+    "digital-services-networks": {
+        "new": "New Network",
+        "networks": "Networks",
+        "network": "Network",
+        "add": "+ ADD NETWORK",
+        "id": "#",
+        "type": "Type",
+        "yearly-go": "Total quantity of GB exchanged by years for all users",
+        "table-yearly-go": "Yearly quantity of GB exchanged"
+    },
+    "digital-services-servers": {
+        "Dedicated": "Dedicated",
+        "Shared": "Shared",
+        "Compute": "Compute",
+        "Storage": "Storage",
+        "server-type": {
+            "Dedicated-Compute": "Dedicated Compute",
+            "Dedicated-Storage": "Dedicated Storage",
+            "Shared-Compute": "Shared Compute",
+            "Shared-Storage": "Shared Storage"
+        },
+        "edit": "Edit Server",
+        "new": "New Server",
+        "servers": "Servers",
+        "server": "Server",
+        "add-button": "+ ADD SERVER",
+        "id": "#",
+        "name": "Name",
+        "allocation": "Allocation",
+        "type": "Type",
+        "quantity": "Quantity",
+        "vms": "VMs",
+        "quantity.vm": "Quantity (+VMs)",
+        "host": "Host",
+        "hosting-efficiency": "Hosting Efficiency",
+        "Good": "Good",
+        "Medium": "Medium",
+        "Bad": "Bad",
+        "datacenter": "Datacenter",
+        "total.vcpu": "Total vCPU",
+        "total.disk": "Total Disk (GB)",
+        "lifespan": "Lifespan (Year)",
+        "electricity": "Annual electricity consumption (kwH)",
+        "usage.time": "Annual Operating time (hour)",
+        "pue": "PUE",
+        "country": "country",
+        "additional": "Additional Parameters",
+        "add": {
+            "datacenter": "Add Datacenter",
+            "vm": "Add VM"
+        },
+        "vm": "Virtual Machines",
+        "vcpu": "vCPU",
+        "disk": "Disk",
+        "error.vcpu": "The sum of the vCPUs of the VMs exceeds the capacities of the server",
+        "error.disk": "The storage capacity of the VMs exceeds the capacities of the server",
+        "pue.rule": "must be >= 1"
+    },
+    "Jan": "Jan",
+    "Feb": "Feb",
+    "Mar": "Mar",
+    "Apr": "Apr",
+    "May": "May",
+    "Jun": "Jun",
+    "Jul": "Jul",
+    "Aug": "Aug",
+    "Sep": "Sep",
+    "Oct": "Oct",
+    "Nov": "Nov",
+    "Dec": "Dec",
+    "inventories": {
+        "headerForIS": "MY INFORMATION SYSTEM",
+        "headerForSimulation": "MY SIMULATIONS",
+        "searchSimulator": "Search by simulation name",
+        "duplicateSimulation": "Simulation already exist",
+        "nameValidation": "Special characters are not allowed",
+        "inventory": "Inventory",
+        "title": "My Footprint",
+        "add": "New inventory",
+        "created": "created",
+        "details.equipment": "EQUIPMENT",
+        "details.application": "APPLICATION",
+        "inventory-date": "Inventory",
+        "no-inventory": "You have no inventories registered on the platform",
+        "evaluation_batch_status": {
+            "data_extraction": "Data extraction to be submitted",
+            "data_exposition": "Submission to NumEcoEval in progress",
+            "calculation_submission": "Starting calulation",
+            "calculation_in_progress": "Calculation in progress"
+        },
+        "history": {
+            "loadings": "LOADING HISTORY",
+            "estimations": "ESTIMATE HISTORY"
+        },
+        "load-files-button": "Load files",
+        "load-files-on": "Load files on",
+        "launch-estimate": "LAUNCH ESTIMATE",
+        "update-estimate": "UPDATE ESTIMATE",
+        "loading-date": "Loading of ",
+        "estimate-date": "Estimate of ",
+        "results": "Results",
+        "no-results": "Results not available",
+        "dc": "Datacenter",
+        "eq-phys": "Equipment",
+        "eq-virt": "Virtual Eq.",
+        "app": "Application",
+        "date": "Date\nMM/YYYY",
+        "type": {
+            "is-version": "IS version",
+            "simulation": "Simulation",
+            "dc": "Datacenter",
+            "eq-phys": "Physical Equipment",
+            "eq-virt": "Virtual Equipment",
+            "app": "Application"
+        },
+        "popup": {
+            "delete-question": "Are you sure you want to delete the inventory",
+            "delete-text": "If you confirm, all inventory information and associated footprint indicators will be definitely deleted.",
+            "estimate": "You're about to start calculating the environmental footprint of your inventory. This calculation will take several minutes and will mobilize our servers, thus generating an environmental impact. So, let's be frugal in its use! Do you confirm this action?"
+        },
+        "return": "Return to my inventories list",
+        "details-alt.equipment": "Access equipment footprint data of",
+        "details-alt.application": "Access application footprint data of",
+        "download-result": "Download integration result file for",
+        "creation-successful": "Inventory created successfully",
+        "new-inventory-choose": "Choose between IS version and simulation",
+        "input-simulation-aria": "Type the name of your simulation"
+    },
+    "inventories-footprint": {
+        "filter": "Filter your visualisation",
+        "filter-tabs": {
+            "country": "Country",
+            "entity": "Entity",
+            "equipment": "Equipment",
+            "status": "Status"
+        },
+        "filter-tabs-application": {
+            "environnement": "Environment",
+            "equipment": "Equipment",
+            "lifecycle": "Lifecycle",
+            "domain": "Domain"
+        },
+        "header": {
+            "manage": "Manage inventories",
+            "export": "Export my results"
+        },
+        "round-button": {
+            "acvStep": "Lifecycle",
+            "country": "Country",
+            "entity": "Entity",
+            "equipment": "Equipment",
+            "status": "Status"
+        },
+        "global": {
+            "global-vision": "Global Vision",
+            "info-fis-title": "What is the meaning of people eq. ?",
+            "info-fis-text": "If every human being respected planetary limits, each of us would have an individual package that would guarantee the sustainable balance of the system: The people equivalent (Eq. People) concept represent the number of people respecting this sustainable individual package. It was performed by dividing planet boundary from each criteria (ref. JRC Technical report - Consumption and Consumer Footprint: methodology and results) by the number of people on Earth.",
+            "datacenter": "DATA CENTER",
+            "datacenters": "Datacenters",
+            "ave-pue": "Ave. PUE",
+            "years": "years",
+            "ave-age": "Ave. Age",
+            "low-carbon": "low carbon",
+            "equipment": "EQUIPMENT",
+            "equipments": "Equipments",
+            "tooltip": {
+                "nb-dc": "Number of datacenters",
+                "ave-pue": "Average PUE weighted by the number of physical equipments hosted in the datacenters",
+                "nb-eq": "Number of equipments",
+                "low-carbon": "% of equipment used in a country with low carbon electricity mix ( < 0,1 kg Co2 eq.)",
+                "ave-age": "Time between purchase and footprint measurement date (or exit from the organization) when information are available."
+            }
+        },
+        "application": {
+            "applications.title": "APPLICATIONS",
+            "applications": "applications",
+            "graph-title-global": "Multicriteria Vision of impacts in people equivalent",
+            "graph-global": "Multicriteria Graph of impacts in people eq.",
+            "graph-critere": "Criteria Graph of impacts in people eq.",
+            "graph-lifecycle": "Lifecycle graph of impacts",
+            "graph-env": "Environment graph of impacts",
+            "tooltip": {
+                "nb-app": "Number of applications",
+                "nb-sd": "Number of subdomains",
+                "impact": "Average impact",
+                "app-impact": "Application impact",
+                "cluster": "Cluster",
+                "equipment": "Equipment",
+                "environnement": "Environment"
+            },
+            "graph-mc": "Multicriteria view",
+            "graph-cv": "Criteria view",
+            "application.avg": "AVERAGE IMPACT",
+            "app.impact": "APPLICATION IMPACT",
+            "critere": {
+                "graph.title": "impacts in people equivalent"
+            },
+            "application-view": "Application graph for",
+            "subdomain-view": "Subdomain graph for",
+            "domain-view": "Domain graph for",
+            "selected-infos": "Impacts in people equivalent for"
+        },
+        "critere": {
+            "repartition": "Repartition",
+            "particulate-matter": {
+                "title": "Fine particle emissions",
+                "text": "Microscopic particles suspended in the ambient air. They are fine enough to enter the respiratory tract causing a harmful effect on health. ",
+                "unite": "Disease incidence"
+            },
+            "acidification": {
+                "title": "Acidification (mol eq. H+)",
+                "text": "Emission of sulfur compounds (mainly due to combustion processes in the production of electricity, heating and transport) generates a global acidification of the oceans, atmosphere and soils which disturbs the ecosystems. ",
+                "unite": "mol H<sup>+</sup> eq."
+            },
+            "resource-use": {
+                "title": "Depletion of natural resources (kg eq. Sb)",
+                "text": "Non-living resources naturally present in the environment. Among them, the rare earths, the increasing extraction of which causes the release of toxic pollutants, are in limited quantities.",
+                "unite": "kg Sb eq."
+            },
+            "climate-change": {
+                "title": "Climate change (kg eq. CO2)",
+                "text": "Global phenomenon of climate change characterized by a general increase in average temperatures, permanently modifying meteorological balances and ecosystems ",
+                "unite": "kg CO<sub>2</sub> eq."
+            },
+            "ionising-radiation": {
+                "title": "Ionizing radiation (eq. kBq U235)",
+                "text": "Radiation that produces ionizations in the material it passes through. Even in low doses, it can lead to risks of long-term effects like cancer.",
+                "unite": "KBq U<sub>235</sub> eq."
+            }
+        },
+        "export-message": "If you confirm your request, the export of your data will be made available within 48 hours, according to the terms you have agreed with your Sopra Steria consultant. Do you confirm?"
+    },
+    "error-page": {
+        "title": {
+            "service-unavailable": "Service unavailable",
+            "access-denied": "Access denied"
+        },
+        "text": {
+            "service-unavailable": "We are sorry for the inconvenience but our service is unavailable for the moment. Please try again later.",
+            "access-denied": "We are sorry for the inconvenience but your credentials do not allow access to the service."
+        }
+    },
+    "toast-errors": {
+        "subscriber-or-organization-not-found": {
+            "title": "No souscripteur or organisation found",
+            "text": "Please ask your administrator to attach you to an organization"
+        }
+    },
+    "digital-services-cards": {
+        "global-vision": {
+            "title": "Towards the eco-design of your service",
+            "content": "This graph represents the various environmental impacts attributed to your digital service for 1 year of operation. It takes into account the entire lifecycle of the equipments that enables your service to operate (from manufacturing to end of life) for all the criteria listed on the left side of the screen. <br> <br> ​It helps you understand where to start your analysis in order to effectively reduce the impact of your service. But beware: by seeking to reduce the impact of one criterion, you run the risk of transferring the impact to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>example</a>). One way of avoiding this pitfall is to demonstrate sobriety at all levels of your service. <br> <h3>​ A scale suited to multi-criteria analysis: the people equivalent. </h3>​ All graphs are expressed in 'people Eq': to understand this unit, imagine defining a fixed amount for each resident of the planet, corresponding to the planetary limits that must not be exceeded individually to guarantee the overall balance of the system. This theoretical fixed amount is obtained by dividing the maximum quantity of negative externalities allowed by the Earth system (as defined <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>here</a>) by the number of people. <br> <br> ​This unit makes it possible to compare the criteria and target your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>definition</a>) on what really matters. <br> <br>​ To find out more about what's at stake: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>click here</a>. <br> <br>​ To carry out an audit of your application, the Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a great starting point."
+        },
+        "climate-change": {
+            "title": "Why Climate Change matters and how engage action ?",
+            "content": "<strong>Climate Change (kg CO<sub>2</sub> eq.):</strong> this criteria measures radiative forcing as global warming potential (GWP100) that increase in the average global temperature resulting from greenhouse gas emission. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "acidification": {
+            "title": "Why Acidification matters and how engage action ?",
+            "content": "<strong>Acidification (mol H<sup>+</sup> eq.):</strong> this criteria measures accumulated exceedance of H+ ions produce by emission of sulfur compounds (mainly due to combustion processes in the production of electricity, heating and transport) generates a global acidification of the oceans, atmosphere and soils which disturbs the ecosystems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.​"
+        },
+        "resource-use": {
+            "title": "Why Resource Use matters and how engage action ?",
+            "content": "<strong>Resource Use (kg Sb eq.):</strong> this criteria measures abiotic resource depletion relative to ultimate reserve. Abiotic resource correspond to all raw materials that are not derived from living organisms, which are non-renewable. Their depletion depriving for future generations. <br> <br>Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "particulate-matter": {
+            "title": "Why Particulate Matter matters and how engage action ?",
+            "content": "<strong>Particulate Matter (Disease incidence):</strong> this criteria measures impact on human health (disease incidence) caused by Microscopic particles suspended in the ambient air (fine enough to enter the respiratory tract causing a harmful effect on health) and its precursors (e.g. sulfur and nitrogen oxides). <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "ionising-radiation": {
+            "title": "Why Ionizing Radiation matters and how engage action ?",
+            "content": "<strong>Ionizing Radiation (kBq U<sub>235</sub> eq.):</strong> this criteria measures Human exposure efficiency relative to Uranium 235, that produces ionizations in the material it passes through. Even in low doses, it can lead to risks of long-term effects like cancer. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>."
+        },
+        "terminal": {
+            "title": "Analysis and ecoconception leverage",
+            "content": "Here you are looking at the impact of the terminals using your digital service.​ <br> <br> The calculation method currently used as the reference in <a href='https://en.wikipedia.org/wiki/Life-cycle_assessment' target='_blank'>LCA</a> methods takes into account the type of equipment used, its location, and user journey times. ​<br> <br> The type of equipment on which the service is consumed has an influence on the impact at the manufacturing, distribution, and end-of-life stages: the larger and more complex the equipment, the greater its impact. To reduce the impact, you can make sure that your service runs on terminals with small screens, on older equipment (OS more than 5 years old, etc.) and with low performance; you will then be helping to reduce the renewal of equipment... and the digital divide. ​<br> <br> The location of users influences the impact of the service. It is directly linked to the methods used to produce the electrical energy consumed when the service is in use (<a href='https://ourworldindata.org/electricity-mix' target='_blank'>find out more here</a>).​ <br> <br> Finally, you can optimise the user experience by eliminating functions that provide little or no value, which will also reduce the infrastructure required."
+        },
+        "network": {
+            "title": "Analysis and ecoconception leverage",
+            "content": "This graph shows the impact of data exchanged on the network.​ <br> <br> This impact is proportional to the quantity of GB exchanged on the mobile network, and for the fixed network, the impact mainly depends on the size of the network (optical fiber or copper cables).​ <br> <br> It is generally preferable to use a fixed network, which has less impact than the mobile network if you reduce the impact to the number of GB exchanged (see <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>here</a> and <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>here</a>). ​<br> <br> To reduce this impact, reduce the amount of data exchanged as much as possible by:​ <br> <br> - Questioning the need (is the presence of a video necessary (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>learn more</a>)? Can text replace an image? Is HD essential? ​<br> <br> - Optimizing formats (image size and compression) ​<br> <br> - Respecting best practice (not automatically launching videos, avoiding infinite page scrolling, using standard fonts, etc.) (<a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>learn more</a>)"
+        },
+        "server": {
+            "title": "Analysis and ecoconception leverage",
+            "content": "Here is a breakdown of the impact of hosting your service. This graph enables you to identify the servers on which you need to focus your attention. ​<br> <br>To reduce the impact of servers, your levers for action relate to: ​<br> <br>- The physical equipment used: replace the dedicated server with one of the VMs to combine resources, adjust the characteristics of the server as closely as possible to your needs, such as its computing power, RAM and storage capacity, etc. ​<br> <br>- The way you use them: shutdown outside usage periods, autoscaling, load rate (even if not yet taken into account in the calculation), data retention time, use of caches, etc. ​<br> <br>- The way it is maintained by the infrastructure teams: lifespan of equipment, pooling of resources, datacenter efficiency, etc. ​<br> <br>You can click on the graph to identify the action levers you can take on your servers"
+        },
+        "server-lifecycle": {
+            "title": "Analysis and ecoconception leverage",
+            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use’s impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
+        }
+    },
+    "acvStep": {
+        "TRANSPORTATION": "Transportation",
+        "MANUFACTURING": "Manufacturing",
+        "END_OF_LIFE": "End of Life",
+        "USING": "Using"
+    },
+    "criteria": {
+        "global-vision": {
+            "title": "Global Vision"
+        },
+        "multi-criteria": {
+            "title": "Multi-criteria"
+        },
+        "climate-change": {
+            "title": "Climate change",
+            "name": "Climate change",
+            "unite": "kg CO<sub>2</sub> eq."
+        },
+        "acidification": {
+            "title": "Acidification",
+            "name": "Acidification",
+            "unite": "mol H<sup>+</sup> eq."
+        },
+        "resource-use": {
+            "title": "Resource use",
+            "name": "Resource use",
+            "unite": "kg Sb eq."
+        },
+        "particulate-matter": {
+            "title": "Particulate matter",
+            "name": "Particulate matter",
+            "unite": "Disease incidence"
+        },
+        "ionising-radiation": {
+            "title": "Ionising radiation",
+            "name": "Ionising radiation",
+            "unite": "KBq U<sub>235</sub> eq."
+        }
+    }
+}

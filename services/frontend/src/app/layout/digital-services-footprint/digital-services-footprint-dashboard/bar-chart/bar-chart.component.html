@@ -1,0 +1,38 @@
+<div
+    echarts
+    class="bar-stack"
+    [options]="options"
+    (chartClick)="onChartClick($event)"
+    style="height: 400px; margin: 0; margin-top: 20px"
+></div>
+<div *ngIf="selectedParam == 'Terminal' && !barChartChild" class="radio-buttons-graph">
+    <div *ngFor="let option of terminalsOptions">
+        <p-radioButton
+            [inputId]="option.key"
+            name="option"
+            [value]="option.value"
+            [(ngModel)]="terminalsRadioButtonSelected"
+            (onClick)="changeTerminalsRadioButtonSelected()"
+        ></p-radioButton>
+        <label [for]="option.key" class="ml-2">{{ option.name }}</label>
+    </div>
+</div>
+<div
+    *ngIf="
+        selectedParam == 'Server' &&
+        barChartChild &&
+        !selectedDetailParam.includes('Dedicated')
+    "
+    class="radio-buttons-graph"
+>
+    <div *ngFor="let option of serversOptions">
+        <p-radioButton
+            [inputId]="option.key"
+            name="option"
+            [value]="option.value"
+            [(ngModel)]="serversRadioButtonSelected"
+            (onClick)="changeServersRadioButtonSelected()"
+        ></p-radioButton>
+        <label [for]="option.key" class="ml-2">{{ option.name }}</label>
+    </div>
+</div>

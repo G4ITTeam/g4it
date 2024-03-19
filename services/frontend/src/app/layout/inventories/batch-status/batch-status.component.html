@@ -1,0 +1,39 @@
+<li class="loading-data-container" tabIndex="0">
+    <div
+        [class]="cssClass"
+        pTooltip="{{ toolTip }}"
+        tooltipPosition="left"
+        role="application"
+        [attr.aria-label]="toolTip"
+    >
+        {{ this.betweenDiv }}
+    </div>
+    <p *ngIf="type == 'estimation'; else loading">
+        {{ "inventories.estimate-date" | translate }}
+        {{ createTime | date : "dd/MM/yyyy HH:mm" }}
+    </p>
+    <ng-template #loading>
+        <p>
+            {{ "inventories.loading-date" | translate }}
+            {{ createTime | date : "dd/MM/yyyy HH:mm" }}
+        </p>
+    </ng-template>
+    <a
+        href="{{ resultFileUrl }}"
+        target="_blank"
+        rel="noopener"
+        *ngIf="
+            (batchStatusCode === 'COMPLETED_WITH_ERRORS' ||
+                batchStatusCode === 'SKIPPED') &&
+            batchLoading
+        "
+        style="padding-left: 30px"
+    >
+        <img
+            src="assets/images/icons/icon-download.svg"
+            alt="{{ 'inventories.download-result' | translate }} {{
+                createTime | date : 'dd/MM/yyyy HH:mm'
+            }}"
+        />
+    </a>
+</li>

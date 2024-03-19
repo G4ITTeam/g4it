@@ -1,0 +1,106 @@
+[
+    {
+        "criteria": "particulate-matter",
+
+        "impacts": [
+            {
+                "networkType": "Fixed FR",
+
+                "rawValue": 0.0000877423954079859,
+
+                "sipValue": 1.3603472709655762
+            },
+            {
+                "networkType": "Mobile EU",
+
+                "rawValue": 0.10297897458076477,
+
+                "sipValue": 2.461788845062256
+            }
+        ]
+    },
+
+    {
+        "criteria": "climate-change",
+
+        "impacts": [
+            {
+                "networkType": "Fixed FR",
+
+                "rawValue": 1841.179443359375,
+
+                "sipValue": 2.162912607192993
+            },
+            {
+                "networkType": "Mobile EU",
+
+                "rawValue": 0.10297897458076477,
+
+                "sipValue": 4.461788845062256
+            }
+        ]
+    },
+
+    {
+        "criteria": "ionising-radiation",
+
+        "impacts": [
+            {
+                "networkType": "Fixed FR",
+
+                "rawValue": 43641.55078125,
+
+                "sipValue": 0.6624903678894043
+            },
+            {
+                "networkType": "Mobile EU",
+
+                "rawValue": 0.10297897458076477,
+
+                "sipValue": 1.461788845062256
+            }
+        ]
+    },
+
+    {
+        "criteria": "acidification",
+
+        "impacts": [
+            {
+                "networkType": "Fixed FR",
+
+                "rawValue": 8.399413108825684,
+
+                "sipValue": 0.06719530373811722
+            },
+            {
+                "networkType": "Mobile EU",
+
+                "rawValue": 0.10297897458076477,
+
+                "sipValue": 0.461788845062256
+            }
+        ]
+    },
+
+    {
+        "criteria": "resource-use",
+
+        "impacts": [
+            {
+                "networkType": "Fixed FR",
+
+                "rawValue": 0.10297897458076477,
+
+                "sipValue": 3.761788845062256
+            },
+            {
+                "networkType": "Mobile EU",
+
+                "rawValue": 0.10297897458076477,
+
+                "sipValue": 2.461788845062256
+            }
+        ]
+    }
+]

@@ -1,0 +1,92 @@
+version: "1.0.0"
+
+server:
+  port: 8080
+  shutdown: graceful
+
+# NumEcoEval configs
+num-eco-eval:
+  base-url: http://localhost:18081
+  import-max-memory: 128
+num-eco-eval-referential:
+  base-url: http://localhost:18080
+
+g4it:
+  data:
+    retention:
+      cron: "0 0 0 * * *"
+      oninit: "false"
+      day: "14"
+  storage:
+    retention:
+      cron: "0 0 0 * * *"
+      oninit: "false"
+      day:
+        export: "7"
+        output: "7"
+  cache:
+    database:
+      ttl: PT20M
+    short:
+      ttl: PT2M
+
+filesystem.local.path: "C:\\tmp\\"
+
+spring:
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    generate-unique-name: true
+    url: "jdbc:postgresql://localhost:5432/postgres"
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      test-on-borrow: false
+      jmx-enabled: false
+      max-active: 100
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+  codec:
+    max-in-memory-size: 100MB
+  config:
+    import:
+      - csv-headers.yml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://sts.windows.net/${AZURE_TENANT_ID}/
+  servlet:
+    multipart:
+      resolve-lazily: true
+      max-request-size: 100MB
+      max-file-size: 100MB
+
+# Batch configs
+evaluation:
+  batch:
+    chunk: 100
+    page-size: 100
+export:
+  batch:
+    chunk: 100
+    page-size: 100
+loading:
+  batch:
+    chunk: 100
+    page-size: 100
+    valid-data-writing-enable: false
+
+springdoc:
+  swagger-ui:
+    tagsSorter: alpha

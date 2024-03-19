@@ -1,0 +1,177 @@
+[
+  {
+    "pays": "Albania",
+    "raccourcisAnglais": "AL",
+    "critere": "Acidification",
+    "valeur": 0.0000031651,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Albania",
+    "raccourcisAnglais": "AL",
+    "critere": "Climate change",
+    "valeur": 0.0207635,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Albania",
+    "raccourcisAnglais": "AL",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 1.61553e-9,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Albania",
+    "raccourcisAnglais": "AL",
+    "critere": "Ionising radiation",
+    "valeur": 0.0014664,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Albania",
+    "raccourcisAnglais": "AL",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 2.29556e-7,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Armenia",
+    "raccourcisAnglais": "AM",
+    "critere": "Acidification",
+    "valeur": 0.000726222,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Armenia",
+    "raccourcisAnglais": "AM",
+    "critere": "Climate change",
+    "valeur": 0.252002,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Armenia",
+    "raccourcisAnglais": "AM",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 5.4582e-9,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Armenia",
+    "raccourcisAnglais": "AM",
+    "critere": "Ionising radiation",
+    "valeur": 1.56547,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Armenia",
+    "raccourcisAnglais": "AM",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 8.54245e-8,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Netherlands Antilles",
+    "raccourcisAnglais": "AN",
+    "critere": "Acidification",
+    "valeur": 0.0107951,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Netherlands Antilles",
+    "raccourcisAnglais": "AN",
+    "critere": "Climate change",
+    "valeur": 1.13161,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Netherlands Antilles",
+    "raccourcisAnglais": "AN",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 9.61629e-8,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Netherlands Antilles",
+    "raccourcisAnglais": "AN",
+    "critere": "Ionising radiation",
+    "valeur": 0.00874025,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Netherlands Antilles",
+    "raccourcisAnglais": "AN",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 4.49103e-8,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Angola",
+    "raccourcisAnglais": "AO",
+    "critere": "Acidification",
+    "valeur": 0.0113371,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Angola",
+    "raccourcisAnglais": "AO",
+    "critere": "Climate change",
+    "valeur": 0.412014,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Angola",
+    "raccourcisAnglais": "AO",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 9.53959e-8,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Angola",
+    "raccourcisAnglais": "AO",
+    "critere": "Ionising radiation",
+    "valeur": 0.00190206,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Angola",
+    "raccourcisAnglais": "AO",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 1.24074e-7,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Argentina",
+    "raccourcisAnglais": "AR",
+    "critere": "Acidification",
+    "valeur": 0.00327536,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Argentina",
+    "raccourcisAnglais": "AR",
+    "critere": "Climate change",
+    "valeur": 0.476811,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Argentina",
+    "raccourcisAnglais": "AR",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 3.0122e-8,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Argentina",
+    "raccourcisAnglais": "AR",
+    "critere": "Ionising radiation",
+    "valeur": 0.241544,
+    "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "Argentina",
+    "raccourcisAnglais": "AR",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 7.68612e-8,
+    "source": "Base IMPACTS 2.02"
+  }
+]

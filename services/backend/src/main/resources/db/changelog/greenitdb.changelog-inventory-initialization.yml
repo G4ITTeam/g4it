@@ -1,0 +1,694 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-inventory
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: inventory
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: inventory_id_pk
+              - column:
+                  name: inventory_date
+                  type: varchar(255)
+              - column:
+                  name: organisation
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-datacenter
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: data_center
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: datacenter_id_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: datacenter_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: nom_court_datacenter
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nom_long_datacenter
+                  type: varchar(255)
+              - column:
+                  name: pue
+                  type: varchar(255)
+              - column:
+                  name: localisation
+                  type: varchar(255)
+              - column:
+                  name: nom_entite
+                  type: varchar(255)
+              - column:
+                  name: line_number
+                  type: int
+              - column:
+                  name: input_file_name
+                  type: varchar(255)
+              - column:
+                  name: session_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: nom_source_donnee
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: inventory_id, nom_court_datacenter
+            constraintName: data_center_unique
+            tableName: data_center
+  - changeSet:
+      id: create-physical-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: equipement_physique
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: equipement_physique_id_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: equipement_physique_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: nom_equipement_physique
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nom_entite
+                  type: varchar(255)
+              - column:
+                  name: nom_source_donnee
+                  type: varchar(255)
+              - column:
+                  name: modele
+                  type: varchar(255)
+              - column:
+                  name: quantite
+                  type: varchar(255)
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: statut
+                  type: varchar(255)
+              - column:
+                  name: nb_jour_utilise_an
+                  type: varchar(255)
+              - column:
+                  name: pays_utilisation
+                  type: varchar(255)
+              - column:
+                  name: utilisateur
+                  type: varchar(255)
+              - column:
+                  name: date_achat
+                  type: varchar(255)
+              - column:
+                  name: date_retrait
+                  type: varchar(255)
+              - column:
+                  name: nb_coeur
+                  type: varchar(255)
+              - column:
+                  name: nom_court_datacenter
+                  type: varchar(255)
+              - column:
+                  name: go_telecharge
+                  type: varchar(255)
+              - column:
+                  name: conso_elec_annuelle
+                  type: varchar(255)
+              - column:
+                  name: line_number
+                  type: int
+              - column:
+                  name: input_file_name
+                  type: varchar(255)
+              - column:
+                  name: session_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: fabricant
+                  type: varchar(255)
+              - column:
+                  name: taille_du_disque
+                  type: varchar(255)
+              - column:
+                  name: taille_memoire
+                  type: varchar(255)
+              - column:
+                  name: type_de_processeur
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: inventory_id, nom_equipement_physique
+            constraintName: equipement_physique_unique
+            tableName: equipement_physique
+
+  - changeSet:
+      id: create-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: equipement_virtuel
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: equipement_virtuel_id_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: equipement_virtuel_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: nom_vm
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nom_equipement_physique
+                  type: varchar(255)
+              - column:
+                  name: v_cpu
+                  type: varchar(255)
+              - column:
+                  name: nom_entite
+                  type: varchar(255)
+              - column:
+                  name: cluster
+                  type: varchar(255)
+              - column:
+                  name: line_number
+                  type: int
+              - column:
+                  name: input_file_name
+                  type: varchar(255)
+              - column:
+                  name: session_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: nom_source_donnee_equipement_physique
+                  type: varchar(255)
+              - column:
+                  name: conso_elec_an
+                  type: varchar(255)
+              - column:
+                  name: type_eqv
+                  type: varchar(255)
+              - column:
+                  name: cle_repartition
+                  type: varchar(255)
+              - column:
+                  name: nom_source_donnee
+                  type: varchar(255)
+              - column:
+                  name: capacite_stockage
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: inventory_id, nom_vm
+            constraintName: equipement_virtuel_unique
+            tableName: equipement_virtuel
+
+  - changeSet:
+      id: create-application
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: application
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: application_id_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: application_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: nom_application
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type_environnement
+                  type: varchar(255)
+              - column:
+                  name: nom_vm
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nom_equipement_physique
+                  type: varchar(255)
+              - column:
+                  name: domaine
+                  type: varchar(255)
+              - column:
+                  name: sous_domaine
+                  type: varchar(255)
+              - column:
+                  name: nom_entite
+                  type: varchar(255)
+              - column:
+                  name: line_number
+                  type: int
+              - column:
+                  name: input_file_name
+                  type: varchar(255)
+              - column:
+                  name: session_date
+                  type: timestamp
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: nom_source_donnee_equipement_virtuel
+                  type: varchar(255)
+              - column:
+                  name: nom_source_donnee
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: inventory_id, type_environnement, nom_vm, nom_application
+            constraintName: application_unique
+            tableName: application
+  - changeSet:
+      id: add-index
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: inventory
+            indexName: idx_inv_org_inventorydate
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: organisation
+              - column:
+                  name: inventory_date
+        - createIndex:
+            tableName: data_center
+            indexName: idx_dc_org_inventoryid_nomcourtdc
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: nom_court_datacenter
+        - createIndex:
+            tableName: equipement_physique
+            indexName: idx_phys_org_inventoryid_nomcourtdc_nomeqphys
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: nom_court_datacenter
+              - column:
+                  name: nom_equipement_physique
+        - createIndex:
+            tableName: equipement_virtuel
+            indexName: idx_vm_org_inventoryid_nomeqphys_nomvm
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: nom_equipement_physique
+              - column:
+                  name: nom_vm
+        - createIndex:
+            tableName: application
+            indexName: idx_app_org_inventoryid_nomvm
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: nom_vm
+        - createIndex:
+            tableName: data_center
+            indexName: idx_dc_sessiondate
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: session_date
+        - createIndex:
+            tableName: equipement_physique
+            indexName: idx_phys_sessiondate
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: session_date
+        - createIndex:
+            tableName: equipement_virtuel
+            indexName: idx_vm_sessiondate
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: session_date
+        - createIndex:
+            tableName: application
+            indexName: idx_app_sessiondate
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: session_date
+  - changeSet:
+      id: create-export-request
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: export_request
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: export_request_pk
+              - column:
+                  name: organization
+                  type: varchar(255)
+              - column:
+                  name: inventory_date
+                  type: varchar(255)
+              - column:
+                  name: inventory_id
+                  type: bigint
+              - column:
+                  name: batch_name
+                  type: varchar(255)
+              - column:
+                  name: status
+                  type: varchar(255)
+                  defaultValue: REQUESTED
+              - column:
+                  name: username
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+
+  - changeSet:
+      id: update-inventory-with-count
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: data_center_count
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: physical_equipment_count
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: virtual_equipment_count
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: application_count
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: update inventory i set
+              data_center_count = (select count(*) from data_center dc where i.id = dc.inventory_id),
+              physical_equipment_count = (select coalesce(sum(cast(quantite as numeric)),0) from equipement_physique ep where i.id = ep.inventory_id),
+              virtual_equipment_count = (select count(*) from equipement_virtuel ev where i.id = ev.inventory_id),
+              application_count = (select count(*) from application a where i.id = a.inventory_id)
+              ;
+            comment: Inventory DataCenter count Recovery
+
+  - changeSet:
+      id: create-g4it-integration-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_integration_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: g4it_integration_report_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: g4it_integration_report_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: batch_status_code
+                  type: varchar(30)
+              - column:
+                  name: batch_name
+                  type: varchar(36)
+              - column:
+                  name: result_file_url
+                  type: text
+              - column:
+                  name: result_file_size
+                  type: int
+              - column:
+                  name: create_time
+                  type: timestamp
+              - column:
+                  name: end_time
+                  type: timestamp
+
+  - changeSet:
+      id: create-g4it-evaluation-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_evaluation_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: g4it_evaluation_report_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: g4it_evaluation_report_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: batch_status_code
+                  type: varchar(30)
+              - column:
+                  name: batch_name
+                  type: varchar(36)
+              - column:
+                  name: create_time
+                  type: timestamp
+              - column:
+                  name: end_time
+                  type: timestamp
+
+  - changeSet:
+      id: create-g4it-export-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_export_report
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: g4it_export_report_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: g4it_export_report_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+                    unique: true
+              - column:
+                  name: status_code
+                  type: varchar(30)
+                  defaultValue: REQUESTED
+              - column:
+                  name: batch_name
+                  type: varchar(36)
+              - column:
+                  name: batch_create_time
+                  type: timestamp
+              - column:
+                  name: batch_end_time
+                  type: timestamp
+              - column:
+                  name: sending_export_time
+                  type: timestamp
+              - column:
+                  name: username
+                  type: varchar(255)
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: export_filename
+                  type: text
+              - column:
+                  name: export_file_size
+                  type: int
+
+  - changeSet:
+      id: drop-old-export-table
+      author: G4IT Dev Team
+      changes:
+        - dropTable:
+            tableName: export_request
+
+  - changeSet:
+      id: application-number-in-inventory-recovery
+      author: G4IT Dev Team
+      changes:
+        - sql: update inventory i set application_count = (select count(distinct a.nom_application) from application a where a.inventory_id = i.id);
+
+
+  - changeSet:
+      id: add-column-progress-percentage-g4it_evaluation_report
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_evaluation_report
+            columns:
+              - column:
+                  name: progress_percentage
+                  type: varchar(4)
+        - sql:
+            update g4it_evaluation_report er
+            set progress_percentage = '100%' where batch_status_code='COMPLETED';
+          comment: Update g4it_evaluation_report with batch calculation progress percentage
+
+  - changeSet:
+      id: add_type_and_name_in_inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+        - sql:
+            update inventory set type = 'INFORMATION_SYSTEM';
+            update inventory set name = inventory_date;
+          comment: Update inventory type to 'INFORMATION_SYSTEM'

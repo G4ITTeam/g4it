@@ -1,0 +1,4 @@
+idInventaire;nomCourtDatacenter;nomLongDatacenter;pue;localisation;nomEntite
+Inventaire_1;DC_Villeperdue_01;DC_Villeperdue_OpenStack_01;1.0;France;testEntite
+Inventaire_1;Datacenter 9;Datacenter numéro 9;1.2;France;SSG
+Inventaire_1;Datacenter 5;Datacenter numéro 5;1.1;France;SSG

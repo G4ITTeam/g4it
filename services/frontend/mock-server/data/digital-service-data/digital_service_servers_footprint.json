@@ -1,0 +1,537 @@
+[
+    {
+        "criteria": "climate-change",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.000046630168269869046
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.4312009703699233
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.0007151069539154748
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Server C",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Medium",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm C",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 1
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.000046630168269869046
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.4312009703699233
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.0007151069539154748
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "serverType": "Compute",
+                "mutualizationType": "Shared",
+                "servers": [
+                    {
+                        "name": "Server B",
+                        "totalSipValue": 23.256241056807266,
+                        "hostingEfficiency": "Bad",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm B",
+                                "sipValue": 23.256241056807266,
+                                "quantity": 4
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 13.177731379147136
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.12233114830804742
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 9.933561781393198
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.022616747958883996
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "particulate-matter",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.1909372362617649,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.1909372362617649,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.01756060858046512
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.00003162522474956639
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.172874525503522
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.00047047695302821147
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Server C",
+                        "totalSipValue": 0.1909372362617649,
+                        "hostingEfficiency": "Medium",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm C",
+                                "sipValue": 0.1909372362617649,
+                                "quantity": 1
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.01756060858046512
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.00003162522474956639
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.172874525503522
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.00047047695302821147
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "serverType": "Compute",
+                "mutualizationType": "Shared",
+                "servers": [
+                    {
+                        "name": "Server B",
+                        "totalSipValue": 13.153659755845645,
+                        "hostingEfficiency": "Bad",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm B",
+                                "sipValue": 13.153659755845645,
+                                "quantity": 4
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 9.030682512013955
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.04345720678294664
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 4.063506134012957
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.016013903035786346
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "ionising-radiation",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.013483736872699496,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.013483736872699496,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.013373527220948768
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 1.47054410439032e-9
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.00010944745337180386
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 7.60727834819301e-7
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Server C",
+                        "totalSipValue": 0.013483736872699496,
+                        "hostingEfficiency": "Medium",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm C",
+                                "sipValue": 0.013483736872699496,
+                                "quantity": 1
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.013373527220948768
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 1.47054410439032e-9
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.00010944745337180386
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 7.60727834819301e-7
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "serverType": "Compute",
+                "mutualizationType": "Shared",
+                "servers": [
+                    {
+                        "name": "Server B",
+                        "totalSipValue": 6.924902544097157,
+                        "hostingEfficiency": "Bad",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm B",
+                                "sipValue": 6.924902544097157,
+                                "quantity": 4
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 6.877442649255029
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.000028146418987481284
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.04740754174125965
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.000024206681880897302
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "acidification",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.016719065246038937,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.016719065246038937,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.00045717548947199997
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.0000020098990326940638
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.016226248584474884
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.00003363127305936074
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Server C",
+                        "totalSipValue": 0.016719065246038937,
+                        "hostingEfficiency": "Medium",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm C",
+                                "sipValue": 0.016719065246038937,
+                                "quantity": 1
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.00045717548947199997
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.0000020098990326940638
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.016226248584474884
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.00003363127305936074
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "serverType": "Compute",
+                "mutualizationType": "Shared",
+                "servers": [
+                    {
+                        "name": "Server B",
+                        "totalSipValue": 0.6209409557758594,
+                        "hostingEfficiency": "Bad",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm B",
+                                "sipValue": 0.6209409557758594,
+                                "quantity": 4
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.23510612851362
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.0036639668990612407
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.37939472556712334
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.002776134796054795
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "resource-use",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.023130272237362786,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.023130272237362786,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.0004833596933260274
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 5.696454509288797e-8
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.02256993597297804
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.00007691960651362566
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Server C",
+                        "totalSipValue": 0.023130272237362786,
+                        "hostingEfficiency": "Medium",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm C",
+                                "sipValue": 0.023130272237362786,
+                                "quantity": 1
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.0004833596933260274
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 5.696454509288797e-8
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 0.02256993597297804
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.00007691960651362566
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "serverType": "Compute",
+                "mutualizationType": "Shared",
+                "servers": [
+                    {
+                        "name": "Server B",
+                        "totalSipValue": 3.616698896749799,
+                        "hostingEfficiency": "Bad",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm B",
+                                "sipValue": 3.616698896749799,
+                                "quantity": 4
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.24857156342449313
+                            },
+                            {
+                                "acvStep": "DISTRIBUTION",
+                                "sipValue": 0.0001444131885444701
+                            },
+                            {
+                                "acvStep": "FABRICATION",
+                                "sipValue": 3.3669324251954715
+                            },
+                            {
+                                "acvStep": "FIN_DE_VIE",
+                                "sipValue": 0.001050494941289798
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

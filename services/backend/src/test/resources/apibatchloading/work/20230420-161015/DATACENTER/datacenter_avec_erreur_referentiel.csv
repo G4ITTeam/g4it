@@ -1,0 +1,3 @@
+nomCourtDatacenter;nomLongDatacenter;pue;localisation;nomEntite;nomSourceDonnee
+Datacenter bad country;Datacenter test with bad referential;1.5;England;SSG;
+Datacenter bad pue and bad country;Datacenter with bad pue and referential;0.5;England;SSG;

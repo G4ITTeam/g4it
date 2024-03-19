@@ -1,0 +1,41 @@
+<div class="footprint-dashboard-container">
+    <div class="chart-container">
+        <div>
+            <h3
+                tabindex="0"
+                attr.aria-label="{{
+                    'inventories-footprint.application.graph-title-global' | translate
+                }}"
+            >
+                {{ "inventories-footprint.global.global-vision" | translate }}
+                ({{ "common.peopleeq-min" | translate }})
+            </h3>
+        </div>
+        <div *ngIf="noData; else chart" class="no-data-round">
+            <p
+                class="text-round-empty"
+                tabindex="0"
+                attr.aria-label="{{ 'common.no-data' | translate }}"
+            >
+                {{ "common.no-data" | translate }}
+            </p>
+        </div>
+        <ng-template #chart>
+            <div
+                tabindex="0"
+                echarts
+                class="bar-stack m-0"
+                [options]="options"
+                style="height: 53vh;"
+                (chartClick)="onChartClick($event)"
+            ></div>
+        </ng-template>
+    </div>
+    <div>
+        <app-information-card
+            [title]="'inventories-footprint.global.info-fis-title' | translate"
+            [content]="'inventories-footprint.global.info-fis-text' | translate"
+        ></app-information-card>
+        <app-application-stats></app-application-stats>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+{
+    "countries": [
+        "France",
+        "China",
+        "Spain",
+        "Germany",
+        "Russia",
+        null
+    ],
+    "entities": [
+        "ACME FRANCE",
+        "ACME SERVICES",
+        null
+    ],
+    "equipments": [
+        "Mobility Device",
+        "Monitor",
+        "Network Gear",
+        "Personal Computer",
+        "Printer",
+        "Smartphone",
+        "Tracer",
+        "Communication Device",
+        "Consumable",
+        "IP Router",
+        "IP Switch",
+        "Server"
+    ],
+    "status": [
+        "In use",
+        "Retired",
+        "Missing",
+        "On order",
+        "In maintenance",
+        "In stock",
+        "In transit",
+        "Consumed"
+    ]
+}

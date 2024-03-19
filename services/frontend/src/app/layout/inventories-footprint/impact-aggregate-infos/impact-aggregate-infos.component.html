@@ -1,0 +1,39 @@
+<div class="impact-critere-div">
+    <div class="grey-round">
+        <img src="assets/images/icons/icon-hourglass.svg" alt="" />
+    </div>
+    <div class="critere-text" [ngClass]="{ 'grey-text': displayValue === 0 }">
+        {{ selectedCriteria }}
+    </div>
+    <div class="critere-number">
+        <div>
+            <div *ngIf="(displayValue ?? 0) === 0; else valueNotNull">
+                <p class="text-no-data-critere">--</p>
+            </div>
+            <ng-template #valueNotNull>
+                <div>
+                    {{ displayValue < 1 ? "&lt; 1" : (displayValue | number : "1.0-0") }}
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <p-card class="rmv-padding-card">
+        <div class="round-button-container">
+            <button
+                [class]="
+                    selectedUnit === 'impact' ? 'round-button-selected' : 'round-button'
+                "
+                (click)="updateSelectedUnite('impact')"
+                [innerHTML]="unitOfCriteria"
+            ></button>
+            <button
+                [class]="
+                    selectedUnit === 'Peopleeq' ? 'round-button-selected' : 'round-button'
+                "
+                (click)="updateSelectedUnite('Peopleeq')"
+            >
+                {{ "common.peopleeq" | translate }}
+            </button>
+        </div>
+    </p-card>
+</div>

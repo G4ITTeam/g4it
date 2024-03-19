@@ -1,0 +1,51 @@
+<div class="criteria-card">
+    <p-button
+        [styleClass]="
+            selectedCriteria === impact ? 'critere-button-selected' : 'critere-button'
+        "
+        (click)="changeCritere(impact)"
+        [disabled]="value === null || value === 0"
+    >
+        <div>
+            <div class="grey-round">
+                <img src="{{ impactImage }}" alt="" />
+            </div>
+            <img
+                class="check-icon-corner"
+                *ngIf="selectedCriteria === impact"
+                src="assets/images/icons/icon-check.svg"
+                alt="{{ 'common.selected' | translate }}"
+            />
+            <img
+                class="check-icon-corner"
+                *ngIf="selectedCriteria !== impact"
+                src="assets/images/icons/icon-not-check.svg"
+                alt="{{ 'common.not-selected' | translate }}"
+            />
+            <div class="critere-button-text">
+                <p>{{ impactText }}</p>
+                <p *ngIf="(value ?? 0) === 0; else valueNotNull">
+                    {{ value ? value : "--" }}
+                    <span
+                        [innerHTML]="
+                            renderHTML(selectedUnit === 'Raw' ? impactUnite : '')
+                        "
+                    ></span>
+                </p>
+                <ng-template #valueNotNull>
+                    <p>
+                        <span class="bold-number">{{
+                            value! < 1 ? "&lt; 1" : (value | number : "1.0-0")
+                        }}</span
+                        ><br />
+                        <span
+                            [innerHTML]="
+                                renderHTML(selectedUnit === 'Raw' ? impactUnite : '')
+                            "
+                        ></span>
+                    </p>
+                </ng-template>
+            </div>
+        </div>
+    </p-button>
+</div>

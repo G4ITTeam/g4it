@@ -1,0 +1,37 @@
+<div style="margin-bottom: 20px; margin-top: 20px">
+    <div class="side-data-title">
+        <img src="assets/images/icons/icon-lifecycle-env.svg" alt="" />
+        <span tabIndex="0">{{
+            "inventories-footprint.filter-tabs-application.lifecycle" | translate
+        }}</span>
+    </div>
+    <p-card>
+        <div
+            tabindex="0"
+            echarts
+            class="pie"
+            [options]="lifecycleOptions"
+            style="height: 170px; margin: 0; width: 90%"
+        ></div>
+    </p-card>
+    <div
+        style="margin-bottom: 20px; margin-top: 20px"
+        *ngIf="selectedGraph === 'application'"
+    >
+        <div class="side-data-title">
+            <img src="assets/images/icons/icon-lifecycle-env.svg" alt="" />
+            <span tabIndex="0">{{
+                "inventories-footprint.filter-tabs-application.environnement" | translate
+            }}</span>
+        </div>
+        <p-card>
+            <div
+                tabindex="0"
+                echarts
+                class="pie"
+                [options]="envOptions"
+                style="height: 170px; margin: 0; width: 90%"
+            ></div>
+        </p-card>
+    </div>
+</div>

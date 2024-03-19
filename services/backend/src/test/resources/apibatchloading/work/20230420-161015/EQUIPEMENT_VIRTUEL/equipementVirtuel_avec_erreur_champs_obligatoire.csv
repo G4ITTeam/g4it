@@ -1,0 +1,4 @@
+nomEquipementVirtuel;nomEquipementPhysique;vCPU;typeEqv;nomEntite;cluster
+VM 17;;;calcul;SSG;
+;Serveur 7;;calcul;SSG;
+VM18;Serveur 7;;;S;

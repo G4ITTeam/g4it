@@ -1,0 +1,124 @@
+<div class="footprint-dashboard-container-app-criteria mt-3">
+    <div class="chart-container">
+        <span>
+            <h3
+                *ngIf="selectedGraph === 'global'; else criteria"
+                tabindex="0"
+                attr.aria-label="{{ selectedCriteria.title }}{{
+                    'inventories-footprint.application.critere.graph.title' | translate
+                }}"
+            >
+                {{ "inventories-footprint.global.global-vision" | translate }}
+                ({{ "common.peopleeq-min" | translate }})
+            </h3>
+            <ng-template #criteria>
+                <h4
+                    class="cursor-pointer m-0 text-xl color-tertiary"
+                    (click)="onArrowClick(selectedGraph)"
+                    tabindex="0"
+                    attr.aria-label="{{
+                        'inventories-footprint.application.selected-infos' | translate
+                    }}{{ selectedDomain }}{{ selectedSubdomain }}{{ selectedApp }}"
+                >
+                    <img
+                        src="assets/images/icons/icon-green-arrow-left.svg"
+                        alt=""
+                        class="button-icon"
+                    />
+                    {{ "inventories-footprint.global.global-vision" | translate }}
+                    {{
+                        selectedGraph === "subdomain"
+                            ? " / " + selectedDomain
+                            : selectedGraph === "application"
+                            ? " / " + selectedDomain + " / " + selectedSubdomain
+                            : ""
+                    }}
+                </h4>
+                <h3
+                    *ngIf="selectedGraph === 'domain'"
+                    tabindex="0"
+                    attr.aria-label="{{
+                        'inventories-footprint.application.domain-view' | translate
+                    }}{{ selectedCriteria.title }}{{
+                        'inventories-footprint.application.critere.graph.title'
+                            | translate
+                    }}"
+                >
+                    {{ selectedDomain }}
+                    ({{ "common.peopleeq-min" | translate }})
+                </h3>
+                <h3
+                    *ngIf="selectedGraph === 'subdomain'"
+                    tabindex="0"
+                    attr.aria-label="{{
+                        'inventories-footprint.application.subdomain-view' | translate
+                    }}{{ selectedCriteria.title }}{{
+                        'inventories-footprint.application.critere.graph.title'
+                            | translate
+                    }}"
+                >
+                    {{ selectedSubdomain }}
+                    ({{ "common.peopleeq-min" | translate }})
+                </h3>
+                <h3
+                    *ngIf="selectedGraph === 'application'"
+                    tabindex="0"
+                    attr.aria-label="{{
+                        'inventories-footprint.application.application-view' | translate
+                    }}{{ selectedCriteria.title }}{{
+                        'inventories-footprint.application.critere.graph.title'
+                            | translate
+                    }}"
+                >
+                    {{ selectedApp }}
+                    ({{ "common.peopleeq-min" | translate }})
+                </h3>
+            </ng-template>
+        </span>
+        <div *ngIf="noData; else chart" class="no-data-round">
+            <p tabindex="0" class="text-round-empty">
+                {{ "common.no-data" | translate }}
+            </p>
+        </div>
+        <ng-template #chart>
+            <div
+                tabindex="0"
+                echarts
+                class="bar-stack m-0"
+                [options]="options"
+                style="height: 53vh"
+                (chartClick)="onChartClick($event)"
+            ></div>
+        </ng-template>
+    </div>
+    <div>
+        <app-criteria-stats
+            [selectedGraph]="selectedGraph"
+            [selectedCriteria]="selectedCriteria"
+            [selectedCriteriaUri]="selectedCriteriaUri"
+            [footprint]="footprint"
+            [selectedEnvironnementFilter]="selectedEnvironnementFilter"
+            [selectedEquipmentsFilter]="selectedEquipmentsFilter"
+            [selectedLifecycleFilter]="selectedLifecycleFilter"
+            [selectedDomainFilter]="selectedDomainFilter"
+            [selectedSubDomainFilter]="selectedSubDomainFilter"
+            [selectedApp]="selectedApp"
+            [selectedDomain]="selectedDomain"
+            [selectedSubdomain]="selectedSubdomain"
+        >
+        </app-criteria-stats>
+        <app-application-criteria-pie-chart
+            [selectedGraph]="selectedGraph"
+            [selectedCriteriaUri]="selectedCriteriaUri"
+            [footprint]="footprint"
+            [selectedEnvironnementFilter]="selectedEnvironnementFilter"
+            [selectedEquipmentsFilter]="selectedEquipmentsFilter"
+            [selectedLifecycleFilter]="selectedLifecycleFilter"
+            [selectedDomainFilter]="selectedDomainFilter"
+            [selectedSubDomainFilter]="selectedSubDomainFilter"
+            [selectedApp]="selectedApp"
+            [selectedDomain]="selectedDomain"
+            [selectedSubdomain]="selectedSubdomain"
+        ></app-application-criteria-pie-chart>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+trivy:
+  extends: .trivy
+  variables:
+    ALLOW_FAILURE_TRIVY: 'true'
+
+dependency-check:
+  extends: .dependency-check
+  variables:
+    ALLOW_FAILURE_DEPENDENCY_CHECK: 'true'
+
+license-finder:
+  extends: .license-finder
+  variables:
+    ALLOW_FAILURE_LICENSE_FINDER: 'true'
+
+kics:
+  extends: .kics
+  variables:
+    ALLOW_FAILURE_KICS: 'true'

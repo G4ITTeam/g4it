@@ -1,0 +1,93 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - FileSystem
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: file-system
+    description: All endpoint to interact with filesystem
+
+paths:
+  /{subscriber}/{organization}/inventories/{inventoryId}/files:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      summary: Endpoint to retrieve files in storage.
+      description: Endpoint to retrieve files in storage.
+      operationId: listFiles
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - file-system
+      responses:
+        '200':
+          description: Return files
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FileDescriptionRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: upload CSV sent and return the path of the CSV
+      operationId: uploadCSV
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - file-system
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                DATACENTER:
+                  description: List of file of datacenter
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                APPLICATION:
+                  description: List of file of applications
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                EQUIPEMENT_PHYSIQUE:
+                  description: List of file of physical equipment
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                EQUIPEMENT_VIRTUEL:
+                  description: List of file of virtual equipment
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: path of the files uploaded
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'

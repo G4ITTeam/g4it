@@ -1,0 +1,48 @@
+<p-toast #toast position="bottom-center"></p-toast>
+<div class="digital-services-top-container">
+    <h1 tabIndex="0">{{ "digital-services.title" | translate }}</h1>
+    <p-button styleClass="black-button" (onClick)="createNewDigitalService()" *ngIf="userService.isAllowedDigitalServiceWrite$ | async">
+        {{ "digital-services.add" | translate }}
+    </p-button>
+</div>
+<p-scrollPanel [style]="{ width: '100%', height: '83%' }">
+    <p
+        class="digital-service-emptyList"
+        *ngIf="digitalServices.length === 0; else hasData"
+    >
+        {{ "digital-services.empty-digital-services" | translate }}
+    </p>
+    <ng-template #hasData>
+        <ul>
+            <li *ngFor="let digitalService of digitalServices">
+                <p-card
+                    styleClass="digital-services-card"
+                    tabIndex="0"
+                    role="button"
+                    [attr.aria-label]="digitalService.name"
+                >
+                    <div class="digital-services-card-content">
+                        <span
+                            class="digital-services-card-content-label"
+                            (click)="onDigitalServiceSelection(digitalService.uid)"
+                        >
+                            {{ digitalService.name }}
+                        </span>
+                        <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                            styleClass="p-button-text p-button-rounded p-button-danger"
+                        >
+                            <img
+                                src="assets/images/icons/icon-bin.svg"
+                                (click)="confirmDelete($event, digitalService)"
+                                alt="{{ 'common.delete' | translate }} {{
+                                    digitalService.name
+                                }}"
+                            />
+                        </p-button>
+                        <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>
+                    </div>
+                </p-card>
+            </li>
+        </ul>
+    </ng-template>
+</p-scrollPanel>

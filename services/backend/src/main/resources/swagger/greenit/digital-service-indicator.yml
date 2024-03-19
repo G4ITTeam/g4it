@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: Swagger GreenIT - Open API 3.0 - Digital Service Indicators
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: 1.0.0
+
+tags:
+  - name: digital-service indicators
+    description: All endpoint for digital service indicators
+
+paths:
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/indicators:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+    get:
+      tags:
+        - digital-service-indicator
+      summary: Get indicators from one digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalServiceIndicatorRest
+      responses:
+        '200':
+          description: return digital service indicators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceIndicatorRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/terminals/indicators:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+    get:
+      tags:
+        - digital-service-indicator
+      summary: Get terminals indicators from one digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalServiceTerminalsIndicatorRest
+      responses:
+        '200':
+          description: return digital service terminals indicators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceTerminalIndicatorRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/networks/indicators:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+    get:
+      tags:
+        - digital-service-indicator
+      summary: Get networks indicators from one digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalServiceNetworksIndicatorRest
+      responses:
+        '200':
+          description: return digital service networks indicators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceNetworkIndicatorRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/servers/indicators:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/digitalServiceUidPathParam'
+    get:
+      tags:
+        - digital-service-indicator
+      summary: Get servers indicators from one digital service
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      operationId: getDigitalServiceServersIndicatorRest
+      responses:
+        '200':
+          description: return digital service servers indicators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DigitalServiceServerIndicatorRest"

@@ -1,0 +1,863 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Components
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+components:
+  # Define Common Parameters.
+  parameters:
+    subscriberPathParam:
+      in: path
+      name: subscriber
+      schema:
+        type: string
+      required: true
+      description: The subscriber name.
+    organizationPathParam:
+      in: path
+      name: organization
+      schema:
+        type: string
+      required: true
+      description: The organization name.
+    inventoryIdPathParam:
+      in: path
+      name: inventoryId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The inventory Id.
+    inventoryIdQueryParam:
+      in: query
+      name: inventoryId
+      schema:
+        type: integer
+        format: int64
+      required: false
+      description: The inventory Id.
+    digitalServiceUidPathParam:
+      in: path
+      name: digitalServiceUid
+      schema:
+        type: string
+      required: true
+      description: The digital service uid.
+    domainQueryParam:
+      in: query
+      name: domain
+      schema:
+        type: string
+      required: false
+      description: The domain name.
+    subDomainQueryParam:
+      in: query
+      name: subDomain
+      schema:
+        type: string
+      required: false
+      description: The sub domain name.
+    applicationNameQueryParam:
+      in: query
+      name: applicationName
+      schema:
+        type: string
+      required: false
+      description: The application name.
+
+  responses:
+    InternalServerError:
+      description: Internal Service error
+      content:
+        'application/json':
+          schema:
+            $ref: "#/components/schemas/RestError"
+    BadRequestError:
+      description: Bad Request error
+      content:
+        'application/json':
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/RestValidationError"
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    NotFoundError:
+      description: Object is not found
+
+  schemas:
+    VersionRest:
+      description: Version
+      type: object
+      properties:
+        numEcoEval:
+          type: string
+        g4it:
+          type: string
+    UserRest:
+      description: User information
+      type: object
+      properties:
+        username:
+          type: string
+        subscribers:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubscriberRest"
+    SubscriberRest:
+      description: Subscriber information
+      type: object
+      properties:
+        name:
+          type: string
+        defaultFlag:
+          type: boolean
+        organizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrganizationRest"
+    OrganizationRest:
+      description: Organization information
+      type: object
+      properties:
+        name:
+          type: string
+        defaultFlag:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+
+    InventoryRest:
+      description: Information of an IS inventory
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - creationDate
+        - organization
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/InventoryType"
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        organization:
+          type: string
+        dataCenterCount:
+          type: integer
+          format: int64
+        physicalEquipmentCount:
+          type: integer
+          format: int64
+        virtualEquipmentCount:
+          type: integer
+          format: int64
+        applicationCount:
+          type: integer
+          format: int64
+        integrationReports:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntegrationReportRest"
+        evaluationReports:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationReportRest"
+
+    IntegrationReportRest:
+      description: Information of an integration report
+      type: object
+      properties:
+        batchStatusCode:
+          description: Batch status code
+          type: string
+        createTime:
+          description: Job creation date
+          type: string
+          format: date-time
+        endTime:
+          description: Job end date
+          type: string
+          format: date-time
+        batchName:
+          description: Name of batch in numecoeval
+          type: string
+        resultFileUrl:
+          description: Result file url
+          type: string
+        resultFileSize:
+          description: Result file size
+          type: integer
+          format: int64
+
+    EvaluationReportRest:
+      description: Information of an evaluation report
+      type: object
+      properties:
+        batchStatusCode:
+          description: Batch status code
+          type: string
+        progressPercentage:
+          description: Calculation progress percentage
+          type: string
+        createTime:
+          description: Job creation date
+          type: string
+          format: date-time
+        endTime:
+          description: Job end date
+          type: string
+          format: date-time
+        batchName:
+          description: Name of batch in numecoeval
+          type: string
+
+    FileDescriptionRest:
+      description: Information of a file
+      type: object
+      properties:
+        name:
+          description: the file name
+          type: string
+        type:
+          description: the file name
+          type: string
+        metadata:
+          $ref: "#/components/schemas/FileMetadataRest"
+    FileMetadataRest:
+      description: File's Metadata
+      type: object
+      additionalProperties:
+        type: string
+
+    EquipmentIndicatorsRest:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/EquipmentIndicatorRest"
+    EquipmentIndicatorRest:
+      type: object
+      properties:
+        label:
+          type: string
+        unit:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/EquipmentImpactRest"
+    EquipmentImpactRest:
+      type: object
+      properties:
+        acvStep:
+          type: string
+        country:
+          type: string
+        entity:
+          type: string
+        equipment:
+          type: string
+        status:
+          type: string
+        impact:
+          type: number
+          format: float
+        sip:
+          type: number
+          format: float
+
+    ApplicationIndicatorRest:
+      type: object
+      properties:
+        criteria:
+          type: string
+        unit:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationImpactRest"
+    ApplicationImpactRest:
+      type: object
+      properties:
+        lifeCycle:
+          type: string
+        domain:
+          type: string
+        subDomain:
+          type: string
+        environment:
+          type: string
+        equipmentType:
+          type: string
+        applicationName:
+          type: string
+        impact:
+          type: number
+          format: double
+        sip:
+          type: number
+          format: double
+    ApplicationVmIndicatorRest:
+      type: object
+      properties:
+        criteria:
+          type: string
+        unit:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationVmImpactRest"
+    ApplicationVmImpactRest:
+      type: object
+      properties:
+        lifeCycle:
+          type: string
+        vmName:
+          type: string
+        cluster:
+          type: string
+        environment:
+          type: string
+        equipmentType:
+          type: string
+        impact:
+          type: number
+          format: double
+        sip:
+          type: number
+          format: double
+
+    EquipmentFiltersRest:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            type: string
+        entities:
+          type: array
+          items:
+            type: string
+        equipments:
+          type: array
+          items:
+            type: string
+        status:
+          type: array
+          items:
+            type: string
+    ApplicationFiltersRest:
+      type: object
+      properties:
+        environments:
+          type: array
+          items:
+            type: string
+        lifeCycles:
+          type: array
+          items:
+            type: string
+        types:
+          type: array
+          items:
+            type: string
+        domains:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationDomainsFiltersRest"
+    ApplicationDomainsFiltersRest:
+      type: object
+      properties:
+        name:
+          type: string
+        subDomains:
+          type: array
+          items:
+            type: string
+    DataCentersIndicatorsRest:
+      type: array
+      items:
+        $ref: "#/components/schemas/DataCentersInformationRest"
+    DataCentersInformationRest:
+      type: object
+      properties:
+        dataCenterName:
+          type: string
+        physicalEquipmentCount:
+          type: integer
+        country:
+          type: string
+        entity:
+          type: string
+        equipment:
+          type: string
+        status:
+          type: string
+        pue:
+          type: number
+          format: float
+    PhysicalEquipmentsAvgAgeRest:
+      type: object
+      properties:
+        organisation:
+          type: string
+        inventoryName:
+          type: string
+        country:
+          type: string
+        type:
+          type: string
+        nomEntite:
+          type: string
+        statut:
+          type: string
+        poids:
+          type: integer
+        ageMoyen:
+          type: number
+          format: float
+    PhysicalEquipmentLowCarbonRest:
+      type: object
+      properties:
+        organisation:
+          type: string
+        inventoryName:
+          type: string
+        paysUtilisation:
+          type: string
+        type:
+          type: string
+        nomEntite:
+          type: string
+        statut:
+          type: string
+        quantite:
+          type: integer
+        lowCarbon:
+          type: boolean
+
+    DigitalServiceRest:
+      description: Information of a Digital Service
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        lastCalculationDate:
+          type: string
+          format: date-time
+        terminals:
+          type: array
+          items:
+            $ref: "#/components/schemas/TerminalRest"
+        networks:
+          type: array
+          items:
+            $ref: "#/components/schemas/NetworkRest"
+        servers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServerRest"
+    TerminalRest:
+      description: Information of a Terminal
+      type: object
+      properties:
+        required:
+          - type
+          - country
+          - numberOfUsers
+          - yearlyUsageTimePerUser
+        uid:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        type:
+          type: object
+          $ref: "#/components/schemas/DeviceTypeRefRest"
+        country:
+          type: string
+          default: France
+        numberOfUsers:
+          type: integer
+        yearlyUsageTimePerUser:
+          type: integer
+    NetworkRest:
+      description: Information of a Network
+      type: object
+      properties:
+        required:
+          - type
+          - yearlyQuantityOfGbExchanged
+        uid:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        type:
+          type: object
+          $ref: "#/components/schemas/NetworkTypeRefRest"
+        yearlyQuantityOfGbExchanged:
+          type: number
+          format: double
+
+    DigitalServicesIndicatorsRest:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/DigitalServiceIndicatorRest"
+    DigitalServiceIndicatorRest:
+      description: Digital service indicator object
+      type: object
+      properties:
+        tier:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/DigitalServiceImpactRest"
+    DigitalServiceImpactRest:
+      description: Digital service impact object
+      type: object
+      properties:
+        criteria:
+          type: string
+        sipValue:
+          type: number
+          format: float
+        unitValue:
+          type: number
+          format: float
+        unit:
+          type: string
+    DigitalServicesTerminalsIndicatorsRest:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/DigitalServiceTerminalIndicatorRest"
+    DigitalServiceTerminalIndicatorRest:
+      description: Digital service terminals indicators object
+      type: object
+      properties:
+        criteria:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalServiceTerminalsImpact'
+    DigitalServiceTerminalsImpact:
+      description: Digital service terminal impact
+      type: object
+      properties:
+        country:
+          type: string
+        description:
+          type: string
+        numberUsers:
+          type: number
+        yearlyUsageTimePerUser:
+          type: number
+        acvStep:
+          type: string
+        rawValue:
+          type: number
+        sipValue:
+          type: number
+
+    DigitalServiceNetworksIndicatorRest:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/DigitalServiceNetworkIndicatorRest"
+    DigitalServiceNetworkIndicatorRest:
+      description: Digital service networks indicators object
+      type:
+        object
+      properties:
+        criteria:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalServiceNetworkImpactRest'
+    DigitalServiceNetworkImpactRest:
+      description: Digital service network impact object
+      type: object
+      properties:
+        networkType:
+          type: string
+        rawValue:
+          type: number
+        sipValue:
+          type: number
+
+    DigitalServiceServersIndicatorRest:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/DigitalServiceServerIndicatorRest"
+    DigitalServiceServerIndicatorRest:
+      type: object
+      properties:
+        criteria:
+          type: string
+        impactsServer:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalServiceServersImpactRest'
+    DigitalServiceServersImpactRest:
+      type: object
+      properties:
+        serverType:
+          type: string
+          $ref: '#/components/schemas/ServerHostType'
+        mutualizationType:
+          type: string
+          $ref: '#/components/schemas/ServerType'
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalServiceServerImpactRest'
+
+    DigitalServiceServerImpactRest:
+      type: object
+      properties:
+        name:
+          type: string
+        totalSipValue:
+          type: number
+        hostingEfficiency:
+          type: string
+        impactVmDisk:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerIndicatorImpactVmDiskRest'
+        impactStep:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerIndicatorImpactStepRest'
+
+    ServerIndicatorImpactVmDiskRest:
+      type: object
+      properties:
+        name:
+          type: string
+        quantity:
+          type: integer
+        sipValue:
+          type: number
+    ServerIndicatorImpactStepRest:
+      type: object
+      properties:
+        acvStep:
+          type: string
+        sipValue:
+          type: number
+
+    ServerDatacenterRest:
+      type: object
+      description: Digital Service Datacenter
+      required:
+        - name
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        location:
+          type: string
+        pue:
+          type: number
+    ServerHostType:
+      type: string
+      enum:
+        - Compute
+        - Storage
+    ServerType:
+      type: string
+      enum:
+        - Dedicated
+        - Shared
+    ServerRest:
+      description: Information of a Server
+      type: object
+      required:
+        - name
+        - mutualizationType
+        - type
+        - host
+        - datacenter
+        - quantity
+      properties:
+        uid:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        name:
+          type: string
+          default: "Server A"
+        mutualizationType:
+          type: string
+          $ref: "#/components/schemas/ServerType"
+          default: Storage
+        type:
+          type: string
+          $ref: "#/components/schemas/ServerHostType"
+          default: Dedicated
+        host:
+          type: object
+          $ref: '#/components/schemas/ServerHostRefRest'
+        datacenter:
+          type: object
+          $ref: '#/components/schemas/ServerDatacenterRest'
+        quantity:
+          type: integer
+        totalVCpu:
+          type: integer
+        totalDisk:
+          type: integer
+        lifespan:
+          type: number
+          format: double
+          minimum: 0
+        annualElectricConsumption:
+          type: integer
+          minimum: 0
+        annualOperatingTime:
+          type: integer
+          default: 8760
+        vm:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerVirtualMachineRest'
+    ServerVirtualMachineRest:
+      description: Virtual machine linked to Digital Service's Server
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        vCpu:
+          type: integer
+        quantity:
+          type: integer
+          minimum: 1
+          default: 1
+        annualOperatingTime:
+          type: integer
+          default: 8760
+        disk:
+          type: integer
+    DeviceTypeRefRest:
+      description: Terminal device type referential
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          description: NumEcoEval reference
+          type: string
+          default: laptop-3
+        value:
+          description: Value to display
+          type: string
+          default: Laptop
+    NetworkTypeRefRest:
+      description: Network type referential
+      type: object
+      properties:
+        code:
+          description: Network type code
+          type: string
+        value:
+          description: Network type value
+          type: string
+    ServerHostRefRest:
+      description: Server Host referential
+      type: object
+      properties:
+        code:
+          description: Server host code
+          type: integer
+          format: int64
+        value:
+          description: Server host value
+          type: string
+        characteristic:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerHostRefCharacteristic'
+    ServerHostRefCharacteristic:
+      description: Server host characteristic
+      properties:
+        code:
+          description: characteristic code
+          type: string
+          enum: [ lifespan, vCPU, disk, annualElectricityConsumption ]
+          example: vCPU
+        value:
+          description: characteristic value
+          type: number
+          format: double
+    RestError:
+      description: Standard object for API error responses
+      type: object
+      properties:
+        code:
+          description: Error code
+          type: string
+        message:
+          description: Error message
+          type: string
+        status:
+          description: Response HTTP Status Code
+          type: integer
+        timestamp:
+          description: Error date/time
+          type: string
+          format: date-time
+    RestValidationError:
+      description: Standard object for API validation error responses
+      type: object
+      properties:
+        field:
+          description: Field in error
+          type: string
+        error:
+          description: Error code
+          type: string
+
+    InventoryType:
+      type: string
+      enum:
+        - INFORMATION_SYSTEM
+        - SIMULATION
+
+    InventoryCreateRest:
+      description: Inventory Create information
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          $ref: "#/components/schemas/InventoryType"
+          default: INFORMATION_SYSTEM

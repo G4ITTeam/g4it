@@ -1,0 +1,91 @@
+<div class="table-container">
+    <p-table
+        [value]="digitalService.servers"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [rows]="6"
+        [paginator]="true"
+        [sortField]="'creationDate'"
+        [sortOrder]="1"
+    >
+        <ng-template pTemplate="caption">
+            <div class="table-header">
+                <div class="table-head">
+                    {{ "digital-services-servers.servers" | translate }}
+                </div>
+                <p-button (click)="addNewServer()" styleClass="inventory-button-small" *ngIf="userService.isAllowedDigitalServiceWrite$ | async">{{
+                    "digital-services-servers.add-button" | translate
+                }}</p-button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="id">
+                    {{ "digital-services-servers.id" | translate }}
+                </th>
+                <th id="serverName" pSortableColumn="name">
+                    {{ "digital-services-servers.name" | translate }}
+                    <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th id="serverAllocation" pSortableColumn="mutualizationType">
+                    {{ "digital-services-servers.allocation" | translate }}
+                    <p-sortIcon field="mutualizationType"></p-sortIcon>
+                </th>
+                <th id="serverType" pSortableColumn="type">
+                    {{ "digital-services-servers.type" | translate }}
+                    <p-sortIcon field="type"></p-sortIcon>
+                </th>
+                <th id="serverQuantity" pSortableColumn="quantity">
+                    {{ "digital-services-servers.quantity.vm" | translate }}
+                    <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th id="serverHost" pSortableColumn="host.value">
+                    {{ "digital-services-servers.host" | translate }}
+                    <p-sortIcon field="host.value"></p-sortIcon>
+                </th>
+                <th id="serverDatacenter" pSortableColumn="datacenter.name">
+                    {{ "digital-services-servers.datacenter" | translate }}
+                    <p-sortIcon field="datacenter.name"></p-sortIcon>
+                </th>
+                <th id="button"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-server let-rowIndex="rowIndex">
+            <tr>
+                <td class="grey-text">{{ rowIndex + 1 }}</td>
+                <td>{{ server.name }}</td>
+                <td>
+                    {{
+                        "digital-services-servers." + server.mutualizationType | translate
+                    }}
+                </td>
+                <td>{{ "digital-services-servers." + server.type | translate }}</td>
+                <td>{{ server.quantity }} ({{ server.sumOfVmQuantity }})</td>
+                <td>{{ server.host.value }}</td>
+                <td>{{ server.datacenter.name }}</td>
+                <td style="text-align: right">
+                    <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        (click)="updateServer(server)"
+                        styleClass="p-button-text edit-button"
+                    >
+                        <img
+                            src="assets/images/icons/icon-edit.svg"
+                            alt="{{ 'common.edit' | translate }} {{ server.name }}"
+                        />
+                    </p-button>
+                    <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        (click)="deleteServers(server)"
+                        styleClass="p-button-text edit-button"
+                    >
+                        <img
+                            src="assets/images/icons/icon-bin.svg"
+                            alt="{{ 'common.delete' | translate }} {{ server.name }}"
+                        />
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-sidebar [(visible)]="sidebarVisible" position="right" styleClass="p-sidebar-lg">
+    <router-outlet></router-outlet>
+</p-sidebar>

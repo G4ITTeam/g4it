@@ -1,0 +1,171 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Inventory
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: inventory
+    description: All endpoint for an organization's inventory
+  - name: inventory-loading
+    description: All endpoint for the organization's inventory loading
+  - name: inventory-evaluation
+    description: All endpoint for the organization's inventory evaluation
+
+paths:
+  /{subscriber}/{organization}/inventories:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+    get:
+      tags:
+        - inventory
+      summary: Get an organization's inventory list
+      operationId: getInventories
+      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      parameters:
+        - $ref: '#/components/parameters/inventoryIdQueryParam'
+      responses:
+        '200':
+          description: Return the organization's inventory list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      summary: Delete all inventory for an organization
+      operationId: deleteInventories
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - inventory
+      responses:
+        '204':
+          description: All organization inventories have been deleted.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      summary: Create a new inventory
+      operationId: createInventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      requestBody:
+        description: Mandatory inventory details to create.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryCreateRest"
+      tags:
+        - inventory
+      responses:
+        '201':
+          description: Inventory has been created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          description: Inventory already exists.
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/RestError"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/inventories/{inventoryId}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    delete:
+      summary: Delete an inventory
+      operationId: deleteInventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - inventory
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/inventories/{inventoryId}/loading:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - in: header
+        name: Accept-Language
+        schema:
+          type: string
+        description: The number of items to skip before starting to collect the result set
+    post:
+      summary: Launch loading batch
+      operationId: launchLoadingBatch
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - inventory-loading
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/FileDescriptionRest"
+      responses:
+        '202':
+          description: Accepted
+          content:
+            'application/json':
+              schema:
+                type: integer
+                format: int64
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /{subscriber}/{organization}/inventories/{inventoryId}/evaluation:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      summary: Launch evaluation batch
+      operationId: launchEvaluationBatch
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - inventory-evaluation
+      responses:
+        '202':
+          description: Accepted
+          content:
+            'application/json':
+              schema:
+                type: integer
+                format: int64
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

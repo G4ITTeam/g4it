@@ -1,0 +1,86 @@
+include:
+  - project: "dep/library/ci-library"
+    ref: production
+    file: "main.yml"
+  - "/allow-ci-failure.yml"
+
+variables:
+  PROJECT_ROOT_DIR: "services/backend"
+  DISABLE_BUMP_VERSION: "true"
+  DISABLE_AUTO_TAG: "true"
+  DISABLE_PROMOTE_IMAGE: "true"
+
+build-application:
+  image: ${CI_REGISTRY}/dep/library/project-oci-images/build-java-jdk21-maven:3.9.5
+  script: |
+    cd "${PROJECT_ROOT_DIR}"
+    sed -i "s|version: .*|version: \"${CI_COMMIT_REF_NAME}\"|" src/main/resources/application.yml
+    mvn clean
+    mvn package -Dmaven.test.skip -s settings.xml -q
+  artifacts:
+    paths:
+      - $PROJECT_ROOT_DIR/target/*.jar
+
+test-application:
+  extends: .test-application
+  image: !reference [ build-application, image ]
+  script: |
+    cd "${PROJECT_ROOT_DIR}"
+    mvn verify -s settings.xml -q
+    awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' ./target/site/jacoco/jacoco.csv
+  coverage: '/(\d+(?:\.\d+)?)? % covered/'
+  artifacts:
+    when: always
+    paths:
+      - $PROJECT_ROOT_DIR/target/
+      - $PROJECT_ROOT_DIR/target/surefire-reports/*.xml
+    reports:
+      junit:
+        - $PROJECT_ROOT_DIR/target/surefire-reports/*.xml
+  cache:
+    paths:
+      - $PROJECT_ROOT_DIR/target/
+    policy: pull
+
+build-image:
+  extends: .job-with-web-requests
+  stage: build-image
+  dependencies:
+    - build-application
+  variables:
+    BUILD_REGISTRY: $CI_REGISTRY
+    BUILD_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
+    BUILD_REGISTRY_USER: $CI_REGISTRY_USER
+    BUILD_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    KANIKO_OPTIONS: ""
+    DOCKERFILE_CONTEXT_DIR: "."
+  image:
+    # Use debug to have sh
+    name: ${CI_REGISTRY}/dep/library/devops-images/kaniko:v1.18.0-debug-update1
+    entrypoint: [ "" ]
+  script:
+    - !reference [ .build-image, script ]
+  interruptible: true
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX'
+      when: always
+
+sonarqube:
+  # doing this in a second analysis stage to have the dependency-check artifacts ready to be uploaded to Sonarqube
+  stage: analysis2
+  image: !reference [ build-application, image ]
+  script:
+    - !reference [ .sonarqube-common, script ]
+    - |
+      mvn sonar:sonar -s settings.xml -q \
+        -Dsonar.host.url=${SONAR_HOST_URL} \
+        -Dsonar.login=${SONAR_LOGIN} \
+        ${ANALYSIS_OPTIONS} \
+        -Dsonar.qualitygate.wait=${SONAR_QUALITYGATE_WAIT} \
+        ${SONAR_SCANNER_OPTIONS} ${JAVA_OPTS}
+  cache: !reference [ test-application, cache ]
+
+defectdojo:
+  variables:
+    SONAR_PROJECT_KEY: "com.soprasteria.g4it:greenit-backend"
+

@@ -1,0 +1,4 @@
+nomCourtDatacenter;nomLongDatacenter;pue;localisation;nomEntite;nomSourceDonnee
+Datacenter 2;Datacenter numéro 2;0.5;FR;SSG;
+Datacenter 3;Datacenter numéro 3;a;FR;SSG;bad source
+DC_Villeperdue_01;DC_Villeperdue_OpenStack_01;1.0;France;testEntite;

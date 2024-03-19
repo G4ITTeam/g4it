@@ -1,0 +1,40 @@
+{
+    "environments": ["Developpement", "Production", "Recette", "Test", null],
+    "lifeCycles": ["DISTRIBUTION", "FABRICATION", "FIN_DE_VIE", "UTILISATION", null],
+    "types": ["Server", "Personal Computer", null],
+    "domains": [
+        {
+            "name": "",
+            "subDomains": [""]
+        },
+        {
+            "name": "Domain 4",
+            "subDomains": ["Sub domain 1"]
+        },
+        {
+            "name": "Domain 5",
+            "subDomains": ["Sub domain 3"]
+        },
+        {
+            "name": "Domain 6",
+            "subDomains": ["Sub domain 4"]
+        },
+        {
+            "name": "Domain 1",
+            "subDomains": [
+                "Sub domain 1",
+                "Sub domain 2",
+                "Sub domain 3",
+                "Sub domain 4"
+            ]
+        },
+        {
+            "name": "Domain 2",
+            "subDomains": ["Sub domain 2"]
+        },
+        {
+            "name": "Domain 3",
+            "subDomains": ["Sub domain 1"]
+        }
+    ]
+}

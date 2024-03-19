@@ -1,0 +1,119 @@
+<div class="side-panel-content">
+    <div
+        class="side-panel-title"
+        *ngIf="purpose === 'new'"
+        tabIndex="0"
+        [attr.aria-label]="'new-inventory-choose' | translate"
+    >
+        {{ "inventories.add" | translate }}
+    </div>
+    <div class="side-panel-title" *ngIf="purpose === 'upload'" tabIndex="0">
+        {{ "inventories.load-files-on" | translate }}
+        {{ name }}
+    </div>
+    <div>
+        <form action="" method="post">
+            <div
+                class="flex flex-wrap gap-3 bg-white w-7 border-round-xl border-1 cursor-pointer"
+                *ngIf="purpose === 'new'"
+            >
+                <div
+                    class="flex align-items-center p-3"
+                    (click)="selectedType = 'INFORMATION_SYSTEM'; name = ''"
+                >
+                    <label for="information-system" class="mr-1 cursor-pointer">{{
+                        "inventories.type.is-version" | translate
+                    }}</label>
+                    <p-radioButton
+                        name="inventoryType"
+                        value="INFORMATION_SYSTEM"
+                        [(ngModel)]="selectedType"
+                        inputId="information-system"
+                    ></p-radioButton>
+                </div>
+
+                <div class="border-left-1"></div>
+                <div
+                    class="flex align-items-center px-2 py-3"
+                    (click)="selectedType = 'SIMULATION'; name = ''"
+                >
+                    <label for="simulation" class="mr-1 cursor-pointer">{{
+                        "inventories.type.simulation" | translate
+                    }}</label>
+                    <p-radioButton
+                        name="inventoryType"
+                        value="SIMULATION"
+                        [(ngModel)]="selectedType"
+                        inputId="simulation"
+                    ></p-radioButton>
+                </div>
+            </div>
+
+            <br />
+            <div class="flex flex-row align-items-start ml-1" *ngIf="purpose === 'new'">
+                <p-calendar
+                    dateFormat="M yy"
+                    (onSelect)="onSelectToDate($event)"
+                    view="month"
+                    placeholder="Oct 2023"
+                    [class]="className"
+                    [disabledDates]="invalidDates"
+                    *ngIf="selectedType === inventoryType.INFORMATION_SYSTEM"
+                ></p-calendar>
+                <div [formGroup]="inventoriesForm">
+                    <input
+                        *ngIf="selectedType === inventoryType.SIMULATION"
+                        pInputText
+                        class="w-15rem md:w-30rem"
+                        type="text"
+                        name="name"
+                        formControlName="name"
+                        placeholder="Name"
+                        [attr.aria-label]="'input-simulation-aria' | translate"
+                        [(ngModel)]="name"
+                        [maxlength]="255"
+                        (keyup)="checkForDuplicate()"
+                    />
+                    <p class="error-text" *ngIf="inventoriesFormControls['name'].invalid">
+                        {{ "inventories.nameValidation" | translate }}
+                    </p>
+                    <p class="error-text" *ngIf="checkForDuplicate()">
+                        {{ "inventories.duplicateSimulation" | translate }}
+                    </p>
+                </div>
+                <p
+                    *ngIf="className === 'ng-invalid ng-dirty' && purpose === 'new'"
+                    class="error-text"
+                >
+                    {{ "inventories.inventory-date" | translate }}
+                    {{ "common.mandatory" | translate }}
+                </p>
+            </div>
+
+            <div class="input-loading-files">
+                <ng-container #uploaderContainer> </ng-container>
+            </div>
+            <button class="round-button-add" (click)="addComponent()">
+                + {{ "common.add" | translate }}
+            </button>
+            <div class="button-bottom-right">
+                <p-button styleClass="white-button" (click)="close()">{{
+                    "common.cancel" | translate
+                }}</p-button>
+                <p-button
+                    styleClass="black-button"
+                    type="submit"
+                    (click)="submitFormData()"
+                    [disabled]="purpose === 'new' && (name === '' || checkForDuplicate())"
+                >
+                    <span *ngIf="purpose === 'new'">{{
+                        "common.create" | translate
+                    }}</span>
+                    <span *ngIf="purpose === 'upload'">{{
+                        "common.upload" | translate
+                    }}</span>
+                </p-button>
+            </div>
+        </form>
+    </div>
+</div>

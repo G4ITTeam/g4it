@@ -1,0 +1,245 @@
+<div>
+    <p-card>
+        <div class="footprint-data-application">
+            <div *ngIf="selectedGraph !== 'application'">
+                <p tabindex="0" class="p-bold" *ngIf="appCount !== 0; else zeroTitle">
+                    {{
+                        "inventories-footprint.application.applications.title" | translate
+                    }}
+                </p>
+                <ng-template #zeroTitle>
+                    <p tabindex="0" [ngClass]="{ 'grey-text': appCount == 0 }">
+                        {{
+                            "inventories-footprint.application.applications.title"
+                                | translate
+                        }}
+                    </p>
+                </ng-template>
+                <div class="flex flex-row justify-content-center text-2xl mt-2">
+                    <span tabindex="0" *ngIf="appCount !== 0; else zeroApp">{{
+                        appCount.toFixed(0)
+                    }}</span>
+                    <ng-template #zeroApp>
+                        <span
+                            tabindex="0"
+                            role="application"
+                            attr.aria-label="{{ 'common.no-data' | translate }}"
+                            class="text-no-data-global"
+                        >
+                            --
+                        </span>
+                    </ng-template>
+                    <img
+                        class="small-info"
+                        src="assets/images/icons/icon-information.svg"
+                        alt="{{
+                            'inventories-footprint.application.tooltip.nb-app' | translate
+                        }}"
+                        pTooltip="{{
+                            'inventories-footprint.application.tooltip.nb-app' | translate
+                        }}"
+                        tooltipEvent="focus"
+                        tooltipPosition="right"
+                        tabindex="0"
+                    />
+                </div>
+            </div>
+            <div>
+                <div *ngIf="isSip; else unitAvg">
+                    <div *ngIf="selectedGraph !== 'application'; else app">
+                        <p
+                            tabindex="0"
+                            class="p-bold"
+                            *ngIf="averageImpactSip !== 0; else zeroTitle"
+                        >
+                            {{
+                                "inventories-footprint.application.application.avg"
+                                    | translate
+                            }}
+                        </p>
+                        <ng-template #zeroTitle>
+                            <p tabindex="0" [ngClass]="{ 'grey-text': appCount == 0 }">
+                                {{
+                                    "inventories-footprint.application.application.avg"
+                                        | translate
+                                }}
+                            </p>
+                        </ng-template>
+                    </div>
+                    <ng-template #app>
+                        <p
+                            tabindex="0"
+                            class="p-bold"
+                            *ngIf="averageImpactSip !== 0; else zeroTitle"
+                        >
+                            {{
+                                "inventories-footprint.application.app.impact" | translate
+                            }}
+                        </p>
+                        <ng-template #zeroTitle>
+                            <p
+                                tabindex="0"
+                                [ngClass]="{ 'grey-text': averageImpactSip == 0 }"
+                            >
+                                {{
+                                    "inventories-footprint.application.app.impact"
+                                        | translate
+                                }}
+                            </p>
+                        </ng-template>
+                    </ng-template>
+                </div>
+                <ng-template #unitAvg>
+                    <div *ngIf="selectedGraph !== 'application'; else app">
+                        <p
+                            tabindex="0"
+                            class="p-bold"
+                            *ngIf="averageImpactUnit !== 0; else zeroTitle"
+                        >
+                            {{
+                                "inventories-footprint.application.application.avg"
+                                    | translate
+                            }}
+                        </p>
+                        <ng-template #zeroTitle>
+                            <p
+                                tabindex="0"
+                                [ngClass]="{ 'grey-text': averageImpactUnit == 0 }"
+                            >
+                                {{
+                                    "inventories-footprint.application.application.avg"
+                                        | translate
+                                }}
+                            </p>
+                        </ng-template>
+                    </div>
+                    <ng-template #app>
+                        <p
+                            tabindex="0"
+                            class="p-bold"
+                            *ngIf="averageImpactUnit !== 0; else zeroTitle"
+                        >
+                            {{
+                                "inventories-footprint.application.app.impact" | translate
+                            }}
+                        </p>
+                        <ng-template #zeroTitle>
+                            <p
+                                tabindex="0"
+                                [ngClass]="{ 'grey-text': averageImpactUnit == 0 }"
+                            >
+                                {{
+                                    "inventories-footprint.application.app.impact"
+                                        | translate
+                                }}
+                            </p>
+                        </ng-template>
+                    </ng-template>
+                </ng-template>
+
+                <div class="flex flex-row justify-content-center text-2xl mt-2">
+                    <div *ngIf="isSip; else unit">
+                        <span
+                            tabindex="0"
+                            role="application"
+                            attr.aria-label="{{ 'common.no-data' | translate }}"
+                            *ngIf="averageImpactSip === 0; else notZeroAvg"
+                            class="text-no-data-global"
+                            >--</span
+                        >
+                        <ng-template #notZeroAvg>
+                            <span
+                                tabindex="0"
+                                *ngIf="
+                                    averageImpactSip !== 0 && averageImpactSip < 1;
+                                    else sup
+                                "
+                            >
+                                &lt; 1
+                            </span>
+                            <ng-template #sup>
+                                <span tabindex="0">{{
+                                    averageImpactSip.toFixed(0)
+                                }}</span>
+                            </ng-template>
+                        </ng-template>
+                    </div>
+                    <ng-template #unit>
+                        <span
+                            tabindex="0"
+                            role="application"
+                            attr.aria-label="{{ 'common.no-data' | translate }}"
+                            *ngIf="averageImpactUnit === 0; else notZeroAvgUnit"
+                            class="text-no-data-global"
+                            >--</span
+                        >
+                        <ng-template #notZeroAvgUnit>
+                            <span
+                                tabindex="0"
+                                *ngIf="
+                                    averageImpactUnit !== 0 && averageImpactUnit < 1;
+                                    else supUnit
+                                "
+                            >
+                                &lt; 1
+                            </span>
+                            <ng-template #supUnit>
+                                <span tabindex="0">{{
+                                    averageImpactUnit.toFixed(0)
+                                }}</span>
+                            </ng-template>
+                        </ng-template>
+                    </ng-template>
+                    <img
+                        *ngIf="selectedGraph !== 'application'; else appTooltip"
+                        class="small-info"
+                        src="assets/images/icons/icon-information.svg"
+                        alt="{{
+                            'inventories-footprint.application.tooltip.impact' | translate
+                        }}"
+                        pTooltip="{{
+                            'inventories-footprint.application.tooltip.impact' | translate
+                        }}"
+                        tooltipEvent="focus"
+                        tooltipPosition="right"
+                        tabindex="0"
+                    />
+                    <ng-template #appTooltip>
+                        <img
+                            class="small-info"
+                            src="assets/images/icons/icon-information.svg"
+                            alt="{{
+                                'inventories-footprint.application.tooltip.app-impact'
+                                    | translate
+                            }}"
+                            pTooltip="{{
+                                'inventories-footprint.application.tooltip.app-impact'
+                                    | translate
+                            }}"
+                            tooltipEvent="focus"
+                            tooltipPosition="right"
+                            tabindex="0"
+                        />
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-column align-items-center mt-4">
+            <p-card class="rmv-padding-card w-14rem">
+                <div class="flex flex-row justify-content-evenly p-2 my-2">
+                    <button
+                        [class]="!isSip ? 'round-button-selected' : 'round-button'"
+                        (click)="updateSelectedUnite('impact')"
+                        [innerHTML]="selectedCriteria.unite"
+                    ></button>
+                    <button
+                        [class]="isSip ? 'round-button-selected' : 'round-button'"
+                        (click)="updateSelectedUnite('peopleeq')"
+                    >
+                        {{ "common.peopleeq" | translate }}
+                    </button>
+                </div>
+            </p-card>
+        </div>
+    </p-card>
+</div>
