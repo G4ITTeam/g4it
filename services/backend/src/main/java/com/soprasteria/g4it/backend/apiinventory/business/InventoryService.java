@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
@@ -13,17 +13,18 @@ import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReportBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiinventory.repository.PhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.utils.EvaluationBatchStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,12 +51,6 @@ public class InventoryService {
     private InventoryRepository inventoryRepository;
 
     /**
-     * Repository to count physical equipment.
-     */
-    @Autowired
-    private PhysicalEquipmentRepository physicalEquipmentRepository;
-
-    /**
      * The organization service.
      */
     @Autowired
@@ -80,15 +75,16 @@ public class InventoryService {
      * @return inventories BO.
      */
     public List<InventoryBO> getInventories(final String subscriberName, final String organizationName, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+
         var inventories = inventoryId == null ?
                 inventoryRepository.findByOrganization(linkedOrganization) :
-                inventoryRepository.findById(inventoryId).stream().toList();
+                inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).stream().toList();
+
         /* Update calculation progress percentage */
         updateEvaluationProgressPercentage(new ArrayList<>(inventories));
         return inventoryMapper.toBusinessObject(inventories);
     }
-
 
     /**
      * Retrieving an inventory for an organization and inventory id.
@@ -96,28 +92,15 @@ public class InventoryService {
      * @param inventoryId the inventory id.
      * @return inventory BO.
      */
-    public InventoryBO getInventory(final Long inventoryId) {
-        final Inventory inventory = getInventoryEntity(inventoryId);
-        final InventoryBO inventoryBo = inventoryMapper.toBusinessObject(inventory);
-        Optional.ofNullable(inventoryBo.getIntegrationReports()).orElse(new ArrayList<>())
-                .stream()
-                .filter(report -> BatchStatus.STARTED.name().equals(report.getBatchStatusCode()))
-                .findFirst()
-                .ifPresent(report -> updateCount(inventory, inventoryBo));
-        return inventoryBo;
-    }
+    public InventoryBO getInventory(final String subscriberName, final String organizationName, final Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+        final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId);
 
-    /**
-     * /**
-     * Retrieve an inventory for an organization and inventory (without count)
-     *
-     * @param inventoryId the inventory id.
-     * @return inventory BO.
-     */
-    public InventoryBO getInventoryLight(final Long inventoryId) {
-        return inventoryMapper.toLightBusinessObject(getInventoryEntity(inventoryId));
-    }
+        if (inventory.isEmpty())
+            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryId, subscriberName, organizationName));
 
+        return inventoryMapper.toBusinessObject(inventory.get());
+    }
 
     /**
      * Create an inventory.
@@ -128,10 +111,10 @@ public class InventoryService {
      * @return inventory BO.
      */
     public InventoryBO createInventory(final String subscriberName, final String organizationName, final InventoryCreateRest inventoryCreateRest) {
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
 
         if (inventoryRepository.findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName()).isPresent()) {
-            throw new G4itRestException("409");
+            throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationName));
         }
 
         final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest.getName(), inventoryCreateRest.getType().name());
@@ -146,18 +129,41 @@ public class InventoryService {
     }
 
     /**
-     * Update count values.
+     * Create an inventory.
      *
-     * @param inventory         the inventory containing updated data.
-     * @param inventoryToUpdate the inventory business object to update.
+     * @param inventoryUpdateRest the inventoryUpdateRest.
+     * @param user                the user entity
+     * @return inventory BO.
      */
-    private void updateCount(final Inventory inventory, final InventoryBO inventoryToUpdate) {
-        inventoryToUpdate.setDataCenterCount((long) Hibernate.size(inventory.getDataCenterList()));
-        inventoryToUpdate.setPhysicalEquipmentCount(physicalEquipmentRepository.countByInventoryId(inventory.getId()));
-        inventoryToUpdate.setVirtualEquipmentCount((long) Hibernate.size(inventory.getVirtualEquipments()));
-        inventoryToUpdate.setApplicationCount((long) Hibernate.size(inventory.getApplications()));
-    }
+    public InventoryBO updateInventory(final String subscriberName, final String organizationName, final InventoryUpdateRest inventoryUpdateRest, User user) {
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+        final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryUpdateRest.getId());
+        if (inventory.isEmpty())
+            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), subscriberName, organizationName));
 
+        final Inventory inventoryToSave = inventory.get();
+        inventoryToSave.setName(inventoryUpdateRest.getName());
+
+        Note note = inventoryToSave.getNote();
+
+        if (inventoryUpdateRest.getNote() == null) {
+            note = null;
+        } else {
+            if (inventoryToSave.getNote() == null) {
+                note = Note.builder()
+                        .content(inventoryUpdateRest.getNote().getContent())
+                        .createdBy(user)
+                        .build();
+            } else {
+                note.setContent(inventoryUpdateRest.getNote().getContent());
+            }
+            note.setLastUpdatedBy(user);
+        }
+        inventoryToSave.setNote(note);
+
+        inventoryRepository.save(inventoryToSave);
+        return inventoryMapper.toBusinessObject(inventoryToSave);
+    }
 
     /**
      * Retrieve the last batch name in inventory.
@@ -200,16 +206,6 @@ public class InventoryService {
         inventoryRepository.saveAll(inventoriesToBeUpdated);
     }
 
-    /**
-     * Get inventory entity.
-     *
-     * @param inventoryId the inventory Id.
-     * @return inventory or else throw inventory not found.
-     */
-    private Inventory getInventoryEntity(final Long inventoryId) {
-        return this.inventoryRepository.findById(inventoryId)
-                .orElseThrow(() -> new G4itRestException("404"));
-    }
 }
 
 

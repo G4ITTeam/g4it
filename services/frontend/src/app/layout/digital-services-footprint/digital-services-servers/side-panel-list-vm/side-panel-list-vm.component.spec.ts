@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -27,6 +27,7 @@ import { SidePanelAddVmComponent } from "../side-panel-add-vm/side-panel-add-vm.
 import { SidePanelServerParametersComponent } from "../side-panel-server-parameters/side-panel-server-parameters.component";
 import { SidePanelListVmComponent } from "./side-panel-list-vm.component";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 const routes: Routes = [
     {
@@ -51,7 +52,7 @@ describe("SidePanelListVmComponent", () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [SidePanelListVmComponent, SidePanelAddVmComponent],
+            declarations: [SidePanelListVmComponent, SidePanelAddVmComponent , DecimalsPipe],
             imports: [
                 FormsModule,
                 ReactiveFormsModule,

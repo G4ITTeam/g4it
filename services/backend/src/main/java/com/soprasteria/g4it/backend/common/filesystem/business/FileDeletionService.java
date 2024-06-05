@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,9 +36,9 @@ public class FileDeletionService {
      * @param fileFolder          the fileFolder
      * @param storageRetentionDay the storageRetention in days
      */
-    public int deleteFiles(String subscriber, String organization, FileFolder fileFolder, Integer storageRetentionDay) {
+    public List<String> deleteFiles(String subscriber, String organization, FileFolder fileFolder, Integer storageRetentionDay) {
 
-        int res = 0;
+        List<String> filePathsToDelete = new ArrayList<>();
 
         final OffsetDateTime now = OffsetDateTime.now();
 
@@ -58,13 +59,13 @@ public class FileDeletionService {
             for (String filePath : filesToDelete) {
                 log.info("Deleting file: {}", filePath);
                 fileStorage.delete(fileFolder, filePath.replace(prefix, ""));
+                String deletedFilePath = fileStorage.getFileUrl(fileFolder, filePath.replace(prefix, ""));
+                filePathsToDelete.add(deletedFilePath);
             }
-
-            res += filesToDelete.size();
-
         } catch (IOException e) {
             log.error("An error occurred during listing or deleting files", e);
         }
-        return res;
+        return filePathsToDelete;
     }
+
 }

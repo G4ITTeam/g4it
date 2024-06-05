@@ -35,7 +35,7 @@
                 <ng-template #valueNotNull>
                     <p>
                         <span class="bold-number">{{
-                            value! < 1 ? "&lt; 1" : (value | number : "1.0-0")
+                            selectedUnit === 'Raw' ? (value | decimals) : (value | integer)
                         }}</span
                         ><br />
                         <span

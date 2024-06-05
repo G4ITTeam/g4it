@@ -14,6 +14,8 @@ import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { RadialChartComponent } from "./radial-chart.component";
 
+declare var require: any;
+
 describe("RadialChartComponent", () => {
     let component: RadialChartComponent;
     let fixture: ComponentFixture<RadialChartComponent>;

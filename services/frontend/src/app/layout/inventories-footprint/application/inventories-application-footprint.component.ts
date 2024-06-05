@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -44,6 +44,7 @@ export class InventoriesApplicationFootprintComponent {
             }
         })
     ];
+    inventoryId!: number;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -67,14 +68,15 @@ export class InventoriesApplicationFootprintComponent {
                 }
             });
         // Set active inventory based on route
-        const selectedInventoryId =
+        this.inventoryId =
             this.activatedRoute.snapshot.paramMap.get("inventoryId") ?
                 parseInt(this.activatedRoute.snapshot.paramMap.get("inventoryId")!) : 0;
+
         //Set footprint with associated filters and retrieve datacenter and physical equipement datas
-        this.inventoryRepo.updateSelectedInventory(selectedInventoryId);
+        this.inventoryRepo.updateSelectedInventory(this.inventoryId);
 
         this.footprintService.retrieveFootprint(
-            selectedInventoryId,
+            this.inventoryId,
             this.getCriteriaFromUrl(),
             "application"
         );

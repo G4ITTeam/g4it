@@ -47,7 +47,7 @@
             <tr>
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
                 <td>{{ network.type.value }}</td>
-                <td>{{ network.yearlyQuantityOfGbExchanged }}</td>
+                <td>{{ network.yearlyQuantityOfGbExchanged  | decimals }}</td>
                 <td style="text-align: right">
                     <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         (click)="

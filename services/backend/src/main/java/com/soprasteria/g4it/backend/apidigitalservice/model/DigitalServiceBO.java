@@ -7,6 +7,7 @@
  */ 
 package com.soprasteria.g4it.backend.apidigitalservice.model;
 
+import com.soprasteria.g4it.backend.common.model.NoteBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -71,5 +72,10 @@ public class DigitalServiceBO {
      * Servers
      */
     private List<ServerBO> servers;
+
+    /**
+     * Note
+     */
+    private NoteBO note;
 
 }

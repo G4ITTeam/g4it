@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,7 +42,7 @@ public class StorageDeletionServiceTest {
 
     @Test
     void testStorageDeletionService_zeroOrganization() {
-        Mockito.when(organizationRepository.findAll()).thenReturn(List.of());
+        Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(List.of());
         storageDeletionService.executeDeletion();
     }
 
@@ -59,10 +60,11 @@ public class StorageDeletionServiceTest {
                         .storageRetentionDayOutput(30000) // value chosen
                         .build())
                 .name("org")
+                .status(OrganizationStatus.ACTIVE.name())
                 .build());
 
-        Mockito.when(organizationRepository.findAll()).thenReturn(organizations);
-        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(0);
+        Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(organizations);
+        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
         storageDeletionService.executeDeletion();
@@ -83,10 +85,11 @@ public class StorageDeletionServiceTest {
                         .name("sub")
                         .build())
                 .name("org")
+                .status(OrganizationStatus.ACTIVE.name())
                 .build());
 
-        Mockito.when(organizationRepository.findAll()).thenReturn(organizations);
-        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(0);
+        Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(organizations);
+        Mockito.when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
         storageDeletionService.executeDeletion();

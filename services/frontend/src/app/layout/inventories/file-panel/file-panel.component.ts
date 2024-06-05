@@ -25,10 +25,10 @@ import { Inventory, CreateInventory } from "src/app/core/interfaces/inventory.in
 import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { LoadingDataService } from "src/app/core/service/data/loading-data.service";
-import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import { SelectFileComponent } from "./select-file/select-file.component";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Constants } from "src/constants";
+import { delay } from "src/app/core/utils/time";
 
 @Component({
     selector: "app-file-panel",
@@ -219,7 +219,8 @@ export class FilePanelComponent implements OnInit {
                 this.loadingService
                     .launchLoading(bodyLaunchLoading, inventoryId)
                     .subscribe({
-                        next: () => {
+                        next: async () => {
+                            await delay(1000);
                             this.sidebarVisibleChange.emit(false);
                             this.reloadInventoriesAndLoop.emit(inventoryId);
                             this.close();
@@ -246,14 +247,13 @@ export class FilePanelComponent implements OnInit {
     }
 
     close() {
-        this.name = "";
+        if (this.purpose === "new") {
+            this.name = "";
+        }
         this.sidebarVisibleChange.emit(false);
         this.clearSidePanel();
     }
-    clearNameField() {
-        this.name = "";
-        this.inventoriesForm.get("name")?.reset();
-    }
+
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();

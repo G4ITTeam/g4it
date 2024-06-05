@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.external.numecoeval.business;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,6 +74,18 @@ class NumEcoEvalReferentialRemotingServiceTest {
         assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("Acidification", "Albania")).isEqualTo(1);
         assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("Climate change", "Angola")).isEqualTo(2);
         assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("Ionising radiation", "Armenia")).isEqualTo(4);
+    }
+
+    @Test
+    void shouldGetQuartileIndexForInventory() throws IOException {
+
+        final File mixElecCsvFile = new ClassPathResource(testFolderRef + "/mixElec.json").getFile();
+        List<MixElectriqueDTO> mockMixElec = Arrays.asList(new ObjectMapper().readValue(Files.readString(mixElecCsvFile.toPath()), MixElectriqueDTO[].class));
+
+        Mockito.when(referentialClient.getMixElec()).thenReturn(mockMixElec);
+
+        assertThat(numEcoEvalReferentialRemotingService.isLowImpact("France")).isTrue();
+        assertThat(numEcoEvalReferentialRemotingService.isLowImpact("Germany")).isFalse();
     }
 
     @Test

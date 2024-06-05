@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { CardModule } from "primeng/card";
@@ -13,6 +13,8 @@ import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ImpactAggregateInfosComponent } from "./impact-aggregate-infos.component";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 
 describe("ImpactAggregateInfosComponent", () => {
     let component: ImpactAggregateInfosComponent;
@@ -21,7 +23,7 @@ describe("ImpactAggregateInfosComponent", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [ImpactAggregateInfosComponent],
+            declarations: [ImpactAggregateInfosComponent, DecimalsPipe, IntegerPipe],
             imports: [CardModule, TranslateModule.forRoot()],
             providers: [TranslatePipe, TranslateService],
         });
@@ -39,6 +41,7 @@ describe("ImpactAggregateInfosComponent", () => {
 
     it("should display < 1 when displayValue is < 1", async () => {
         // When the displayValue is set to a 0 < displayValue < 1
+        component.selectedUnit = "Peopleeq";
         component.displayValue = 0.1;
         fixture.detectChanges();
 

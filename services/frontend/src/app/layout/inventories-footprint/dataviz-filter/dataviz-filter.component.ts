@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
@@ -30,17 +30,26 @@ export class DatavizFilterComponent implements OnInit {
 
     ngUnsubscribe = new Subject<void>();
 
-    constructor(private filterRepo: FilterRepository) {}
+    constructor(private filterRepo: FilterRepository) { }
 
     ngOnInit(): void {
         this.filterRepo.allFilters$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((filters) => {
                 this.filters = filters;
-                this.selectedCountries = filters.countries;
-                this.selectedEntities = filters.entities;
-                this.selectedEquipments = filters.equipments;
-                this.selectedStatus = filters.status;
+                if (localStorage.getItem("selectedFiltersData")) {
+                    let selectedValues = JSON.parse(localStorage.getItem("selectedFiltersData") || '{}');
+                    this.selectedCountries = selectedValues.countries;
+                    this.selectedEntities = selectedValues.entities;
+                    this.selectedEquipments = selectedValues.equipments;
+                    this.selectedStatus = selectedValues.status;
+                } else {
+                    this.selectedCountries = filters.countries;
+                    this.selectedEntities = filters.entities;
+                    this.selectedEquipments = filters.equipments;
+                    this.selectedStatus = filters.status;
+                }
+
             });
     }
 
@@ -83,6 +92,13 @@ export class DatavizFilterComponent implements OnInit {
             equipments: this.selectedEquipments,
             status: this.selectedStatus,
         });
+        let selectedFilterValues = ({
+            countries: this.selectedCountries,
+            entities: this.selectedEntities,
+            equipments: this.selectedEquipments,
+            status: this.selectedStatus,
+        });
+        localStorage.setItem("selectedFiltersData", JSON.stringify(selectedFilterValues))
     }
 
     updateSelectedValues(

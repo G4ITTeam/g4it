@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.integration;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
@@ -54,6 +56,9 @@ class ExportApplicationTests {
     @Qualifier("exportJob")
     private Job job;
 
+    @MockBean
+    private CacheManager cacheManager;
+
     @BeforeEach
     public void beforeEach() {
         this.jobLauncherTestUtils.setJobLauncher(jobLauncher);
@@ -85,7 +90,6 @@ class ExportApplicationTests {
                 .addString("delete.local.working.folder", "true")
                 .addLong("inventory.id", 1L)
                 .addString("inventory.date", "03-2022")
-                .addString("username", "username")
                 .addString("organization", organization)
                 .addString("subscriber", subscriber)
                 .toJobParameters());

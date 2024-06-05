@@ -553,3 +553,42 @@ databaseChangeLog:
             tableName: terminal
         - sql: UPDATE public.network SET yearly_quantity_of_gb_exchanged = yearly_quantity_of_gb_exchanged * 365;
         - sql: UPDATE public.terminal SET yearly_usage_time_per_user = yearly_usage_time_per_user * 365 / 60;
+
+  - changeSet:
+      id: add-note-to-digital-service
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: note_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: note_id_ds_fk
+                    references: note(id)
+                    deleteCascade: true
+
+  - changeSet:
+      id: add-lifespan-to-terminal
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: terminal
+            columns:
+              - column:
+                  name: lifespan
+                  type: double
+        - sql:
+            UPDATE public.terminal t SET lifespan = (select lifespan from public.ref_device_type rf where rf.id = t.device_type) WHERE lifespan IS NULL;
+
+  - changeSet:
+        id: modifyDataType-avgTime-terminal
+        author: G4IT Dev Team
+        changes:
+          - modifyDataType:
+              columnName: yearly_usage_time_per_user
+              newDataType: double
+              schemaName: public
+              tableName: terminal

@@ -29,7 +29,8 @@
                     [(ngModel)]="vm.vCpu"
                     name="vcpu"
                     ngDefaultControl
-                ></p-inputNumber>
+                    locale="fr-FR"
+                />
                 <p class="error-text" *ngIf="addVmForm.get('vcpu')?.hasError('required')">
                     {{ "digital-services-servers.total.vcpu" | translate }}
                     {{ "common.mandatory" | translate }}
@@ -51,7 +52,8 @@
                     [(ngModel)]="vm.disk"
                     name="disk"
                     ngDefaultControl
-                ></p-inputNumber>
+                    locale="fr-FR"
+                />
                 <p class="error-text" *ngIf="addVmForm.get('disk')?.hasError('required')">
                     {{ "digital-services-servers.total.disk" | translate }}
                     {{ "common.mandatory" | translate }}
@@ -76,6 +78,7 @@
                     [(ngModel)]="vm.quantity"
                     name="quantity"
                     ngDefaultControl
+                    locale="fr-FR"
                 />
                 <p
                     class="error-text"
@@ -91,10 +94,12 @@
                     formControlName="opratingTime"
                     [required]="true"
                     [min]="0"
+                    [max]="8760"
                     [(ngModel)]="vm.annualOperatingTime"
                     name="opratingTime"
                     styleClass="inputnumber-medium"
                     ngDefaultControl
+                    locale="fr-FR"
                 />
                 <p
                     class="error-text"
@@ -109,7 +114,8 @@
             <p-button styleClass="white-button" (click)="close()">{{
                 "common.cancel" | translate
             }}</p-button>
-            <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            <p-button
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 styleClass="yellow-button"
                 [disabled]="addVmForm.invalid || isValueTooHigh"
                 type="submit"

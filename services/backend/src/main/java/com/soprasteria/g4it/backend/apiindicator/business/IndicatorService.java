@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 
@@ -151,17 +151,17 @@ public class IndicatorService {
     }
 
     /**
-     * Retrieve low carbon indicators.
+     * Retrieve low impact indicators.
      *
      * @param subscriber   the subscriber.
      * @param organization the organization.
      * @param inventoryId  the inventory id.
-     * @return low carbon indicators.
+     * @return low impact indicators.
      */
-    public List<PhysicalEquipmentLowCarbonBO> getPhysicalEquipmentLowCarbon(final String subscriber,
-                                                                            final String organization,
-                                                                            final Long inventoryId) {
-        return physicalEquipmentIndicatorService.getPhysicalEquipmentLowCarbon(subscriber, organization, inventoryId);
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber,
+                                                                             final String organization,
+                                                                             final Long inventoryId) {
+        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organization, inventoryId);
     }
 
 }

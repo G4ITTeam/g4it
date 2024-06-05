@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -20,7 +20,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 @Component({
     selector: "app-side-panel-add-vm",
     templateUrl: "./side-panel-add-vm.component.html",
-    providers:[MessageService]
+    providers: [MessageService],
 })
 export class SidePanelAddVmComponent {
     @Input() index: number | undefined;
@@ -61,10 +61,10 @@ export class SidePanelAddVmComponent {
 
     addVmForm = this._formBuilder.group({
         name: ["", Validators.required],
-        vcpu: [0, Validators.required],
-        disk: [0, Validators.required],
-        quantity: [0, Validators.required],
-        opratingTime: [0, Validators.required],
+        vcpu: [0, [Validators.required]],
+        disk: [0, [Validators.required]],
+        quantity: [0, [Validators.required]],
+        opratingTime: [0, [Validators.required]],
     });
 
     isValueTooHigh: boolean = false;
@@ -73,10 +73,10 @@ export class SidePanelAddVmComponent {
         private _formBuilder: FormBuilder,
         private digitalServiceBusiness: DigitalServiceBusinessService,
         private spinner: NgxSpinnerService,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
-    ngAfterViewInit() {
+    ngOnInit() {
         this.digitalServiceBusiness.serverFormSubject$.pipe(first()).subscribe((res) => {
             this.server = res;
             if (this.index === undefined) {

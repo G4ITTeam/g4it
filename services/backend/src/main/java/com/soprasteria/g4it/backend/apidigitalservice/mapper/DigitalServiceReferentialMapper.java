@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
@@ -42,6 +42,7 @@ public abstract class DigitalServiceReferentialMapper {
      */
     @Mapping(target = "code", source = "reference")
     @Mapping(target = "value", source = "description")
+    @Mapping(target = "lifespan", source = "lifespan")
     public abstract DeviceTypeBO toDeviceTypeBusinessObject(final DeviceTypeRef source);
 
     /**

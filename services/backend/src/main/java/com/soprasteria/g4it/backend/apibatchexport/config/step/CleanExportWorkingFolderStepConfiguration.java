@@ -4,9 +4,10 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.config.step;
 
+import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apibatchexport.tasklet.CleanExportWorkingFolderTasklet;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -34,7 +35,8 @@ public class CleanExportWorkingFolderStepConfiguration {
     @Bean
     public Step cleanExportWorkingFolderStep(final JobRepository jobRepository,
                                              final PlatformTransactionManager transactionManager,
-                                             final CleanExportWorkingFolderTasklet cleanExportWorkingFolderTasklet) {
+                                             final CleanExportWorkingFolderTasklet cleanExportWorkingFolderTasklet
+    ) {
         return new StepBuilder("cleanWorkingEvaluationFolderStep", jobRepository)
                 .tasklet(cleanExportWorkingFolderTasklet, transactionManager)
                 .build();
@@ -49,8 +51,10 @@ public class CleanExportWorkingFolderStepConfiguration {
     @Bean
     @StepScope
     public CleanExportWorkingFolderTasklet cleanExportWorkingFolderTasklet(
-            @Value("#{jobParameters['local.working.folder']}") final String localWorkingFolder) {
-        return new CleanExportWorkingFolderTasklet(localWorkingFolder);
+            @Value("#{jobParameters['local.working.folder']}") final String localWorkingFolder,
+            @Value("#{jobParameters['batch.name']}") final String batchName,
+            final InventoryExportService inventoryExportService) {
+        return new CleanExportWorkingFolderTasklet(localWorkingFolder, batchName, inventoryExportService);
     }
 
 }

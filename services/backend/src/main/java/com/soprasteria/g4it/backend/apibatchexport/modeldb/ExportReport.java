@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.modeldb;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -73,11 +73,6 @@ public class ExportReport extends AbstractBaseEntity implements Serializable {
      * Sending export time.
      */
     private LocalDateTime sendingExportTime;
-
-    /**
-     * The username who made the export request.
-     */
-    private String username;
 
     /**
      * The url of the zip file.

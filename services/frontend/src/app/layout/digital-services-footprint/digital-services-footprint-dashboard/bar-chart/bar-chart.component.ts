@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
 import { EChartsOption } from "echarts";
 import {
@@ -96,7 +96,7 @@ export class BarChartComponent extends AbstractDashboard {
     }
 
     loadStackBarOptionNetwork(
-        barChartData: DigitalServiceNetworksImpact[]
+        barChartData: DigitalServiceNetworksImpact[],
     ): EChartsOption {
         const seriesData = this.getSelectedCriteriaData(barChartData, "impacts");
         const xAxis: any[] = [];
@@ -104,7 +104,7 @@ export class BarChartComponent extends AbstractDashboard {
         seriesData.forEach((impact: ImpactNetworkSipValue) => {
             xAxis.push(impact.networkType);
             yAxis.push(
-                impact.sipValue < 1 ? impact.sipValue : impact.sipValue.toFixed(0)
+                impact.sipValue < 1 ? impact.sipValue : impact.sipValue.toFixed(0),
             );
         });
         return {
@@ -112,7 +112,7 @@ export class BarChartComponent extends AbstractDashboard {
                 show: true,
                 formatter: (params: any) => {
                     return `
-                            <div>${params.data < 1 ? " < 1" : params.data}
+                            <div>${this.integerPipe.transform(params.data)}
                             ${this.translate.instant("common.peopleeq-min")} </div>
                     `;
                 },
@@ -167,31 +167,24 @@ export class BarChartComponent extends AbstractDashboard {
                 formatter: (params: any) => {
                     if (!this.barChartChild) {
                         let detailsData = usersUsage.find(
-                            (details: any) => details.name === params.name
+                            (details: any) => details.name === params.name,
                         );
                         return `
-                        <div> ${params.data < 1 ? " < 1" : params.data}
+                        <div> ${this.integerPipe.transform(params.data)}
                         ${this.translate.instant("common.peopleeq-min")} </div>
                         <div>${this.translate.instant(
-                            "digital-services-terminals.nb-user"
-                        )}: ${detailsData.nbUsers}</div>
+                            "digital-services-terminals.nb-user",
+                        )}: ${this.decimalsPipe.transform(detailsData.nbUsers)}</div>
                         <div>${this.translate.instant(
-                            "digital-services-terminals.yearly-usage"
-                        )}: ${
-                            detailsData.usageTime.toFixed(2) < 1
-                                ? " < 1"
-                                : detailsData.usageTime.toFixed(0)
-                        } ${this.translate.instant(
-                            "digital-services-terminals.hours"
+                            "digital-services-terminals.yearly-usage",
+                        )}: ${this.decimalsPipe.transform(detailsData.usageTime)}
+                        ${this.translate.instant(
+                            "digital-services-terminals.hours",
                         )}</div>
                 `;
                     } else {
                         return `
-                            <div> ${
-                                params.data.toFixed(2) < 1
-                                    ? " < 1"
-                                    : params.data.toFixed(0)
-                            }
+                            <div> ${this.integerPipe.transform(params.data)}
                             ${this.translate.instant("common.peopleeq-min")} </div>
                     `;
                     }
@@ -226,7 +219,7 @@ export class BarChartComponent extends AbstractDashboard {
     }
     getSelectedCriteriaData(barChartData: any, key: string): any[] {
         const selectedData = barChartData.find(
-            (impact: any) => impact.criteria === this.selectedCriteria
+            (impact: any) => impact.criteria === this.selectedCriteria,
         );
         return selectedData ? selectedData[key] : [];
     }
@@ -235,7 +228,7 @@ export class BarChartComponent extends AbstractDashboard {
         seriesData: any[],
         xAxis: any[],
         yAxis: any[],
-        usersUsage: any[]
+        usersUsage: any[],
     ) {
         if (!this.barChartChild) {
             seriesData.forEach((impact: TerminalsImpact) => {
@@ -243,7 +236,7 @@ export class BarChartComponent extends AbstractDashboard {
                 yAxis.push(
                     impact.totalSipValue < 1
                         ? impact.totalSipValue
-                        : impact.totalSipValue.toFixed(0)
+                        : impact.totalSipValue.toFixed(0),
                 );
                 usersUsage.push({
                     name: impact.name,
@@ -253,7 +246,7 @@ export class BarChartComponent extends AbstractDashboard {
             });
         } else {
             const childData = seriesData.find(
-                (item: any) => item.name === this.selectedDetailParam
+                (item: any) => item.name === this.selectedDetailParam,
             );
 
             if (childData) {
@@ -312,7 +305,7 @@ export class BarChartComponent extends AbstractDashboard {
                     itemStyle: {
                         color: this.createStackBarGradientColor(
                             index,
-                            impact.servers.length
+                            impact.servers.length,
                         ),
                     },
                 });
@@ -325,7 +318,7 @@ export class BarChartComponent extends AbstractDashboard {
                     let vmNameNbList: string = "";
                     let hostingEfficiency =
                         detailServers.find(
-                            (server: any) => server.name === params.seriesName
+                            (server: any) => server.name === params.seriesName,
                         ).hostingEfficiency || "N/A";
                     detailServers
                         .find((server: any) => server.name === params.seriesName)
@@ -343,13 +336,13 @@ export class BarChartComponent extends AbstractDashboard {
                     </div><div>` +
                         vmNameNbList +
                         `</div>
-                    <div>Impact: ${params.data[1] < 1 ? " < 1" : params.data[1]}
+                    <div>Impact: ${this.integerPipe.transform(params.data[1])}
                     ${this.translate.instant("common.peopleeq-min")} </div>
                     <div>${this.translate.instant(
-                        "digital-services-servers.hosting-efficiency"
+                        "digital-services-servers.hosting-efficiency",
                     )}: ${this.translate.instant(
-                            "digital-services-servers." + hostingEfficiency
-                        )}</div>`
+                        "digital-services-servers." + hostingEfficiency,
+                    )}</div>`
                     );
                 },
             },
@@ -383,10 +376,10 @@ export class BarChartComponent extends AbstractDashboard {
                 .find(
                     (data: ServersType) =>
                         `digital-services-servers.server-type.${data.mutualizationType}-${data.serverType}` ===
-                        this.selectedDetailParam
+                        this.selectedDetailParam,
                 )
                 .servers.find(
-                    (data: ServerImpact) => data.name === this.selectedDetailName
+                    (data: ServerImpact) => data.name === this.selectedDetailName,
                 ) || null;
         if (this.serversRadioButtonSelected === "lifecycle") {
             const order = LifeCycleUtils.getLifeCycleList();
@@ -394,7 +387,7 @@ export class BarChartComponent extends AbstractDashboard {
 
             selectedServer.impactStep.forEach(
                 (impact: any) =>
-                    (impact.acvStep = lifecycleMap.get(impact.acvStep) || impact.acvStep)
+                    (impact.acvStep = lifecycleMap.get(impact.acvStep) || impact.acvStep),
             );
 
             selectedServer.impactStep.sort((a: any, b: any) => {
@@ -407,7 +400,7 @@ export class BarChartComponent extends AbstractDashboard {
             });
         } else if (this.serversRadioButtonSelected === "vm") {
             selectedServer.impactVmDisk.sort((a: any, b: any) =>
-                a.name.localeCompare(b.name)
+                a.name.localeCompare(b.name),
             );
             selectedServer.impactVmDisk.forEach((vm: ImpactSipValue) => {
                 xAxis.push(vm.name);
@@ -424,15 +417,15 @@ export class BarChartComponent extends AbstractDashboard {
                         const quantity = vmQuantityList[indexNumber];
                         return `
                     <div>${this.translate.instant(
-                        "digital-services-servers.quantity"
+                        "digital-services-servers.quantity",
                     )}: ${quantity} ${this.translate.instant(
-                            "digital-services-servers.vms"
-                        )}</div>
-                    <div> ${params.data < 1 ? " < 1" : params.data}
+                        "digital-services-servers.vms",
+                    )}</div>
+                    <div> ${this.integerPipe.transform(params.data)}
                     ${this.translate.instant("common.peopleeq-min")} </div>`;
                     } else {
                         return `
-                    <div> ${params.data.toFixed(2) < 1 ? " < 1" : params.data.toFixed(0)}
+                    <div> ${this.integerPipe.transform(params.data)}
                     ${this.translate.instant("common.peopleeq-min")} </div>`;
                     }
                 },

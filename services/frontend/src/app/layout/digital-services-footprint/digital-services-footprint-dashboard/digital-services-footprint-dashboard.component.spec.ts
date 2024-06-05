@@ -24,6 +24,8 @@ import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard.component";
 import { ImpactButtonComponent } from "./impact-button/impact-button.component";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("DigitalServicesFootprintDashboardComponent", () => {
     let component: DigitalServicesFootprintDashboardComponent;
@@ -167,6 +169,8 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
                 },
                 DigitalServicesDataService,
                 NgxSpinnerService,
+                IntegerPipe,
+                DecimalsPipe
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });

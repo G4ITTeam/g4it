@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
@@ -44,18 +44,28 @@ describe("HeaderComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it('should set selectedPage to "inventories" when URL starts with "/inventories"', () => {
-        Object.defineProperty(router, "url", { get: () => "/inventories" });
+    it('should set selectedPage to "inventories" when URL has "/inventories"', () => {
+        Object.defineProperty(router, "url", {
+            get: () => "/subscribers/sub1/organizations/org1/inventories",
+        });
         component.ngOnInit();
         expect(component.selectedPage).toEqual("inventories");
     });
 
-    it('should set selectedPage to "digital-services" when URL starts with "/digital-services"', () => {
+    it('should set selectedPage to "digital-services" when URL has "/digital-services"', () => {
         Object.defineProperty(router, "url", {
-            get: () => "/digital-services",
+            get: () => "/subscribers/sub1/organizations/org1/digital-services",
         });
         component.ngOnInit();
         expect(component.selectedPage).toEqual("digital-services");
+    });
+
+    it('should set selectedPage to "administration" when URL starts has "/administration"', () => {
+        Object.defineProperty(router, "url", {
+            get: () => "/administration/organizations",
+        });
+        component.ngOnInit();
+        expect(component.selectedPage).toEqual("administration");
     });
 
     it("should unsubscribe on component destruction", () => {

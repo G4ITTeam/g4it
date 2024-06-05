@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpStatusCode } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
@@ -18,25 +18,26 @@ import { Subject, takeUntil } from "rxjs";
 export class ErrorComponent implements OnInit {
     errorTitle: string = "";
     errorText: string = "";
+    detailText: string | undefined = "";
+
+    mapTypes = new Map<number, string>([
+        [HttpStatusCode.Forbidden, "forbidden"],
+        [HttpStatusCode.Unauthorized, "access-denied"],
+    ]);
 
     ngUnsubscribe = new Subject<void>();
+
     constructor(
         private activatedRoute: ActivatedRoute,
-        private translate: TranslateService
+        private translate: TranslateService,
     ) {}
 
     ngOnInit(): void {
         this.activatedRoute.params
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((params) => {
-                let pageType = "service-unavailable";
-                const errorStatus = params["err"];
-                if (
-                    errorStatus == HttpStatusCode.Forbidden ||
-                    errorStatus == HttpStatusCode.Unauthorized
-                ) {
-                    pageType = "access-denied";
-                }
+                const pageType =
+                    this.mapTypes.get(parseInt(params["err"])) || "service-unavailable";
                 this.getPageContent(pageType);
             });
     }
@@ -52,7 +53,7 @@ export class ErrorComponent implements OnInit {
             .get("error-page.text." + pageType)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((translation: string) => {
-                this.errorText = translation;
+                this.errorText = translation + this.detailText;
             });
     }
 

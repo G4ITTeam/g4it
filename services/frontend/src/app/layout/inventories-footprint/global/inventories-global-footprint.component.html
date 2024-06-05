@@ -1,10 +1,10 @@
 <div class="footprint-dashboard-container">
     <div class="chart-container">
         <div>
-            <h3>
+            <span class="text-xl">
                 {{ "inventories-footprint.global.global-vision" | translate }} <br />
                 ({{ "common.peopleeq" | translate }})
-            </h3>
+            </span>
             <p-card class="rmv-padding-card">
                 <div class="round-button-container">
                     <button
@@ -29,9 +29,9 @@
         <ng-template #chart>
             <div
                 echarts
-                class="bar-polar-stack-radial m-0"
+                class="m-0"
                 [options]="options"
-                style="height: 51vh;"
+                style="height: 480px;"
             ></div>
         </ng-template>
     </div>

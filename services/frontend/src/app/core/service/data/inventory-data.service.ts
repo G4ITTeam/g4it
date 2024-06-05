@@ -8,7 +8,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Inventory, CreateInventory } from "src/app/core/interfaces/inventory.interfaces";
+import { Inventory, CreateInventory, InventoryUpdateRest } from "src/app/core/interfaces/inventory.interfaces";
 import { environment } from "src/environments/environment";
 
 const endpoint = environment.apiEndpoints.inventories;
@@ -22,7 +22,7 @@ export class InventoryDataService {
     createInventory(creationObj: CreateInventory): Observable<Inventory> {
         return this.http.post<Inventory>(`${endpoint}`, creationObj);
     }
- 
+
     getInventories(inventoryId?: number): Observable<Inventory[]> {
         if (inventoryId === undefined) {
             return this.http.get<Inventory[]>(`${endpoint}`);
@@ -33,6 +33,10 @@ export class InventoryDataService {
         return this.http.get<Inventory[]>(`${endpoint}`, {
             params,
         });
+    }
+
+    updateInventory(inventory: InventoryUpdateRest): Observable<InventoryUpdateRest> {
+        return this.http.put<InventoryUpdateRest>(`${endpoint}`, inventory);
     }
 
     deleteInventory(id: number): Observable<Inventory[]> {

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
@@ -19,7 +19,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 @Component({
     selector: "app-side-panel-datacenter",
     templateUrl: "./side-panel-datacenter.component.html",
-    providers:[MessageService]
+    providers: [MessageService],
 })
 export default class SidePanelDatacenterComponent {
     @Input() addSidebarVisible: boolean = false;
@@ -51,17 +51,18 @@ export default class SidePanelDatacenterComponent {
 
     countries: { label: string; value: string }[] = [];
     datacenterForm = this._formBuilder.group({
-        name: ["--", Validators.required],
-        pue: [1, Validators.required],
+        name: ["", Validators.required],
+        pue: [2, Validators.required],
         country: ["France", Validators.required],
     });
 
     isToLow: boolean = false;
+    disableButton: boolean = false;
 
     constructor(
         private digitalServiceData: DigitalServicesDataService,
         private _formBuilder: FormBuilder,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
     ngOnInit() {
@@ -70,7 +71,7 @@ export default class SidePanelDatacenterComponent {
 
     async getCountryReferential() {
         const countryList = await lastValueFrom(
-            this.digitalServiceData.getCountryReferential()
+            this.digitalServiceData.getCountryReferential(),
         );
         this.countries = countryList.sort().map((item) => ({ value: item, label: item }));
     }
@@ -82,12 +83,15 @@ export default class SidePanelDatacenterComponent {
             this.isToLow = false;
         }
     }
+    onInputCheck(){
+        this.disableButton = this.datacenterForm.value.name?.trim() === "" ? true : false;
+    }
 
     submitFormData() {
         if (!this.isToLow) {
             let newDc: ServerDC = {
                 uid: "",
-                name: this.datacenterForm.value.name || "",
+                name: this.datacenterForm.value.name?.trim() || "",
                 location: this.datacenterForm.value.country || "",
                 pue: this.datacenterForm.value.pue || 1,
             };
@@ -98,8 +102,8 @@ export default class SidePanelDatacenterComponent {
 
     close() {
         this.datacenterForm = this._formBuilder.group({
-            name: ["--", Validators.required],
-            pue: [1, Validators.required],
+            name: ["", Validators.required],
+            pue: [2, [Validators.required]],
             country: ["France", Validators.required],
         });
         this.addSidebarVisibleChange.emit(false);

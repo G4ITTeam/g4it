@@ -5,6 +5,9 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */ 
+
+import { Note } from "./note.interface";
+
 export interface DigitalService {
     uid: string;
     name: string;
@@ -14,6 +17,7 @@ export interface DigitalService {
     terminals: DigitalServiceTerminalConfig[];
     servers: DigitalServiceServerConfig[];
     networks: DigitalServiceNetworkConfig[];
+    note?: Note;
 }
 
 export interface DigitalServiceServerConfig {
@@ -46,6 +50,7 @@ export interface DigitalServiceTerminalConfig {
     uid?: string;
     creationDate?: number;
     type: TerminalsType;
+    lifespan: number;
     country: string;
     numberOfUsers: number;
     yearlyUsageTimePerUser: number;
@@ -67,6 +72,7 @@ export interface DigitalServiceFootprintImpact {
 export interface TerminalsType {
     code: string;
     value: string;
+    lifespan: number;
 }
 
 export interface NetworkType {
@@ -146,6 +152,7 @@ export interface ServerDC {
     name: string;
     location: string;
     pue: number;
+    displayLabel?: string;
 }
 
 export interface Host {

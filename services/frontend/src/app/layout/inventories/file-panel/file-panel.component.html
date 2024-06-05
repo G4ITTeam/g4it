@@ -52,12 +52,13 @@
             <br />
             <div class="flex flex-row align-items-start ml-1" *ngIf="purpose === 'new'">
                 <p-calendar
-                    dateFormat="M yy"
+                    dateFormat="MM yy"
                     (onSelect)="onSelectToDate($event)"
                     view="month"
                     placeholder="Oct 2023"
                     [class]="className"
                     [disabledDates]="invalidDates"
+                    [showClear]="true"
                     *ngIf="selectedType === inventoryType.INFORMATION_SYSTEM"
                 ></p-calendar>
                 <div [formGroup]="inventoriesForm">

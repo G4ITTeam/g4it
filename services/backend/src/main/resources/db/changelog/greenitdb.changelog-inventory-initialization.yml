@@ -692,3 +692,59 @@ databaseChangeLog:
             update inventory set type = 'INFORMATION_SYSTEM';
             update inventory set name = inventory_date;
           comment: Update inventory type to 'INFORMATION_SYSTEM'
+
+  - changeSet:
+      id: create-note-table
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: note
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: note_id_pk
+              - column:
+                  name: content
+                  type: text
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: created_by_user_fk
+                    references: g4it_user(id)
+                    deleteCascade: false
+              - column:
+                  name: last_updated_by
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: last_updated_by_user_fk
+                    references: g4it_user(id)
+                    deleteCascade: false
+
+  - changeSet:
+      id: add_note_to_inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: note_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: note_id_inventory_fk
+                    references: note(id)
+                    deleteCascade: true

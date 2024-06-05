@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-business_hours
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: business_hours
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: business_hours_id_pk
+              - column:
+                  name: day
+                  type: varchar
+              - column:
+                - name: start_time
+                - type: timestamp
+              - column:
+                - name: end_time
+                - type: timestamp
+        - sql:
+            - sql:
+                INSERT INTO business_hours ("day",start_time,end_time) VALUES
+                ('monday','2024-05-10 04:00:00','2024-05-10 19:00:00'),
+                ('tuesday','2024-05-10 04:00:00','2024-05-10 19:00:00'),
+                ('wednesday','2024-05-10 04:00:00','2024-05-10 19:00:00'),
+                ('thursday','2024-05-10 04:00:00','2024-05-10 19:00:00'),
+                ('friday','2024-05-10 04:00:00','2024-05-10 19:00:00'),
+                ('saturday',NULL,NULL),
+                ('sunday',NULL,NULL);
+
+

@@ -1,0 +1,44 @@
+include:
+  - project: "dep/library/ci-library"
+    ref: production
+    file: "main.yml"
+  - "/allow-ci-failure.yml"
+
+variables:
+  PROJECT_ROOT_DIR: "services/keycloak"
+  DISABLE_BUMP_VERSION: "true"
+  DISABLE_AUTO_TAG: "true"
+  DISABLE_PROMOTE_IMAGE: "true"
+  DISABLE_DEPENDENCY_CHECK: "true"
+  DISABLE_SBOM_IMAGE: "true"
+  DISABLE_SONARQUBE: "true"
+  DISABLE_LICENSE_FINDER: "true"
+
+build-application:
+  script: |
+    echo "Do nothing"
+
+build-image:
+  extends: .job-with-web-requests
+  stage: build-image
+  dependencies:
+    - build-application
+  variables:
+    BUILD_REGISTRY: $CI_REGISTRY
+    BUILD_REGISTRY_IMAGE: $CI_REGISTRY_IMAGE
+    BUILD_REGISTRY_USER: $CI_REGISTRY_USER
+    BUILD_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    IMAGE_TAG_TO_BUILD: "24.0.4"
+    KANIKO_OPTIONS: ""
+    DOCKERFILE_CONTEXT_DIR: "."
+
+  image:
+    # Use debug to have sh
+    name: ${CI_REGISTRY}/dep/library/devops-images/kaniko:v1.18.0-debug-update1
+    entrypoint: [ "" ]
+  script:
+    - !reference [ .build-image, script ]
+  interruptible: true
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX'
+      when: always

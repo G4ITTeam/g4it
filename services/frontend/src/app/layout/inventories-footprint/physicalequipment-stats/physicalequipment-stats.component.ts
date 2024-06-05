@@ -11,7 +11,7 @@ import { FilterRepository } from "src/app/core/store/filter.repository";
 import {
     FootprintRepository,
     PhysicalEquipmentAvgAge,
-    PhysicalEquipmentLowCarbon,
+    PhysicalEquipmentLowImpact,
 } from "src/app/core/store/footprint.repository";
 
 @Component({
@@ -20,8 +20,8 @@ import {
 })
 export class PhysicalequipmentStatsComponent implements OnInit {
     physicalEquipmentsAvgAgeData: PhysicalEquipmentAvgAge[] = [];
-    physicalEquipmentsLowCarbonData: PhysicalEquipmentLowCarbon[] = [];
-    physicalEquipmentPourcentageLowCarbon = 0;
+    physicalEquipmentsLowImpactData: PhysicalEquipmentLowImpact[] = [];
+    physicalEquipmentPourcentageLowImpact = 0;
     physicalEquipmentAvgAge = 0;
     physicalEquipmentTotalCount = 0;
     selectedCountries: string[] = [];
@@ -48,7 +48,7 @@ export class PhysicalequipmentStatsComponent implements OnInit {
                 this.selectedStatus = filters.status;
                 this.selectedEquipments = filters.equipments;
                 this.computePhysicalEquipmentAverageAge(stats.averageAge);
-                this.computePhysicalEquipmentLowCarbon(stats.lowCarbon);
+                this.computePhysicalEquipmentLowImpact(stats.lowImpact);
             });
     }
 
@@ -81,20 +81,20 @@ export class PhysicalequipmentStatsComponent implements OnInit {
         }
     }
 
-    computePhysicalEquipmentLowCarbon(
-        physicalEquipmentsLowCarbon: PhysicalEquipmentLowCarbon[]
+    computePhysicalEquipmentLowImpact(
+        physicalEquipmentsLowImpact: PhysicalEquipmentLowImpact[]
     ) {
-        physicalEquipmentsLowCarbon = physicalEquipmentsLowCarbon || [];
+        physicalEquipmentsLowImpact = physicalEquipmentsLowImpact || [];
         let physicalEquipmentTotalCount = 0;
-        let lowCarbonPhysicalEquipmentCount = 0;
-        physicalEquipmentsLowCarbon.forEach((physicalEquipment) => {
+        let lowImpactPhysicalEquipmentCount = 0;
+        physicalEquipmentsLowImpact.forEach((physicalEquipment) => {
             let {
                 paysUtilisation,
                 nomEntite,
                 type,
                 statut,
                 quantite,
-                lowCarbon: isLowCarbon,
+                lowImpact: isLowImpact,
             } = physicalEquipment;
             paysUtilisation = paysUtilisation || "Empty";
             nomEntite = nomEntite || "Empty";
@@ -108,16 +108,16 @@ export class PhysicalequipmentStatsComponent implements OnInit {
                 this.selectedStatus.indexOf(statut) !== -1
             ) {
                 physicalEquipmentTotalCount += quantite;
-                if (isLowCarbon) {
-                    lowCarbonPhysicalEquipmentCount += quantite;
+                if (isLowImpact) {
+                    lowImpactPhysicalEquipmentCount += quantite;
                 }
             }
         });
         if (physicalEquipmentTotalCount === 0) {
-            this.physicalEquipmentPourcentageLowCarbon = 0;
+            this.physicalEquipmentPourcentageLowImpact = 0;
         } else {
-            this.physicalEquipmentPourcentageLowCarbon =
-                (lowCarbonPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100;
+            this.physicalEquipmentPourcentageLowImpact =
+                (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100;
         }
         this.physicalEquipmentTotalCount = physicalEquipmentTotalCount;
     }

@@ -4,12 +4,12 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
-import { MsalBroadcastService, MsalService } from "@azure/msal-angular";
-import { EventMessage, EventType, InteractionStatus } from "@azure/msal-browser";
-import { Subject, filter, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, take, takeUntil } from "rxjs";
 import { UserDataService } from "./core/service/data/user-data.service";
+import { KeycloakService } from "keycloak-angular";
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
 
 @Component({
     selector: "app-root",
@@ -17,50 +17,22 @@ import { UserDataService } from "./core/service/data/user-data.service";
 })
 export class AppComponent {
     ngUnsubscribe = new Subject<void>();
-
     constructor(
-        private authService: MsalService,
-        private msalBroadcastService: MsalBroadcastService,
-        private userService: UserDataService
+        private userService: UserDataService,
+        private keycloak: KeycloakService,
+        private router: Router,
     ) {}
 
-    ngOnInit(): void {
-        this.msalBroadcastService.msalSubject$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((message: EventMessage) => {
-                if (message.eventType == EventType.HANDLE_REDIRECT_END) {
-                    this.userService
-                        .fetchUserInfo()
-                        .pipe(takeUntil(this.ngUnsubscribe))
-                        .subscribe();
-                }
+    async ngOnInit() {
+        const token = await this.keycloak.getToken();
+        if (!token) {
+            const loginHint = localStorage.getItem("username") || "";
+            await this.keycloak.login({
+                redirectUri: window.location.href,
+                loginHint,
             });
-
-        this.msalBroadcastService.inProgress$
-            .pipe(
-                filter(
-                    (status: InteractionStatus) =>
-                        status === InteractionStatus.None ||
-                        status === InteractionStatus.HandleRedirect
-                ),
-                takeUntil(this.ngUnsubscribe)
-            )
-            .subscribe(() => {
-                this.checkAndSetActiveAccount();
-            });
-    }
-
-    checkAndSetActiveAccount() {
-        const activeAccount = this.authService.instance.getActiveAccount();
-
-        if (!activeAccount && this.authService.instance.getAllAccounts().length > 0) {
-            const accounts = this.authService.instance.getAllAccounts();
-            this.authService.instance.setActiveAccount(accounts[0]);
         }
-    }
-
-    ngOnDestroy() {
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
+        const user = await firstValueFrom(this.userService.fetchUserInfo());
+        localStorage.setItem("username", user.email);
     }
 }

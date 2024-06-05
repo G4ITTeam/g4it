@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 
@@ -156,6 +156,7 @@ describe("SidePanelServerParametersComponent", () => {
                     name: "Default DC",
                     location: "France",
                     pue: 1.5,
+                    displayLabel: 'Default DC (France - PUE = 1.5)',
                 },
             ])
         );
@@ -233,6 +234,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
+                displayLabel: 'Default DC (France - PUE = 1.5)',
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -298,6 +300,7 @@ describe("SidePanelServerParametersComponent", () => {
                     name: "Default DC",
                     location: "France",
                     pue: 1.5,
+                    displayLabel: 'Default DC (France - PUE = 1.5)',
                 },
             ])
         );
@@ -360,6 +363,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
+                displayLabel: 'Default DC (France - PUE = 1.5)',
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -482,6 +486,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
+                displayLabel: 'Default DC (France - PUE = 1.5)',
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -531,6 +536,7 @@ describe("SidePanelServerParametersComponent", () => {
                     name: "Default DC",
                     location: "France",
                     pue: 1.5,
+                    displayLabel: 'Default DC (France - PUE = 1.5)',
                 },
             ])
         );
@@ -588,6 +594,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
+                displayLabel: 'Default DC (France - PUE = 1.5)',
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -605,6 +612,7 @@ describe("SidePanelServerParametersComponent", () => {
             name: "Default DC",
             location: "France",
             pue: 1.5,
+            displayLabel: 'Default DC (France - PUE = 1.5)'
         });
 
         //call
@@ -1074,7 +1082,8 @@ describe("SidePanelServerParametersComponent", () => {
             uid: "tsc2e0c-157c-4eb2-bb38-d81cer720e1c2",
             name: "Default DC",
             location: "France",
-            pue: 1,
+            pue: 1.5,
+            displayLabel: 'Default DC (France - PUE = 1.5)'
         };
 
         //call function

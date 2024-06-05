@@ -14,6 +14,8 @@ import com.soprasteria.g4it.backend.apidigitalservice.model.ServerBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.TerminalBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.Server;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public abstract class DigitalServiceMapper {
 
     @Autowired
     private ServerMapper serverMapper;
+
+    @Autowired
+    private NoteMapper noteMapper;
 
     /**
      * Map to Business Object.
@@ -95,7 +100,7 @@ public abstract class DigitalServiceMapper {
      * @param digitalServiceReferentialService the service to retrieve referential data.
      */
     public void mergeEntity(@MappingTarget final DigitalService target, final DigitalServiceBO source,
-                            @Context final DigitalServiceReferentialService digitalServiceReferentialService) {
+                            @Context final DigitalServiceReferentialService digitalServiceReferentialService, @Context final User user) {
         if (source == null) {
             return;
         }
@@ -129,6 +134,16 @@ public abstract class DigitalServiceMapper {
                         .toList()
                         .contains(server.getUid()));
         Optional.ofNullable(source.getServers()).orElse(new ArrayList<>()).forEach(server -> mergeServer(target, server, digitalServiceReferentialService));
+
+        // Merge note
+        Note note = noteMapper.toEntity(source.getNote());
+        if (note != null) {
+            if (target.getNote() == null) {
+                note.setCreatedBy(user);
+            }
+            note.setLastUpdatedBy(user);
+        }
+        target.setNote(note);
     }
 
     /**
@@ -138,7 +153,8 @@ public abstract class DigitalServiceMapper {
      * @param source                           the business object containing updated data.
      * @param digitalServiceReferentialService to retrieve referential data.
      */
-    private void mergeTerminal(final DigitalService target, final TerminalBO source, final DigitalServiceReferentialService digitalServiceReferentialService) {
+    private void mergeTerminal(final DigitalService target, final TerminalBO source,
+                               final DigitalServiceReferentialService digitalServiceReferentialService) {
         // Fix update cascade list.
         if (StringUtils.isEmpty(source.getUid())) {
             target.addTerminal(terminalMapper.toEntity(source, digitalServiceReferentialService));
@@ -154,7 +170,8 @@ public abstract class DigitalServiceMapper {
      * @param source                           the business object containing updated data.
      * @param digitalServiceReferentialService to retrieve referential data.
      */
-    private void mergeNetwork(final DigitalService target, final NetworkBO source, final DigitalServiceReferentialService digitalServiceReferentialService) {
+    private void mergeNetwork(final DigitalService target, final NetworkBO source,
+                              final DigitalServiceReferentialService digitalServiceReferentialService) {
         if (StringUtils.isEmpty(source.getUid())) {
             target.addNetwork(networkMapper.toEntity(source, digitalServiceReferentialService));
         } else {
@@ -169,7 +186,8 @@ public abstract class DigitalServiceMapper {
      * @param source                           the business object containing updated data.
      * @param digitalServiceReferentialService to retrieve referential data.
      */
-    private void mergeServer(final DigitalService target, final ServerBO source, final DigitalServiceReferentialService digitalServiceReferentialService) {
+    private void mergeServer(final DigitalService target, final ServerBO source,
+                             final DigitalServiceReferentialService digitalServiceReferentialService) {
         if (StringUtils.isEmpty(source.getUid())) {
             target.addServer(serverMapper.toEntity(source, digitalServiceReferentialService));
         } else {

@@ -4,9 +4,10 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.config.step;
 
+import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apibatchexport.tasklet.InventoryToExportTasklet;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
@@ -70,10 +71,12 @@ public class InventoryToExportExtractionStepConfiguration {
             @Value("#{jobParameters['local.working.folder']}") final String localWorkingFolder,
             @Value("#{jobParameters['inventory.id']}") final long inventoryId,
             final InventoryRepository inventoryRepository,
-            final FileMapperInfo fileInfo) {
+            final FileMapperInfo fileInfo,
+            @Value("#{jobParameters['batch.name']}") final String batchName,
+            final InventoryExportService inventoryExportService) {
         return new InventoryToExportTasklet(localWorkingFolder,
                 fileInfo.getMapping(FileType.INVENTORY).stream().map(Header::getName).toList(),
                 inventoryId,
-                inventoryRepository);
+                inventoryRepository, batchName, inventoryExportService);
     }
 }

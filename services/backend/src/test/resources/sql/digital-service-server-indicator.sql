@@ -10,7 +10,7 @@ merge into g4it_organization(id, name, subscriber_id, creation_date, last_update
 (104, 'SUB_OTHER_2', 101, '2023-03-28 10:11:10', '2023-03-28 10:11:10')
 ;
 
-merge into g4it_user(id, username, creation_date, last_update_date) key(id) values
+merge into g4it_user(id, email, creation_date, last_update_date) key(id) values
 (100, 'username@organization.com', '2023-03-28 10:11:10', '2023-03-28 10:11:10')
 ;
 

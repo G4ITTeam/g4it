@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { TestBed } from "@angular/core/testing";
 
 import {
@@ -17,11 +17,11 @@ import { InventoryDataService } from "./inventory-data.service";
 describe("InventoryDataService", () => {
     let httpMock: HttpTestingController;
     let inventoryService: InventoryDataService;
-    let inventoryDate : any = 2;
-    let inventory :any ={
+    let inventoryDate: any = 2;
+    let inventory: any = {
         name: "Mar 2024",
-        type: "INFORMATION_SYSTEM"
-    }
+        type: "INFORMATION_SYSTEM",
+    };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -51,15 +51,14 @@ describe("InventoryDataService", () => {
                 id: 2,
                 type: "test",
                 name: "test",
-                simulationName: "test",
                 date: new Date("12 April 2023 08:48 UTC"),
                 lastEvaluationReport: {
                     batchStatusCode: "test",
                     createTime: new Date("12 April 2023 08:48 UTC"),
                     endTime: new Date("12 April 2023 08:48 UTC"),
                     batchName: "test",
-                    progressPercentage:"0%",
-                    progress:"In Progress"
+                    progressPercentage: "0%",
+                    progress: "In Progress",
                 },
                 lastIntegrationReport: {
                     batchStatusCode: "test",
@@ -92,30 +91,38 @@ describe("InventoryDataService", () => {
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch03",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                     {
                         batchStatusCode: "FAILED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch02",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                 ],
+                exportReport: {
+                    batchStatusCode: "EXPORT_GENERATED",
+                    createTime: new Date("28 April 2023 10:12 UTC"),
+                    endTime: new Date("28 April 2023 13:12 UTC"),
+                    batchName: "decaf637-ed1e-4eb2-8951-5d88d3aa2337",
+                    resultFileUrl:
+                        "file:///C:/tmp/SOPRA-STERIA-GROUP/DEMO-1/export/20240326_1206_37.zip",
+                    resultFileSize: 13221679,
+                },
             },
             {
                 id: 2,
                 type: "test",
                 name: "test",
-                simulationName: "test",
                 date: new Date("12 April 2023 08:48 UTC"),
                 lastEvaluationReport: {
                     batchStatusCode: "test",
                     createTime: new Date("12 April 2023 08:48 UTC"),
                     endTime: new Date("12 April 2023 08:48 UTC"),
                     batchName: "test",
-                    progressPercentage:"0%",
-                    progress:"In Progress"
+                    progressPercentage: "0%",
+                    progress: "In Progress",
                 },
                 lastIntegrationReport: {
                     batchStatusCode: "test",
@@ -148,16 +155,25 @@ describe("InventoryDataService", () => {
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch03",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                     {
                         batchStatusCode: "FAILED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch02",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                 ],
+                exportReport: {
+                    batchStatusCode: "EXPORT_GENERATED",
+                    createTime: new Date("28 April 2023 10:12 UTC"),
+                    endTime: new Date("28 April 2023 13:12 UTC"),
+                    batchName: "decaf637-ed1e-4eb2-8951-5d88d3aa2337",
+                    resultFileUrl:
+                        "file:///C:/tmp/SOPRA-STERIA-GROUP/DEMO-1/export/20240326_1206_37.zip",
+                    resultFileSize: 13221679,
+                },
             },
         ];
 

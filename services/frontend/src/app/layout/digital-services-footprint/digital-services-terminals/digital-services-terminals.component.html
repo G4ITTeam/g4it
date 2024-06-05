@@ -24,18 +24,17 @@
                 <th id="id">
                     {{ "digital-services-terminals.id" | translate }}
                 </th>
-                <th pSortableColumn="type.value" id="type" class="terminal-table-column">
+                <th pSortableColumn="type.value" id="type">
                     {{ "digital-services-terminals.type" | translate }}
                     <p-sortIcon field="type.value"></p-sortIcon>
                 </th>
-                <th pSortableColumn="country" id="country" class="terminal-table-column">
+                <th pSortableColumn="country" id="country">
                     {{ "digital-services-terminals.country" | translate }}
                     <p-sortIcon field="country"></p-sortIcon>
                 </th>
                 <th
                     pSortableColumn="numberOfUsers"
                     id="users"
-                    class="terminal-table-column"
                 >
                     {{ "digital-services-terminals.nb-user" | translate }}
                     <p-sortIcon field="numberOfUsers"></p-sortIcon>
@@ -43,11 +42,17 @@
                 <th
                     pSortableColumn="yearlyUsageTimePerUser"
                     id="time"
-                    class="terminal-table-column"
                 >
                     {{ "digital-services-terminals.table-yearly-usage" | translate }}
                     <p-sortIcon field="yearlyUsageTimePerUser"></p-sortIcon>
                 </th>
+                <th
+                pSortableColumn="lifespan"
+                id="lifespan"
+            >
+                {{ "digital-services-terminals.lifespan" | translate }}
+                <p-sortIcon field="lifespan"></p-sortIcon>
+               </th>
                 <th id="button"></th>
             </tr>
         </ng-template>
@@ -56,10 +61,11 @@
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
                 <td>{{ terminal.type.value }}</td>
                 <td>{{ terminal.country }}</td>
-                <td>{{ terminal.numberOfUsers }}</td>
+                <td>{{ terminal.numberOfUsers  | decimals }}</td>
                 <td>
-                    {{ terminal.yearlyUsageTimePerUser }}
+                    {{ terminal.yearlyUsageTimePerUser  | decimals }}
                 </td>
+                <td>{{ terminal.lifespan }}</td>
                 <td style="text-align: right">
                     <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         (click)="
@@ -92,6 +98,7 @@
 </div>
 <p-sidebar [(visible)]="sidebarVisible" position="right" styleClass="p-sidebar-lg">
     <app-digital-services-terminals-side-panel
+        #childSidePanel
         [terminal]="terminal"
         [sidebarVisible]="sidebarVisible"
         (sidebarVisibleChange)="sidebarVisible = $event"

@@ -1,0 +1,29 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Business Hours
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: business-hours
+    description: Endpoint for business hours retrieving
+
+paths:
+  /business-hours:
+    get:
+      tags:
+        - business-hours
+      summary: Get business hours information
+      operationId: getBusinessHours
+      responses:
+        '200':
+          description: Return business-hours information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BusinessHoursRest"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+

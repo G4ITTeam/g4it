@@ -4,13 +4,15 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.tasklet;
 
+import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apibatchexport.exception.ExportRuntimeException;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.ExportBatchStatus;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,12 +54,24 @@ public class UploadExportResultTasklet implements Tasklet {
      * The inventory name.
      */
     private final long inventoryId;
+    
+    /**
+     * Batch Name
+     */
+    private final String batchName;
+
+    /**
+     * Export Service to update batch status
+     */
+    private InventoryExportService inventoryExportService;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public RepeatStatus execute(final StepContribution stepContribution, final ChunkContext chunkContext) throws Exception {
+        inventoryExportService.updateBatchStatusCode(batchName, ExportBatchStatus.UPLOADING_DATA.name());
+
         if (!Files.exists(resultFilePath)) {
             log.warn("{} not found, skipping upload", resultFilePath);
             return RepeatStatus.FINISHED;

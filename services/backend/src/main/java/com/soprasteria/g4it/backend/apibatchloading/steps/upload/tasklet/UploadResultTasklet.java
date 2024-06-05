@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.steps.upload.tasklet;
 
 import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryIntegrationRuntimeException;
@@ -20,7 +20,9 @@ import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -93,13 +95,24 @@ public class UploadResultTasklet implements Tasklet {
                 final Path rejectedArchivePath = Path.of(resultFilePath.toFile().toString(), sessionPath + "_results.zip");
                 final List<ZipEntrySource> rejectedEntries = new ArrayList<>();
                 final List<ZipEntrySource> acceptedEntries = new ArrayList<>();
-                paths.forEach(path -> {
+                for (Path path : paths) {
                     if (path.toFile().getName().startsWith("rejected_")) {
-                        Try.run(() -> rejectedEntries.add(new FileSource(path.getFileName().toString(), path.toFile())));
+                        long lines = 0;
+                        try (LineNumberReader lnr = new LineNumberReader(new FileReader(path.toFile()))) {
+                            while (lnr.readLine() != null) {
+                                lines++;
+                                if (lines > 1) {
+                                    rejectedEntries.add(new FileSource(path.getFileName().toString(), path.toFile()));
+                                    break;
+                                }
+                            }
+                        }
+
                     } else {
-                        Try.run(() -> acceptedEntries.add(new FileSource(path.getFileName().toString(), path.toFile())));
+                        acceptedEntries.add(new FileSource(path.getFileName().toString(), path.toFile()));
                     }
-                });
+                }
+
                 ZipUtil.pack(rejectedEntries.toArray(new ZipEntrySource[0]), rejectedArchivePath.toFile());
                 ZipUtil.pack(acceptedEntries.toArray(new ZipEntrySource[0]), acceptedArchivePath.toFile());
                 uploadFile(rejectedArchivePath);

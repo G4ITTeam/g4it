@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.controller;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
@@ -52,17 +52,14 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
     @Autowired
     private ServerDataCenterRestMapper serverDataCenterRestMapper;
 
-
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<DigitalServiceRest> createDigitalService(final String subscriber, final String organization) {
-        final DigitalServiceBO digitalServiceBO = digitalServiceService.createDigitalService(subscriber, organization, userService.getUser().getUsername());
+        final DigitalServiceBO digitalServiceBO = digitalServiceService.createDigitalService(subscriber, organization, userService.getUser().getId());
         final DigitalServiceRest digitalServiceDTO = digitalServiceRestMapper.toDto(digitalServiceBO);
-        return ResponseEntity
-                .created(URI.create("/".concat(String.join("/", organization, "digital-services", digitalServiceBO.getUid()))))
-                .body(digitalServiceDTO);
+        return ResponseEntity.created(URI.create("/".concat(String.join("/", organization, "digital-services", digitalServiceBO.getUid())))).body(digitalServiceDTO);
     }
 
     /**
@@ -70,7 +67,7 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Override
     public ResponseEntity<List<DigitalServiceRest>> getDigitalServices(final String subscriber, final String organization) {
-        final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(subscriber, organization, userService.getUser().getUsername());
+        final List<DigitalServiceBO> digitalServiceBOs = digitalServiceService.getDigitalServices(subscriber, organization, userService.getUser().getId());
         return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceBOs));
     }
 
@@ -78,9 +75,7 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteDigitalService(final String subscriber,
-                                                     final String organization,
-                                                     final String digitalServiceUid) {
+    public ResponseEntity<Void> deleteDigitalService(final String subscriber, final String organization, final String digitalServiceUid) {
         digitalServiceService.deleteDigitalService(organization, digitalServiceUid);
         return ResponseEntity.noContent().build();
     }
@@ -94,7 +89,10 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
                                                                    final String digitalServiceUid,
                                                                    final DigitalServiceRest digitalService) {
         digitalService.setUid(digitalServiceUid);
-        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.updateDigitalService(digitalServiceRestMapper.toBusinessObject(digitalService))));
+        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.updateDigitalService(
+                digitalServiceRestMapper.toBusinessObject(digitalService),
+                userService.getUserEntity()
+        )));
     }
 
     /**
@@ -129,3 +127,5 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
     }
 
 }
+
+

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -12,17 +12,20 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { Note } from "src/app/core/interfaces/note.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
 @Component({
     selector: "app-digital-services",
     templateUrl: "./digital-services.component.html",
-    providers: [MessageService, ConfirmationService]
+    providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesComponent {
     digitalServices: DigitalService[] = [];
-
+    selectedDigitalService: DigitalService = {} as DigitalService;
+    sidebarVisible = false;
+    digitalServiceId: any;
     constructor(
         private digitalServicesData: DigitalServicesDataService,
         private router: Router,
@@ -30,7 +33,8 @@ export class DigitalServicesComponent {
         private confirmationService: ConfirmationService,
         private translate: TranslateService,
         private route: ActivatedRoute,
-        public userService:UserService
+        private messageService: MessageService,
+        public userService: UserService,
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -69,7 +73,7 @@ export class DigitalServicesComponent {
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
             message: `${this.translate.instant(
-                "digital-services.popup.delete-question"
+                "digital-services.popup.delete-question",
             )} ${name} ?
             ${this.translate.instant("digital-services.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
@@ -80,5 +84,41 @@ export class DigitalServicesComponent {
                 this.spinner.hide();
             },
         });
+    }
+    noteSaveValue(event: any) {
+        this.selectedDigitalService.note = {
+            content: event,
+        } as Note;
+
+        // Get digital services data.
+        this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {
+            // update note
+            res.note = {
+                content: event,
+            };
+            this.digitalServicesData.update(res).subscribe(() => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.note.save"),
+                    sticky: false,
+                });
+            });
+        });
+    }
+
+    noteDelete() {
+        // Get digital services data.
+        this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {
+            // update note
+            res.note = undefined;
+            this.digitalServicesData.update(res).subscribe(() => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.note.delete"),
+                    sticky: false,
+                });
+            });
+        });
+        this.selectedDigitalService.note = undefined;
     }
 }

@@ -20,6 +20,7 @@ import { DigitalServiceBusinessService } from "src/app/core/service/business/dig
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { BarChartComponent } from "./bar-chart.component";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
+declare var require: any
 
 describe("BarChartComponent", () => {
     let component: BarChartComponent;

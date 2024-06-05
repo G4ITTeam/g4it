@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, filter, map } from "rxjs";
 import { UserDataService } from "../data/user-data.service";
@@ -24,9 +24,11 @@ import { TranslateService } from "@ngx-translate/core";
     providedIn: "root",
 })
 export class UserService {
-    private organizationSubject = new ReplaySubject<OrganizationData>(1);
+    public organizationSubject = new ReplaySubject<OrganizationData>(1);
 
     private subscriberSubject = new ReplaySubject<string>(1);
+
+    public subscriberAdminRole:any[] = [];
 
     private rolesSubject = new ReplaySubject<Role[]>(1);
 
@@ -36,155 +38,217 @@ export class UserService {
 
     currentOrganization$ = this.organizationSubject.asObservable();
 
+    updateOrganization:any[]=[];
+
     organizations$: Observable<any[]> = this.userDataService.userSubject
         .asObservable()
         .pipe(
             map((user: User) =>
                 user.subscribers.flatMap((subscriber: any) =>
                     subscriber.organizations.map((organization: Organization) => ({
+                        id:organization.id,
                         name: organization.name,
                         organization: organization,
                         subscriber: subscriber,
                         color: this.generateColor(organization.name + subscriber.name),
-                    }))
-                )
-            )
+                    })),
+                ),
+            ),
         );
 
     isAllowedInventoryRead$ = this.roles$.pipe(
-        map((roles) => roles.includes(Role.InventoryRead))
+        map((roles) => roles.includes(Role.InventoryRead)),
+    );
+
+    // isAllowedSubscriberAdmin$ = this.subscriberRole.pipe(
+    //     map((roles) => roles.includes(Role.SubscriberAdmin)),
+    // );
+
+    isAllowedOrganizationAdmin$ = this.roles$.pipe(
+        map((roles) => roles.includes(Role.OrganizationAdmin)),
     );
 
     isAllowedDigitalServiceRead$ = this.roles$.pipe(
-        map((roles) => roles.includes(Role.DigitalServiceRead))
+        map((roles) => roles.includes(Role.DigitalServiceRead)),
     );
 
     isAllowedInventoryWrite$ = this.roles$.pipe(
-        map((roles) => roles.includes(Role.InventoryWrite))
+        map((roles) => roles.includes(Role.InventoryWrite)),
     );
 
     isAllowedDigitalServiceWrite$ = this.roles$.pipe(
-        map((roles) => roles.includes(Role.DigitalServiceWrite))
+        map((roles) => roles.includes(Role.DigitalServiceWrite)),
     );
     constructor(
         private router: Router,
         private userDataService: UserDataService,
         private messageService: MessageService,
-        private translate: TranslateService
+        private translate: TranslateService,
     ) {
-        if(this.router?.events){
-        this.router.events
-            .pipe(filter((event) => event instanceof NavigationEnd))
-            .subscribe(() => {
-                this.userDataService.userSubject.subscribe((currentUser) => {
-                    let subscriber: Subscriber | undefined;
-                    let organization: Organization | undefined;
-                    let subscriberName: string = "";
-                    let organizationName: string = "";
-                    if (this.router.url == "/") {
-                        // If the url is unknown, we set the default subscriber and the default organization
-                        subscriber = currentUser.subscribers.find(
-                            (subscriber: Subscriber) => subscriber.defaultFlag
-                        );
-                        if (
-                            subscriber === undefined &&
-                            currentUser.subscribers.length > 0
-                        ) {
-                            subscriber = currentUser.subscribers[0];
+        if (this.router?.events) {
+            this.router.events
+                .pipe(filter((event) => event instanceof NavigationEnd))
+                .subscribe(() => {
+
+                    this.userDataService.userSubject.subscribe((currentUser) => {
+                        const [
+                            _,
+                            subscribers,
+                            subscriberName,
+                            organizations,
+                            organizationName,
+                        ] = this.router.url.split("/");
+
+                        if (subscribers === "something-went-wrong") {
+                            return;
                         }
-                        if (subscriber) {
-                            organization = subscriber.organizations.find(
-                                (org) => org.defaultFlag
+
+                        let subscriber: Subscriber | undefined;
+                        let organization: Organization | undefined;
+
+                        if (currentUser?.subscribers) {
+                            this.subscriberAdminRole = [];
+                            currentUser?.subscribers.map(subscriber => {
+                                this.subscriberAdminRole.push(subscriber)
+                            }
+                        )
+
+                        }
+                        if (this.router.url == "/") {
+                            // If the url is unknown, we set the default subscriber and the default organization
+                            subscriber = currentUser.subscribers.find(
+                                (subscriber: Subscriber) => subscriber.defaultFlag,
+                            );
+                            if (
+                                subscriber === undefined &&
+                                currentUser.subscribers.length > 0
+                            ) {
+                                subscriber = currentUser.subscribers[0];
+                            }
+                            if (subscriber) {
+                                organization = subscriber.organizations.find(
+                                    (org) => org.defaultFlag,
+                                );
+
+                                if (
+                                    organization === undefined &&
+                                    subscriber.organizations.length > 0
+                                ) {
+                                    organization = subscriber.organizations[0];
+                                }
+                            }
+                        } else {
+                            subscriber = currentUser?.subscribers.find(
+                                (sub: any) => sub.name == subscriberName,
                             );
 
-                            if (
-                                organization === undefined &&
-                                subscriber.organizations.length > 0
-                            ) {
-                                organization = subscriber.organizations[0];
-                            }
+                            organization = subscriber?.organizations.find(
+                                (org: any) => org.name === organizationName,
+                            );
                         }
-                    } else {
-                        const [_, subscriberName, organizationName] =
-                            this.router.url.split("/");
-                        subscriber = currentUser?.subscribers.find(
-                            (sub: any) => sub.name == subscriberName
-                        );
 
-                        organization = subscriber?.organizations.find(
-                            (org: any) => org.name === organizationName
-                        );
-                    }
+                        if (subscriber && organization) {
+                            this.checkIfAllowedElseRedirect(subscriber, organization);
+                        }
+                        else {
+                            if (subscribers === "administration") {
+                                let subscriberData: any;
+                                if (currentUser.subscribers.length > 0) {
+                                    subscriberData = currentUser?.subscribers.find(
+                                        (sub: any) => sub.name === localStorage.getItem("currentSubscriber"),
+                                    );
 
-                    if (subscriber && organization) {
-                        this.checkIfAllowedElseRedirect(subscriber, organization);
-                    } else if (this.router.url !== "/") {
-                        this.organizationSubject.next({
-                            name: organizationName,
-                            color: this.generateColor(organizationName + subscriberName),
-                        });
-                        this.subscriberSubject.next(subscriberName);
-                    } else {
-                        this.messageService.add({
-                            severity: "warn",
-                            summary: this.translate.instant(
-                                "toast-errors.subscriber-or-organization-not-found.title"
-                            ),
-                            detail: this.translate.instant(
-                                "toast-errors.subscriber-or-organization-not-found.text"
-                            ),
-                            sticky: true,
-                        });
-                    }
+                                    let organizationData:any;
+                                    if (subscriberData) {
+                                        organizationData = subscriberData.organizations.find(
+                                            (org: any) => org.name === localStorage.getItem("currentOrganization"),
+                                        );
+                                        this.checkIfAllowedElseRedirect(subscriberData,organizationData);
+                                    }
+                                }
+                                return;
+                            }
+                            if (currentUser.subscribers.length === 0) {
+                                this.messageService.add({
+                                    severity: "warn",
+                                    summary: this.translate.instant(
+                                        "toast-errors.subscriber-or-organization-not-found.title",
+                                    ),
+                                    detail: this.translate.instant(
+                                        "toast-errors.subscriber-or-organization-not-found.text",
+                                    ),
+                                    sticky: true,
+                                });
+                            }
+                            this.router.navigateByUrl("/");
+
+                        }
+                    });
                 });
-            });
         }
     }
 
     setUserSubscription(subscriber: Subscriber, organization: Organization) {
         this.subscriberSubject.next(subscriber.name);
         this.organizationSubject.next({
+            id:organization?.id,
             name: organization.name,
             subscriber: subscriber,
             color: this.generateColor(organization.name + subscriber.name),
         });
+        localStorage.setItem('currentOrganization', organization.name);
+        localStorage.setItem('currentSubscriber', subscriber.name);
         this.rolesSubject.next(organization.roles);
     }
 
     checkIfAllowedElseRedirect(
         existingSubscriber: Subscriber,
-        existingOrganization: Organization
+        existingOrganization: Organization,
     ) {
         this.setUserSubscription(existingSubscriber, existingOrganization);
         let subscriber: string = existingSubscriber.name;
         let roles: Role[] = existingOrganization.roles;
 
+
         // We check if the roles matches with the url, if not redirect
-        if (this.router.url.includes("/inventories") && roles.includes(Role.InventoryRead)) {
+        if (
+            this.router.url.includes("/inventories") &&
+            (roles.includes(Role.InventoryRead) || (roles.includes(Role.InventoryWrite)))
+        ) {
             // Nothings to do, everythings fine
             return;
         }
         if (
             this.router.url.includes("/digital-services") &&
-            roles.includes(Role.DigitalServiceRead)
+            (roles.includes(Role.DigitalServiceRead) || (roles.includes(Role.DigitalServiceWrite)))
         ) {
             // Nothings to do, everythings fine
             return;
         }
-
+        if (
+            this.router.url.includes("administration") && (this.userDataService.isSubscriberAdmin || this.userDataService.isOrgAdmin)
+        ) {
+            // Nothings to do, everythings fine
+            return;
+        }
         // Otherwise, we redirect to defaults home page based on role
         this.redirectToAllowedPage(subscriber, existingOrganization);
     }
 
     redirectToAllowedPage(subscriber: string, organization: Organization) {
-        if (organization.roles.includes(Role.InventoryRead)) {
-            this.router.navigateByUrl(`${subscriber}/${organization.name}/inventories`);
+        const organizationUri = `subscribers/${subscriber}/organizations/${organization.name}`;
+        const adminUri = `administration/users`
+
+        if ((organization.roles.includes(Role.InventoryRead)) || (organization.roles.includes(Role.InventoryWrite))) {
+            this.router.navigateByUrl(`${organizationUri}/inventories`);
             return;
         }
-        if (organization.roles.includes(Role.DigitalServiceRead)) {
-            this.router.navigateByUrl(
-                `${subscriber}/${organization.name}/digital-services`
-            );
+        if ((organization.roles.includes(Role.DigitalServiceRead)) || (organization.roles.includes(Role.DigitalServiceWrite))) {
+            this.router.navigateByUrl(`${organizationUri}/digital-services`);
+            return;
+        }
+        if (this.userDataService.isSubscriberAdmin) {
+            this.router.navigateByUrl(adminUri);
             return;
         }
         // We didn't find a suitable home page, therefore redirect to 403.

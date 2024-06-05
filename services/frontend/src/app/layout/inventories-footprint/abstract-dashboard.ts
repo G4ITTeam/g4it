@@ -4,10 +4,12 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnDestroy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subject } from "rxjs";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { EchartsRepository } from "src/app/core/store/echarts.repository";
 import { FilterRepository } from "src/app/core/store/filter.repository";
 import { FootprintRepository } from "src/app/core/store/footprint.repository";
@@ -23,11 +25,16 @@ export class AbstractDashboard implements OnDestroy {
         public filterRepo: FilterRepository,
         public footprintRepo: FootprintRepository,
         public echartsRepo: EchartsRepository,
-        protected translate: TranslateService
+        protected translate: TranslateService,
+        protected integerPipe: IntegerPipe,
+        protected decimalsPipe: DecimalsPipe,
     ) {}
 
-    existingTranslation(param: string, view: string) {
-        const key = view + "." + param;
+    existingTranslation(param: string, view: string, type: string = "series") {
+        let key = view + "." + param;
+        if (param === "other") {
+            key = type === "legend" ? "common.otherLegend" : "common.other";
+        }
         return this.translate.instant(key) === key ? param : this.translate.instant(key);
     }
 
@@ -40,7 +47,7 @@ export class AbstractDashboard implements OnDestroy {
 
     getCriteriaTranslation(input: string) {
         return this.translate.instant(
-            "criteria." + input.toLowerCase().replace(/\s+/g, "-") + ".title"
+            "criteria." + input.toLowerCase().replace(/\s+/g, "-") + ".title",
         );
     }
 }

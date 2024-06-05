@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.external.numecoeval.business;
 
 import com.google.common.math.Quantiles;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,21 @@ public class NumEcoEvalReferentialRemotingService {
      * Map containing <country/criteria> in key and quartile index in value.
      */
     private Map<Pair<String, String>, Integer> mixElecWithQuartile;
+
+    /**
+     * Set containing the criteria.
+     */
+    private Set<String> criterias;
+
+    /**
+     * Map containing index in key and calculated value for index in value.
+     */
+    private Map<Integer, Double> computeSum;
+
+    /**
+     * Map containing country in key and sum of all the impacts  in value.
+     */
+    private Map<String, Integer> countrySumImpactMap;
 
     /**
      * Get NumEcoEval country.
@@ -72,6 +88,42 @@ public class NumEcoEvalReferentialRemotingService {
                     this::calculateQuartileIndex));
         }
         return mixElecWithQuartile.get(Pair.of(country, criteria));
+    }
+
+    /**
+     * For a country, estimate the environment impact regarding electricity mix and returns true if the country has a low impact
+     * A low impact means:
+     * - getting all countries quartile position for each criterias and sum them
+     * - checking if the country is in the first quartile of these countries
+     *
+     * @param country the country.
+     * @return if country has a low impact.
+     */
+    public boolean isLowImpact(final String country) {
+        if (this.criterias == null || this.criterias.isEmpty()) {
+            this.criterias = referentialClient.getMixElec().stream()
+                    .map(MixElectriqueDTO::getCritere)
+                    .collect(Collectors.toSet());
+        }
+        if (this.countrySumImpactMap == null || this.countrySumImpactMap.isEmpty()) {
+            this.countrySumImpactMap = this.getCountryList().stream()
+                    .collect(Collectors.toMap(
+                            refCountry -> refCountry,
+                            refCountry -> this.criterias.stream()
+                                    .mapToInt(criteria -> getMixElecQuartileIndex(criteria, refCountry))
+                                    .sum()
+                    ));
+
+            this.computeSum = Quantiles
+                    .quartiles()
+                    .indexes(1, 2, 3, 4)
+                    .compute(countrySumImpactMap.values());
+        }
+
+        int firstQuartileValue = computeSum.get(1).intValue();
+        Integer totalImpact = this.countrySumImpactMap.get(country);
+
+        return totalImpact != null && totalImpact < firstQuartileValue;
     }
 
     /**

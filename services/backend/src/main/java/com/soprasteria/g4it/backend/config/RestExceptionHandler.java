@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.config;
 
 
@@ -44,7 +44,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {G4itRestException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<RestError> handleG4itRestException(final G4itRestException ex, final WebRequest request) {
-        log.error("Exception de validation survenue lors de la requête {}", request.getContextPath(), ex);
+
         if (String.valueOf(HttpStatus.NO_CONTENT.value()).equals(ex.getCode())) {
             return ResponseEntity.noContent().build();
         }
@@ -57,15 +57,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                             .status(409)
                             .build(), HttpStatus.CONFLICT);
         }
-        if (String.valueOf(HttpStatus.NOT_FOUND.value()).equals(ex.getCode())) {
+        if (String.valueOf(HttpStatus.FORBIDDEN.value()).equals(ex.getCode())) {
+            log.error("Forbidden: {}", ex.getMessage());
             return new ResponseEntity<>(
                     RestError.builder()
-                            .code("404")
+                            .code("403")
                             .message(ex.getMessage())
                             .timestamp(OffsetDateTime.now())
-                            .status(404)
-                            .build(), HttpStatus.NOT_FOUND);
+                            .status(403)
+                            .build(), HttpStatus.FORBIDDEN);
         }
+
+        if (String.valueOf(HttpStatus.NOT_FOUND.value()).equals(ex.getCode())) {
+            log.error("Not found error: {}", ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        log.error("Exception de validation survenue lors de la requête {}", request.getContextPath(), ex);
         return new ResponseEntity<>(
                 RestError.builder()
                         .code("500")
@@ -91,7 +99,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = AuthorizationException.class)
     public ResponseEntity<Void> unauthorizedException(final AuthorizationException ex, WebRequest request) {
-        log.error("Unauthorized to access {}", request.getContextPath(), ex);
+        log.error("Unauthorized to access {}: {}", request.getContextPath(), ex.getMessage());
         return ResponseEntity.status(ex.getStatusCode()).build();
     }
 
@@ -141,4 +149,3 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-

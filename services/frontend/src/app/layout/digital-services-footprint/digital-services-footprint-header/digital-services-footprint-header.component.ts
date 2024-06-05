@@ -12,6 +12,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { Note } from "src/app/core/interfaces/note.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
@@ -33,6 +34,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     };
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     disableCalcul = true;
+    sidebarVisible: boolean = false;
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -40,7 +42,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private confirmationService: ConfirmationService,
         private translate: TranslateService,
-        public userService:UserService
+        public userService: UserService,
+        private messageService: MessageService,
     ) {}
 
     ngOnInit() {
@@ -64,14 +67,14 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
             message: `${this.translate.instant(
-                "digital-services.popup.delete-question"
+                "digital-services.popup.delete-question",
             )} ${this.digitalService.name} ?
             ${this.translate.instant("digital-services.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
                 this.spinner.show();
                 await lastValueFrom(
-                    this.digitalServicesData.delete(this.digitalService.uid)
+                    this.digitalServicesData.delete(this.digitalService.uid),
                 );
                 this.router.navigateByUrl(this.changePageToDigitalServices());
             },
@@ -81,10 +84,10 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     async launchCalcul() {
         this.spinner.show();
         await lastValueFrom(
-            this.digitalServicesData.launchCalcul(this.digitalService.uid)
+            this.digitalServicesData.launchCalcul(this.digitalService.uid),
         );
         this.digitalService = await lastValueFrom(
-            this.digitalServicesData.get(this.digitalService.uid)
+            this.digitalServicesData.get(this.digitalService.uid),
         );
         this.spinner.hide();
     }
@@ -107,8 +110,32 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let subscriber = this.router.url.split("/")[1];
-        let organization = this.router.url.split("/")[2];
-        return `/${subscriber}/${organization}/digital-services`;
+        let [_, subscribers, subscriber, organizations, organization] = this.router.url.split("/");
+        return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
+    }
+
+    noteSaveValue(event: any) {
+        this.digitalService.note = {
+            content: event,
+        } as Note;
+
+        this.digitalServicesData.update(this.digitalService).subscribe((res) => {
+            this.messageService.add({
+                severity: "success",
+                summary: this.translate.instant("common.note.save"),
+                sticky: false,
+            });
+        });
+    }
+
+    noteDelete() {
+        this.digitalService.note = undefined;
+        this.digitalServicesData.update(this.digitalService).subscribe((res) => {
+            this.messageService.add({
+                severity: "success",
+                summary: this.translate.instant("common.note.delete"),
+                sticky: false,
+            });
+        });
     }
 }

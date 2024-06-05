@@ -6,7 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */ 
 import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { DropdownModule } from "primeng/dropdown";
@@ -75,7 +75,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         SharedModule,
         TabMenuModule,
         TableModule,
-        SharedModule,
         CardModule,
         ScrollPanelModule,
         SidebarModule,
@@ -88,6 +87,10 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DividerModule,
         digitalServicesFootprintRouter,
     ],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA
+      ],
     exports: [DigitalServicesFootprintComponent],
 })
 export class DigitalServicesFootprintModule {}

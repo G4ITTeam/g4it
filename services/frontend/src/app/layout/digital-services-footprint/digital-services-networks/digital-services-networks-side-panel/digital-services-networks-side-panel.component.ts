@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -20,7 +20,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 @Component({
     selector: "app-digital-services-networks-side-panel",
     templateUrl: "./digital-services-networks-side-panel.component.html",
-    providers : [MessageService]
+    providers: [MessageService],
 })
 export class DigitalServicesNetworksSidePanelComponent {
     @Input() sidebarVisible: boolean = true;
@@ -45,14 +45,14 @@ export class DigitalServicesNetworksSidePanelComponent {
 
     networksForm = this._formBuilder.group({
         type: [{ code: "", value: "" }, Validators.required],
-        yearlyQuantityOfGbExchanged: ["0", Validators.required],
+        yearlyQuantityOfGbExchanged: [0, [Validators.required]],
     });
 
     constructor(
         private digitalDataService: DigitalServicesDataService,
         private _formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
     ngOnInit() {
@@ -61,7 +61,7 @@ export class DigitalServicesNetworksSidePanelComponent {
 
     async getNetworksRefrentials() {
         const referentials = await lastValueFrom(
-            this.digitalDataService.getNetworkReferential()
+            this.digitalDataService.getNetworkReferential(),
         );
         this.networkTypes = referentials;
         this.network.type = { code: "fixed-line-network-1", value: "Fixed FR" };
@@ -79,7 +79,6 @@ export class DigitalServicesNetworksSidePanelComponent {
         let network = this.networksForm.get("type")!.value || "";
         this.network.type.code = JSON.parse(JSON.stringify(network)).code;
         this.network.type.value = JSON.parse(JSON.stringify(network)).value;
-
         this.updateNetworks.emit(this.network);
         this.close();
     }

@@ -1,4 +1,5 @@
-<div class="header-footprint">
+<p-toast #toast position="bottom-center"></p-toast>
+<div class="flex justify-content-between align-items-center flex-wrap">
     <div>
         <div
             class="green-dashboard-title"
@@ -15,20 +16,104 @@
             {{ "inventories.title" | translate }}
         </div>
         <span
-            *ngIf="inventoryType === types.INFORMATION_SYSTEM"
+            *ngIf="inventory.type === types.INFORMATION_SYSTEM"
             class="h2-title"
             tabIndex="0"
-            >{{ inventoryName | monthYear }}</span
+            >{{ inventory.name | monthYear }}</span
         >
-        <span *ngIf="inventoryType === types.SIMULATION" class="h2-title" tabIndex="0">{{
-            inventoryName
+        <span *ngIf="inventory.type === types.SIMULATION" class="h2-title" tabIndex="0">{{
+            inventory.name
         }}</span>
     </div>
-    <div>
-        <p-button styleClass="black-button" (click)="confirmExport($event)" *ngIf="userService.isAllowedInventoryWrite$ | async">
+    <div class="mr-4">
+        <p-sidebar
+            [(visible)]="sidebarVisible"
+            position="right"
+            styleClass="p-sidebar-md w-7"
+        >
+            <app-common-editor
+                [content]="inventory.note?.content"
+                [title]="'Note - ' + inventory.name"
+                [showButtons]="userService.isAllowedInventoryWrite$ | async"
+                (saveValue)="noteSaveValue($event)"
+                (close)="sidebarVisible = $event"
+                (delete)="noteDelete($event); sidebarVisible = $event"
+                styleClass="mx-7"
+            >
+            </app-common-editor>
+        </p-sidebar>
+        <p-button
+            *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
+            (click)="sidebarVisible = true"
+            [tabindex]="0"
+            styleClass="white-button"
+            class="mx-2"
+            attr.aria-label="{{ 'common.accessibility.addNote' | translate }}"
+        >
+            <img
+                class="w-1rem h-1rem uppercase mr-2"
+                src="assets/images/icons/icon-plus.svg"
+                alt="{{ 'common.accessibility.addNote' | translate }}"
+            />
+            {{ "common.note.add" | translate }}
+        </p-button>
+        <p-button
+            *ngIf="inventory.note"
+            (click)="sidebarVisible = true"
+            [tabindex]="0"
+            styleClass="white-button"
+            class="mx-2"
+            attr.aria-label="{{ 'common.accessibility.attachedNote' | translate }}"
+        >
+            <img
+                class="w-1rem h-1rem uppercase mr-2"
+                src="assets/images/icons/icon-note.svg"
+                alt="{{ 'common.accessibility.attachedNote' | translate }}"
+            />
+            {{ "common.note.attached" | translate }}
+        </p-button>
+        <p-button
+            styleClass="black-button"
+            (click)="confirmExport($event)"
+            *ngIf="
+                (batchStatusCode === undefined ||                
+                failedStatusCodeList.includes(batchStatusCode)) && 
+                (userService.isAllowedInventoryWrite$ | async)
+            "
+        >
             <img src="assets/images/icons/icon-export.svg" alt="" class="button-icon" />
             {{ "inventories-footprint.header.export" | translate }}
         </p-button>
-        <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
+        <p-button
+            attr.aria-label="{{ 'common.accessibility.download' | translate }}"
+            styleClass="black-button"
+            (click)="download($event)"
+            [disabled]="downloadInProgress"
+            *ngIf="
+                batchStatusCode === isGenerated() &&
+                (userService.isAllowedInventoryWrite$ | async)
+            "
+        >
+            <img src="assets/images/icons/icon-export.svg" alt="" class="button-icon" />
+            {{ "inventories-footprint.header.download" | translate }}
+        </p-button>
+        <p-button
+            attr.aria-label="{{ 'common.accessibility.download' | translate }}"
+            styleClass="grey-button"
+            *ngIf="
+                batchStatusCode &&
+                inProgressStatusCodeList.includes(batchStatusCode) &&
+                (userService.isAllowedInventoryWrite$ | async)
+            "
+        >
+            <img
+                class="w-1rem uppercase"
+                src="assets/images/icons/icon-refresh.svg"
+                alt="{{ 'common.accessibility.preparingResults' | translate }}"
+            />
+            &nbsp;
+            {{ "common.preparingResults" | translate }}
+        </p-button>
     </div>
 </div>
+<p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>

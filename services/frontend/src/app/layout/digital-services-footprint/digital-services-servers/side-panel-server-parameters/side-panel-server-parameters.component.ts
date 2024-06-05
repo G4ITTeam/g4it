@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -24,7 +24,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 @Component({
     selector: "side-panel-server-parameters",
     templateUrl: "./side-panel-server-parameters.component.html",
-    providers:[MessageService]
+    providers: [MessageService],
 })
 export class SidePanelServerParametersComponent implements OnInit {
     ngUnsubscribe = new Subject<void>();
@@ -59,12 +59,12 @@ export class SidePanelServerParametersComponent implements OnInit {
     serverForm = this._formBuilder.group({
         host: [this.server.host, Validators.required],
         datacenter: [{ uid: "", name: "", location: "", pue: 1 }, Validators.required],
-        quantity: [this.server.quantity, Validators.required],
-        vcpu: [0, Validators.required],
-        disk: [0, Validators.required],
-        lifespan: [0, Validators.required],
-        electricityConsumption: [0, Validators.required],
-        operatingTime: [8760, Validators.required],
+        quantity: [this.server.quantity, [Validators.required]],
+        vcpu: [0, [Validators.required]],
+        disk: [0, [Validators.required]],
+        lifespan: [0, [Validators.required]],
+        electricityConsumption: [0, [Validators.required]],
+        operatingTime: [8760, [Validators.required]],
     });
 
     hostOptions: Host[] = [];
@@ -81,7 +81,7 @@ export class SidePanelServerParametersComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -92,9 +92,10 @@ export class SidePanelServerParametersComponent implements OnInit {
                 .subscribe(async (res: DigitalServiceServerConfig) => {
                     this.spinner.show();
                     this.server = { ...res };
+
                     await this.setHostReferential(res.type);
-                    await this.setDatacenterReferential(res.datacenter);
                     this.server = { ...res };
+                    await this.setDatacenterReferential(res.datacenter);
                     this.spinner.hide();
                     if (this.server.uid === "" && !this.dataInitialized) {
                         this.initializeDefaultValue();
@@ -111,10 +112,10 @@ export class SidePanelServerParametersComponent implements OnInit {
 
     async setHostReferential(type: string) {
         const hostReferentials = await lastValueFrom(
-            this.digitalDataService.getHostServerReferential(type)
+            this.digitalDataService.getHostServerReferential(type),
         );
         this.hostOptions = hostReferentials.sort((a, b) =>
-            a.value.localeCompare(b.value)
+            a.value.localeCompare(b.value),
         );
         const indexS = this.hostOptions.findIndex((x) => x.value === `Server ${type} S`);
         const itemS = this.hostOptions.splice(indexS, 1);
@@ -130,91 +131,102 @@ export class SidePanelServerParametersComponent implements OnInit {
     async setDatacenterReferential(datacenter: ServerDC | undefined) {
         const dcReferentials = await lastValueFrom(
             this.digitalDataService.getDatacenterServerReferential(
-                this.digitalService.uid
-            )
+                this.digitalService.uid,
+            ),
         );
         if (datacenter?.uid === "" && this.dataInitialized) {
             dcReferentials.push(datacenter);
         }
         this.datacenterOptions = dcReferentials;
+        this.datacenterOptions = this.datacenterOptions.map(this.formatDatacenterDisplayLabel);
+        this.server.datacenter = this.datacenterOptions.find(res=> res.uid === datacenter?.uid);
+    }
+
+    formatDatacenterDisplayLabel(data: ServerDC): ServerDC {
+        return {
+            ...data,
+            displayLabel: `${data.name} (${data.location} - PUE = ${data.pue})`,
+        };
     }
 
     initializeDefaultValue() {
         if (this.server.type === "Compute") {
             this.indexHostCompute = this.hostOptions.findIndex(
-                (x) => x.value === "Server Compute M"
+                (x) => x.value === "Server Compute M",
             );
             this.server.host = this.hostOptions[this.indexHostCompute];
         } else if (this.server.type === "Storage") {
             this.indexHostStorage = this.hostOptions.findIndex(
-                (x) => x.value === "Server Storage M"
+                (x) => x.value === "Server Storage M",
             );
             this.server.host = this.hostOptions[this.indexHostStorage];
         }
         this.changeDefaultValue();
         this.indexDatacenter = this.datacenterOptions.findIndex(
-            (x) => x.name === "Default DC"
+            (x) => x.name === "Default DC",
         );
-        this.server.datacenter = this.datacenterOptions[this.indexDatacenter];
+        
+        this.datacenterOptions = this.datacenterOptions.map(this.formatDatacenterDisplayLabel);
+        this.server.datacenter = this.datacenterOptions[0];
         this.server.quantity = 1;
         this.server.annualOperatingTime = 8760;
     }
 
     changeDefaultValue() {
         const indexHost = this.hostOptions.findIndex(
-            (x) => x.value === this.server.host!.value
+            (x) => x.value === this.server.host!?.value,
         );
-        const indexElec = this.server.host!.characteristic.findIndex(
-            (x) => x.code === "annualElectricityConsumption"
+        const indexElec = this.server.host!?.characteristic?.findIndex(
+            (x) => x.code === "annualElectricityConsumption",
         );
         if (indexElec !== -1) {
             this.serverForm.controls["electricityConsumption"].setValue(
-                this.hostOptions[indexHost].characteristic[indexElec].value
+                this.hostOptions[indexHost]?.characteristic[indexElec].value,
             );
             this.server.annualElectricConsumption =
-                this.hostOptions[indexHost].characteristic[indexElec].value;
+                this.hostOptions[indexHost]?.characteristic[indexElec].value;
         } else {
             this.serverForm.controls["electricityConsumption"].setValue(null);
             this.server.annualElectricConsumption = undefined;
         }
-        const indexLifespan = this.server.host!.characteristic.findIndex(
-            (x) => x.code === "lifespan"
+        const indexLifespan = this.server.host!?.characteristic?.findIndex(
+            (x) => x.code === "lifespan",
         );
         if (indexLifespan !== -1) {
             this.serverForm.controls["lifespan"].setValue(
-                this.hostOptions[indexHost].characteristic[indexLifespan].value
+                this.hostOptions[indexHost]?.characteristic[indexLifespan].value,
             );
             this.server.lifespan =
-                this.hostOptions[indexHost].characteristic[indexLifespan].value;
+                this.hostOptions[indexHost]?.characteristic[indexLifespan].value;
         } else {
             this.serverForm.controls["lifespan"].setValue(null);
             this.server.lifespan = undefined;
         }
 
         if (this.server.type === "Compute") {
-            const indexVcpu = this.server.host!.characteristic.findIndex(
-                (x) => x.code === "vCPU"
+            const indexVcpu = this.server.host!?.characteristic?.findIndex(
+                (x) => x.code === "vCPU",
             );
             if (indexVcpu !== -1) {
                 this.serverForm.controls["vcpu"].setValue(
-                    this.hostOptions[indexHost].characteristic[indexVcpu].value
+                    this.hostOptions[indexHost]?.characteristic[indexVcpu].value,
                 );
                 this.server.totalVCpu =
-                    this.hostOptions[indexHost].characteristic[indexVcpu].value;
+                    this.hostOptions[indexHost]?.characteristic[indexVcpu].value;
             } else {
                 this.serverForm.controls["vcpu"].setValue(null);
                 this.server.totalVCpu = undefined;
             }
         } else if (this.server.type === "Storage") {
-            const indexDisk = this.server.host!.characteristic.findIndex(
-                (x) => x.code === "disk"
+            const indexDisk = this.server.host!?.characteristic?.findIndex(
+                (x) => x.code === "disk",
             );
             if (indexDisk !== -1) {
                 this.serverForm.controls["disk"].setValue(
-                    this.hostOptions[indexHost].characteristic[indexDisk].value
+                    this.hostOptions[indexHost]?.characteristic[indexDisk].value,
                 );
                 this.server.totalDisk =
-                    this.hostOptions[indexHost].characteristic[indexDisk].value;
+                    this.hostOptions[indexHost]?.characteristic[indexDisk].value;
             } else {
                 this.serverForm.controls["disk"].setValue(null);
                 this.server.totalDisk = undefined;
@@ -225,7 +237,8 @@ export class SidePanelServerParametersComponent implements OnInit {
     async addDatacenter(datacenter: ServerDC) {
         this.spinner.show();
         this.datacenterOptions.push(datacenter);
-        this.server.datacenter = datacenter;
+        this.datacenterOptions = this.datacenterOptions.map(this.formatDatacenterDisplayLabel);
+        this.server.datacenter = this.datacenterOptions.find(res=> res.name === datacenter.name);
         this.spinner.hide();
     }
 
@@ -241,7 +254,7 @@ export class SidePanelServerParametersComponent implements OnInit {
             this.spinner.show();
             this.digitalServiceBusiness.submitServerForm(
                 this.server,
-                this.digitalService
+                this.digitalService,
             );
             this.spinner.hide();
             this.close();

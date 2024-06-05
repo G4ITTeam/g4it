@@ -4,13 +4,16 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { TooltipModule } from "primeng/tooltip";
 import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
 import { BatchStatusComponent } from "./batch-status.component";
+import { FileSystemDataService } from "src/app/core/service/data/file-system-data.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MessageService } from "primeng/api";
 
 describe("BatchStatusComponent", () => {
     let component: BatchStatusComponent;
@@ -18,8 +21,13 @@ describe("BatchStatusComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [BatchStatusComponent, MonthYearPipe],
-            imports: [TooltipModule, TranslateModule.forRoot()],
-            providers: [TranslatePipe, TranslateService],
+            imports: [HttpClientTestingModule, TooltipModule, TranslateModule.forRoot()],
+            providers: [
+                TranslatePipe,
+                TranslateService,
+                FileSystemDataService,
+                MessageService,
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(BatchStatusComponent);

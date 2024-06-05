@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.business;
 
 import com.soprasteria.g4it.backend.apibatchexport.config.ExportBatchConfiguration;
@@ -55,7 +55,6 @@ class ExportJobServiceTest {
     void whenCallLaunchExport_thenReturnJobId() throws Exception {
         final String subscriber = "sub";
         final String organization = "org";
-        final String username = "user";
         final String inventoryName = "02-2020";
         final String batchName = "batchName";
         final Long inventoryId = 4L;
@@ -63,8 +62,7 @@ class ExportJobServiceTest {
         final JobInstance instance = new JobInstance(1L, "testJob");
         final LocalDateTime startTime = LocalDateTime.now();
         final LocalDateTime endTime = LocalDateTime.now();
-        final JobParameters param = new JobParametersBuilder().addLong("inventory.id", inventoryId)
-                .addString("username", username).toJobParameters();
+        final JobParameters param = new JobParametersBuilder().addLong("inventory.id", inventoryId).toJobParameters();
         final JobExecution execution = new JobExecution(instance, param);
         execution.setCreateTime(startTime);
         execution.setEndTime(endTime);
@@ -73,7 +71,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenReturn(execution);
 
-        final Long jobId = service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, username);
+        final Long jobId = service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName);
 
         assertThat(jobId).isEqualTo(1L);
 
@@ -84,7 +82,6 @@ class ExportJobServiceTest {
     void whenAsyncJobLauncherThrowJobExecutionAlreadyRunningException_thenThrowExportException() throws Exception {
         final String subscriber = "sub";
         final String organization = "org";
-        final String username = "user";
         final String inventoryName = "02-2020";
         final String batchName = "batchName";
         final Long inventoryId = 4L;
@@ -99,7 +96,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobExecutionAlreadyRunningException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, username))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
                 .hasMessageContaining("Job is already running.")
                 .isInstanceOf(ExportRuntimeException.class);
 
@@ -110,7 +107,6 @@ class ExportJobServiceTest {
     void whenAsyncJobLauncherThrowJobRestartException_thenThrowInventoryEvaluationException() throws Exception {
         final String subscriber = "sub";
         final String organization = "org";
-        final String username = "user";
         final String inventoryName = "02-2020";
         final String batchName = "batchName";
         final Long inventoryId = 4L;
@@ -125,7 +121,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobRestartException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, username))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
                 .hasMessageContaining("Illegal attempt at restarting Job.")
                 .isInstanceOf(ExportRuntimeException.class);
 
@@ -136,7 +132,6 @@ class ExportJobServiceTest {
     void whenAsyncJobLauncherThrowJobInstanceAlreadyCompleteException_thenThrowInventoryEvaluationException() throws Exception {
         final String subscriber = "sub";
         final String organization = "org";
-        final String username = "user";
         final String inventoryName = "02-2020";
         final String batchName = "batchName";
         final Long inventoryId = 4L;
@@ -151,7 +146,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobInstanceAlreadyCompleteException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, username))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
                 .hasMessageContaining("An instance of this Job already exists.")
                 .isInstanceOf(ExportRuntimeException.class);
 
@@ -162,7 +157,6 @@ class ExportJobServiceTest {
     void whenAsyncJobLauncherThrowJobParametersInvalidException_thenThrowInventoryEvaluationException() throws Exception {
         final String subscriber = "sub";
         final String organization = "org";
-        final String username = "user";
         final String inventoryName = "02-2020";
         final String batchName = "batchName";
         final Long inventoryId = 4L;
@@ -177,7 +171,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobParametersInvalidException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, username))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
                 .hasMessageContaining("Invalid parameters.")
                 .isInstanceOf(ExportRuntimeException.class);
 

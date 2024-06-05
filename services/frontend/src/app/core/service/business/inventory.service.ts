@@ -8,7 +8,11 @@
 import { Injectable } from "@angular/core";
 import { Observable, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
-import { Inventory, CreateInventory } from "src/app/core/interfaces/inventory.interfaces";
+import {
+    Inventory,
+    CreateInventory,
+    InventoryUpdateRest,
+} from "src/app/core/interfaces/inventory.interfaces";
 import { InventoryRepository } from "../../store/inventory.repository";
 import { InventoryDataService } from "../data/inventory-data.service";
 import { Constants } from "src/constants";
@@ -26,6 +30,15 @@ export class InventoryService {
 
     createInventory(creationObj: CreateInventory): Observable<Inventory> {
         return this.inventoryDataService.createInventory(creationObj);
+    }
+
+    updateInventory(inventory: Inventory): Observable<InventoryUpdateRest> {
+        const inventoryRest: InventoryUpdateRest = {
+            id: inventory.id,
+            name: inventory.name,
+            note: inventory.note,
+        };
+        return this.inventoryDataService.updateInventory(inventoryRest);
     }
 
     async getInventories(id?: number): Promise<Inventory[]> {

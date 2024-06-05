@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DatacenterDigitalServiceMapper;
@@ -102,15 +102,15 @@ public class DigitalServiceService {
      *
      * @param subscriberName   the client subscriber name.
      * @param organizationName the linked organization name.
-     * @param username         the username.
+     * @param userId           the userId.
      * @return the business object corresponding on the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final String subscriberName, final String organizationName, final String username) {
+    public DigitalServiceBO createDigitalService(final String subscriberName, final String organizationName, final long userId) {
         // Get the linked organization.
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
 
         // Get last index to create digital service.
-        final List<DigitalService> userDigitalServices = digitalServiceRepository.findByOrganizationAndUserUsername(linkedOrganization, username);
+        final List<DigitalService> userDigitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
         final Integer lastDigitalServiceDefaultNumber = userDigitalServices
                 .stream()
                 .map(DigitalService::getName)
@@ -120,7 +120,7 @@ public class DigitalServiceService {
                 .max(Comparator.naturalOrder()).orElse(0);
 
         // Get the linked user.
-        final User user = userRepository.findByUsername(username).orElseThrow();
+        final User user = userRepository.findById(userId).orElseThrow();
 
         // Save the digital service with +1 on index name.
         final LocalDateTime now = LocalDateTime.now();
@@ -151,7 +151,7 @@ public class DigitalServiceService {
      * @return the digital service list.
      */
     public List<DigitalServiceBO> getAllDigitalServicesByOrganization(final String subscriberName, final String organizationName) {
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
         final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganization(linkedOrganization);
         return digitalServiceMapper.toBusinessObject(digitalServices);
     }
@@ -161,12 +161,12 @@ public class DigitalServiceService {
      *
      * @param subscriberName   the client subscriber name.
      * @param organizationName the organization name.
-     * @param username         the username.
+     * @param userId           the userId.
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final String subscriberName, final String organizationName, final String username) {
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
-        final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserUsername(linkedOrganization, username);
+    public List<DigitalServiceBO> getDigitalServices(final String subscriberName, final String organizationName, final long userId) {
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+        final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
         return digitalServiceMapper.toBusinessObject(digitalServices);
     }
 
@@ -185,9 +185,11 @@ public class DigitalServiceService {
      * Update a digital service.
      *
      * @param digitalService the business object containing data to update.
+     * @param user           the user entity
      * @return the updated digital service.
      */
-    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService) {
+    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final User user) {
+
         // Check if digital service exist.
         final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalService.getUid());
 
@@ -198,7 +200,7 @@ public class DigitalServiceService {
         }
 
         // Merge digital service.
-        digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService);
+        digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, user);
 
         // Save the updated digital service.
         return digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
@@ -317,7 +319,7 @@ public class DigitalServiceService {
                 Optional.ofNullable(terminalBO.getCountry()).orElse(""), // country of use.
                 "", // user.
                 LocalDate.now()
-                        .minusDays((long) Math.floor(365d * digitalServiceReferentialService.getTerminalDeviceType(terminalBO.getType().getCode()).getLifespan()))
+                        .minusDays((long) Math.floor(365d * terminalBO.getLifespan()))
                         .format(DateTimeFormatter.ISO_LOCAL_DATE), // date of purchase.
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
                 "", // core number.

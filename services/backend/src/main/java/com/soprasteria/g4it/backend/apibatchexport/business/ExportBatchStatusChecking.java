@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.business;
 
 import com.soprasteria.g4it.backend.apibatchexport.config.ExportBatchConfiguration;
@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.soprasteria.g4it.backend.apibatchexport.business.ExportJobService.*;
+import static com.soprasteria.g4it.backend.common.utils.Constants.STATUS_IN_PROGRESS;
 
 
 /**
@@ -70,7 +71,7 @@ public class ExportBatchStatusChecking {
 
         final Long inventoryId = jobExecution.getJobParameters().getLong(INVENTORY_ID_JOB_PARAM);
         exportReportRepository.findByInventoryId(inventoryId).stream()
-                .filter(report -> BatchStatus.STARTED.name().equals(report.getStatusCode()))
+                .filter(report -> STATUS_IN_PROGRESS.contains(report.getStatusCode()))
                 .forEach(report -> updateExportReport(report, jobExecution));
     }
 

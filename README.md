@@ -34,21 +34,6 @@ G4IT is licensed. See [license file](LICENSE.txt) in the same directory.
 More information on this subject can be found in the documentation, but in this page, it will only be about its
 deployment on a developer station.
 
-### Prerequisites
-
-**G4IT** relies on **environment variables** to run. Therefore, you **must declare** the following variables (windows
-env properties):
-
-- SPRINGDOC_SWAGGERUI_OAUTH_API
-- SPRINGDOC_SWAGGERUI_OAUTH_CLIENTID
-- AZURE_TENANT_ID
-- AZURE_SUBSCRIPTION_ID
-- AZURE_CLIENT_ID
-- AZURE_CLIENT_SECRET
-- SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT
-
-Retrieve these values on the gitlab CI/CD configuration.
-
 ### Retrieving source code
 
 Proposed path : **C:\G4IT\\_repo**
@@ -64,20 +49,25 @@ git clone https://github.com/G4ITTeam/g4it.git
 git clone https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval.git
 ```
 
-### Kafka and Postgresql containers
+### Kafka, Postgresql, Keycloak containers
 
 - NumEcoEval needs kafka and postgresql to work.
-- G4IT needs postgresql to work.
+- G4IT needs postgresql and keycloak to work.
 
-To run kafka and postgresql, open a command prompt:
+To run these 3 containers, open a command prompt:
 ```shell
 # open git bash or any prompt
 cd /c/G4IT/_repo/g4it/workspace/numecoeval
 podman-compose up -d
 podman-compose ps
-# It should start kafka and postgresdb containers
+# It should start the 3 containers
 # You should see the containers in Podman Desktop > Containers
 ```
+
+### First time starting Keycloak
+
+Keycloak may stop the first time starting it.
+It requires a "keycloak" database instance already created in the database.
 
 ### IntelliJ Workspace 
 

@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
+      file: db/changelog/greenitdb.changelog-security-user.yml
+  - include:
       file: db/changelog/greenitdb.changelog-inventory-initialization.yml
   - include:
       file: db/changelog/greenitdb.changelog-numecoeval-report-initialization.yml
@@ -11,3 +13,7 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-digital-service-initialization.yml
   - include:
       file: db/changelog/greenitdb.changelog-security-multi-orga.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-security-user-after.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-business-hours.yml

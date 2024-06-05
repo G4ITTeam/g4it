@@ -59,14 +59,14 @@
             <ng-template pTemplate="body" let-vm let-rowIndex="rowIndex">
                 <tr>
                     <td>{{ vm.name }}</td>
-                    <td>{{ vm.quantity }}</td>
+                    <td>{{ vm.quantity | decimals}}</td>
                     <td *ngIf="server.type === 'Compute'">
-                        {{ vm.vCpu }}
+                        {{ vm.vCpu | decimals}}
                     </td>
                     <td *ngIf="server.type === 'Storage'">
-                        {{ vm.disk }}
+                        {{ vm.disk | decimals}}
                     </td>
-                    <td>{{ vm.annualOperatingTime }}</td>
+                    <td>{{ vm.annualOperatingTime | decimals}}</td>
                     <td style="text-align: right">
                         <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                             (click)="setIndex(rowIndex)"

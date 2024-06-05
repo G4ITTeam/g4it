@@ -66,7 +66,7 @@ public class InventoryDeleteService {
      * @param organizationName the linked organization name.
      */
     public void deleteInventories(final String subscriberName, final String organizationName) {
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
         inventoryRepository.findByOrganization(linkedOrganization)
                 .forEach(inventory -> deleteInventory(subscriberName, organizationName, inventory));
     }
@@ -79,7 +79,7 @@ public class InventoryDeleteService {
      * @param inventoryId      the inventory id.
      */
     public void deleteInventory(final String subscriberName, final String organizationName, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganization(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
         inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId)
                 .ifPresent(inventory -> deleteInventory(subscriberName, organizationName, inventory));
     }

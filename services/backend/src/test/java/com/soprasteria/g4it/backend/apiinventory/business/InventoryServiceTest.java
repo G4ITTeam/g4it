@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
 
@@ -65,14 +65,14 @@ class InventoryServiceTest {
         final Inventory inventoryEntity2 = Inventory.builder().id(2L).name("04-2023").build();
         final List<Inventory> inventorysEntitiesList = List.of(inventoryEntity1, inventoryEntity2);
 
-        when(organizationService.getOrganization(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
         when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(inventorysEntitiesList);
 
         final List<InventoryBO> result = inventoryService.getInventories(SUBSCRIBER, ORGANIZATION, null);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-        verify(organizationService, times(1)).getOrganization(SUBSCRIBER, ORGANIZATION);
+        verify(organizationService, times(1)).getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION);
         verify(inventoryRepo, times(1)).findByOrganization(linkedOrganization);
 
     }
@@ -85,18 +85,18 @@ class InventoryServiceTest {
         final InventoryBO inventory1 = InventoryBO.builder().build();
         final List<InventoryBO> expectedInventoryList = List.of(inventory1);
 
-        final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").build();
+        final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build();
         var inventoryOptional = Optional.of(inventoryEntity1);
 
-        when(organizationService.getOrganization(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
-        when(this.inventoryRepo.findById(inventoryId)).thenReturn(inventoryOptional);
+        when(organizationService.getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
+        when(this.inventoryRepo.findByOrganizationAndId(linkedOrganization, inventoryId)).thenReturn(inventoryOptional);
 
         final List<InventoryBO> result = this.inventoryService.getInventories(SUBSCRIBER, ORGANIZATION, inventoryId);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-        verify(organizationService, times(1)).getOrganization(SUBSCRIBER, ORGANIZATION);
-        verify(inventoryRepo, times(1)).findById(inventoryId);
+        verify(organizationService, times(1)).getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION);
+        verify(inventoryRepo, times(1)).findByOrganizationAndId(linkedOrganization, inventoryId);
     }
 
     @Test
@@ -118,13 +118,13 @@ class InventoryServiceTest {
                 .evaluationReports(List.of())
                 .build();
 
-        when(inventoryRepo.findById(inventoryId)).thenReturn(Optional.of(inventory));
+        when(inventoryRepo.findByOrganizationAndId(any(), eq(inventoryId))).thenReturn(Optional.of(inventory));
 
-        final InventoryBO result = inventoryService.getInventory(inventoryId);
+        final InventoryBO result = inventoryService.getInventory(SUBSCRIBER, ORGANIZATION, inventoryId);
 
         assertThat(result).isEqualTo(expected);
 
-        verify(inventoryRepo, times(1)).findById(inventoryId);
+        verify(inventoryRepo, times(1)).findByOrganizationAndId(any(), eq(inventoryId));
     }
 
 
@@ -142,7 +142,7 @@ class InventoryServiceTest {
                 .name("03-2023")
                 .organization(linkedOrganization).build();
 
-        when(organizationService.getOrganization(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
         when(inventoryRepo.findByOrganizationAndName(linkedOrganization, inventoryName))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(inventory));
@@ -150,7 +150,7 @@ class InventoryServiceTest {
 
         InventoryBO actual = inventoryService.createInventory(SUBSCRIBER, ORGANIZATION, inventoryCreateRest);
 
-        verify(organizationService, times(1)).getOrganization(SUBSCRIBER, ORGANIZATION);
+        verify(organizationService, times(1)).getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION);
         verify(inventoryRepo, times(1)).findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName());
         verify(inventoryRepo, times(1)).save(any());
 

@@ -88,4 +88,45 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
         expect(component.updateTerminals.emit).toHaveBeenCalled();
         expect(component.close()).toHaveBeenCalled;
     });
+
+    it("should reset terminal when resetTerminal() is call", () => {
+        //mock data
+        component.terminalDeviceTypes = [{
+            code: 'laptop-3',
+            lifespan: 6,
+            value: 'LaptopTest'
+        }]
+        component.terminal = {
+            uid: "randomUID",
+            type: {
+                code: "mobile-fix",
+                value: "Mobile",
+                lifespan: 5
+            },
+            lifespan: 0,
+            country: "France",
+            numberOfUsers: 1,
+            yearlyUsageTimePerUser: 17,
+        };
+
+        //expected terminal after call
+        var expectedTerminal = {
+            uid: undefined,
+            type: {
+                code: "laptop-3",
+                value: "LaptopTest",
+                lifespan: 6
+            },
+            lifespan: 6,
+            country: "France",
+            numberOfUsers: 0,
+            yearlyUsageTimePerUser: 0,
+        };
+
+        //call function
+        component.resetTerminal();
+        expect(component.terminal).toEqual(expectedTerminal);
+    });
+
+   
 });

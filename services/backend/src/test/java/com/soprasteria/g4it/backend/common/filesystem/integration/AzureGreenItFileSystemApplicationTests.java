@@ -4,18 +4,20 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.integration;
 
 import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.AzureFileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
@@ -38,6 +40,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles({"azure", "test"})
+@EnabledIf("hasAzureEnvVars")
+@Slf4j
 class AzureGreenItFileSystemApplicationTests {
 
     private final String FILE_TEST_NAME = "test.txt";
@@ -55,18 +59,35 @@ class AzureGreenItFileSystemApplicationTests {
      */
     private final String SUBSCRIBER = "FS_TEST";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AzureGreenItFileSystemApplicationTests.class);
-
     @Autowired
     private FileSystem fileSystem;
 
     @Autowired
     ResourceLoader resourceLoader;
 
+    @MockBean
+    private CacheManager cacheManager;
+
+    private static boolean hasAzureEnvVars() {
+        var hasEnvVar = System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT") != null;
+        if (hasEnvVar) {
+            System.out.println("""
+                    To activate azure filestorage tests, you need to set variables:
+                    - AZURE_CLIENT_ID
+                    - AZURE_CLIENT_SECRET
+                    - AZURE_TENANT_ID
+                    - AZURE_SUBSCRIPTION_ID
+                    - SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT
+                    """);
+        }
+        return hasEnvVar;
+    }
+
     @Test
     void fileSystemShouldBeOfAzureFileSystemType() {
         assertEquals(AzureFileSystem.class, fileSystem.getClass());
     }
+
 
     @Test
     void fileSystemShouldHandleCompleteFilesLifeCycle() throws IOException {
@@ -176,7 +197,7 @@ class AzureGreenItFileSystemApplicationTests {
             assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
 
         } catch (Exception e) {
-            LOGGER.error("Exception occured during lifecycle", e);
+            log.error("Exception occured during lifecycle", e);
             fail(e);
         } finally {
             assertThrows(BlobStorageException.class, () -> fs.delete(FileFolder.INPUT, FILE_TEST_NAME));
@@ -212,7 +233,7 @@ class AzureGreenItFileSystemApplicationTests {
             assertTrue(fs.hasFileInSubfolder(FileFolder.WORK, TMP_FOLDER, FileType.DATACENTER));
             assertFalse(fs.hasFileInSubfolder(FileFolder.WORK, TMP_FOLDER, FileType.EQUIPEMENT_PHYSIQUE));
         } catch (Exception e) {
-            LOGGER.error("Error occured with filesystem", e);
+            log.error("Error occured with filesystem", e);
         } finally {
             // Cleanup
             fs.delete(FileFolder.WORK, TMP_FOLDER + "/DATACENTER/" + FILE_NAME + "1");

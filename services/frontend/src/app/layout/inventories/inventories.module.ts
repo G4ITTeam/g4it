@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */ 
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { AccordionModule } from "primeng/accordion";
 import { ButtonModule } from "primeng/button";
 import { CalendarModule } from "primeng/calendar";
@@ -53,5 +53,9 @@ import { InputTextModule } from 'primeng/inputtext';
         inventoriesRouter,
     ],
     exports: [InventoriesComponent],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA
+      ]
 })
 export class InventoriesModule {}

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.steps;
 
 import com.soprasteria.g4it.backend.apibatchloading.steps.common.tasklet.ValidateHeaderTasklet;
@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.FileSystemUtils;
@@ -56,6 +58,9 @@ class ValidateDataCenterHeaderStepTest {
     private String fileSystemBasePath;
     private static final Path testFolder = Path.of("src/test/resources/apibatchloading/work");
 
+    @MockBean
+    private CacheManager cacheManager;
+    
     @BeforeEach
     public void beforeEach() {
         this.jobLauncherTestUtils.setJobLauncher(jobLauncher);

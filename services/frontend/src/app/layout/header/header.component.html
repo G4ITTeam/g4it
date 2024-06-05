@@ -1,140 +1,110 @@
 <a [routerLink]="changePageToInventories()" tabindex="0">
-    <img
-        src="assets/images/logos/logo-overgreen.svg"
-        alt="{{ 'common.homepage' | translate }}"
-        class="top-header-logo"
-    />
+    <img src="assets/images/logos/logo-overgreen.svg" alt="{{ 'common.homepage' | translate }}"
+        class="top-header-logo" />
 </a>
-<nav class="header-navbar">
-    <app-companies-menu
-        [selectedOrganization]="selectedOrganization"
-        [organizations]="organizations"
-    >
+<nav class="header-navbar" (click)="updatedOrganization()">
+    <app-companies-menu [selectedOrganization]="selectedOrganization" [organizations]="organizations">
     </app-companies-menu>
-    <a
-        *ngIf="userService.isAllowedDigitalServiceRead$ | async"
-        src="assets/images/icons/icon-digital-service.svg"
-        [routerLink]="changePageToDigitalServices()"
-    >
-        <img
-            src="assets/images/icons/icon-digital-service.svg"
+    <a *ngIf="
+            (userService.isAllowedDigitalServiceRead$ | async) ||
+            (userService.isAllowedDigitalServiceWrite$ | async)
+        " [routerLink]="changePageToDigitalServices()">
+        <img src="assets/images/icons/icon-digital-service.svg"
             [ngClass]="{ selected: selectedPage === 'digital-services' }"
-            alt="{{ 'digital-services.title' | translate }}"
-        />
+            alt="{{ 'digital-services.title' | translate }}" />
     </a>
-    <a
-        *ngIf="userService.isAllowedInventoryRead$ | async"
-        src="assets/images/icons/icon-dashboard.svg"
-        [routerLink]="changePageToInventories()"
-    >
-        <img
-            src="assets/images/icons/icon-dashboard.svg"
-            [ngClass]="{ selected: selectedPage === 'inventories' }"
-            alt="{{ 'inventories.title' | translate }}"
-        />
+    <a *ngIf="
+            (userService.isAllowedInventoryRead$ | async) ||
+            (userService.isAllowedInventoryWrite$ | async)
+        " [routerLink]="changePageToInventories()">
+        <img src="assets/images/icons/icon-dashboard.svg" [ngClass]="{ selected: selectedPage === 'inventories' }"
+            alt="{{ 'inventories.title' | translate }}" />
+    </a>
+    <a [routerLink]="changePageToAdministraion()" (click)="sideHeaderVisibleForOrganization = true"
+        *ngIf="userDataService.isSubscriberAdmin || userDataService.isOrgAdmin">
+        <img src="assets/images/icons/icon-key-selected.svg" [ngClass]="{ selected: selectedPage === 'administration' }"
+            alt="{{ 'common.administration' | translate }}" />
     </a>
     <div style="height: 10%"></div>
 </nav>
 <a (click)="sideHeaderVisible = true" tabindex="0" style="cursor: pointer" role="button">
-    <img
-        *ngIf="!sideHeaderVisible"
-        src="assets/images/icons/icon-param.svg"
-        alt="{{ 'common.parameters' | translate }}"
-        class="bottom-header-logo"
-    />
-    <img
-        *ngIf="sideHeaderVisible"
-        src="assets/images/icons/icon-param-selected.svg"
-        alt="{{ 'common.parameters' | translate }}"
-        class="bottom-header-logo"
-    />
+    <img *ngIf="!sideHeaderVisible" src="assets/images/icons/icon-param.svg" alt="{{ 'common.parameters' | translate }}"
+        class="bottom-header-logo" />
+    <img *ngIf="sideHeaderVisible" src="assets/images/icons/icon-param-selected.svg"
+        alt="{{ 'common.parameters' | translate }}" class="bottom-header-logo" />
 </a>
-
 <p-sidebar [(visible)]="sideHeaderVisible">
     <ng-template pTemplate="content">
         <div style="height: 100px"></div>
-        <div id="langTitle" class="white-text">{{ "common.lang" | translate }}</div>
-        <div class="border border-left-2 border-white mx-2 text-white px-3">
-            <ul aria-labelledby="langTitle" class="white-radio-buttons">
-                <li class="mb-2">
-                    <p-radioButton
-                        name="language"
-                        value="en"
-                        [(ngModel)]="selectedLanguage"
-                        (ngModelChange)="changeLanguage('en')"
-                        [attr.tabindex]="0"
-                        aria-labelledby="enLabel"
-                    ></p-radioButton>
-                    <label
-                        for="en"
-                        id="enLabel"
-                        class="ml-1"
-                        [attr.aria-label]="'common.english-button' | translate"
-                    >
-                        {{ "common.english" | translate }}
-                    </label>
-                </li>
-                <li>
-                    <p-radioButton
-                        name="language"
-                        value="fr"
-                        [(ngModel)]="selectedLanguage"
-                        (ngModelChange)="changeLanguage('fr')"
-                        [attr.tabindex]="0"
-                        aria-labelledby="frLabel"
-                    ></p-radioButton>
-                    <label
-                        for="fr"
-                        id="frLabel"
-                        class="ml-1"
-                        [attr.aria-label]="'common.french-button' | translate"
-                    >
-                        {{ "common.french" | translate }}
-                    </label>
-                </li>
-            </ul>
-        </div>
+        <div class="text-white">
+            <div>
+                <div id="langTitle" class="text-lg p-1">
+                    {{ "common.lang" | translate }}
+                </div>
+                <div class="border border-left-2 border-white mx-2 px-3">
+                    <ul aria-labelledby="langTitle" class="white-radio-buttons">
+                        <li class="mb-2">
+                            <p-radioButton name="language" value="en" [(ngModel)]="selectedLanguage"
+                                (ngModelChange)="changeLanguage('en')" [attr.tabindex]="0"
+                                aria-labelledby="enLabel"></p-radioButton>
+                            <label for="en" id="enLabel" class="ml-1"
+                                [attr.aria-label]="'common.english-button' | translate">
+                                {{ "common.english" | translate }}
+                            </label>
+                        </li>
+                        <li>
+                            <p-radioButton name="language" value="fr" [(ngModel)]="selectedLanguage"
+                                (ngModelChange)="changeLanguage('fr')" [attr.tabindex]="0"
+                                aria-labelledby="frLabel"></p-radioButton>
+                            <label for="fr" id="frLabel" class="ml-1"
+                                [attr.aria-label]="'common.french-button' | translate">
+                                {{ "common.french" | translate }}
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-        <div id="openTitle" class="white-text">{{ "common.open-hours" | translate }}</div>
-        <div class="border border-left-2 border-white mx-2 text-white px-3">
-            <ul aria-labelledby="openTitle" tabindex="0">
-                <li
-                    class="flex justify-content-between flex-wrap"
-                    *ngFor="let day of days"
-                >
-                    <span>{{ "common.week." + day | translate }}</span
-                    ><span>{{ "common.open-time" | translate }}</span>
-                </li>
-                <li
-                    class="flex justify-content-between flex-wrap"
-                    *ngFor="let day of weekendDays"
-                >
-                    <span>{{ "common.week." + day | translate }}</span
-                    ><span>--</span>
-                </li>
-            </ul>
-        </div>
+            <div class="my-7">
+                <div id="openTitle" class="text-lg p-1">
+                    {{ "common.open-hours" | translate }}
+                </div>
+                <div class="border border-left-2 border-white mx-2 px-3">
+                    <ul aria-labelledby="openTitle" tabindex="0">
+                        <li class="flex justify-content-between flex-wrap" *ngFor="let data of businessHoursData">
+                            <span>{{ "common.week." + data.day | translate }}</span><span *ngIf="data.start_time">{{
+                                data.start_time | businessHoursRenderer }} -
+                                {{ data.end_time | businessHoursRenderer
+                                }}<span *ngIf="selectedLanguage === 'en'"> UTC</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-        <div id="openVersion" class="white-text">{{ "common.versions" | translate }}</div>
-        <div class="border border-left-2 border-white mx-2 text-white px-3">
-            <ul aria-labelledby="openVersion" tabindex="0">
-                <li
-                    class="flex justify-content-between flex-wrap"
-                    *ngFor="let software of version | keyvalue"
-                >
-                    <span>{{ software.key | uppercase }}</span>
-                    <span>{{ software.value }}</span>
-                </li>
-            </ul>
+            <div class="my-7">
+                <div id="openVersion" class="text-lg p-1">
+                    {{ "common.versions" | translate }}
+                </div>
+                <div class="border border-left-2 border-white mx-2 px-3">
+                    <ul aria-labelledby="openVersion" tabindex="0">
+                        <li class="flex justify-content-between flex-wrap" *ngFor="let software of version | keyvalue">
+                            <span>{{ software.key | uppercase }}</span>
+                            <span>{{ software.value }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="my-7">
+                <p-button (onClick)="composeEmail()">{{ "common.mailTo" | translate }}
+                </p-button>
+            </div>
         </div>
     </ng-template>
     <ng-template pTemplate="footer">
-        <span
-            style="color: white"
-            tabindex="0"
-            role="application"
-            [attr.aria-label]="'common.powered-by-sopra' | translate"
-        >
+        <span style="color: white" tabindex="0" role="application"
+            [attr.aria-label]="'common.powered-by-sopra' | translate">
             {{ "common.powered-by" | translate }}
             <img src="assets/images/logos/logo-ssg.svg" alt="" width="20px" />
         </span>

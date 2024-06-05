@@ -17,6 +17,8 @@ import { FootprintService } from "src/app/core/service/business/footprint.servic
 import { FootprintRepository } from "src/app/core/store/footprint.repository";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 import { ApplicationCriteriaFootprintComponent } from "./application-criteria-footprint.component";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("ApplicationCriteriaFootprintComponent", () => {
     let component: ApplicationCriteriaFootprintComponent;
@@ -42,6 +44,8 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                     provide: NGX_ECHARTS_CONFIG,
                     useFactory: () => ({ echarts: () => import("echarts") }),
                 },
+                IntegerPipe,
+                DecimalsPipe
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });

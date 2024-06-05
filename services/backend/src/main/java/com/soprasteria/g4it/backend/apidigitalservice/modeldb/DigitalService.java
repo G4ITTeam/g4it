@@ -9,10 +9,13 @@ package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
+import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -73,6 +76,14 @@ public class DigitalService {
      * Last update date.
      */
     private LocalDateTime lastUpdateDate;
+
+    /**
+     * Attached note.
+     */
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "note_id", referencedColumnName = "id")
+    private Note note;
 
     /**
      * Terminals.

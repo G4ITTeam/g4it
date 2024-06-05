@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.model;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +32,6 @@ public class PhysicalEquipmentsAvgAgeBO {
 
     private Integer poids;
 
-    private Float ageMoyen;
+    private Double ageMoyen;
 
 }

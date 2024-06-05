@@ -146,8 +146,8 @@ export class FootprintService {
         return this.footprintDataService
             .getPhysicalEquipments(inventoryId)
             .pipe(
-                tap(([averageAges, lowCarbon]) =>
-                    this.footprintRepo.setPhysicalEquipmentStats(averageAges, lowCarbon)
+                tap(([averageAges, lowImpact]) =>
+                    this.footprintRepo.setPhysicalEquipmentStats(averageAges, lowImpact)
                 )
             );
     }

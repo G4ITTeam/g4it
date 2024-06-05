@@ -10,7 +10,7 @@ tags:
 
 paths:
 
-  /{subscriber}/{organization}/digital-services/device-type:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/device-type:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -34,7 +34,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/country:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/country:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -58,7 +58,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/network-type:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/network-type:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -82,7 +82,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/server-host:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/server-host:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

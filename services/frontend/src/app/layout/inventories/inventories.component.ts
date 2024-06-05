@@ -9,11 +9,13 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { Constants } from "src/constants";
 import { sortByProperty } from "sort-by-property";
+import { TranslateService } from "@ngx-translate/core";
+import { Note } from "src/app/core/interfaces/note.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 
 @Component({
@@ -24,6 +26,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 export class InventoriesComponent implements OnInit {
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
+    sidebarType = "FILE"; // or NOTE
     id: number = 0;
     name: any = "";
     inventories: Map<string, Inventory[]> = new Map();
@@ -38,12 +41,15 @@ export class InventoriesComponent implements OnInit {
     doLoop = true;
     enableSearchField = true;
     searchFieldTouched = true;
+    selectedInventory: Inventory = {} as Inventory;
 
     constructor(
         private inventoryService: InventoryService,
         public router: Router,
         private spinner: NgxSpinnerService,
-        public userService:UserService
+        private messageService: MessageService,
+        private translate: TranslateService,
+        public userService: UserService,
     ) {}
 
     async ngOnInit() {
@@ -74,7 +80,6 @@ export class InventoriesComponent implements OnInit {
             this.loopLoadInventories();
         }
     }
-
     loopLoadInventories() {
         this.inventoryInterval = setInterval(async () => {
             if (this.inventoriesToReload.size === 0) {
@@ -179,6 +184,7 @@ export class InventoriesComponent implements OnInit {
 
     openSidebarForUploadInventory(id: number) {
         this.sidebarVisible = true;
+        this.sidebarType = "FILE";
         this.sidebarPurpose = "upload";
         this.id = id;
 
@@ -189,6 +195,52 @@ export class InventoriesComponent implements OnInit {
                 break;
             }
         }
+    }
+
+    openSidebarForNote(id: number) {
+        this.sidebarVisible = true;
+        this.sidebarType = "NOTE";
+        this.id = id;
+
+        for (let [key, value] of this.inventories) {
+            const inventory = value.find((inventory) => inventory.id === id);
+            if (inventory) {
+                this.selectedInventory = inventory;
+                break;
+            }
+        }
+    }
+
+    noteSaveValue(event: any) {
+        this.selectedInventory.note = {
+            content: event,
+        } as Note;
+
+        this.inventoryService
+            .updateInventory(this.selectedInventory)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((res) => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.note.save"),
+                    sticky: false,
+                });
+            });
+    }
+
+    noteDelete(event: any) {
+        this.selectedInventory.note = undefined;
+        this.inventoryService
+            .updateInventory(this.selectedInventory)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((res) => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.note.delete"),
+                    sticky: false,
+                });
+                this.reloadInventory(this.selectedInventory.id);
+            });
     }
 
     trackByFn(index: any) {

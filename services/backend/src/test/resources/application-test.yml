@@ -7,6 +7,7 @@ spring:
   datasource:
     url: jdbc:h2:mem:green;MODE=PostgreSQL
     username: sa
+    # kics-scan ignore-line
     password: password
     driverClassName: org.h2.Driver
   jpa:

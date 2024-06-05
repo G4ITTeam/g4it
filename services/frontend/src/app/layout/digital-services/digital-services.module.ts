@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */ 
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
@@ -17,7 +17,6 @@ import { digitalServicesRouter } from "./digital-services.router";
 @NgModule({
     declarations: [DigitalServicesComponent],
     imports: [
-        SharedModule,
         ButtonModule,
         ScrollPanelModule,
         CardModule,
@@ -26,5 +25,9 @@ import { digitalServicesRouter } from "./digital-services.router";
         digitalServicesRouter,
     ],
     exports: [DigitalServicesComponent],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA
+      ],
 })
 export class DigitalServicesModule {}

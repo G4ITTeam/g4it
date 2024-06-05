@@ -24,6 +24,9 @@
         "calculate": "CALCULER",
         "duplicate": "DUPLIQUER",
         "add": "Ajouter",
+        "heading": "Titre",
+        "subheading": "Sous-titre",
+        "normal": "Normal",
         "peopleeq": "Hab. eq.",
         "peopleeq-min": "hab. eq.",
         "no-data": "Aucun résultats disponibles",
@@ -41,6 +44,7 @@
         "selected": "Sélectionné",
         "not-selected": "Non sélectionné",
         "parameters": "Paramètres",
+        "administration": "Administration",
         "homepage": "Page d'accueil",
         "access-filters": "Accéder aux filtres de mes indicateurs",
         "refresh": "Actualiser",
@@ -56,11 +60,31 @@
             "delete": "Supprimer l'inventaire de",
             "app": "Voir l'impact des applications pour l'inventaire de",
             "updateInProgress": "Estimation en cours, {{value}}% déjà atteints'",
+            "preparingResults": "Attendez que vos résultats soient prêts",
             "eq": "Voir l'impact des équipements pour l'inventaire de",
-            "refresh": "Rafraichir les informations pour l'inventaire de"
+            "refresh": "Rafraichir les informations pour l'inventaire de",
+            "addNote": "Cliquer pour ajouter une note",
+            "attachedNote": "Cliquer pour consulter la note",
+            "download": "Cliquez pour télécharger les résultats",
+            "note": "Note"
         },
+        "note": {
+            "add": "Ajouter note",
+            "attached": "Note jointe",
+            "save": "Note sauvegardée avec succès",
+            "delete": "Note supprimée avec succès",
+            "no-content": "Impossible de sauvegarder : la note est vide",
+            "content-length-exceeded": "La taille du contenu dépasse la limite autorisée"
+        },
+        "confirmMessageForEditor": "Êtes-vous sûr de vouloir supprimer cette note ?",
+        "cancelConfirmMsgForEditor": "En quittant cette page, tout travail non sauvegardé sera perdu. Êtes-vous sûr de vouloir continuer ?",
         "versions": "Versions",
-        "updateInProgress": "mise à jour en cours"
+        "updateInProgress": "mise à jour en cours",
+        "preparingResults": "Résultats en cours de préparation",
+        "fileNoLongerAvailable": "La fichier n'est plus disponible",
+        "other": "Autres",
+        "otherLegend": "Autres (inférieur à 1%)",
+        "mailTo": "MAILTO@G4IT.COM"
     },
     "digital-services": {
         "title": "Mes Services Numériques",
@@ -90,10 +114,11 @@
         "id": "#",
         "type": "Type de terminal",
         "country": "Pays",
-        "nb-user": "Nombre d'utilisateurs",
+        "nb-user": "Nombre d'utilisateurs uniques",
         "yearly-usage": "Temps moyen passé par utilisateur et par an",
         "hours": "heures",
-        "table-yearly-usage": "Temps d'utilisation annuel par utilisateur"
+        "table-yearly-usage": "Temps d'utilisation annuel par utilisateur",
+        "lifespan": "Durée de vie moyenne de l'équipement (années)"
     },
     "digital-services-networks": {
         "new": "Nouveau Réseau",
@@ -136,10 +161,14 @@
         "datacenter": "Datacenter",
         "total.vcpu": "Total vCPU",
         "total.disk": "Capacité totale du disque (Go)",
-        "lifespan": "Durée de vie (années)",
+        "lifespan": "Durée de vie du serveur (années)",
         "electricity": "Consommation électrique à l'année (kwH)",
         "usage.time": "Temps d'utilisation annuel (heure)",
         "pue": "PUE",
+        "pue.label": "Pour en savoir plus sur l'indicateur d'efficacité énergétique et comment il est calculé, accédez à cette ",
+        "pue.label.link": " page",
+        "link": "https://fr.wikipedia.org/wiki/Indicateur_d%27efficacit%C3%A9_%C3%A9nerg%C3%A9tique",
+
         "country": "Pays",
         "additional": "Paramètres additionnels",
         "add": {
@@ -239,7 +268,8 @@
         },
         "header": {
             "manage": "Manage inventories",
-            "export": "Exporter mes resultats"
+            "export": "Exporter mes resultats",
+            "download": "Télécharger mes résultats"
         },
         "round-button": {
             "acvStep": "Cycle de vie",
@@ -254,18 +284,18 @@
             "info-fis-text": "Si chaque être humain respectait les limites planétaires, chacun d'entre nous disposerait d'un forfait individuel qui garantirait l'équilibre soutenable du système : le concept d'équivalent humain (Hab. eq.) représente le nombre de personnes respectant ce forfait individuel soutenable. Il a été obtenu en divisant la limite de la planète pour chaque critère (réf. Rapport technique du CCR - Consommation et empreinte du consommateur : méthodologie et résultats) par le nombre d'habitants de la Terre.",
             "datacenter": "DATA CENTER",
             "datacenters": "Datacenters",
-            "ave-pue": "PUE Moyen",
+            "ave-pue": "PUE moy.",
             "years": "années",
-            "ave-age": "Age Moyen",
-            "low-carbon": "Faible Impact",
+            "ave-age": "Durée de vie moy.",
+            "low-impact": "Faible Impact",
             "equipment": "ÉQUIPEMENT",
             "equipments": "Équipements",
             "tooltip": {
                 "nb-dc": "Nombre de datacenters",
                 "ave-pue": "PUE moyen pondéré par le nombre d'équipements physiques hébergés dans les datacenters",
                 "nb-eq": "Nombre d'équipements physiques",
-                "low-carbon": "% d'équipements utilisés dans un pays avec un mix énergétique faible en carbone (< 0,1 kg de CO2 éq.)",
-                "ave-age": "Temps moyen entre la date achat et la date de calcul de l’empreinte (ou la date de sortie de l’organisation) lorsque les informations sont disponibles"
+                "low-impact": "% d'équipements utilisés dans un pays à faible impact multicritère sur le mix électrique (1er quartile)",
+                "ave-age": "Durée de vie moyenne des équipements"
             }
         },
         "application": {
@@ -325,16 +355,18 @@
                 "unite": "éq. KBq U<sub>235</sub>"
             }
         },
-        "export-message": "Si vous confirmez votre demande, l'export de vos données sera mis à disposition dans les 48 heures, conformément aux modalités convenues avec votre consultant Sopra Steria. Confirmez-vous ?"
+        "export-message": "L'export peut durer plusieurs minutes. Êtes-vous sûr de vouloir exporter les données ?"
     },
     "error-page": {
         "title": {
             "service-unavailable": "Service indisponible",
+            "forbidden": "Access interdit",
             "access-denied": "Accès refusé"
         },
         "text": {
             "service-unavailable": "Nous sommes désolés pour la gêne occasionnée, mais notre service est indisponible pour le moment. Veuillez réessayer plus tard.",
-            "access-denied": "Nous sommes désolés pour la gêne occasionnée, mais vos identifiants ne vous permettent pas d'accéder au service."
+            "forbidden": "Nous sommes désolés pour la gêne occasionnée, mais vos identifiants ne vous permettent pas d'accéder au service.",
+            "access-denied": "Pour accéder à G4IT, vous devez être ajouté à une organisation en tant que membre, merci de contacter votre administrateur ou le support support.g4it@soprasteria.com"
         }
     },
     "toast-errors": {
@@ -422,6 +454,43 @@
             "title": "Radiations ionisantes",
             "name": "Ionising radiation",
             "unite": "éq. KBq U<sub>235</sub>"
+        }
+    },
+    "administration": {
+        "title": "Panneau d'administration",
+        "manage-users": "Gérer les utilisateurs",
+        "manage-organizations": "Gérer les organisations",
+        "subsriber-placeholder": "Sélectionnez le souscripteur",
+        "accessibility": {
+            "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
+            "on-deletion": "Confirmez la suppresion de la suppression de toutes les données de l'organisation."
+        },
+        "user-placeholder": "Choisissez l'organisation",
+        "delete": "Supprimer",
+        "cancel-deletion": "Annuler la suppression",
+        "cancel-deletion-message": "Les données de l'organisation seront supprimées le {{date}}",
+        "delete-confirmation": "Confirmation de la suppresion",
+        "delete-message": "Au bout de 7 jours, toutes les données relatives à l'organisation seront supprimées. Êtes-vous sûr de vouloir supprimer cette organisation ?",
+        "user": {
+            "aceessAndUser": "Sélectionnez l'accès et le rôle",
+            "access": "Accéder",
+            "is-module": "Module SI",
+            "ds-module": "Module de services numériques",
+            "role": "Rôle",
+            "add": "AJOUTER À L'ORGANISATION",
+            "select-org": "Sélectionnez une organisation",
+            "search-user": "Rechercher un utilisateur référencé",
+            "list-members": "Liste des membres",
+            "members": "membres",
+            "member": "membre",
+            "first-name": "Prénom",
+            "last-name": "Nom de famille",
+            "mail": "Mail",
+            "search-result": "Résultat de la recherche",
+            "no-results": "Aucun résultat",
+            "already-member": "DÉJÀ MEMBRE",
+            "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
+            "search": "Recherche"
         }
     }
 }

@@ -4,8 +4,8 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
-import { Component, OnInit } from "@angular/core";
+ */
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import {
     DigitalService,
@@ -16,25 +16,20 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { lastValueFrom } from "rxjs";
 import { MessageService } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 
 @Component({
     selector: "app-digital-services-terminals",
     templateUrl: "./digital-services-terminals.component.html",
-    providers:[MessageService]
+    providers:[MessageService],
 })
 export class DigitalServicesTerminalsComponent implements OnInit {
+
+    @ViewChild('childSidePanel', {static: false}) childSidePanel! : DigitalServicesTerminalsSidePanelComponent;
+
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
-    terminal: DigitalServiceTerminalConfig = {
-        uid: undefined,
-        type: {
-            code: "laptop-3",
-            value: "Laptop",
-        },
-        country: "France",
-        numberOfUsers: 0,
-        yearlyUsageTimePerUser: 0,
-    };
+    terminal: DigitalServiceTerminalConfig = {} as DigitalServiceTerminalConfig;
     digitalService: DigitalService = {
         name: "...",
         uid: "",
@@ -49,35 +44,24 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     constructor(
         private digitalServicesData: DigitalServicesDataService,
         private spinner: NgxSpinnerService,
-        public userService:UserService
+        public userService: UserService
     ) {}
 
     ngOnInit() {
+        this.resetTerminal();
         this.digitalServicesData.digitalService$.subscribe((res) => {
             this.digitalService = res;
         });
     }
 
     resetTerminal() {
-        this.terminal = {
-            uid: undefined,
-            type: {
-                code: "laptop-3",
-                value: "Laptop",
-            },
-            country: "France",
-            numberOfUsers: 0,
-            yearlyUsageTimePerUser: 0,
-        };
+        if(this.childSidePanel){
+            this.childSidePanel.resetTerminal();
+        }
     }
 
     setTerminal(terminal: DigitalServiceTerminalConfig, index: number) {
-        this.terminal.uid = terminal.uid;
-        this.terminal.creationDate = terminal.creationDate;
-        this.terminal.country = terminal.country;
-        this.terminal.type = terminal.type;
-        this.terminal.yearlyUsageTimePerUser = terminal.yearlyUsageTimePerUser;
-        this.terminal.numberOfUsers = terminal.numberOfUsers;
+        this.terminal = {...terminal};
         this.terminal.idFront = index;
     }
 
@@ -99,10 +83,12 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             this.digitalService.terminals?.push(terminal);
         }
 
-        this.digitalService = await lastValueFrom(
+         await lastValueFrom(
             this.digitalServicesData.update(this.digitalService)
         );
-
+        this.digitalService = await lastValueFrom(
+            this.digitalServicesData.get(this.digitalService.uid)
+        );
         this.spinner.hide();
     }
 
@@ -119,10 +105,12 @@ export class DigitalServicesTerminalsComponent implements OnInit {
         ) {
             this.digitalService.terminals.splice(existingTerminalIndex, 1);
         }
-        this.digitalService = await lastValueFrom(
+         await lastValueFrom(
             this.digitalServicesData.update(this.digitalService)
         );
-
+        this.digitalService = await lastValueFrom(
+            this.digitalServicesData.get(this.digitalService.uid)
+        );
         this.spinner.hide();
     }
 }

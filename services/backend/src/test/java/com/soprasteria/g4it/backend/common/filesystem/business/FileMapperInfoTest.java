@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.external.VaultAccessClient;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -25,6 +26,9 @@ class FileMapperInfoTest {
 
     @MockBean
     private VaultAccessClient vaultAccessClient;
+
+    @MockBean
+    private CacheManager cacheManager;
 
     @Autowired
     private FileMapperInfo info;

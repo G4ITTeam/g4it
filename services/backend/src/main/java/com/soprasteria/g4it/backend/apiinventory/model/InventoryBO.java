@@ -4,9 +4,10 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.model;
 
+import com.soprasteria.g4it.backend.common.model.NoteBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,5 +45,9 @@ public class InventoryBO {
     private List<InventoryIntegrationReportBO> integrationReports;
 
     private List<InventoryEvaluationReportBO> evaluationReports;
+
+    private NoteBO note;
+
+    private InventoryExportReportBO exportReport;
 
 }

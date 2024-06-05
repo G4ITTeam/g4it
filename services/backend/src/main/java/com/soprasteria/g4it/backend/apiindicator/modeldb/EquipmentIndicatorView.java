@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb;
 
 import jakarta.persistence.*;
@@ -31,9 +31,9 @@ import java.io.Serializable;
                         @ColumnResult(name = "country"),
                         @ColumnResult(name = "batch_name"),
                         @ColumnResult(name = "organization"),
-                        @ColumnResult(name = "impact", type = Float.class),
+                        @ColumnResult(name = "impact", type = Double.class),
                         @ColumnResult(name = "unit"),
-                        @ColumnResult(name = "sip", type = Float.class)
+                        @ColumnResult(name = "sip", type = Double.class)
                 }
         )
 )
@@ -107,10 +107,10 @@ public class EquipmentIndicatorView implements Serializable {
 
     private String organization;
 
-    private Float impact;
+    private Double impact;
 
     private String unit;
 
-    private Float sip;
+    private Double sip;
 
 }

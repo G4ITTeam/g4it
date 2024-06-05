@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -72,36 +72,6 @@ describe("DigitalServicesTerminalsComponent", () => {
         expect(component).toBeTruthy();
     });
 
-    it("should reset terminal when resetTerminal() is call", () => {
-        //mock data
-        component.terminal = {
-            uid: "randomUID",
-            type: {
-                code: "mobile-fix",
-                value: "Mobile",
-            },
-            country: "France",
-            numberOfUsers: 1,
-            yearlyUsageTimePerUser: 17,
-        };
-
-        //expected terminal after call
-        var expectedTerminal = {
-            uid: undefined,
-            type: {
-                code: "laptop-3",
-                value: "Laptop",
-            },
-            country: "France",
-            numberOfUsers: 0,
-            yearlyUsageTimePerUser: 0,
-        };
-
-        //call function
-        component.resetTerminal();
-        expect(component.terminal).toEqual(expectedTerminal);
-    });
-
     it("should set the terminal when setTerminal is called", () => {
         //Mock a terminal
         var testTerminal = {
@@ -110,7 +80,9 @@ describe("DigitalServicesTerminalsComponent", () => {
             type: {
                 code: "mobile-fix",
                 value: "Mobile",
+                lifespan: 5
             },
+            lifespan: 0,
             country: "France",
             numberOfUsers: 1,
             yearlyUsageTimePerUser: 17,

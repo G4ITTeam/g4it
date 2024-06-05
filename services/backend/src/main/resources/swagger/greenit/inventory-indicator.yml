@@ -9,7 +9,7 @@ tags:
     description: All endpoint for the organization's inventory dataviz
 
 paths:
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -31,7 +31,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/equipments:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/equipments:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -56,7 +56,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/applications:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -83,7 +83,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/applications/{applicationName}/{criteria}:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications/{applicationName}/{criteria}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -120,7 +120,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/equipments/filters:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/equipments/filters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -144,7 +144,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/applications/filters:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications/filters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -171,7 +171,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/datacenters:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/datacenters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -196,7 +196,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -223,27 +223,27 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'
-  /{subscriber}/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowCarbon:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
     get:
-      summary: endpoint to retrieve the number of physical equipment and if they are low carbon
-      description: endpoint to retrieve the number of physical equipment and if they are low carbon
+      summary: endpoint to retrieve the number of physical equipment and if they are low impact
+      description: endpoint to retrieve the number of physical equipment and if they are low impact
       tags:
         - inventory-indicator
-      operationId: getPhysicalEquipmentLowCarbon
+      operationId: getPhysicalEquipmentsLowImpact
       x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
       responses:
         "200":
-          description: return physical equipment with Low Carbon and Number
+          description: return physical equipment with Low impact and number
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PhysicalEquipmentLowCarbonRest'
+                  $ref: '#/components/schemas/PhysicalEquipmentLowImpactRest'
         "400":
           $ref: '#/components/responses/BadRequestError'
         '401':
@@ -251,7 +251,7 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/export:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/export:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -271,3 +271,32 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/export/download:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      summary: endpoint to download the indicators export results
+      description: endpoint to download the indicators export results
+      tags:
+        - inventory-indicator
+      operationId: getIndicatorsExportResult
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      responses:
+        "200":
+          description: return zip file contains all the indicators results
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'

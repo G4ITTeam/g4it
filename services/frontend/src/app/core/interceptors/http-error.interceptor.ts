@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import {
     HttpErrorResponse,
     HttpEvent,
@@ -27,7 +27,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     handledErrorStatus = [
         HttpStatusCode.Forbidden,
         HttpStatusCode.Unauthorized,
-        HttpStatusCode.NotFound,
         HttpStatusCode.BadRequest,
         HttpStatusCode.RequestTimeout,
         HttpStatusCode.GatewayTimeout,

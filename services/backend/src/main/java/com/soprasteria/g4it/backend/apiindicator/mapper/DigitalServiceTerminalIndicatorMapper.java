@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceTerminalIndicatorView;
@@ -15,8 +15,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Mapper(componentModel = "spring")
 public interface DigitalServiceTerminalIndicatorMapper {
@@ -33,12 +34,13 @@ public interface DigitalServiceTerminalIndicatorMapper {
      */
     @Mapping(target = "impacts", source = "source")
     default List<DigitalServiceTerminalIndicatorBO> toDto(final List<DigitalServiceTerminalIndicatorView> source) {
-        final Map<String, List<DigitalServiceTerminalIndicatorView>> collection = source.stream().collect(Collectors.groupingBy(DigitalServiceTerminalIndicatorView::getCriteria));
-        return collection.entrySet().stream().map(
-                entry -> DigitalServiceTerminalIndicatorBO.builder()
+        return source.stream()
+                .collect(Collectors.groupingBy(DigitalServiceTerminalIndicatorView::getCriteria))
+                .entrySet().stream()
+                .map(entry -> DigitalServiceTerminalIndicatorBO.builder()
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey()))
                         .impacts(toImpact(entry.getValue()))
                         .build()
-        ).collect(Collectors.toList());
+                ).collect(toList());
     }
 }

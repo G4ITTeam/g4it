@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.model.*;
@@ -43,7 +43,7 @@ public class InventoryIndicatorService {
      * @return filters.
      */
     public EquipmentFiltersBO getEquipmentFilters(final String subscriber, final String organization, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(inventoryId);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
         return filterService.getEquipmentFilters(organization, inventory.getId(), getLastBatchName(inventory));
     }
 
@@ -58,7 +58,7 @@ public class InventoryIndicatorService {
     public ApplicationFiltersBO getApplicationFilters(final String subscriber, final String organization, final Long inventoryId,
                                                       final String domain, final String subDomain, final String applicationName) {
 
-        final InventoryBO inventory = inventoryService.getInventory(inventoryId);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
         return filterService.getApplicationFilters(inventory.getId(), getLastBatchName(inventory), domain, subDomain, applicationName);
     }
 
@@ -71,7 +71,7 @@ public class InventoryIndicatorService {
      * * @return indicators.
      */
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String subscriber, final String organization, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(inventoryId);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
         return indicatorService.getEquipmentIndicators(organization, getLastBatchName(inventory));
     }
 
@@ -85,7 +85,7 @@ public class InventoryIndicatorService {
      */
 
     public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final String organization, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(inventoryId);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
         return indicatorService.getApplicationIndicators(organization, getLastBatchName(inventory), inventory.getId());
     }
 
@@ -104,7 +104,7 @@ public class InventoryIndicatorService {
                                                                                           final Long inventoryId,
                                                                                           final String applicationName,
                                                                                           final String criteria) {
-        final InventoryBO inventory = inventoryService.getInventory(inventoryId);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
         return indicatorService.getApplicationVmIndicators(organization, getLastBatchName(inventory), inventory.getId(), applicationName, criteria);
     }
 
@@ -116,7 +116,7 @@ public class InventoryIndicatorService {
      * @param inventoryId  the inventory id.
      */
     public void deleteIndicators(final String subscriber, final String organization, final Long inventoryId) {
-        inventoryService.getInventory(inventoryId).getEvaluationReports().forEach(report ->
+        inventoryService.getInventory(subscriber, organization, inventoryId).getEvaluationReports().forEach(report ->
                 indicatorService.deleteIndicators(organization, report.getBatchName()));
     }
 
@@ -145,15 +145,15 @@ public class InventoryIndicatorService {
     }
 
     /**
-     * Get physical equipment low carbon indicators.
+     * Get physical equipment low impact indicators.
      *
      * @param subscriber   the subscriber.
      * @param organization the organization.
      * @param inventoryId  the inventory id.
      * @return datacenter indicators
      */
-    public List<PhysicalEquipmentLowCarbonBO> getPhysicalEquipmentLowCarbon(final String subscriber, final String organization, final Long inventoryId) {
-        return indicatorService.getPhysicalEquipmentLowCarbon(subscriber, organization, inventoryId);
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final String organization, final Long inventoryId) {
+        return indicatorService.getPhysicalEquipmentsLowImpact(subscriber, organization, inventoryId);
     }
 
     /**
@@ -163,6 +163,7 @@ public class InventoryIndicatorService {
      * @return the last batch name or else throw exception.
      */
     private String getLastBatchName(final InventoryBO inventory) {
-        return inventoryService.getLastBatchName(inventory).orElseThrow(() -> new G4itRestException("400"));
+        return inventoryService.getLastBatchName(inventory)
+                .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
     }
 }

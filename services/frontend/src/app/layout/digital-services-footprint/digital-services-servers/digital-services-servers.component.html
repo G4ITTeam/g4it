@@ -59,7 +59,7 @@
                     }}
                 </td>
                 <td>{{ "digital-services-servers." + server.type | translate }}</td>
-                <td>{{ server.quantity }} ({{ server.sumOfVmQuantity }})</td>
+                <td>{{ server.quantity | decimals }} ({{ server.sumOfVmQuantity | decimals }})</td>
                 <td>{{ server.host.value }}</td>
                 <td>{{ server.datacenter.name }}</td>
                 <td style="text-align: right">

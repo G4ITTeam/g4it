@@ -4,12 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
 import com.soprasteria.g4it.backend.apibatchexport.modeldb.ExportReport;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
+import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -45,6 +46,14 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private String inventoryDate;
 
     private String type;
+
+    /**
+     * Attached note.
+     */
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "note_id", referencedColumnName = "id")
+    private Note note;
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne(optional = false)
@@ -94,7 +103,7 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private List<InventoryEvaluationReport> evaluationReports = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private ExportReport exportReport;
 
     /**

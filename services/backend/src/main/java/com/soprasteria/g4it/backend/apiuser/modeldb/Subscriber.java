@@ -45,6 +45,11 @@ public class Subscriber extends AbstractBaseEntity implements Serializable {
     private List<Organization> organizations;
 
     /**
+     * The authorized organizations to subscriber
+     */
+    private String authorizedDomains;
+
+    /**
      * The subscriber name.
      */
     @NotNull

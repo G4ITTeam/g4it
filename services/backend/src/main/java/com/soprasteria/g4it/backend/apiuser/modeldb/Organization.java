@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.modeldb;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -16,8 +16,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -58,6 +61,32 @@ public class Organization extends AbstractBaseEntity implements Serializable {
      * The data retention day
      */
     private Integer dataRetentionDay;
+
+    /**
+     * The deletion Date
+     */
+    private LocalDateTime deletionDate;
+
+    /**
+     * The status
+     */
+    private String status;
+
+    /**
+     * The last user who updated the note.
+     */
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "last_updated_by", referencedColumnName = "id")
+    private User lastUpdatedBy;
+
+    /**
+     * The  user who created the organization.
+     */
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OneToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private User createdBy;
 
     /**
      * The organization's subscriber.

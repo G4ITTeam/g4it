@@ -9,7 +9,7 @@
         <div class="footprint-data">
             <div>
                 <span *ngIf="physicalEquipmentTotalCount !== 0; else zero" tabIndex="0">{{
-                    physicalEquipmentTotalCount
+                    physicalEquipmentTotalCount | decimals 
                 }}</span>
                 <img
                     class="small-info"
@@ -39,7 +39,7 @@
                     "
                     tabIndex="0"
                 >
-                    {{ physicalEquipmentAvgAge | number : "1.2-2" }}
+                    {{ physicalEquipmentAvgAge | integer }}
                     <p
                         [ngClass]="{
                             'grey-text':
@@ -76,16 +76,16 @@
             </div>
             <div>
                 <span *ngIf="physicalEquipmentTotalCount !== 0; else zero" tabindex="0">
-                    {{ physicalEquipmentPourcentageLowCarbon | number : "1.0-0" }}%
+                    {{ physicalEquipmentPourcentageLowImpact | integer }}%
                 </span>
                 <img
                     class="small-info"
                     src="assets/images/icons/icon-information.svg"
                     alt="{{
-                        'inventories-footprint.global.tooltip.low-carbon' | translate
+                        'inventories-footprint.global.tooltip.low-impact' | translate
                     }}"
                     pTooltip="{{
-                        'inventories-footprint.global.tooltip.low-carbon' | translate
+                        'inventories-footprint.global.tooltip.low-impact' | translate
                     }}"
                     tooltipEvent="focus"
                     tooltipPosition="right"
@@ -96,7 +96,7 @@
                         'grey-text': physicalEquipmentTotalCount == 0
                     }"
                 >
-                    {{ "inventories-footprint.global.low-carbon" | translate }}
+                    {{ "inventories-footprint.global.low-impact" | translate }}
                 </p>
                 <ng-template #zero
                     ><span class="text-no-data-global">--</span></ng-template

@@ -31,19 +31,4 @@ child:
         - services/$COMPONENT/**/*
   parallel:
     matrix:
-    - COMPONENT: [ backend, frontend ]
-
-deployment:
-  stage: deploy
-  trigger:
-    project: deployment-aks
-    strategy: depend
-  variables:
-    ENVIRONMENT_NAME: int
-    COMPONENT_IMAGE_TAG_0: main
-    COMPONENT_IMAGE_TAG_1: main
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-      when: manual
+    - COMPONENT: [ backend, frontend, keycloak ]

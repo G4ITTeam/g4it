@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { combineLatest, takeUntil } from "rxjs";
@@ -45,10 +45,9 @@ export class InventoriesGlobalFootprintComponent
                     const dataIndex = params.dataIndex;
                     const seriesIndex = params.seriesIndex;
                     const impact = echartsData[seriesIndex].impacts[dataIndex];
-                    const roundedImpact = impact.fis.toFixed(0);
                     const name = this.existingTranslation(
                         echartsData[seriesIndex].data,
-                        selectedView
+                        selectedView,
                     );
                     return `
                         <div style="display: flex; align-items: center; height: 30px;">
@@ -56,9 +55,9 @@ export class InventoriesGlobalFootprintComponent
                                 params.color
                             }; border-radius: 50%; margin-right: 5px;"></span>
                             <span style="font-weight: bold; margin-right: 15px;">${name}</span>
-                            <div>${impact.critere} : ${
-                        impact.sipValue < 1 ? " < 1" : roundedImpact
-                    } ${this.translate.instant("common.peopleeq-min")} </div>
+                            <div>${impact.critere} : ${this.integerPipe.transform(
+                                impact.fis,
+                            )} ${this.translate.instant("common.peopleeq-min")} </div>
                         </div>
                     `;
                 },
@@ -75,8 +74,7 @@ export class InventoriesGlobalFootprintComponent
                 },
             },
             polar: {
-                radius: "80%", //TODO Adjust the radius value to add margin for legend if lot of data, have to be set dynamically
-                center: ["50%", "55%"],
+                center: ["50%", "47%"],
             },
             series: echartsData.map((item: any) => ({
                 name: item.data,
@@ -95,8 +93,10 @@ export class InventoriesGlobalFootprintComponent
                     focus: "series",
                 },
             })),
+            avoidLabelOverlap: true,
             legend: {
-                show: true,
+                type: "scroll",
+                bottom: 0,
                 data: echartsData.map((item: any) => item.data),
                 formatter: (param: any) => {
                     return this.existingTranslation(param, selectedView);

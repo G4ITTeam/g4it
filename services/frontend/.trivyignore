@@ -1,0 +1,10 @@
+# ****************************************************
+# CVE DEPENDENCY TREE FOR DOCKER TRIVY STEP IN CI/CD
+# ****************************************************
+#
+# Docker $CI_REGISTRY/dep/library/project-oci-images/runtime-angular-nginx-v1:update1 <-- alpine 3.18.6 (CVE-2024-28757)
+#
+# ----------------------------------------------------
+
+# libexpat CVE alpine 3.18.6, no impact as we don't use xml at all
+CVE-2024-28757

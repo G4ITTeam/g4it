@@ -1,0 +1,151 @@
+<div *ngIf="!openSearchResult && !membersListVisible">
+    <div class="pt-4">
+        <label>{{"administration.user.select-org" | translate }} </label><br>
+        <div class="h-2rem border-top-2 border-primary p-0 mt-1" style="color: lightgray;"></div>
+        <div>
+            <p-dropdown appendTo="body" [options]="organizationlist" optionLabel="displayLabel" name="organizationName"
+                [(ngModel)]="organization" [style]="{'height':'40px','width':'35%'}"
+                placeholder="{{'administration.user-placeholder' | translate }}" class="dropdown-placeholder-padding"
+                (onChange)="membersAndSearchVisible = true; getUsersDetails(); clearSearchField(); checkForValidation();">
+                <ng-template let-organizations pTemplate="item">
+                    <div class="flex align-items-center">
+                        <div>{{organizations?.organizationName}} - ({{organizations?.subscriberName}})</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <br><br>
+            <div *ngIf="membersAndSearchVisible" [formGroup]="searchForm">
+                <label>{{"administration.user.search-user" | translate }} </label>
+                <div class="h-1rem border-top-2 border-primary p-0 mt-1" style="color: lightgray;"></div>
+                <div [style]="{'display':'-webkit-inline-box'}">
+                    <input class="label-input-div-medium input-width pl-2" pInputText placeholder="Email" pInputText
+                        formControlName="searchName" name="searchName" (keyup)="checkForValidation()"
+                        ngDefaultControl />
+                    <p-button class="label-input-div-medium" [disabled]="enableSearchButton || searchFormControls['searchName'].invalid"
+                        (click)="searchList();openSearchResult = true">{{ "administration.user.search" | translate
+                        }}</p-button>
+                </div>
+                <p class="error-text" *ngIf="searchFormControls['searchName'].invalid">
+                    {{ "administration.user.searchEmailValidation" | translate }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div *ngIf="membersAndSearchVisible">
+        <div class="table-container">
+            <p-table [value]="membersList" [tableStyle]="{ 'min-width': '50rem' }" [rows]="6"
+                (click)="membersListVisible = true">
+                <ng-template pTemplate="caption">
+                    <div class="table-header">
+                        <div class="table-head">
+                            {{"administration.user.list-members" | translate }}
+                        </div>
+                        <span> {{"administration.user.members" | translate }} ({{membersList?.length}})
+                        </span>
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<div *ngIf="openSearchResult && !membersListVisible">
+    <br>
+    <div class="sidepanel-component-padding">
+        <label (click)="openSearchResult = false;clearSearchField();getUsersDetails()">
+            <img src="assets/images/icons/icon-arrow-left-black.svg" alt="" class="button-icon" />
+            {{organization.organizationName}} - {{"administration.user.search-result" | translate }}
+            ({{searchResult?.length}})</label><br>
+        <br>
+        <span *ngIf="searchResult?.length === 0"> {{"administration.user.no-results" | translate }} </span>
+        <div *ngFor="let user of searchResult">
+            <div [style]="{'display':'-webkit-inline-box'}">
+                <input class="label-input-div-medium input-width pl-2" type="text" [(ngModel)]="user.email"
+                    name="user.email" pInputText ngDefaultControl readonly />
+                <p-button class="label-input-div-medium" *ngIf="isAlreadyMemberOfOrg(user.linkedOrgIds)" [disabled]="true">
+                    {{"administration.user.already-member"
+                    | translate }} </p-button>
+                <p-button class="label-input-div-medium" *ngIf="!isAlreadyMemberOfOrg(user.linkedOrgIds)"
+                    (click)="openSidepanelForAddOrg(user)"> +
+                    {{"administration.user.add" | translate }}</p-button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="membersListVisible && !openSearchResult">
+    <br>
+    <div class="table-container">
+        <p-table [value]="membersList" [tableStyle]="{ 'min-width': '50rem' }" [rows]="6" [paginator]="true"
+            [sortField]="'creationDate'" [sortOrder]="1">
+            <ng-template pTemplate="caption">
+                <div class="table-header">
+                    <div class="table-head">
+
+                        <label (click)="membersListVisible = false;clearSearchField();getUsersDetails()">
+                            <img src="assets/images/icons/icon-arrow-left-black.svg" alt="" class="button-icon" />
+                        </label>
+                        {{organization.organizationName}} - {{membersList?.length }} {{ membersList.length === 1
+                        ? ("administration.user.member" | translate) : ("administration.user.members" | translate)
+                        }}
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th id="id">
+                        {{ "digital-services-networks.id" | translate }}
+                    </th>
+
+                    <th style='white-space: nowrap' id="firstName" pSortableColumn="firstName"
+                        class="terminal-table-column">
+                        {{"administration.user.first-name" | translate }}
+                        <p-sortIcon field="firstName"></p-sortIcon>
+                    </th>
+                    <th style='white-space: nowrap' id="lastName" pSortableColumn="lastName"
+                        class="terminal-table-column">
+                        {{"administration.user.last-name" | translate }}
+                        <p-sortIcon field="lastName"></p-sortIcon>
+                    </th>
+                    <th id="email" pSortableColumn="email" class="terminal-table-column" style='white-space: nowrap'>
+                        {{"administration.user.mail" | translate }}
+                        <p-sortIcon field="email"></p-sortIcon>
+                    </th>
+                    <th>
+                        {{"administration.user.role" | translate }}
+
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+                <tr>
+                    <td class="grey-text">{{ rowIndex + 1 }}</td>
+
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{user?.roles?.join(', ')}}</td>
+                    <td style='white-space: nowrap'>
+                        <p-button styleClass="p-button-text edit-button">
+                            <img src="assets/images/icons/icon-edit.svg" alt="{{ 'common.edit' | translate }} {{
+                                'digital-services-networks.network' | translate
+                            }} {{ rowIndex + 1 }}" />
+                        </p-button>
+                        <p-button styleClass="p-button-text edit-button">
+                            <img src="assets/images/icons/icon-bin.svg" alt="{{ 'common.delete' | translate }} {{
+                                'digital-services-networks.network' | translate
+                            }} {{ rowIndex + 1 }}" />
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-sidebar [(visible)]="addOrganizationEnable" [style]="{width:'35%'}" position="right" [showCloseIcon]="true"
+    (onHide)="clearForm = true">
+    <app-add-organization [userDetail]="userDetail" (close)="addOrganizationEnable = $event;searchList();"
+        [organization]="organization" [clearForm]="clearForm"></app-add-organization>
+</p-sidebar>

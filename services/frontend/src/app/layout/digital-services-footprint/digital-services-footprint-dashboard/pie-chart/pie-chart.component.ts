@@ -4,13 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
-
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 @Component({
     selector: "app-pie-chart",
     templateUrl: "./pie-chart.component.html",
@@ -40,7 +40,7 @@ export class PieChartComponent extends AbstractDashboard {
             const selectedImpact = item.impacts.find(
                 (impact: any) =>
                     impact.criteria.split(" ").slice(0, 2).join(" ") ===
-                    this.selectedCriteria
+                    this.selectedCriteria,
             );
             const value = selectedImpact ? selectedImpact.sipValue : 0;
             return {
@@ -59,7 +59,7 @@ export class PieChartComponent extends AbstractDashboard {
                     const percentage = params.percent.toFixed(0);
                     const name = this.existingTranslation(
                         params.name,
-                        "digital-services"
+                        "digital-services",
                     );
                     return `
                     <div style="display: flex; align-items: center; height: 30px;">
@@ -69,9 +69,8 @@ export class PieChartComponent extends AbstractDashboard {
                         <span style="font-weight: bold; margin-right: 15px;">${name}</span>
                     </div>
                     <div>${percentage} %</div>
-                    <div>${
-                        params.value.toFixed(2) < 1 ? " < 1" : params.value.toFixed(0)
-                    } ${this.translate.instant("common.peopleeq-min")} </div>
+                    <div>${this.integerPipe.transform(params.value)}
+                    ${this.translate.instant("common.peopleeq-min")} </div>
                     `;
                 },
             },

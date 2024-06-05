@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -30,9 +30,9 @@ export class InventoryItemComponent implements OnInit {
     @Output() reloadInventoriesAndLoop: EventEmitter<number> = new EventEmitter();
     @Output() reloadInventoryAndLoop: EventEmitter<number> = new EventEmitter();
     @Output() openSidebarForUploadInventory: EventEmitter<number> = new EventEmitter();
+    @Output() openSidebarForNote: EventEmitter<number> = new EventEmitter();
     @Output() openTab: EventEmitter<number> = new EventEmitter();
     @Output() closeTab: EventEmitter<number> = new EventEmitter();
-
     constructor(
         private inventoryService: InventoryService,
         private evaluationService: EvaluationDataService,
@@ -42,10 +42,10 @@ export class InventoryItemComponent implements OnInit {
         private spinner: NgxSpinnerService,
         private translate: TranslateService,
         private route: ActivatedRoute,
-        public userService:UserService
-    ) {}
+        public userService: UserService,
+    ) { }
 
-    ngOnInit() {}
+    ngOnInit() { }
 
     isRunning() {
         if (!this.inventory.lastEvaluationReport) return false;
@@ -54,14 +54,27 @@ export class InventoryItemComponent implements OnInit {
         );
     }
 
+    showEquipment() {
+        return (
+            this.inventory.lastEvaluationReport &&
+            this.inventory.physicalEquipmentCount > 0
+        );
+    }
+
+    showApplication() {
+        return (
+            this.inventory.lastEvaluationReport &&
+            this.inventory.applicationCount > 0
+        );
+    }
+
     confirmDelete(event: Event) {
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant("inventories.popup.delete-question")} ${
-                this.inventory.name
-            } ?
+            message: `${this.translate.instant("inventories.popup.delete-question")} ${this.inventory.name
+                } ?
             ${this.translate.instant("inventories.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
@@ -89,7 +102,7 @@ export class InventoryItemComponent implements OnInit {
         }
 
         if (uri === undefined) return;
-
+        localStorage.setItem("selectedFiltersData", '')
         this.router.navigate([`${this.inventory.id}/footprint/${uri}`], {
             relativeTo: this.route,
         });
@@ -111,7 +124,7 @@ export class InventoryItemComponent implements OnInit {
                     ),
                 );
                 await TimeUtils.delay(2000);
-                await this.reloadInventoryAndLoop.emit(this.inventory.id);
+                this.reloadInventoryAndLoop.emit(this.inventory.id);
                 this.spinner.hide();
             },
         });
@@ -144,11 +157,15 @@ export class InventoryItemComponent implements OnInit {
         return false;
     }
 
-    openSidebar() {
+    openSidebarUploadFile() {
         this.openSidebarForUploadInventory.emit(this.inventory.id);
     }
 
-    onSelectedChange(id: number, event: any) {
+    openSidebarNote() {
+        this.openSidebarForNote.emit(this.inventory.id);
+    }
+
+    async onSelectedChange(id: number, event: any) {
         if (event === undefined) return;
         if (event === true) {
             this.openTab.emit(id);
@@ -160,5 +177,4 @@ export class InventoryItemComponent implements OnInit {
     trackByFn(index: any) {
         return index;
     }
-
 }

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.modeldb;
 
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
@@ -37,22 +37,42 @@ public class User extends AbstractBaseEntity implements Serializable {
     private long id;
 
     /**
-     * The username.
+     * The email.
      */
-    private String username;
+    private String email;
+
+    /**
+     * The firstName of the user.
+     */
+    private String firstName;
+
+    /**
+     * The lastName of the user.
+     */
+    private String lastName;
+
+    /**
+     * The subject of the user.
+     */
+    private String sub;
+
+    /**
+     * The domain of the user.
+     */
+    private String domain;
 
     /**
      * User's organizations.
      */
     @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserOrganization> userOrganizations;
 
     /**
      * User's subscribers.
      */
     @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserSubscriber> userSubscribers;
 
 }

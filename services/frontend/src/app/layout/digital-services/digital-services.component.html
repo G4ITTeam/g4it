@@ -1,7 +1,11 @@
 <p-toast #toast position="bottom-center"></p-toast>
-<div class="digital-services-top-container">
+<div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
     <h1 tabIndex="0">{{ "digital-services.title" | translate }}</h1>
-    <p-button styleClass="black-button" (onClick)="createNewDigitalService()" *ngIf="userService.isAllowedDigitalServiceWrite$ | async">
+    <p-button
+        styleClass="black-button"
+        (onClick)="createNewDigitalService()"
+        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+    >
         {{ "digital-services.add" | translate }}
     </p-button>
 </div>
@@ -23,26 +27,93 @@
                 >
                     <div class="digital-services-card-content">
                         <span
-                            class="digital-services-card-content-label"
+                            class="digital-services-card-content-label my-2"
                             (click)="onDigitalServiceSelection(digitalService.uid)"
                         >
                             {{ digitalService.name }}
                         </span>
-                        <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                            styleClass="p-button-text p-button-rounded p-button-danger"
+
+                        <span *ngIf="userService.isAllowedDigitalServiceWrite$ | async">
+                            <p-button
+                                (click)="
+                                    selectedDigitalService = digitalService;
+                                    sidebarVisible = true
+                                "
+                                [tabindex]="0"
+                                styleClass="inventory-add-button-small"
+                                *ngIf="!digitalService.note"
+                            >
+                                <img
+                                    class="w-1rem h-2rem uppercase"
+                                    src="assets/images/icons/icon-plus.svg"
+                                    alt="{{ 'common.accessibility.addNote' | translate }}"
+                                />
+                                <p class="font-bold mx-2 text-xs text-center w-full">
+                                    {{ "common.note.add" | translate }}
+                                </p>
+                            </p-button>
+                        </span>
+
+                        <span>
+                            <p-button
+                                (click)="
+                                    selectedDigitalService = digitalService;
+                                    sidebarVisible = true
+                                "
+                                [tabindex]="0"
+                                styleClass="inventory-attached-button-small"
+                                *ngIf="digitalService.note"
+                            >
+                                <img
+                                    class="w-1rem h-2rem uppercase"
+                                    src="assets/images/icons/icon-note.svg"
+                                    alt="{{
+                                        'common.accessibility.attachedNote' | translate
+                                    }}"
+                                />
+                                <p class="font-bold mx-2 text-xs text-center w-full">
+                                    {{ "common.note.attached" | translate }}
+                                </p>
+                            </p-button>
+                        </span>
+
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                            severity="danger"
+                            styleClass="ml-3"
+                            [rounded]="true"
+                            (click)="confirmDelete($event, digitalService)"
+                            [text]="true"
                         >
                             <img
                                 src="assets/images/icons/icon-bin.svg"
-                                (click)="confirmDelete($event, digitalService)"
                                 alt="{{ 'common.delete' | translate }} {{
                                     digitalService.name
                                 }}"
                             />
                         </p-button>
+
                         <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>
                     </div>
                 </p-card>
             </li>
         </ul>
     </ng-template>
+    <p-sidebar
+        [(visible)]="sidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-7"
+        [showCloseIcon]="true"
+    >
+        <app-common-editor
+            [content]="selectedDigitalService.note?.content"
+            [title]="'Note - ' + selectedDigitalService.name"
+            [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
+            (saveValue)="noteSaveValue($event)"
+            (close)="sidebarVisible = $event"
+            (delete)="noteDelete(); sidebarVisible = $event"
+            styleClass="mx-7"
+        >
+        </app-common-editor>
+    </p-sidebar>
 </p-scrollPanel>

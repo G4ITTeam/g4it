@@ -157,6 +157,12 @@ databaseChangeLog:
   - changeSet:
       id: create-user-table
       author: G4IT Dev Team
+      validCheckSum: ANY
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - tableExists:
+                tableName: g4it_user
       changes:
         - createTable:
             tableName: g4it_user
@@ -569,6 +575,24 @@ databaseChangeLog:
             tableName: g4it_user_subscriber
 
   - changeSet:
+      id: add-authorized_domains-column-in-g4it_subscriber
+      author: G4IT Dev Team
+      changes:
+      - addColumn:
+          tableName: g4it_subscriber
+          columns:
+            - column:
+                name: authorized_domains
+                type: text
+      - update:
+          columns:
+            - column:
+                name: authorized_domains
+                value: 'soprasteria.com'
+          tableName: g4it_subscriber
+          where: name = 'SOPRA-STERIA-GROUP'
+
+  - changeSet:
       id: add-new-roles-in-role-table
       author: G4IT Dev Team
       changes:
@@ -627,3 +651,88 @@ databaseChangeLog:
               inner join g4it_user_role_organization uro on uro.user_organization_id = u.id
               inner join g4it_role r on r.id  = uro.role_id
               where r.name like 'ROLE_DIGITAL_SERVICE_%';
+
+  - changeSet:
+      id: add-status-deletion-createby-updateby-g4it_organization
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_organization
+            columns:
+              - column:
+                  name: status
+                  type: text
+        - addColumn:
+            tableName: g4it_organization
+            columns:
+              - column:
+                  name: deletion_date
+                  type: timestamp
+        - addColumn:
+            tableName: g4it_organization
+            columns:
+              - column:
+                  name: last_updated_by
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: org_last_updated_by_user_fk
+                    references: g4it_user(id)
+                    deleteCascade: false
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: org_created_by_user_fk
+                    references: g4it_user(id)
+                    deleteCascade: false
+        - sql:
+            update g4it_organization set status = 'ACTIVE';
+          comment: Update organization status to 'ACTIVE'
+
+  - changeSet:
+      id: create-user-role-subscriber
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: g4it_user_role_subscriber
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_role_subscriber_pk
+              - column:
+                  name: user_subscriber_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: userrolesubscriber-usersubscriber-fk
+                    references: g4it_user_subscriber(id)
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: userrolesubscriber-role-fk
+                    references: g4it_role(id)
+
+  - changeSet:
+      id: add-admin-roles-in-role-table
+      author: G4IT Dev Team
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_SUBSCRIBER_ADMINISTRATOR
+            tableName: g4it_role
+        - insert:
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_ORGANIZATION_ADMINISTRATOR
+            tableName: g4it_role

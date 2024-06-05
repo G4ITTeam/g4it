@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceIndicatorView;
@@ -17,6 +17,8 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -53,6 +55,6 @@ public interface DigitalServiceIndicatorMapper {
                         .tier(entry.getKey())
                         .impacts(toImpact(entry.getValue()))
                         .build()
-                ).collect(Collectors.toList());
+                ).collect(toList());
     }
 }

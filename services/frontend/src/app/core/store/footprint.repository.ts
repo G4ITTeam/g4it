@@ -104,7 +104,7 @@ export interface PhysicalEquipmentAvgAge {
     avgWeightedAge?: number;
 }
 
-export interface PhysicalEquipmentLowCarbon {
+export interface PhysicalEquipmentLowImpact {
     organisation: string;
     inventoryDate: string;
     paysUtilisation: string | null;
@@ -112,14 +112,14 @@ export interface PhysicalEquipmentLowCarbon {
     nomEntite: string | null;
     statut: string;
     quantite: number;
-    lowCarbon: boolean;
-    pourcentageLowCarbon?: number;
+    lowImpact: boolean;
+    pourcentageLowImpact?: number;
     count?: number;
 }
 
 export interface PhysicalEquipmentStats {
     averageAge: PhysicalEquipmentAvgAge[];
-    lowCarbon: PhysicalEquipmentLowCarbon[];
+    lowImpact: PhysicalEquipmentLowImpact[];
 }
 
 export interface ApplicationFootprint {
@@ -225,7 +225,7 @@ const DatacenterStatsStore = createStore(
 const PhysicalEquipmentStatsStore = createStore(
     { name: "PhysicalEquipmentsStats" },
     withProps<PhysicalEquipmentStats>({
-        lowCarbon: [],
+        lowImpact: [],
         averageAge: [],
     })
 );
@@ -381,9 +381,9 @@ export class FootprintRepository {
 
     setPhysicalEquipmentStats(
         averageAge: PhysicalEquipmentAvgAge[],
-        lowCarbon: PhysicalEquipmentLowCarbon[]
+        lowImpact: PhysicalEquipmentLowImpact[]
     ): void {
-        PhysicalEquipmentStatsStore.update(setProps({ lowCarbon, averageAge }));
+        PhysicalEquipmentStatsStore.update(setProps({ lowImpact, averageAge }));
     }
 
     setApplicationFootprint(footprint: ApplicationFootprint[]) {

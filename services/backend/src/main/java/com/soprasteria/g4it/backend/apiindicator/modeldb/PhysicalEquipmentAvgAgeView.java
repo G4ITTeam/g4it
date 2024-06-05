@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb;
 
 import jakarta.persistence.*;
@@ -28,7 +28,7 @@ import java.io.Serializable;
                         @ColumnResult(name = "nom_entite"),
                         @ColumnResult(name = "statut"),
                         @ColumnResult(name = "poids", type = Integer.class),
-                        @ColumnResult(name = "age_moyen", type = Float.class)
+                        @ColumnResult(name = "age_moyen", type = Double.class)
                 }
         )
 )
@@ -101,5 +101,5 @@ public class PhysicalEquipmentAvgAgeView implements Serializable {
 
     private Integer poids;
 
-    private Float ageMoyen;
+    private Double ageMoyen;
 }

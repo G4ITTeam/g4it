@@ -1,8 +1,9 @@
 <p-toast #toast position="bottom-center"></p-toast>
-<div class="inventories-top-container">
+<div class="flex justify-content-between align-items-center flex-wrap mr-4 mb-4">
     <h1 tabIndex="0">{{ "inventories.title" | translate }}</h1>
     <!-- Side Panel -->
     <p-sidebar
+        *ngIf="sidebarType === 'FILE'"
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-md"
@@ -20,9 +21,27 @@
             (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
         ></app-file-panel>
     </p-sidebar>
-    <p-button *ngIf="userService.isAllowedInventoryWrite$ | async"
+    <p-sidebar
+        *ngIf="sidebarType === 'NOTE'"
+        [(visible)]="sidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-7"
+    >
+        <app-common-editor
+            [content]="selectedInventory.note?.content"
+            [title]="'Note - ' + selectedInventory.name"
+            [showButtons]="userService.isAllowedInventoryWrite$ | async"
+            (saveValue)="noteSaveValue($event)"
+            (close)="sidebarVisible = $event"
+            (delete)="noteDelete($event); sidebarVisible = $event"
+            styleClass="mx-7"
+        >
+        </app-common-editor>
+    </p-sidebar>
+    <p-button
+        *ngIf="userService.isAllowedInventoryWrite$ | async"
         styleClass="black-button"
-        (click)="name = ''; sidebarPurpose = 'new'; sidebarVisible = true"
+        (click)="name = ''; sidebarPurpose = 'new'; sidebarType = 'FILE'; sidebarVisible = true"
         >{{ "inventories.add" | translate }}</p-button
     >
 </div>
@@ -48,10 +67,11 @@
                     <app-inventory-item
                         [inventory]="inventory"
                         (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
-                        (reloadInventoryAndLoop)="reloadInventory($event)"
+                        (reloadInventoryAndLoop)="reloadInventoryAndLoop($event)"
                         (openSidebarForUploadInventory)="
                             openSidebarForUploadInventory($event)
                         "
+                        (openSidebarForNote)="openSidebarForNote($event)"
                         (openTab)="childOpenTab($event)"
                         (closeTab)="childCloseTab($event)"
                         [open]="inventoriesOpen.has(inventory.id)"
@@ -112,10 +132,11 @@
                     <app-inventory-item
                         [inventory]="inventory"
                         (reloadInventoriesAndLoop)="reloadInventoriesAndLoop($event)"
-                        (reloadInventoryAndLoop)="reloadInventory($event)"
+                        (reloadInventoryAndLoop)="reloadInventoryAndLoop($event)"
                         (openSidebarForUploadInventory)="
                             openSidebarForUploadInventory($event)
                         "
+                        (openSidebarForNote)="openSidebarForNote($event)"
                         (openTab)="childOpenTab($event)"
                         (closeTab)="childCloseTab($event)"
                         [open]="inventoriesOpen.has(inventory.id)"

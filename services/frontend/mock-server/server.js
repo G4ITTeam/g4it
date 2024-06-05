@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -15,6 +15,8 @@ const digitalServices = require("./routes/digital-services");
 const users = require("./routes/users");
 const version = require("./routes/version");
 const randomResponseDelay = require("./random-delay-middleware");
+const subscribers = require("./routes/subscribers");
+const organizations = require("./routes/organization");
 
 app.use(cors());
 
@@ -25,12 +27,15 @@ app.use(express.json());
 /**
  * Inventories
  */
-app.use("/SSG/G4IT/inventories", inventories);
+app.use("/subscribers/SOPRA-STERIA-GROUP/organizations/DEMO/inventories", inventories);
 
 /**
  * Digital Services
  */
-app.use("/SSG/G4IT/digital-services", digitalServices);
+app.use(
+    "/subscribers/SOPRA-STERIA-GROUP/organizations/DEMO/digital-services",
+    digitalServices,
+);
 
 /**
  * Users
@@ -38,6 +43,15 @@ app.use("/SSG/G4IT/digital-services", digitalServices);
 app.use("/users", users);
 
 app.use("/version", version);
+
+// app.use(`/subscribers?user=`, subscribers);
+app.use("/subscribers/SOPRA-STERIA-GROUP/organizations/DEMO/subscribers", subscribers);
+
+app.use("/subscribers/SOPRA-STERIA-GROUP/organizations/DEMO/organizations/", organizations);
+
+app.use("/subscribers/SOPRA-STERIA-GROUP/organizations/DEMO/subscribers/users",users)
+
+app.use("/subscribers/SOPRA-STERIA-GROUP/organizations/DEMO/users", organizations);
 
 app.listen(port, () => {
     console.log(`Mock server listening on port ${port}`);

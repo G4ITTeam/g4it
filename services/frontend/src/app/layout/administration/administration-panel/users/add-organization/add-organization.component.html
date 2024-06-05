@@ -1,0 +1,58 @@
+<div class="side-panel-content" style="height: 100%;">
+    <div class="side-panel-title" tabIndex="0" [attr.aria-label]="'new-inventory-choose' | translate">
+        {{"administration.user.aceessAndUser" | translate }}
+    </div>
+    {{organization?.organizationName}}
+    <br>
+
+    <div>
+        <input class="label-input-div-medium input-width" [style]="{'width': '100%'}" type="text" placeholder="email"
+            [(ngModel)]="email" name="email" pInputText ngDefaultControl readonly />
+    </div>
+    <br>
+    <div>
+        <label> {{"administration.user.access" | translate }} </label><br>
+        <div class="h-2rem border-top-2 border-primary p-0 mt-1" style="color: lightgray;"></div>
+        <label> {{'administration.user.is-module' | translate }} </label>
+        <p-dropdown appendTo="body" [style]="{'width': '100%'}" [(ngModel)]="isModule" [options]="isModuleValues"
+            optionLabel="value" placeholder="{{'administration.user.is-module' | translate }}" [required]="true"
+            [disabled]="isAdmin" class="p-inputtext-sm type-dropdown"></p-dropdown>
+        <p class="error-text" *ngIf="!isModule">
+            {{'administration.user.is-module' | translate }}
+            {{ "common.mandatory" | translate }}
+        </p>
+        <br>
+        <br>
+        <label>{{'administration.user.ds-module' | translate }}</label>
+        <p-dropdown appendTo="body" [style]="{'width': '100%'}" [(ngModel)]="dsModule" [options]="DSModuleValues"
+            optionLabel="value" placeholder="{{'administration.user.ds-module' | translate }}" [required]="true"
+            [disabled]="isAdmin" class="p-inputtext-sm type-dropdown"></p-dropdown>
+        <p class="error-text" *ngIf="!dsModule">
+            {{'administration.user.ds-module' | translate }}
+            {{ "common.mandatory" | translate }}
+        </p>
+    </div>
+    <br>
+    <div>
+        <label>{{"administration.user.role" | translate }} </label><br>
+        <div class="h-2rem border-top-2 border-primary p-0 mt-1" style="color: lightgray;"></div>
+        <p-dropdown appendTo="body" [style]="{'width': '100%'}" [(ngModel)]="role" [options]="roleValues"
+            optionLabel="value" (onChange)="validateOnAdmin($event)" [required]="true"
+            placeholder="{{'administration.user.role' | translate }}" class="p-inputtext-sm type-dropdown"></p-dropdown>
+        <p class="error-text" *ngIf="!role">
+            {{'administration.user.role' | translate }}
+            {{ "common.mandatory" | translate }}
+        </p>
+    </div>
+    <div class="button-bottom-right">
+        <p-button styleClass="white-button-sidebar" class="pr-3 pl-3" (click)="cancel()">{{
+            "common.cancel" | translate
+            }}</p-button>
+        <p-button styleClass="black-button-sidebar" [disabled]="!(dsModule && isModule && role)" type="submit"
+            (click)="addToOrg()">
+            <span>{{"common.add" | translate }}</span>
+        </p-button>
+        <br>
+        <br>
+    </div>
+</div>

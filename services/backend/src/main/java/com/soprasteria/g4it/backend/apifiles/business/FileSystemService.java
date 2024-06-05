@@ -4,13 +4,15 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apifiles.business;
 
+import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apibatchloading.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
+import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +23,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
 @Slf4j
 public class FileSystemService {
 
+    /**
+     * Content types.
+     */
+    private static final List<String> TYPES = List.of("text/csv", "application/vnd.ms-excel");
     /**
      * File System.
      */
@@ -39,11 +46,6 @@ public class FileSystemService {
     private FileDescriptionRestMapper fileDescriptionRestMapper;
 
     /**
-     * Content types.
-     */
-    private static final List<String> TYPES = List.of("text/csv", "application/vnd.ms-excel");
-
-    /**
      * List files of subscriber and organization in INPUT directory
      *
      * @param subscriber   the subscriber
@@ -52,6 +54,28 @@ public class FileSystemService {
      */
     public List<FileDescriptionRest> listFiles(final String subscriber, final String organization) throws IOException {
         return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organization).listFiles(FileFolder.INPUT));
+    }
+
+    /**
+     * List files of subscriber and organization in INPUT directory
+     *
+     * @param subscriber   the subscriber
+     * @param organization the organization
+     * @return the list of files
+     */
+    public List<FileDescriptionRest> listFiles(final String subscriber, final String organization, final FileFolder fileFolder) throws IOException {
+        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organization).listFiles(fileFolder));
+    }
+
+    /**
+     * List files of subscriber and organization in INPUT directory
+     *
+     * @param subscriber   the subscriber
+     * @param organization the organization
+     * @return the list of files
+     */
+    public InputStream downloadFile(final String subscriber, final String organization, final FileFolder fileFolder, final String filename) throws IOException {
+        return fetchStorage(subscriber, organization).readFile(fileFolder, filename);
     }
 
     /**
@@ -123,6 +147,54 @@ public class FileSystemService {
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
         }
+    }
+
+    /**
+     * Get the filename from url and nb slash (0 or 1)
+     * Example:
+     * - getFilenameFromUrl("/path/to/file.txt", 0) returns "file.txt"
+     * - getFilenameFromUrl("/path/to/file.txt", 1) returns "to/file.txt"
+     *
+     * @param url     the url
+     * @param nbSlash the number of slash present in return
+     * @return the filename
+     */
+    public String getFilenameFromUrl(final String url, final int nbSlash) {
+        String fileUrl = SanitizeUrl.removeTokenAndEncoding(url);
+        final String[] split = fileUrl.split("/");
+        return switch (nbSlash) {
+            case 0 -> split[split.length - 1];
+            case 1 -> split.length < 2 ? fileUrl : split[split.length - 2] + "/" + split[split.length - 1];
+            default -> fileUrl;
+        };
+    }
+
+
+    /**
+     * Delete file for subscriber, organization, fileFolder
+     *
+     * @param subscriber   the subscriber
+     * @param organization the organization
+     * @param fileFolder   the fileFolder
+     * @param fileUrl      the fileUrl
+     */
+    public String deleteFile(String subscriber, String organization, FileFolder fileFolder, String fileUrl) {
+        String fileName = getFilenameFromUrl(fileUrl, 0);
+        String deletedFilePath = null;
+        final FileStorage fileStorage = fileSystem.mount(subscriber, organization);
+        try {
+            deletedFilePath = fileStorage.getFileUrl(fileFolder, fileName);
+            fileStorage.delete(fileFolder, fileName);
+        } catch (BlobStorageException e) {
+            if (e.getStatusCode() == 404) {
+                log.error("An error occurred during file deletion: file {} not found in storage as it should get file: {}", deletedFilePath, fileUrl);
+            } else {
+                log.error("An error occurred during deletion of file", e);
+            }
+        } catch (IOException e) {
+            log.error("An error occurred during deletion of file", e);
+        }
+        return deletedFilePath;
     }
 
 }

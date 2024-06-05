@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.business;
 
 import com.soprasteria.g4it.backend.apibatchexport.config.ExportBatchConfiguration;
@@ -79,12 +79,11 @@ public class ExportJobService {
      * @param organization  the subscriber's organization.
      * @param inventoryId   the inventory id.
      * @param inventoryName the inventory name.
-     * @param username      the username.
      * @param batchName     the calculation batch name.
      * @return the job id.
      * @throws ExportRuntimeException when error occurs in batch job.
      */
-    public Long launchExport(final String subscriber, final String organization, final Long inventoryId, final String inventoryName, final String batchName, final String username) throws ExportRuntimeException {
+    public Long launchExport(final String subscriber, final String organization, final Long inventoryId, final String inventoryName, final String batchName) throws ExportRuntimeException {
         try {
             // trigger job execution
             final JobExecution jobExecution = asyncExportJobLauncher.run(exportJob,
@@ -92,11 +91,11 @@ public class ExportJobService {
                             .addString("local.working.folder", getRandomFolderName())
                             .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                             .addString(INVENTORY_NAME_JOB_PARAM, inventoryName)
-                            .addString("username", username)
                             .addString(BATCH_NAME_JOB_PARAM, batchName)
                             .addString(SUBSCRIBER_JOB_PARAM, subscriber)
                             .addString(ORGANIZATION_JOB_PARAM, organization)
                             .toJobParameters());
+
             return jobExecution.getJobId();
         } catch (final JobExecutionAlreadyRunningException e) {
             log.error("JobExecutionAlreadyRunningException : ", e);

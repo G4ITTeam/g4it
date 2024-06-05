@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
@@ -17,6 +17,9 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+
 
 /**
  * Application indicator mapper.
@@ -53,7 +56,7 @@ public interface ApplicationIndicatorMapper {
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey().getKey()))
                         .unit(entry.getKey().getValue())
                         .impacts(toImpact(entry.getValue()))
-                        .build()).collect(Collectors.toList());
+                        .build()).collect(toList());
     }
 
 }

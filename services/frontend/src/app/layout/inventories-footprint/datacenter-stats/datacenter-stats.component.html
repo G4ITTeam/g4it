@@ -9,7 +9,7 @@
         <div class="footprint-data">
             <div>
                 <span *ngIf="datacenterCount !== 0; else zero" tabIndex="0">{{
-                    datacenterCount
+                    datacenterCount | decimals 
                 }}</span>
                 <img
                     class="small-info"
@@ -34,7 +34,7 @@
                         else zero
                     "
                     tabIndex="0"
-                    >{{ datacenterAvgWeightedPue | number : "1.2-2" }}</span
+                    >{{ datacenterAvgWeightedPue | decimals }}</span
                 >
                 <ng-template #zero
                     ><span class="text-no-data-global">--</span></ng-template

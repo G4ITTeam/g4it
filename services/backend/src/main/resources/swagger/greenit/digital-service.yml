@@ -10,7 +10,7 @@ tags:
   - name: digital-service referential
     description: All endpoint for digital service referential
 paths:
-  /{subscriber}/{organization}/digital-services:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -50,7 +50,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -112,7 +112,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/evaluation:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluation:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -138,7 +138,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/datacenters:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/datacenters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.model;
 
 import lombok.Data;
@@ -20,6 +20,11 @@ import java.util.List;
 public class SubscriberBO {
 
     /**
+     * The subscriber's id.
+     */
+    private Long id;
+
+    /**
      * The subscriber's name.
      */
     private String name;
@@ -33,5 +38,15 @@ public class SubscriberBO {
      * Subscriber's organization.
      */
     private List<OrganizationBO> organizations;
+
+    /**
+     * The authorized organizations to subscriber
+     */
+    private String authorizedDomains;
+
+    /**
+     * User roles on subscriber.
+     */
+    private List<String> roles;
 
 }

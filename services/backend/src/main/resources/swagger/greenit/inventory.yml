@@ -13,7 +13,7 @@ tags:
     description: All endpoint for the organization's inventory evaluation
 
 paths:
-  /{subscriber}/{organization}/inventories:
+  /subscribers/{subscriber}/organizations/{organization}/inventories:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -83,8 +83,34 @@ paths:
                 $ref: "#/components/schemas/RestError"
         '500':
           $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: Update an inventory
+      operationId: updateInventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      requestBody:
+        description: Mandatory inventory details to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryUpdateRest"
+      tags:
+        - inventory
+      responses:
+        '200':
+          description: Inventory has been updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/inventories/{inventoryId}:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -105,7 +131,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/loading:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/loading:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -144,7 +170,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/inventories/{inventoryId}/evaluation:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/evaluation:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

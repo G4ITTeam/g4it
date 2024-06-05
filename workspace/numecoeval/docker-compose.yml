@@ -47,6 +47,31 @@ services:
     networks:
       - numecoeval
 
+  keycloak:
+    image: bitnami/keycloak:24.0.4
+    container_name: keycloak
+    ports:
+      - "8180:8080"
+    environment:
+      KEYCLOAK_BIND_ADDRESS: 0.0.0.0
+      KEYCLOAK_DATABASE_HOST: postgresdb
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: keycloak
+      KEYCLOAK_DATABASE_PASSWORD: postgres
+      KEYCLOAK_DATABASE_USER: postgres
+      KEYCLOAK_HTTP_RELATIVE_PATH: /auth/
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+      KEYCLOAK_EXTRA_ARGS: --import-realm
+    volumes:
+      - ../../services/keycloak/imports:/opt/bitnami/keycloak/data/import
+      - ../../services/keycloak/extensions:/opt/bitnami/keycloak/providers
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    networks:
+      - numecoeval
+
 volumes:
   numecoeval_kafka_data:
     driver: local

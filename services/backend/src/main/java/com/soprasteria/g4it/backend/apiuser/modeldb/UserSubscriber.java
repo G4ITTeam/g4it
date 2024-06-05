@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.modeldb;
 
 import jakarta.persistence.*;
@@ -12,9 +12,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * G4IT User Subscriber mapping.
@@ -54,4 +56,20 @@ public class UserSubscriber implements Serializable {
      * Flag 'Default'.
      */
     private Boolean defaultFlag;
+
+    /**
+     * User role on subscriber.
+     */
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "g4it_user_role_subscriber",
+            joinColumns = @JoinColumn(name = "user_subscriber_id",
+                    referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",
+                    referencedColumnName = "id"))
+    private List<Role> roles;
+
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "userSubscribers", fetch = FetchType.LAZY)
+    private List<UserRoleSubscriber> UserRoleSubscriber;
 }

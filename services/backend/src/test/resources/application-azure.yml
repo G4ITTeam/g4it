@@ -1,9 +1,4 @@
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://sts.windows.net/${AZURE_TENANT_ID}/
   cloud:
     azure:
       profile:

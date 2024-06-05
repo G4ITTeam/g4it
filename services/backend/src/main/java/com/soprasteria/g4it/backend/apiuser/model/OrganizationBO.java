@@ -4,12 +4,14 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +20,11 @@ import java.util.List;
 @Data
 @SuperBuilder
 public class OrganizationBO {
+
+    /**
+     * The Organization's id.
+     */
+    private Long id;
 
     /**
      * The Organization's name.
@@ -30,7 +37,22 @@ public class OrganizationBO {
     private boolean defaultFlag;
 
     /**
+     * The 'status'.
+     */
+    private String status;
+
+    /**
+     * The 'deletionDate'.
+     */
+    private LocalDateTime deletionDate;
+
+    /**
      * User roles on organization.
      */
     private List<String> roles;
+
+    private Long subscriber_id;
+
+    @EqualsAndHashCode.Exclude
+    private LocalDateTime creationDate;
 }

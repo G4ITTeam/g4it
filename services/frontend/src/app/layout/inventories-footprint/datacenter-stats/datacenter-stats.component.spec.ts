@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -13,6 +13,7 @@ import { CardModule } from "primeng/card";
 import { TooltipModule } from "primeng/tooltip";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { DatacenterStatsComponent } from "./datacenter-stats.component";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("DatacenterStatsComponent", () => {
     let component: DatacenterStatsComponent;
@@ -21,7 +22,7 @@ describe("DatacenterStatsComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [DatacenterStatsComponent],
+            declarations: [DatacenterStatsComponent, DecimalsPipe],
             imports: [
                 HttpClientTestingModule,
                 CardModule,

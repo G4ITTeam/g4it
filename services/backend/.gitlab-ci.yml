@@ -6,6 +6,7 @@ include:
 
 variables:
   PROJECT_ROOT_DIR: "services/backend"
+  CHECKMARX_PROJECT: "${CHECKMARX_PATH}/backend"
   DISABLE_BUMP_VERSION: "true"
   DISABLE_AUTO_TAG: "true"
   DISABLE_PROMOTE_IMAGE: "true"
@@ -84,3 +85,7 @@ defectdojo:
   variables:
     SONAR_PROJECT_KEY: "com.soprasteria.g4it:greenit-backend"
 
+checkmarx:
+  variables:
+    CHECKMARX_SCAN_FILTERS: "-LocationPathExclude .mvn,vendor,target/site,target/surefire-reports,kics-reports"
+    CXLocation: "-LocationType folder -Locationpath $CI_PROJECT_DIR/services/backend/src/main/ $CHECKMARX_SCAN_FILTERS"

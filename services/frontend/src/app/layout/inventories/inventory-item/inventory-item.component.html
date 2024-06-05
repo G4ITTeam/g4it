@@ -8,14 +8,56 @@
             class="flex flex-row justify-content-between w-full"
             [attr.aria-label]="inventory.name"
         >
-            <div class="flex align-items-center text-lg">{{ inventory.name | monthYear }}</div>
+            <div class="flex align-items-center text-lg">
+                {{ inventory.name | monthYear }}
+            </div>
             <div class="flex align-items-center"></div>
             <div class="flex align-items-center">
+                <div *ngIf="userService.isAllowedInventoryWrite$ | async">
+                    <p-button
+                        *ngIf="!inventory.note"
+                        (click)="$event.stopPropagation(); openSidebarNote()"
+                        [tabindex]="0"
+                        styleClass="inventory-add-button-small"
+                        class="mx-2"
+                        attr.aria-label="{{ 'common.accessibility.addNote' | translate }}"
+                    >
+                        <img
+                            class="w-1rem h-2rem uppercase"
+                            src="assets/images/icons/icon-plus.svg"
+                            alt="{{ 'common.accessibility.addNote' | translate }}"
+                        />
+                        <p class="font-bold mx-2 text-xs text-center w-full">
+                            {{ "common.note.add" | translate }}
+                        </p>
+                    </p-button>
+                </div>
+
+                <p-button
+                    *ngIf="inventory.note"
+                    (click)="$event.stopPropagation(); openSidebarNote()"
+                    [tabindex]="0"
+                    styleClass="inventory-attached-button-small"
+                    class="mx-2"
+                    attr.aria-label="{{
+                        'common.accessibility.attachedNote' | translate
+                    }}"
+                >
+                    <img
+                        class="w-1rem h-2rem uppercase"
+                        src="assets/images/icons/icon-note.svg"
+                        alt="{{ 'common.accessibility.attachedNote' | translate }}"
+                    />
+                    <p class="font-bold mx-2 text-xs text-center w-full">
+                        {{ "common.note.attached" | translate }}
+                    </p>
+                </p-button>
+
                 <p-button
                     *ngIf="isRunning()"
                     [disabled]="true"
                     styleClass="inventory-button-small"
-                    class="mx-2 disabled-text-black"
+                    class="ml-5 mr-6 disabled-text-black"
                 >
                     <img
                         class="w-1rem h-2rem uppercase"
@@ -26,13 +68,11 @@
                         {{ "common.updateInProgress" | translate }}
                     </p>
                 </p-button>
+
                 <p-button
+                    *ngIf="!isRunning()"
+                    [disabled]="!showEquipment()"
                     tabindex="0"
-                    *ngIf="
-                        inventory.lastEvaluationReport &&
-                        !isRunning() &&
-                        inventory.physicalEquipmentCount > 0
-                    "
                     styleClass="inventory-button-small"
                     class="mx-2 py-2"
                     (click)="$event.stopPropagation(); redirectFootprint('equipment')"
@@ -41,7 +81,7 @@
                     "
                 >
                     <img
-                        class="details-img mr-2"
+                        class="w-10px mr-2"
                         src="assets/images/icons/icon-arrow-right.svg"
                         alt="{{ 'common.accessibility.eq' | translate }} {{
                             inventory.name
@@ -51,13 +91,11 @@
                         {{ "inventories.details.equipment" | translate }}
                     </p>
                 </p-button>
+
                 <p-button
                     tabindex="0"
-                    *ngIf="
-                        inventory.lastEvaluationReport &&
-                        !isRunning() &&
-                        inventory.applicationCount > 0
-                    "
+                    *ngIf="!isRunning()"
+                    [disabled]="!showApplication()"
                     styleClass="inventory-button-small"
                     class="mx-2 py-2"
                     (click)="$event.stopPropagation(); redirectFootprint('application')"
@@ -66,7 +104,7 @@
                     "
                 >
                     <img
-                        class="details-img mr-2"
+                        class="w-10px mr-2"
                         src="assets/images/icons/icon-arrow-right.svg"
                         alt="{{ 'common.accessibility.app' | translate }} {{
                             inventory.name
@@ -103,7 +141,8 @@
                         [type]="'app'"
                     ></app-equipments-card>
                 </div>
-                <p-button *ngIf="userService.isAllowedInventoryWrite$ | async"
+                <p-button
+                    *ngIf="userService.isAllowedInventoryWrite$ | async"
                     [tabindex]="0"
                     styleClass="bg-transparent text-black-alpha-90 border-1 border-solid border-black-alpha-90 mt-2 pt-1 px-2 pb-1 hover:bg-green-50"
                     (click)="confirmDelete($event)"
@@ -129,10 +168,11 @@
                 <span id="loading-history" class="mr-3">
                     {{ "inventories.history.loadings" | translate }}
                 </span>
-                <p-button *ngIf="userService.isAllowedInventoryWrite$ | async"
+                <p-button
+                    *ngIf="userService.isAllowedInventoryWrite$ | async"
                     tabindex="0"
                     styleClass="black-button-small vertical-align-top uppercase"
-                    (onClick)="openSidebar()"
+                    (onClick)="openSidebarUploadFile()"
                     >{{ "inventories.load-files-button" | translate }}</p-button
                 >
                 <br />
@@ -145,8 +185,11 @@
                             [batchStatusCode]="job.batchStatusCode"
                             [createTime]="job.createTime"
                             [batchLoading]="true"
-                            [resultFileUrl]="job.resultFileUrl"
+                            [batchName]="job.batchName"
                             [type]="'loading'"
+                            [inventoryId]="inventory.id"
+                            [inventoryName]="inventory.name"
+                            [fileUrl]="job.resultFileUrl"
                         ></app-batch-status>
                     </div>
                 </ul>
@@ -155,7 +198,8 @@
                 <span id="estimate-history" class="mr-3">
                     {{ "inventories.history.estimations" | translate }}
                 </span>
-                <p-button *ngIf="userService.isAllowedInventoryWrite$ | async"
+                <p-button
+                    *ngIf="userService.isAllowedInventoryWrite$ | async"
                     tabindex="0"
                     [disabled]="isEstimationDisabled()"
                     styleClass="black-button-small vertical-align-top uppercase"
@@ -181,7 +225,7 @@
                                       }
                         "
                     >
-                        <div class="font-bold mt-2" >
+                        <div class="font-bold mt-2">
                             {{
                                 inventory.lastEvaluationReport.batchStatusCode
                                     | batchStatusRenderer

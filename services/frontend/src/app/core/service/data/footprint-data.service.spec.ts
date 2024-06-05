@@ -15,7 +15,7 @@ import {
     Criterias,
     Datacenter,
     PhysicalEquipmentAvgAge,
-    PhysicalEquipmentLowCarbon,
+    PhysicalEquipmentLowImpact,
 } from "src/app/core/store/footprint.repository";
 import { Filter } from "../../store/filter.repository";
 import { FootprintDataService } from "./footprint-data.service";
@@ -174,7 +174,7 @@ describe("FootprintDataService", () => {
         httpMock.verify();
     });
 
-    it("getPhysicalEquipments should retrieve avg Age and low carbon of physical equipments", () => {
+    it("getPhysicalEquipments should retrieve avg Age and low impact of physical equipments", () => {
         const physicalEquipmentAvgAge: PhysicalEquipmentAvgAge[] = [
             {
                 organisation: "SSG",
@@ -207,7 +207,7 @@ describe("FootprintDataService", () => {
                 ageMoyen: 1.3,
             },
         ];
-        const physicalEquipmentLowCarbon: PhysicalEquipmentLowCarbon[] = [
+        const physicalEquipmentLowImpact: PhysicalEquipmentLowImpact[] = [
             {
                 organisation: "SSG",
                 inventoryDate: "04-2023",
@@ -216,7 +216,7 @@ describe("FootprintDataService", () => {
                 nomEntite: null,
                 statut: "Retired",
                 quantite: 50,
-                lowCarbon: true,
+                lowImpact: true,
             },
             {
                 organisation: "SSG",
@@ -226,7 +226,7 @@ describe("FootprintDataService", () => {
                 nomEntite: "ACME FRANCE",
                 statut: "Retired",
                 quantite: 70,
-                lowCarbon: false,
+                lowImpact: false,
             },
             {
                 organisation: "SSG",
@@ -236,12 +236,12 @@ describe("FootprintDataService", () => {
                 nomEntite: "ACME SERVICES",
                 statut: "On order",
                 quantite: 30,
-                lowCarbon: true,
+                lowImpact: true,
             },
         ];
 
         service.getPhysicalEquipments(inventoryDate).subscribe((res) => {
-            expect(res).toEqual([physicalEquipmentAvgAge, physicalEquipmentLowCarbon]);
+            expect(res).toEqual([physicalEquipmentAvgAge, physicalEquipmentLowImpact]);
         });
 
         const req2 = httpMock.expectOne(
@@ -251,10 +251,10 @@ describe("FootprintDataService", () => {
         req2.flush(physicalEquipmentAvgAge);
 
         const req1 = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/physicalEquipmentsLowCarbon`
+            `inventories/${inventoryDate}/indicators/physicalEquipmentsLowImpact`
         );
         expect(req1.request.method).toEqual("GET");
-        req1.flush(physicalEquipmentLowCarbon);
+        req1.flush(physicalEquipmentLowImpact);
 
         httpMock.verify();
     });

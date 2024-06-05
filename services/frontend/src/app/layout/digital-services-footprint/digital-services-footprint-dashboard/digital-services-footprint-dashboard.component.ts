@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
@@ -23,6 +23,8 @@ import { FilterRepository } from "src/app/core/store/filter.repository";
 import { FootprintRepository } from "src/app/core/store/footprint.repository";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 import * as CriteriaUtils from "src/app/core/utils/criteria";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
@@ -71,9 +73,18 @@ export class DigitalServicesFootprintDashboardComponent
         override filterRepo: FilterRepository,
         override footprintRepo: FootprintRepository,
         override echartsRepo: EchartsRepository,
-        override translate: TranslateService
+        override translate: TranslateService,
+        override integerPipe: IntegerPipe,
+        override decimalsPipe: DecimalsPipe,
     ) {
-        super(filterRepo, footprintRepo, echartsRepo, translate);
+        super(
+            filterRepo,
+            footprintRepo,
+            echartsRepo,
+            translate,
+            integerPipe,
+            decimalsPipe,
+        );
     }
 
     ngOnInit() {
@@ -177,16 +188,16 @@ export class DigitalServicesFootprintDashboardComponent
         if (this.chartType == "bar") {
             if (this.barChartChild === true && this.selectedParam === "Server") {
                 translation = this.translate.instant(
-                    this.getTranslationKey(this.selectedParam + " Lifecycle", textType)
+                    this.getTranslationKey(this.selectedParam + " Lifecycle", textType),
                 );
             } else {
                 translation = this.translate.instant(
-                    this.getTranslationKey(this.selectedParam, textType)
+                    this.getTranslationKey(this.selectedParam, textType),
                 );
             }
         } else {
             translation = this.translate.instant(
-                this.getTranslationKey(this.selectedCriteria, textType)
+                this.getTranslationKey(this.selectedCriteria, textType),
             );
         }
         return translation;

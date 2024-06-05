@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.integration;
 
 import com.soprasteria.g4it.backend.apibatchloading.model.CustomExitStatus;
@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -91,6 +92,9 @@ class InventoryLoadingAppTests {
 
     @MockBean
     private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
+
+    @MockBean
+    private CacheManager cacheManager;
 
     @Value("${filesystem.local.path}")
     private String fileSystemBasePath;

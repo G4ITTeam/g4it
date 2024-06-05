@@ -4,12 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { MonthYearPipe } from "src/app/core/pipes/monthyear.pipe";
 import { EquipmentsCardComponent } from "./equipments-card.component";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("EquipmentsCardComponent", () => {
     let component: EquipmentsCardComponent;
@@ -17,7 +18,7 @@ describe("EquipmentsCardComponent", () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [EquipmentsCardComponent, MonthYearPipe],
+            declarations: [EquipmentsCardComponent, MonthYearPipe, DecimalsPipe],
             imports: [TranslateModule.forRoot()],
             providers: [TranslatePipe, TranslateService],
         }).compileComponents();

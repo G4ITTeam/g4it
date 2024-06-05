@@ -43,7 +43,7 @@
                     <p-dropdown
                         appendTo="body"
                         [options]="datacenterOptions"
-                        optionLabel="name"
+                        optionLabel="displayLabel"
                         styleClass="dropdown-terminal"
                         formControlName="datacenter"
                         [required]="true"
@@ -58,7 +58,8 @@
                         {{ "digital-services-servers.datacenter" | translate }}
                         {{ "common.mandatory" | translate }}
                     </p>
-                    <p-button  *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    <p-button
+                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         (click)="addSidebarVisible = true"
                         styleClass="black-button grey-button-add-datacenter"
                     >
@@ -98,7 +99,8 @@
                         [(ngModel)]="server.quantity"
                         name="quantity"
                         ngDefaultControl
-                    ></p-inputNumber>
+                        locale="fr-FR"
+                    />
                     <p
                         class="error-text"
                         *ngIf="serverForm.get('quantity')?.hasError('required')"
@@ -124,7 +126,8 @@
                         [(ngModel)]="server.totalVCpu"
                         name="vcpu"
                         ngDefaultControl
-                    ></p-inputNumber>
+                        locale="fr-FR"
+                    />
                     <p
                         class="error-text"
                         *ngIf="serverForm.get('vcpu')?.hasError('required')"
@@ -152,7 +155,8 @@
                         [(ngModel)]="server.totalDisk"
                         name="disk"
                         ngDefaultControl
-                    ></p-inputNumber>
+                        locale="fr-FR"
+                    />
                     <p
                         class="error-text"
                         *ngIf="serverForm.get('disk')?.hasError('required')"
@@ -182,7 +186,8 @@
                         [(ngModel)]="server.lifespan"
                         name="lifespan"
                         ngDefaultControl
-                    ></p-inputNumber>
+                        locale="fr-FR"
+                    />
                     <p
                         class="error-text"
                         *ngIf="serverForm.get('lifespan')?.hasError('required')"
@@ -205,7 +210,8 @@
                         name="electricityConsumption"
                         styleClass="inputnumber-medium"
                         ngDefaultControl
-                    ></p-inputNumber>
+                        locale="fr-FR"
+                    />
                     <p
                         class="error-text"
                         *ngIf="
@@ -225,11 +231,13 @@
                         formControlName="operatingTime"
                         [required]="true"
                         [min]="0"
+                        [max]="8760"
                         [(ngModel)]="server.annualOperatingTime"
                         name="operatingTime"
                         styleClass="inputnumber-medium"
                         ngDefaultControl
-                    ></p-inputNumber>
+                        locale="fr-FR"
+                    />
                     <p
                         class="error-text"
                         *ngIf="serverForm.get('operatingTime')?.hasError('required')"
@@ -254,7 +262,8 @@
                 {{ "common.previous" | translate }}
             </p-button>
 
-            <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            <p-button
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 styleClass="yellow-button"
                 type="submit"
                 [disabled]="serverForm.invalid"

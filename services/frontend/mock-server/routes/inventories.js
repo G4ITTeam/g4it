@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 const express = require("express");
 const router = express.Router();
 
@@ -53,7 +53,7 @@ router.get("", (req, res) => {
                 ],
                 evaluationReports: [
                     {
-                        batchStatusCode: "CALCUL_IN_PROGRESS",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch01",
@@ -72,7 +72,7 @@ router.get("", (req, res) => {
                 applicationCount: 24,
                 integrationReports: [
                     {
-                        batchStatusCode: "FAILED",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:20 UTC"),
                         batchName: "Batch02",
@@ -82,7 +82,7 @@ router.get("", (req, res) => {
                 ],
                 evaluationReports: [
                     {
-                        batchStatusCode: "CALCUL_IN_PROGRESS",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch03",
@@ -111,7 +111,7 @@ router.get("", (req, res) => {
                 applicationCount: 14,
                 integrationReports: [
                     {
-                        batchStatusCode: "COMPLETED_WITH_ERRORS",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("24 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:20 UTC"),
                         batchName: "Batch03",
@@ -151,7 +151,7 @@ router.get("", (req, res) => {
                 applicationCount: 24,
                 integrationReports: [
                     {
-                        batchStatusCode: "FAILED",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:20 UTC"),
                         batchName: "Batch02",
@@ -161,14 +161,14 @@ router.get("", (req, res) => {
                 ],
                 evaluationReports: [
                     {
-                        batchStatusCode: "UNKNOWN",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch03",
                         progressPercentage:"50%"
                     },
                     {
-                        batchStatusCode: "FAILED",
+                        batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch02",
@@ -309,7 +309,7 @@ router.get(
 );
 
 router.get(
-    "/:inventoryDate/indicators/physicalEquipmentsLowCarbon",
+    "/:inventoryDate/indicators/physicalEquipmentsLowImpact",
     (req, res) => {
         if (req.params.inventoryDate === "06-2023") {
             return res.send([
@@ -321,7 +321,7 @@ router.get(
                     nomEntite: null,
                     statut: "Retired",
                     quantite: 50,
-                    lowCarbon: true,
+                    lowImpact: true,
                 },
                 {
                     organisation: "SSG",
@@ -331,7 +331,7 @@ router.get(
                     nomEntite: "ACME FRANCE",
                     statut: "Retired",
                     quantite: 70,
-                    lowCarbon: false,
+                    lowImpact: false,
                 },
                 {
                     organisation: "SSG",
@@ -341,7 +341,7 @@ router.get(
                     nomEntite: "ACME SERVICES",
                     statut: "On order",
                     quantite: 30,
-                    lowCarbon: true,
+                    lowImpact: true,
                 },
             ]);
         }

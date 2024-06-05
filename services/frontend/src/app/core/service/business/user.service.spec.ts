@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { TestBed } from "@angular/core/testing";
 
 import {
@@ -25,38 +25,64 @@ describe("UserService", () => {
     let service: UserService;
     let router: Router;
     let userMock: User = {
-        username: "prenom.nom@soprasteria.com",
+        email: "prenom.nom@soprasteria.com",
+        firstName: "prenom",
+        lastName: "nom",
+        userId: 1,
         subscribers: [
             {
+                id: 1,
                 name: "SSG",
                 defaultFlag: true,
                 organizations: [
                     {
+                        id: 1,
                         name: "SSG",
                         defaultFlag: false,
-                        roles: [Role.DigitalServiceRead,Role.DigitalServiceWrite],
+                        roles: [Role.DigitalServiceRead, Role.DigitalServiceWrite],
                     },
                     {
+                        id: 1,
                         name: "G4IT",
                         defaultFlag: true,
-                        roles: [Role.InventoryRead, Role.DigitalServiceRead,Role.InventoryWrite,Role.DigitalServiceWrite],
+                        roles: [
+                            Role.InventoryRead,
+                            Role.DigitalServiceRead,
+                            Role.InventoryWrite,
+                            Role.DigitalServiceWrite,
+                        ],
                     },
+                ],
+                roles: [
+                    Role.InventoryRead,
+                    Role.DigitalServiceRead,
+                    Role.InventoryWrite,
+                    Role.DigitalServiceWrite,
                 ],
             },
             {
+                id: 1,
                 name: "PasSSG",
                 defaultFlag: false,
                 organizations: [
                     {
+                        id: 1,
                         name: "123",
                         defaultFlag: true,
-                        roles: [Role.DigitalServiceRead,Role.DigitalServiceWrite],
+                        roles: [Role.DigitalServiceRead, Role.DigitalServiceWrite],
                     },
                     {
+                        id: 2,
                         name: "456",
                         defaultFlag: false,
-                        roles: [Role.InventoryRead,Role.InventoryWrite],
+                        roles: [Role.InventoryRead, Role.InventoryWrite],
                     },
+                ],
+                roles: [
+                    Role.InventoryRead,
+                    Role.DigitalServiceRead,
+                    Role.InventoryWrite,
+                    Role.DigitalServiceWrite,
                 ],
             },
         ],
@@ -93,11 +119,11 @@ describe("UserService", () => {
 
         expect(service.setUserSubscription).toHaveBeenCalledWith(
             existingSubscriber,
-            existingOrganization
+            existingOrganization,
         );
         expect(service.redirectToAllowedPage).toHaveBeenCalledWith(
             existingSubscriber.name,
-            existingOrganization
+            existingOrganization,
         );
     });
 
@@ -110,7 +136,7 @@ describe("UserService", () => {
         service.redirectToAllowedPage(subscriber, organization);
 
         expect(service["router"].navigateByUrl).toHaveBeenCalledWith(
-            `${subscriber}/${organization.name}/inventories`
+            `subscribers/${subscriber}/organizations/${organization.name}/inventories`,
         );
     });
 
@@ -123,7 +149,7 @@ describe("UserService", () => {
         service.redirectToAllowedPage(subscriber, organization);
 
         expect(service["router"].navigateByUrl).toHaveBeenCalledWith(
-            `${subscriber}/${organization.name}/digital-services`
+            `subscribers/${subscriber}/organizations/${organization.name}/digital-services`,
         );
     });
 

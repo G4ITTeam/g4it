@@ -12,6 +12,7 @@ import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { PieChartComponent } from "./pie-chart.component";
+declare var require: any
 
 describe("PieChartComponent", () => {
     let component: PieChartComponent;

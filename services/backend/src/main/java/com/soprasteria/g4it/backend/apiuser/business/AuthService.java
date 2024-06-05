@@ -4,11 +4,10 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,26 +44,26 @@ public class AuthService {
     /**
      * Get subscriber and organization
      *
-     * @return the username
+     * @return the pair (sub, org)
      */
     public Pair<String, String> getSubscriberAndOrganization(String[] urlSplit) {
         if (urlSplit == null)
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "Unable to determine associated organization");
 
-        if (urlSplit.length < 3) {
+        if (urlSplit.length < 5) {
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "Unable to determine associated organization");
         }
 
-        return Pair.of(urlSplit[1], urlSplit[2]);
+        return Pair.of(urlSplit[2], urlSplit[4]);
     }
 
 
     /**
      * Verifications of user authentication
      *
-     * @return the username
+     * @return the userBo
      */
-    public String verifyUserAuthentication() {
+    public UserBO verifyUserAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "User is not connected");
@@ -74,32 +73,30 @@ public class AuthService {
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "The token is not a JWT token");
         }
 
-        return jwt.getClaim("unique_name");
+        return userService.getUserFromToken(jwt);
     }
 
     /**
      * Get the JwtAuthenticationToken for a user
      *
-     * @param username     the username
+     * @param userInfo     the userInfo (email, firstName, lastname and subject)
      * @param subscriber   the subscriber
      * @param organization the organization
      * @return the jwt
      */
     @Cacheable("getJwtToken")
-    public JwtAuthenticationToken getJwtToken(final String username, final String subscriber, final String organization) {
-
-        final UserBO user = userService.getUserByName(username);
-        Long userId = userService.getUserId(user.getUsername());
+    public JwtAuthenticationToken getJwtToken(final UserBO userInfo, final String subscriber, final String organization) {
+        final UserBO user = userService.getUserByName(userInfo);
 
         // Verify authentication and get user roles.
-        final List<GrantedAuthority> userRoles = new ArrayList<>(controlAccess(userId, user.getSubscribers(), subscriber, organization).stream()
+        final List<GrantedAuthority> userRoles = new ArrayList<>(controlAccess(user, subscriber, organization).stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList());
 
         // Build new authentication with user roles in database.
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        final JwtAuthenticationToken newAuth = new JwtAuthenticationToken((Jwt) auth.getPrincipal(), userRoles, String.valueOf(userId));
+        final JwtAuthenticationToken newAuth = new JwtAuthenticationToken((Jwt) auth.getPrincipal(), userRoles, String.valueOf(user.getId()));
         newAuth.setAuthenticated(true);
         newAuth.setDetails(auth.getDetails());
         return newAuth;
@@ -108,16 +105,15 @@ public class AuthService {
     /**
      * Control user access based on the requestUri.
      *
-     * @param userId          the user id
-     * @param userSubscribers the user subscribers
-     * @param subscriber      the subscriber.
-     * @param organization    the organization
+     * @param user         the user
+     * @param subscriber   the subscriber.
+     * @param organization the organization
      * @return the user roles on ths subscriber and organization containing in the requestURI.
      * @throws AuthorizationException when the user has no role on the subscriber and/or organization.
      */
-    private List<String> controlAccess(final Long userId, final List<SubscriberBO> userSubscribers, final String subscriber, final String organization) throws AuthorizationException {
+    private List<String> controlAccess(final UserBO user, final String subscriber, final String organization) throws AuthorizationException {
 
-        var subscriberOpt = userSubscribers.stream().filter(e -> e.getName().equals(subscriber)).findAny();
+        var subscriberOpt = user.getSubscribers().stream().filter(e -> e.getName().equals(subscriber)).findAny();
         if (subscriberOpt.isEmpty()) {
             // Subscriber not defined in database for the current user.
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, String.format("The subscriber %s is not allowed.", subscriber));
@@ -133,7 +129,7 @@ public class AuthService {
                     throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "The user has any role.");
                 }
                 final List<String> roles = organizationOpt.get().getRoles();
-                log.info("UserId={} is authorized for {}/{} with roles={}", userId, subscriber, organization, roles);
+                log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), subscriber, organization, roles);
                 return roles;
             }
         }
@@ -148,14 +144,14 @@ public class AuthService {
      */
     public void checkUserRightForDigitalService(String[] urlSplit) {
         // urlSplit looks like this :
-        // [ "", "$subscriber", "$organization", "digital-services", "$digitalServiceUid", ...restOfUri ]
-        if (urlSplit.length <= 4) return;
-        if (!"digital-services".equals(urlSplit[3])) return;
+        // [ "", "subscribers", "$subscriber", "organizations", "$organization", "digital-services", "$digitalServiceUid", ...restOfUri ]
+        if (urlSplit.length <= 6) return;
+        if (!"digital-services".equals(urlSplit[5])) return;
 
-        final String digitalServiceUid = urlSplit[4];
+        final String digitalServiceUid = urlSplit[6];
         if (NOT_DIGITAL_SERVICE.contains(digitalServiceUid)) return;
 
-        if (!digitalServiceRepository.existsByUidAndUserUsername(digitalServiceUid, userService.getUser().getUsername())) {
+        if (!digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, userService.getUser().getId())) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "The user has no right to manage this digitalService");
         }
     }

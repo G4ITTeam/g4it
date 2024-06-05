@@ -4,8 +4,9 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 export abstract class Constants {
+    static readonly LANGUAGES = ["en", "fr"];
     static readonly COLOR = [
         "#355c7a",
         "#00baff",
@@ -76,6 +77,79 @@ export abstract class Constants {
 
     static readonly INVENTORY_TYPE = {
         INFORMATION_SYSTEM: "INFORMATION_SYSTEM",
-        SIMULATION: "SIMULATION"
+        SIMULATION: "SIMULATION",
     };
+
+    static readonly EXPORT_BATCH_GENERATED = "EXPORT_GENERATED";
+    static readonly EXPORT_REMOVED = "REMOVED";
+
+    static readonly ORGANIZATION_STATUSES = {
+        ACTIVE : "ACTIVE",
+        TO_BE_DELETED:"TO_BE_DELETED"
+    }
+
+    static readonly CONSTANT_VALUE = {
+        NONE : "none"
+    }
+
+    static readonly EXPORT_BATCH_FAILED_STATUSES = [
+        "REMOVED",
+        "UNKNOWN",
+        "FAILED",
+        "STOPPED",
+    ];
+
+    static readonly EXPORT_BATCH_IN_PROGRESS_STATUSES = [
+        "STARTED",
+        "LOADING_SIP_REFERENTIAL",
+        "EXPORTING_DATA",
+        "UPLOADING_DATA",
+        "CLEANING_WORKING_FOLDERS",
+    ];
+
+    static readonly ROLE_VALUES = [
+        {
+            value:"admin",
+            id:1
+        },
+        {
+            value:"user",
+            id:2
+        }
+    ];
+
+    static readonly IS_MODULE_VALUES = [
+        {
+            value:"Read",
+            id:1
+        },
+        {
+            value:"Write",
+            id:2
+        },
+        {
+            value:"No access",
+            id:3
+        }
+    ];
+
+    static readonly DS_MODULE_VALUES = [
+        {
+            value:"Read",
+            id:1
+        },
+        {
+            value:"Write",
+            id:2
+        },
+        {
+            value:"No access",
+            id:3
+        }
+
+    ];
+    static readonly RECIPIENT_MAIL = "support.g4it@soprasteria.com";
+    static readonly SUBJECT_MAIL = "Support Request";
+    static readonly SPACE = " ";
+    static readonly ADMIN = "admin"
 }

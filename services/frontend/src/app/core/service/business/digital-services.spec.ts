@@ -14,6 +14,7 @@ import {
 import { DigitalServiceServerConfig } from "../../interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "../data/digital-services-data.service";
 import { DigitalServiceBusinessService } from "./digital-services.service";
+declare var require: any
 
 describe("DigitalServiceBusinessService", () => {
     let httpMock: HttpTestingController;

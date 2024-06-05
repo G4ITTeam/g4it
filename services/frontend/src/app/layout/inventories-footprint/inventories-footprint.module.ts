@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */ 
-import { NgModule } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
@@ -24,6 +24,7 @@ import { ImpactAggregateInfosComponent } from "./impact-aggregate-infos/impact-a
 import { InventoriesFootprintComponent } from "./inventories-footprint.component";
 import { inventoriesFootprintRouter } from "./inventories-footprint.router";
 import { PhysicalequipmentStatsComponent } from "./physicalequipment-stats/physicalequipment-stats.component";
+
 
 @NgModule({
     declarations: [
@@ -57,5 +58,9 @@ import { PhysicalequipmentStatsComponent } from "./physicalequipment-stats/physi
         inventoriesFootprintRouter,
     ],
     exports: [InventoriesFootprintComponent],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA
+      ]
 })
 export class InventoriesFootprintModule {}

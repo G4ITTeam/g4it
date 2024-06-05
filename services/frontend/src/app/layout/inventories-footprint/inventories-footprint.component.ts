@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -13,10 +13,7 @@ import { MenuItem } from "primeng/api";
 import { Subject, combineLatest, takeUntil, tap } from "rxjs";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { EchartsRepository } from "src/app/core/store/echarts.repository";
-import {
-    Filter,
-    FilterRepository,
-} from "src/app/core/store/filter.repository";
+import { Filter, FilterRepository } from "src/app/core/store/filter.repository";
 import {
     ChartData,
     ComputedSelection,
@@ -52,6 +49,7 @@ export class InventoriesFootprintComponent implements OnInit {
     lifeCycleMap = LifeCycleUtils.getLifeCycleMap();
 
     ngUnsubscribe = new Subject<void>();
+    inventoryId = 0;
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -61,7 +59,7 @@ export class InventoriesFootprintComponent implements OnInit {
         public echartsRepo: EchartsRepository,
         private router: Router,
         private spinner: NgxSpinnerService,
-        private translate: TranslateService
+        private translate: TranslateService,
     ) {}
 
     async ngOnInit(): Promise<void> {
@@ -78,14 +76,19 @@ export class InventoriesFootprintComponent implements OnInit {
             });
 
         // Set active inventory based on route
-        const selectedInventoryId: number =
-            this.activatedRoute.snapshot.paramMap.get("inventoryId") ? 
-                parseInt(this.activatedRoute.snapshot.paramMap.get("inventoryId")!) : 0;
+        const selectedInventoryId: number = this.activatedRoute.snapshot.paramMap.get(
+            "inventoryId",
+        )
+            ? parseInt(this.activatedRoute.snapshot.paramMap.get("inventoryId")!)
+            : 0;
+
+        this.inventoryId = selectedInventoryId;
+
         //Set footprint with associated filters and retrieve datacenter and physical equipement datas
         this.footprintService.retrieveFootprint(
             selectedInventoryId,
             this.getCriteriaFromUrl(),
-            "equipment"
+            "equipment",
         );
 
         this.subscribeToComputedData();
@@ -153,17 +156,17 @@ export class InventoriesFootprintComponent implements OnInit {
                         "resource-use": this.translateLifeCycle(resource),
                         "climate-change": this.translateLifeCycle(climate),
                     };
-                })
+                }),
             )
             .subscribe(() => this.updateCharts());
     }
 
-    translateLifeCycle(data : ComputedSelection): ComputedSelection {
-        if(data.acvStep.length == 0) return data;
-        data.acvStep.forEach(step => {
-            const acvStepTranslated = this.lifeCycleMap.get(step.name)
-            if(acvStepTranslated) step.name =  acvStepTranslated
-        })
+    translateLifeCycle(data: ComputedSelection): ComputedSelection {
+        if (data.acvStep.length == 0) return data;
+        data.acvStep.forEach((step) => {
+            const acvStepTranslated = this.lifeCycleMap.get(step.name);
+            if (acvStepTranslated) step.name = acvStepTranslated;
+        });
         return data;
     }
 
@@ -182,15 +185,34 @@ export class InventoriesFootprintComponent implements OnInit {
             return;
         }
         const echartsData = [];
-        let total = 0;
-        for (let data of this.chartData[
-            this.selectedCriteria as keyof ChartData<ComputedSelection>
-        ][this.selectedView as keyof ComputedSelection]) {
+        const otherData: any = [];
+
+        const selectedChartData =
+            this.chartData[this.selectedCriteria as keyof ChartData<ComputedSelection>][
+                this.selectedView as keyof ComputedSelection
+            ];
+
+        const total = selectedChartData
+            .map((data) => data.impact || 0)
+            .reduce((sum, current) => sum + current, 0);
+
+        for (let data of selectedChartData) {
+            const v: any = { value: data.impact, name: data.name };
+
+            var percent = (data.impact / total) * 100;
+            if (percent < 1) v.percent = percent;
+            percent < 1 ? otherData.push(v) : echartsData.push(v);
+        }
+
+        // Push the single data entry for multiple entities with impact less than 1%.
+        if (otherData.length > 0) {
             echartsData.push({
-                value: data.impact,
-                name: data.name,
+                name: "other",
+                value: otherData
+                    .map((data: any) => data.value)
+                    .reduce((sum: number, current: number) => sum + current, 0),
+                otherData: otherData.sort((a: any, b: any) => a.value < b.value),
             });
-            total += data.impact;
         }
 
         if (this.selectedView == "acvStep") {
@@ -201,20 +223,6 @@ export class InventoriesFootprintComponent implements OnInit {
             // Sort by alphabetical order
             echartsData.sort((a: any, b: any) => a.name.localeCompare(b.name));
         }
-
-        // This last element is used to create a half donut chart
-        echartsData.push({
-            value: total,
-            itemStyle: {
-                color: "none",
-                decal: {
-                    symbol: "none",
-                },
-            },
-            label: {
-                show: false,
-            },
-        });
 
         this.echartsRepo.setCritereChart(echartsData);
     }
@@ -242,7 +250,7 @@ export class InventoriesFootprintComponent implements OnInit {
                 };
 
                 const viewExist = echartsData.find(
-                    (data: any) => data.data === view.data
+                    (data: any) => data.data === view.data,
                 );
                 if (viewExist) {
                     viewExist.impacts.push(impact);

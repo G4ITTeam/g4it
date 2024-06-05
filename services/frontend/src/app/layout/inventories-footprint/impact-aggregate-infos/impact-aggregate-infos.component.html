@@ -11,9 +11,14 @@
                 <p class="text-no-data-critere">--</p>
             </div>
             <ng-template #valueNotNull>
-                <div>
-                    {{ displayValue < 1 ? "&lt; 1" : (displayValue | number : "1.0-0") }}
+                <div *ngIf="selectedUnit === 'Peopleeq'; else elseBlock">
+                    {{ displayValue | integer }}
                 </div>
+                <ng-template #elseBlock>
+                    <div>
+                        {{ displayValue | decimals }}
+                    </div>
+                </ng-template>
             </ng-template>
         </div>
     </div>

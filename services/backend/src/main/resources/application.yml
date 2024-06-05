@@ -29,6 +29,11 @@ g4it:
       ttl: PT20M
     short:
       ttl: PT2M
+  organization:
+    deletion:
+      oninit: "false"
+      cron: "0 0 0 * * *"
+      day: "7"
 
 filesystem.local.path: "C:\\tmp\\"
 
@@ -37,10 +42,16 @@ spring:
     active: local
   main:
     allow-bean-definition-overriding: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/auth/realms/g4it
   datasource:
     generate-unique-name: true
     url: "jdbc:postgresql://localhost:5432/postgres"
     username: postgres
+    # kics-scan ignore-line
     password: postgres
     driver-class-name: org.postgresql.Driver
     tomcat:
@@ -49,8 +60,13 @@ spring:
       max-active: 100
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
   liquibase:
     change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
+
   batch:
     job:
       enabled: false
@@ -61,11 +77,6 @@ spring:
   config:
     import:
       - csv-headers.yml
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://sts.windows.net/${AZURE_TENANT_ID}/
   servlet:
     multipart:
       resolve-lazily: true
@@ -75,18 +86,30 @@ spring:
 # Batch configs
 evaluation:
   batch:
-    chunk: 100
-    page-size: 100
+    chunk: 15000
+    page-size: 15000
 export:
   batch:
-    chunk: 100
-    page-size: 100
+    chunk: 15000
+    page-size: 15000
 loading:
   batch:
-    chunk: 100
-    page-size: 100
+    chunk: 15000
+    page-size: 15000
     valid-data-writing-enable: false
 
 springdoc:
   swagger-ui:
     tagsSorter: alpha
+
+logging:
+  level:
+    org.springframework: info
+    org.springframework.batch.core:
+      job: error
+      step: info
+      step.ThreadStepInterruptionPolicy: error
+      repository.support: error
+    org.hibernate: warn
+    liquibase: warn
+    com.zaxxer: warn

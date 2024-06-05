@@ -5,6 +5,7 @@ include:
 
 variables:
   PROJECT_ROOT_DIR: "services/frontend"
+  CHECKMARX_PROJECT: "${CHECKMARX_PATH}/frontend"
   DISABLE_PROMOTE_IMAGE: "true"
   PROJ_FILE_PATH: "package.json"
   ANGULAR_CLI_VERSION: "17.0.9"
@@ -71,3 +72,8 @@ build-image:
   rules:
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX'
       when: always
+
+checkmarx:
+  variables:
+    CHECKMARX_SCAN_FILTERS: "-LocationPathExclude node_modules,dist,vendor,kics-reports -LocationFilesExclude *.spec.ts"
+    CXLocation: "-LocationType folder -Locationpath $CI_PROJECT_DIR/services/frontend/src/ $CHECKMARX_SCAN_FILTERS"

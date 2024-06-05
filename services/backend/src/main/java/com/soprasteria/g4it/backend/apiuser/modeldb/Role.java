@@ -11,9 +11,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * G4IT role.
@@ -38,4 +40,7 @@ public class Role implements Serializable {
      */
     private String name;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+    private List<UserRoleOrganization> UserRoleOrganization;
 }

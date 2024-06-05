@@ -44,6 +44,13 @@ components:
         type: string
       required: true
       description: The digital service uid.
+    noteUidPathParam:
+      in: path
+      name: noteId
+      schema:
+        type: string
+      required: true
+      description: The note uid.
     domainQueryParam:
       in: query
       name: domain
@@ -65,6 +72,62 @@ components:
         type: string
       required: false
       description: The application name.
+    batchNamePathParam:
+      in: path
+      name: batchName
+      schema:
+        type: string
+      required: true
+      description: The batch name.
+    userIdQueryParam:
+      in: query
+      name: userId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The user id.
+    organizationIdQueryParam:
+      in: query
+      name: organizationId
+      schema:
+        type: integer
+        format: int64
+      required: false
+      description: The organization id.
+    subscriberIdQueryParam:
+      in: query
+      name: subscriberId
+      schema:
+        type: integer
+        format: int64
+      required: false
+      description: The  subscriber id.
+    reqSubscriberIdQueryParam:
+      in: query
+      name: subscriberId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The mandatory subscriber id.
+    reqOrganizationIdQueryParam:
+      in: query
+      name: organizationId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The mandatory organization id.
+    nameSearchQueryParam:
+      in: query
+      name: searchedName
+      pattern: "^[a-zA-Z0-9\\-\\_]+$"
+      schema:
+        type: string
+      required: true
+      description: The name to search a user.
+
 
   responses:
     InternalServerError:
@@ -99,28 +162,92 @@ components:
       description: User information
       type: object
       properties:
-        username:
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
           type: string
         subscribers:
           type: array
           items:
             $ref: "#/components/schemas/SubscriberRest"
+    UserInfoRest:
+      description: Users' information
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    LinkUserRoleRest:
+        description: User's roles to add
+        type: object
+        properties:
+          organizationId:
+            type: integer
+            format: int64
+          users:
+            type: array
+            items:
+              $ref: "#/components/schemas/UserRoleRest"
+
+    UserSearchRest:
+      description: search users
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        linkedOrgIds:
+            type: array
+            items:
+              type: integer
+              format: int64
+
+    UserRoleRest:
+       description: User and accessible roles
+       type: object
+       properties:
+         userId:
+           type: integer
+           format: int64
+         roles:
+           type: array
+           items:
+             type: string
+    RolesRest:
+      description: All the roles
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+
     SubscriberRest:
       description: Subscriber information
       type: object
       properties:
-        name:
-          type: string
-        defaultFlag:
-          type: boolean
-        organizations:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrganizationRest"
-    OrganizationRest:
-      description: Organization information
-      type: object
-      properties:
+        id:
+          type: integer
+          format: int64
         name:
           type: string
         defaultFlag:
@@ -129,16 +256,36 @@ components:
           type: array
           items:
             type: string
-
+        organizations:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrganizationRest"
+    OrganizationRest:
+      description: Organization information
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        defaultFlag:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          $ref: "#/components/schemas/OrganizationStatus"
+        deletionDate:
+          type: string
+          format: 'date-time'
     InventoryRest:
       description: Information of an IS inventory
       type: object
       required:
         - id
-        - name
-        - type
-        - creationDate
-        - organization
       properties:
         id:
           type: integer
@@ -175,6 +322,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EvaluationReportRest"
+        note:
+          $ref: "#/components/schemas/NoteRest"
+        exportReport:
+          $ref: "#/components/schemas/ExportReportRest"
 
     IntegrationReportRest:
       description: Information of an integration report
@@ -224,6 +375,32 @@ components:
           description: Name of batch in numecoeval
           type: string
 
+    ExportReportRest:
+      description: Information of an export results
+      type: object
+      properties:
+        batchStatusCode:
+          description: Batch status code
+          type: string
+        createTime:
+          description: Job creation date
+          type: string
+          format: date-time
+        endTime:
+          description: Job end date
+          type: string
+          format: date-time
+        batchName:
+          description: Name of batch in numecoeval
+          type: string
+        resultFileUrl:
+          description: Result file url
+          type: string
+        resultFileSize:
+          description: Result file size
+          type: integer
+          format: int64
+
     FileDescriptionRest:
       description: Information of a file
       type: object
@@ -272,10 +449,10 @@ components:
           type: string
         impact:
           type: number
-          format: float
+          format: double
         sip:
           type: number
-          format: float
+          format: double
 
     ApplicationIndicatorRest:
       type: object
@@ -428,8 +605,8 @@ components:
           type: integer
         ageMoyen:
           type: number
-          format: float
-    PhysicalEquipmentLowCarbonRest:
+          format: double
+    PhysicalEquipmentLowImpactRest:
       type: object
       properties:
         organisation:
@@ -446,7 +623,7 @@ components:
           type: string
         quantite:
           type: integer
-        lowCarbon:
+        lowImpact:
           type: boolean
 
     DigitalServiceRest:
@@ -478,6 +655,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ServerRest"
+        note:
+          type: object
+          $ref: "#/components/schemas/NoteRest"
     TerminalRest:
       description: Information of a Terminal
       type: object
@@ -487,6 +667,7 @@ components:
           - country
           - numberOfUsers
           - yearlyUsageTimePerUser
+          - lifespan
         uid:
           type: string
         creationDate:
@@ -495,13 +676,19 @@ components:
         type:
           type: object
           $ref: "#/components/schemas/DeviceTypeRefRest"
+        lifespan:
+          type: number
+          format: double
+          minimum: 0
         country:
           type: string
           default: France
         numberOfUsers:
           type: integer
         yearlyUsageTimePerUser:
-          type: integer
+          type: number
+          format: double
+          minimum: 0
     NetworkRest:
       description: Information of a Network
       type: object
@@ -780,6 +967,10 @@ components:
           description: Value to display
           type: string
           default: Laptop
+        lifespan:
+          description: lifespan of the device
+          type: number
+          format: double
     NetworkTypeRefRest:
       description: Network type referential
       type: object
@@ -851,6 +1042,13 @@ components:
         - INFORMATION_SYSTEM
         - SIMULATION
 
+    OrganizationStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - TO_BE_DELETED
+        - INACTIVE
+
     InventoryCreateRest:
       description: Inventory Create information
       type: object
@@ -861,3 +1059,86 @@ components:
           type: string
           $ref: "#/components/schemas/InventoryType"
           default: INFORMATION_SYSTEM
+
+    InventoryUpdateRest:
+      description: Inventory Create information
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        note:
+          $ref: "#/components/schemas/NoteUpsertRest"
+
+    NoteRest:
+      description: Note for a digital service or IS
+      type: object
+      properties:
+        content:
+          type: string
+        creation_date:
+          type: string
+          format: date-time
+        last_update_date:
+          type: string
+          format: date-time
+
+    NoteUpsertRest:
+      description: Note update
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+
+    BusinessHoursRest:
+      description: Business hours
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        day:
+          type: String
+        start_time:
+          type: String
+        end_time:
+          type: String
+
+    SubscribertRest:
+      type: object
+      properties:
+        name:
+          type: string
+        impactStep:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationRest'
+
+    OrganizationUpsertRest:
+      description: Organization update
+      type: object
+      required:
+        - subscriberId
+        - name
+      properties:
+        subscriberId:
+          description: Subscriber id
+          type: integer
+          format: int64
+        name:
+          description: Organization name
+          type: string
+          pattern: "^[a-zA-Z0-9\\-\\_]+$"
+        status:
+          description: Organization status
+          type: string
+          $ref: "#/components/schemas/OrganizationStatus"
+          default: ACTIVE
+        dataRetentionDays:
+          description: Organization date retention days
+          type: integer
+          format: int64

@@ -4,17 +4,22 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
-import { Component, OnInit } from "@angular/core";
+ */
+import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
+import { saveAs } from "file-saver";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, firstValueFrom, takeUntil } from "rxjs";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
+import { Note } from "src/app/core/interfaces/note.interface";
+import { InventoryService } from "src/app/core/service/business/inventory.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InventoryRepository } from "src/app/core/store/inventory.repository";
-import { InventoryService } from "src/app/core/service/business/inventory.service";
+import sanitize from "src/app/core/utils/filename-sanitizer";
+import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
-import { UserService } from "src/app/core/service/business/user.service";
 
 @Component({
     selector: "app-inventories-header-footprint",
@@ -22,12 +27,21 @@ import { UserService } from "src/app/core/service/business/user.service";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoriesHeaderFootprintComponent implements OnInit {
-    selectedInventory: number = 0;
-    inventoryName: string = '';
-    inventoryType: string = '';
+    @Input() inventoryId: number = 0;
+
     types = Constants.INVENTORY_TYPE;
+    batchStatusCode: string | undefined = undefined;
+    subscriber = "";
+    organization = "";
+    sidebarVisible = false;
+    inventory: Inventory = {} as Inventory;
+    inventoryInterval: any;
+    waitingLoop = 10000;
+    downloadInProgress = false;
 
     ngUnsubscribe = new Subject<void>();
+    failedStatusCodeList = Constants.EXPORT_BATCH_FAILED_STATUSES;
+    inProgressStatusCodeList = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES;
 
     constructor(
         public inventoryRepo: InventoryRepository,
@@ -36,24 +50,33 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
         public footprintService: FootprintDataService,
         private translate: TranslateService,
         public router: Router,
-        public userService:UserService
+        public userService: UserService,
+        private messageService: MessageService,
     ) {}
 
-    ngOnInit(): void {
-        this.inventoryRepo.selectedInventory$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((inventoryId: any) => {
-                this.selectedInventory = inventoryId || 0;
-                this.getInventoryDetails();
-            });
+    async ngOnInit() {
+        await this.initInventory();
+
+        if (
+            this.batchStatusCode &&
+            this.batchStatusCode !== Constants.EXPORT_BATCH_GENERATED &&
+            this.batchStatusCode !== Constants.EXPORT_REMOVED
+        ) {
+            this.loopInventories();
+        }
+        let [_, subscriber, organization] = this.router.url.split("/");
+        this.subscriber = subscriber;
+        this.organization = organization;
     }
 
-    async getInventoryDetails(){
-        let result =  await this.inventoryService.getInventories(this.selectedInventory);
-        if(result.length > 0){
-            this.inventoryName = result[0].name;
-            this.inventoryType = result[0].type ?? "";
-        }
+    async initInventory() {
+        let result = await this.inventoryService.getInventories(this.inventoryId);
+        if (result.length > 0) this.inventory = result[0];
+        this.batchStatusCode = this.inventory?.exportReport?.batchStatusCode || undefined;
+    }
+
+    isGenerated() {
+        return Constants.EXPORT_BATCH_GENERATED;
     }
 
     confirmExport(event: Event) {
@@ -63,23 +86,96 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
             rejectLabel: this.translate.instant("common.no"),
             message: this.translate.instant("inventories-footprint.export-message"),
             accept: () => {
-                this.exportResult(this.selectedInventory);
+                this.exportResult();
             },
         });
     }
 
-    exportResult(inventoryId: number) {
-        this.footprintService.sendExportRequest(inventoryId).subscribe();
+    exportResult() {
+        this.footprintService.sendExportRequest(this.inventoryId).subscribe((res) => {
+            this.batchStatusCode = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES[0];
+        });
+        this.loopInventories();
+    }
+
+    loopInventories() {
+        this.inventoryInterval = setInterval(async () => {
+            if (this.batchStatusCode === Constants.EXPORT_BATCH_GENERATED) {
+                clearInterval(this.inventoryInterval);
+            } else {
+                await this.initInventory();
+            }
+        }, this.waitingLoop);
     }
 
     changePageToInventories() {
-        let subscriber = this.router.url.split("/")[1];
-        let organization = this.router.url.split("/")[2];
-        return `/${subscriber}/${organization}/inventories`;
+        let [_, subscribers, subscriber, organizations, organization] =
+            this.router.url.split("/");
+        return `/subscribers/${subscriber}/organizations/${organization}/inventories`;
+    }
+
+    download(event: Event) {
+        this.downloadInProgress = true;
+        this.downloadFile();
+    }
+    async downloadFile() {
+        try {
+            const blob: Blob = await firstValueFrom(
+                this.footprintService.downloadExportResultsFile(this.inventoryId),
+            );
+            saveAs(
+                blob,
+                `g4it_${this.subscriber}_${this.organization}_${sanitize(
+                    this.inventory.name,
+                    {
+                        replacement: "-",
+                    },
+                )}_export-result-files.zip`,
+            );
+            await delay(2000);
+        } catch (err) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant("common.fileNoLongerAvailable"),
+            });
+        }
+        this.downloadInProgress = false;
+    }
+
+    noteSaveValue(event: any) {
+        this.inventory.note = {
+            content: event,
+        } as Note;
+
+        this.inventoryService
+            .updateInventory(this.inventory)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((res) => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.note.save"),
+                    sticky: false,
+                });
+            });
+    }
+
+    noteDelete(event: any) {
+        this.inventory.note = undefined;
+        this.inventoryService
+            .updateInventory(this.inventory)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((res) => {
+                this.messageService.add({
+                    severity: "success",
+                    summary: this.translate.instant("common.note.delete"),
+                    sticky: false,
+                });
+            });
     }
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
+        clearInterval(this.inventoryInterval);
     }
 }

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -19,23 +19,31 @@ describe("UserDataService", () => {
     let userService: UserDataService;
     let organization: string = "SSG";
     let userInfo: User = {
-        username: "prenom.nom@soprasteria.com",
+
+        email: "prenom.nom@soprasteria.com",
+        firstName: "prenom",
+        lastName: "nom",
+        userId: 1,
         subscribers: [
             {
+                id:1,
                 name: "SSG",
                 defaultFlag: true,
                 organizations: [
                     {
+                        id: 1,
                         name: "SSG",
                         defaultFlag: true,
-                        roles: [Role.InventoryRead, Role.DigitalServiceRead,Role.InventoryWrite,Role.DigitalServiceWrite],
+                        roles: [Role.InventoryRead, Role.DigitalServiceRead, Role.InventoryWrite, Role.DigitalServiceWrite],
                     },
                     {
+                        id: 2,
                         name: "G4IT",
                         defaultFlag: false,
-                        roles: [Role.InventoryRead, Role.DigitalServiceRead,Role.InventoryWrite,Role.DigitalServiceWrite],
+                        roles: [Role.InventoryRead, Role.DigitalServiceRead, Role.InventoryWrite, Role.DigitalServiceWrite],
                     },
                 ],
+                roles: [Role.InventoryRead, Role.DigitalServiceRead, Role.InventoryWrite, Role.DigitalServiceWrite],
             },
         ],
     };

@@ -9,7 +9,7 @@ tags:
     description: All endpoint for digital service indicators
 
 paths:
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/indicators:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/indicators:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -34,7 +34,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/terminals/indicators:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/terminals/indicators:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -59,7 +59,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/networks/indicators:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/networks/indicators:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -84,7 +84,7 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /{subscriber}/{organization}/digital-services/{digitalServiceUid}/servers/indicators:
+  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/servers/indicators:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'

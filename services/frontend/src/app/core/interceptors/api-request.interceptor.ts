@@ -45,7 +45,9 @@ export class ApiInterceptor implements HttpInterceptor {
                 req.clone({
                     url: this.formatUrl([
                         environment.apiBaseUrl,
+                        'subscribers',
                         subscriber,
+                        'organizations',
                         organization.name,
                         req.url,
                     ]),

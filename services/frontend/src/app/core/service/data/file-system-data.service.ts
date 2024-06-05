@@ -22,4 +22,8 @@ export class FileSystemDataService {
     postFileSystemUploadCSV(inventoryId: number, formData: FormData): Observable<any> {
         return this.http.post(`${endpoint}/${inventoryId}/files`, formData);
     }
+
+    downloadResultsFile(inventoryId: number, batchName: string): Observable<any> {
+        return this.http.get(`${endpoint}/${inventoryId}/output/${batchName}`, { responseType: 'blob', headers: {'Accept': 'application/zip'}});
+    }
 }

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -34,7 +34,7 @@ describe("InventoriesGlobalFootprintComponent", () => {
                 DatacenterStatsComponent,
                 PhysicalequipmentStatsComponent,
                 InformationCardComponent,
-                ImpactAggregateInfosComponent,
+                ImpactAggregateInfosComponent
             ],
             imports: [
                 ButtonModule,

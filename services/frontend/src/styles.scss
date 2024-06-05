@@ -95,6 +95,9 @@ p {
 .border-primary {
     border-color: var(--primary-color);
 }
+.w-10px {
+    width: 10px;
+}
 
 .critere-number {
     font-size: 28px;
@@ -131,11 +134,6 @@ p {
     color: #b00020;
     font-size: 15px;
     margin: 5px;
-}
-
-.bold-number {
-    font-weight: 800;
-    font-size: 15px;
 }
 
 .margin-left-15 {
@@ -221,13 +219,6 @@ p {
 }
 
 /* Header Panel */
-
-.white-text {
-    color: white;
-    font-size: 18px;
-    padding: 10px;
-    margin-top: 40px;
-}
 
 .org-menu {
     display: none;
@@ -363,7 +354,7 @@ p {
     text-transform: uppercase;
 }
 
-.black-button {
+.black-button, .black-button-sidebar {
     background: var(--black-color);
     color: white;
 }
@@ -373,12 +364,17 @@ p {
     color: var(--black-color);
 }
 
-.grey-button {
+.grey-button , .grey-button-sidebar {
     background: rgb(205, 205, 205);
     color: var(--black-color);
 }
 
-.yellow-button {
+.white-button, .white-button-sidebar {
+    background: var(--white-color);
+    color: black;
+}
+
+.yellow-button, .yellow-button-sidebar {
     background: var(--secondary-color);
     color: var(--black-color);
 }
@@ -388,34 +384,27 @@ p {
     letter-spacing: 2px;
     background: var(--black-color);
     color: white;
-    max-height: 3px;
+    max-height: 30px;
     font-size: 10px;
 }
 
-.inventory-button-small {
+.inventory-button-small,
+.inventory-button-small-transparent {
     z-index: 10;
     letter-spacing: 2px;
-    background: var(--secondary-color);
-    color: var(--black-color);
     max-height: 30px;
     font-weight: bold;
     text-transform: uppercase;
 }
 
-.yellow-button-small {
-    letter-spacing: 2px;
+.inventory-button-small {
     background: var(--secondary-color);
     color: var(--black-color);
-    max-height: 30px;
 }
 
-.white-button-small {
+.inventory-button-small-transparent {
     background: transparent;
-    max-width: 210px;
-}
-
-.white-button-small:hover {
-    background-color: var(--light-grey-color) !important;
+    color: transparent;
 }
 
 .round-button,
@@ -606,23 +595,6 @@ p {
 
 /* Inventories page */
 
-.inventories-top-container,
-.digital-services-top-container,
-.header-footprint,
-.header-footprint-digital {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-right: 20px;
-}
-
-.inventories-top-container,
-.digital-services-top-container {
-    margin-bottom: 30px;
-}
-
 .input-loading-files {
     margin-top: 20px;
     overflow: auto;
@@ -636,11 +608,6 @@ p {
 }
 
 /* Detail Inventaire */
-
-.details-img {
-    max-width: 15px;
-    max-height: 10px;
-}
 
 .previous-img {
     max-width: 20px;
@@ -798,7 +765,7 @@ p {
 }
 
 .chart-container {
-    height: 64vh;
+    height: 98%;
     padding: 20px;
     background-color: white;
 }
@@ -1042,7 +1009,7 @@ p {
 }
 
 .digital-services-card-content-label {
-    width: 100%;
+    width: 95%;
 }
 
 .digital-services-card-content .p-button {
@@ -1064,10 +1031,6 @@ p {
     padding: 0;
     padding-top: 5px;
     padding-bottom: 5px;
-}
-
-.header-footprint-digital {
-    margin-bottom: 6px;
 }
 
 /* Visualize Digital Services */
@@ -1402,3 +1365,51 @@ div.label-input-div-medium {
         color: black !important;
     }
 }
+
+.inventory-add-button-small,
+.inventory-attached-button-small {
+    border-radius: 15px;
+    z-index: 10;
+    letter-spacing: 2px;
+    max-height: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+    width: 180px;
+}
+
+.inventory-add-button-small {
+    background: #F9F9F9;
+    color: var(--black-color);
+}
+
+.inventory-attached-button-small {
+    background: rgb(201, 201, 201);
+    color: var(--black-color);
+}
+
+.confirm-popup-editor{
+    .p-confirm-popup .p-component {
+        display: none;
+    }
+}
+
+.dropdown-placeholder-padding{
+    .p-dropdown .p-dropdown-label.p-placeholder {
+        padding: 11px !important;
+    }
+    .p-dropdown .p-inputtext {
+        padding: 11px !important;
+    }
+}
+
+.input-width{
+    width: 246px;
+    height: 40px;
+    margin-right : 20px;
+}
+
+.p-dialog .p-dialog-header .p-dialog-title {
+    color: red;
+}
+

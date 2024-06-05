@@ -4,8 +4,8 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
-import { Component, ElementRef, TemplateRef, ViewChild } from "@angular/core";
+ */
+import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ECharts, EChartsOption } from "echarts";
@@ -26,7 +26,8 @@ import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 @Component({
     selector: "app-application-criteria-footprint.component",
     templateUrl: "./application-criteria-footprint.component.html",
@@ -73,9 +74,11 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         override echartsRepo: EchartsRepository,
         override translate: TranslateService,
         private footprintService: FootprintService,
-        private router: Router
+        private router: Router,
+        override integerPipe: IntegerPipe,
+        override decimalsPipe: DecimalsPipe
     ) {
-        super(filterRepo, footprintRepo, echartsRepo, translate);
+        super(filterRepo, footprintRepo, echartsRepo, translate, integerPipe, decimalsPipe);
     }
 
     ngOnInit() {
@@ -89,9 +92,9 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     this.footprintRepo.applicationCriteriaFootprint$,
                     this.footprintRepo.appSelectedDomain$,
                     this.footprintRepo.appSelectedSubdomain$,
-                    this.footprintRepo.appSelectedApp$
+                    this.footprintRepo.appSelectedApp$,
                 ),
-                takeUntil(this.ngUnsubscribe)
+                takeUntil(this.ngUnsubscribe),
             )
             .subscribe(
                 ([
@@ -108,7 +111,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     this.selectedInventoryId = parseInt(inventory!);
                     this.criteriaFootprint =
                         this.appComponent.formatLifecycleCriteriaImpact(
-                            criteriaFootprint
+                            criteriaFootprint,
                         );
 
                     this.footprint =
@@ -121,7 +124,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     this.selectedEnvironnementFilter = selectedFilters.environments;
                     this.selectedEquipmentsFilter = selectedFilters.types;
                     this.selectedLifecycleFilter = this.appComponent.formatLifecycles(
-                        selectedFilters.lifeCycles
+                        selectedFilters.lifeCycles,
                     );
                     if (selectedFilters.subdomains === undefined) {
                         this.domainFilter = selectedFilters.domains;
@@ -147,7 +150,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     this.selectedCriteriaUri =
                         criteria === "" ? this.getCriteriaFromUrl() : criteria;
                     this.selectedCriteria = this.translate.instant(
-                        `criteria.${this.selectedCriteriaUri}`
+                        `criteria.${this.selectedCriteriaUri}`,
                     );
 
                     if (doCallAppApi) {
@@ -155,7 +158,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     } else {
                         this.options = this.loadBarChartOption();
                     }
-                }
+                },
             );
     }
 
@@ -211,7 +214,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             .initApplicationCriteriaFootprint(
                 this.selectedInventoryId,
                 this.selectedApp,
-                this.selectedCriteriaUri
+                this.selectedCriteriaUri,
             )
             .subscribe(() => {
                 this.options = this.loadBarChartOption();
@@ -291,7 +294,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                                 ) {
                                     this.computeImpactOrder(
                                         impact,
-                                        impact.applicationName
+                                        impact.applicationName,
                                     );
                                 }
                                 break;
@@ -472,7 +475,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         } else {
             result = this.computeData(this.footprint);
         }
-        if(result.yAxis.length < 10){
+        if (result.yAxis.length < 10) {
             showZoom = false;
         }
         return {
@@ -480,7 +483,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 enabled: true,
                 label: {
                     description: `${this.translate.instant(
-                        "inventories-footprint.application.graph-critere"
+                        "inventories-footprint.application.graph-critere",
                     )}`,
                 },
             },
@@ -493,29 +496,28 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                                 result.xAxis[params.dataIndex]
                             } : </span>
                             <span>
-                            Impact : ${
-                                result.yAxis[params.dataIndex] < 1
-                                    ? "< 1"
-                                    : result.yAxis[params.dataIndex].toFixed(0)
-                            } ${this.translate.instant("common.peopleeq-min")}
+                            Impact : ${this.integerPipe.transform(
+                                result.yAxis[params.dataIndex],
+                            )}
+                                ${this.translate.instant("common.peopleeq-min")}
                             <br>
                             Impact : ${
                                 result.unitImpact[params.dataIndex] < 1
                                     ? "< 1"
                                     : result.unitImpact[params.dataIndex].toFixed(0)
-                            } 
+                            }
                             ${unit}
                             ${
                                 this.selectedGraph === "global"
                                     ? "<br>" +
                                       this.translate.instant(
-                                          "inventories-footprint.application.tooltip.nb-sd"
+                                          "inventories-footprint.application.tooltip.nb-sd",
                                       ) +
                                       " : " +
                                       result.subdomainCount[params.dataIndex] +
                                       "<br>" +
                                       this.translate.instant(
-                                          "inventories-footprint.application.tooltip.nb-app"
+                                          "inventories-footprint.application.tooltip.nb-app",
                                       ) +
                                       " : " +
                                       result.appCount[params.dataIndex]
@@ -525,7 +527,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                                 this.selectedGraph === "domain"
                                     ? "<br>" +
                                       this.translate.instant(
-                                          "inventories-footprint.application.tooltip.nb-app"
+                                          "inventories-footprint.application.tooltip.nb-app",
                                       ) +
                                       " : " +
                                       result.appCount[params.dataIndex]
@@ -535,19 +537,19 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                                 this.selectedGraph === "application"
                                     ? "<br>" +
                                       this.translate.instant(
-                                          "inventories-footprint.application.tooltip.cluster"
+                                          "inventories-footprint.application.tooltip.cluster",
                                       ) +
                                       " : " +
                                       result.clusterList[params.dataIndex] +
                                       "<br>" +
                                       this.translate.instant(
-                                          "inventories-footprint.application.tooltip.equipment"
+                                          "inventories-footprint.application.tooltip.equipment",
                                       ) +
                                       " : " +
                                       result.equipmentList[params.dataIndex] +
                                       "<br>" +
                                       this.translate.instant(
-                                          "inventories-footprint.application.tooltip.environnement"
+                                          "inventories-footprint.application.tooltip.environnement",
                                       ) +
                                       " : " +
                                       result.environnementList[params.dataIndex]
@@ -565,26 +567,26 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             },
             dataZoom: [
                 {
-                  show: showZoom,
-                  startValue: result.xAxis[0],
-                  endValue: result.xAxis[this.maxNumberOfBarsToBeDisplayed - 1]
+                    show: showZoom,
+                    startValue: result.xAxis[0],
+                    endValue: result.xAxis[this.maxNumberOfBarsToBeDisplayed - 1],
                 },
-              ],
+            ],
             xAxis: [
                 {
                     type: "category",
-                    data: result.xAxis, 
-                },                
+                    data: result.xAxis,
+                },
             ],
             yAxis: [
-                {     
-                    type: "value"     
+                {
+                    type: "value",
                 },
             ],
             series: [
                 {
                     name: `${this.translate.instant(
-                        "inventories-footprint.application.graph-cv"
+                        "inventories-footprint.application.graph-cv",
                     )}`,
                     type: "bar",
                     data: result.yAxis,

@@ -9,7 +9,7 @@ tags:
     description: All endpoint to interact with filesystem
 
 paths:
-  /{subscriber}/{organization}/inventories/{inventoryId}/files:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/files:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
       - $ref: '#/components/parameters/organizationPathParam'
@@ -91,3 +91,38 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/output/{batchName}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - $ref: '#/components/parameters/batchNamePathParam'
+    get:
+      summary: Endpoint to retrieve results file in storage.
+      description: Endpoint to retrieve results file in storage.
+      operationId: downloadResultsFile
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - file-system
+      responses:
+        '200':
+          description: Download results file
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  contentTypes:
+    application/zip:
+      schema:
+        type: string
+        format: binary

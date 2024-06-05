@@ -16,7 +16,7 @@ import {
     Criterias,
     Datacenter,
     PhysicalEquipmentAvgAge,
-    PhysicalEquipmentLowCarbon,
+    PhysicalEquipmentLowImpact,
 } from "../../store/footprint.repository";
 
 const endpoint = environment.apiEndpoints.inventories;
@@ -82,10 +82,10 @@ export class FootprintDataService {
         const averageAge$ = this.http.get<PhysicalEquipmentAvgAge[]>(
             `${endpoint}/${inventoryId}/indicators/physicalEquipmentsAvgAge`
         );
-        const lowCarbon$ = this.http.get<PhysicalEquipmentLowCarbon[]>(
-            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsLowCarbon`
+        const lowImpact$ = this.http.get<PhysicalEquipmentLowImpact[]>(
+            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsLowImpact`
         );
-        return forkJoin([averageAge$, lowCarbon$]);
+        return forkJoin([averageAge$, lowImpact$]);
     }
 
     sendExportRequest(inventoryId: number): Observable<number> {
@@ -94,5 +94,9 @@ export class FootprintDataService {
 
     deleteIndicators(inventoryId: number) {
         return this.http.delete<any>(`${endpoint}/${inventoryId}/indicators`);
+    }
+
+    downloadExportResultsFile(inventoryId: number): Observable<any> {
+        return this.http.get(`${endpoint}/${inventoryId}/indicators/export/download`, { responseType: 'blob', headers: {'Accept': 'application/zip'}});
     }
 }

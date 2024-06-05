@@ -4,14 +4,16 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,9 @@ public class DataDeletionService {
     @Autowired
     private DigitalServiceService digitalServiceService;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     /**
      * Execute the deletion
      * Get all subscribers and organizations
@@ -51,7 +56,7 @@ public class DataDeletionService {
         int nbDigitalServicesDeleted = 0;
         final long start = System.currentTimeMillis();
 
-        List<Organization> organizations = organizationRepository.findAll();
+        List<Organization> organizations = organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
 
         for (Organization organizationEntity : organizations) {
             final String subscriber = organizationEntity.getSubscriber().getName();

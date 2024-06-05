@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -20,6 +20,8 @@ import {
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 @Component({
     selector: "app-application-multicriteria-footprint.component",
@@ -45,9 +47,18 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         override filterRepo: FilterRepository,
         override footprintRepo: FootprintRepository,
         override echartsRepo: EchartsRepository,
-        override translate: TranslateService
+        override translate: TranslateService,
+        override integerPipe: IntegerPipe,
+        override decimalsPipe: DecimalsPipe,
     ) {
-        super(filterRepo, footprintRepo, echartsRepo, translate);
+        super(
+            filterRepo,
+            footprintRepo,
+            echartsRepo,
+            translate,
+            integerPipe,
+            decimalsPipe,
+        );
     }
 
     ngOnInit(): void {
@@ -179,7 +190,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 enabled: true,
                 label: {
                     description: `${this.translate.instant(
-                        "inventories-footprint.application.graph-global"
+                        "inventories-footprint.application.graph-global",
                     )}`,
                 },
             },
@@ -222,7 +233,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             series: [
                 {
                     name: `${this.translate.instant(
-                        "inventories-footprint.application.graph-mc"
+                        "inventories-footprint.application.graph-mc",
                     )}`,
                     type: "bar",
                     data: yAxis,

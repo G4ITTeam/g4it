@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { combineLatest, takeUntil } from "rxjs";
@@ -36,7 +36,7 @@ export class InventoriesCritereFootprintComponent
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(([chartData, selectedView]) => {
                 // We always have one element representing half the donut.
-                this.noData = chartData.length === 1;
+                this.noData = chartData.length === 0;
 
                 if (this.noData) {
                     return;
@@ -66,51 +66,46 @@ export class InventoriesCritereFootprintComponent
 
     updateEchartsOptions(selectedView: string, echartsData: any[]) {
         this.options = {
+            height: 700,
             tooltip: {
+                enterable: true,
+                hideDelay: 200,
                 trigger: "item",
                 formatter: (params: any) => {
-                    const dataIndex = params.dataIndex;
-                    const impact = echartsData[dataIndex].value.toFixed(0);
-                    let name = this.existingTranslation(
-                        echartsData[dataIndex].name,
-                        selectedView
+                    return this.getToolTipHtml(
+                        echartsData[params.dataIndex],
+                        this.getUnitTranslation(this.selectedCriteria),
+                        params.color,
+                        selectedView,
                     );
-                    const tooltipContent = `
-                        <div style="display: flex; align-items: center; height: 30px;">
-                            <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                                params.color
-                            }; border-radius: 50%; margin-right: 5px;"></span>
-                            <span style="font-weight: bold; margin-right: 15px;">${name}: </span>
-                            <div>${impact < 1 ? " <1" : impact} ${this.getUnitTranslation(
-                        this.selectedCriteria
-                    )} </div>
-                        </div>`;
-                    return tooltipContent;
                 },
             },
             legend: {
-                top: "65%",
-                bottom: "auto",
+                show: true,
+                type: "scroll",
+                bottom: -5,
                 selectedMode: false,
                 formatter: (param: any) => {
-                    return this.existingTranslation(param, selectedView);
+                    return this.existingTranslation(param, selectedView, "legend");
                 },
             },
             series: [
                 {
+                    avoidLabelOverlap: false,
                     type: "pie",
-                    radius: ["50%", "90%"],
-                    center: ["50%", "55%"],
+                    radius: ["50%", "75%"],
+                    center: ["50%", "45%"],
                     // adjust the start angle
                     startAngle: 180,
+                    endAngle: 360,
                     label: {
                         show: true,
                         formatter: (param: any) => {
                             // correct the percentage
                             return `${this.existingTranslation(
                                 param.name,
-                                selectedView
-                            )} ${(param.percent! * 2).toFixed(1)}%`;
+                                selectedView,
+                            )} ${param.percent.toFixed(1)}%`;
                         },
                     },
                     data: echartsData,
@@ -118,6 +113,66 @@ export class InventoriesCritereFootprintComponent
             ],
             color: Constants.COLOR,
         };
+    }
+
+    getToolTipHtml(chartValue: any, unit: string, color: any, selectedView: string) {
+        let height = 22;
+        let maxHeight = 250;
+        let tooltipLines = [];
+
+        if (chartValue.name.toLowerCase() === "other") {
+            tooltipLines = chartValue.otherData.map((data: any) =>
+                this.getTooltipItemHtml(
+                    data.name,
+                    `${data.percent.toFixed(3)}% - ${this.decimalsPipe.transform(
+                        data.value,
+                    )} ${unit}`,
+                ),
+            );
+        } else {
+            tooltipLines = [
+                this.getTooltipItemHtml(
+                    this.existingTranslation(chartValue.name, selectedView),
+                    `${this.decimalsPipe.transform(chartValue.value)} ${unit}`,
+                    color,
+                ),
+            ];
+        }
+
+        height = tooltipLines.length <= 10 ? height * tooltipLines.length : maxHeight;
+        const titleDiv =
+            tooltipLines.length > 1
+                ? `${this.getCircleColorHtml(color)} ${this.translate.instant(
+                      "common.otherLegend",
+                  )}`
+                : "";
+
+        return `
+            ${titleDiv}
+            <div class="mt-1" style="display: flex; flex-direction: column; align-items: baseline; height: ${height}px; overflow-y:auto">
+                ${tooltipLines.join("")}
+            </div>
+        `;
+    }
+
+    getCircleColorHtml(color: string | undefined = undefined) {
+        return color
+            ? `<div class="mr-1 pb-1 inline-block" style="width: 9px; height: 9px; background-color: ${color}; border-radius: 50%;"></div>`
+            : "";
+    }
+
+    getTooltipItemHtml(
+        name: string,
+        value: string,
+        color: string | undefined = undefined,
+    ) {
+        return `
+            <div class="ml-1 mr-2">
+                ${this.getCircleColorHtml(color)}
+                <div class="font-bold">${name}:</div>
+                <div class="ml-2">${value}</div>
+            </div>
+         `;
     }
 
     infoCardTitle(selectedCriteria: string | null) {
@@ -132,7 +187,7 @@ export class InventoriesCritereFootprintComponent
 
     getUnitTranslation(input: string) {
         return this.translate.instant(
-            "inventories-footprint.critere." + input + ".unite"
+            "inventories-footprint.critere." + input + ".unite",
         );
     }
 }

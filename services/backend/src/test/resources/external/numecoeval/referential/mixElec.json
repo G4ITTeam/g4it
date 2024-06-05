@@ -173,5 +173,75 @@
     "critere": "Resource use (minerals and metals)",
     "valeur": 7.68612e-8,
     "source": "Base IMPACTS 2.02"
+  },
+  {
+    "pays": "France",
+    "raccourcisAnglais": "FR",
+    "critere": "Acidification",
+    "valeur": 0.000209809,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "France",
+    "raccourcisAnglais": "FR",
+    "critere": "Climate change",
+    "valeur": 0.0800844,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "France",
+    "raccourcisAnglais": "FR",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 0.00000000415844,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "France",
+    "raccourcisAnglais": "FR",
+    "critere": "Ionising radiation",
+    "valeur": 3.23443,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "France",
+    "raccourcisAnglais": "FR",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 0.0000000485798,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "Germany",
+    "raccourcisAnglais": "DE",
+    "critere": "Acidification",
+    "valeur": 0.00176241,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "Germany",
+    "raccourcisAnglais": "DE",
+    "critere": "Climate change",
+    "valeur": 0.650114,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "Germany",
+    "raccourcisAnglais": "DE",
+    "critere": "Particulate matter and respiratory inorganics",
+    "valeur": 0.0000000102637,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "Germany",
+    "raccourcisAnglais": "DE",
+    "critere": "Ionising radiation",
+    "valeur": 0.958296,
+    "source": "Base IMPACTS®3.0"
+  },
+  {
+    "pays": "Germany",
+    "raccourcisAnglais": "DE",
+    "critere": "Resource use (minerals and metals)",
+    "valeur": 0.0000000878733,
+    "source": "Base IMPACTS®3.0"
   }
 ]

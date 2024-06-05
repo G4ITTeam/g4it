@@ -4,14 +4,16 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.mapper.PhysicalEquipmentIndicatorMapper;
-import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentLowCarbonBO;
+import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentsAvgAgeBO;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentLowImpactView;
 import com.soprasteria.g4it.backend.apiindicator.repository.PhysicalEquipmentAvgAgeViewRepository;
-import com.soprasteria.g4it.backend.apiindicator.repository.PhysicalEquipmentLowCarbonViewRepository;
+import com.soprasteria.g4it.backend.apiindicator.repository.PhysicalEquipmentLowImpactViewRepository;
+import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,16 +34,22 @@ public class PhysicalEquipmentIndicatorService {
     private PhysicalEquipmentAvgAgeViewRepository physicalEquipmentAvgAgeViewRepository;
 
     /**
-     * Repository to access to low carbon indicators data.
+     * Repository to access to low impact indicators data.
      */
     @Autowired
-    private PhysicalEquipmentLowCarbonViewRepository physicalEquipmentLowCarbonViewRepository;
+    private PhysicalEquipmentLowImpactViewRepository physicalEquipmentLowImpactViewRepository;
 
     /**
      * Physical equipment indicators mapper.
      */
     @Autowired
     private PhysicalEquipmentIndicatorMapper physicalEquipmentIndicatorMapper;
+
+    /**
+     * NumEcoEval Referential service.
+     */
+    @Autowired
+    private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
 
     /**
      * Retrieve average age indicators.
@@ -58,18 +66,21 @@ public class PhysicalEquipmentIndicatorService {
     }
 
     /**
-     * Retrieve low carbon indicators.
+     * Retrieve low impact indicators.
      *
      * @param subscriber   the subscriber.
      * @param organization the organization.
      * @param inventoryId  the inventory id.
-     * @return low carbon indicators.
+     * @return low impact indicators.
      */
-    public List<PhysicalEquipmentLowCarbonBO> getPhysicalEquipmentLowCarbon(final String subscriber, final String organization, final Long inventoryId) {
+    public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final String organization, final Long inventoryId) {
+        final List<PhysicalEquipmentLowImpactView> indicators = physicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicators(subscriber, organization, inventoryId);
+
+        indicators.forEach(indicator ->
+                indicator.setLowImpact(numEcoEvalReferentialRemotingService.isLowImpact(indicator.getPaysUtilisation()))
+        );
+        
         return physicalEquipmentIndicatorMapper
-                .physicalEquipmentLowCarbontoDTO(physicalEquipmentLowCarbonViewRepository
-                        .findPhysicalEquipmentLowCarbonIndicators(subscriber, organization, inventoryId));
+                .physicalEquipmentLowImpacttoDTO(indicators);
     }
-
-
 }

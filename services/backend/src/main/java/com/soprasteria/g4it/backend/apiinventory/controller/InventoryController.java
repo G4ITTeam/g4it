@@ -4,15 +4,17 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.controller;
 
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryRestMapper;
+import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.server.gen.api.InventoryApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,12 @@ public class InventoryController implements InventoryApiDelegate {
      */
     @Autowired
     private InventoryRestMapper inventoryRestMapper;
+
+    /**
+     * User Service
+     */
+    @Autowired
+    UserService userService;
 
     /**
      * {@inheritDoc}
@@ -89,6 +97,16 @@ public class InventoryController implements InventoryApiDelegate {
                                                          final String organization,
                                                          final InventoryCreateRest inventoryCreateRest) {
         return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.createInventory(subscriber, organization, inventoryCreateRest)), HttpStatus.CREATED);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<InventoryRest> updateInventory(final String subscriber,
+                                                         final String organization,
+                                                         final InventoryUpdateRest inventoryUpdateRest) {
+        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(subscriber, organization, inventoryUpdateRest, userService.getUserEntity())), HttpStatus.OK);
     }
 
 }

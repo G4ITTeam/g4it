@@ -35,13 +35,15 @@
             <p-inputNumber
                 formControlName="yearlyQuantityOfGbExchanged"
                 inputId="minmaxfraction"
+                mode="decimal"
+                [minFractionDigits]="1"
                 [maxFractionDigits]="6"
                 [required]="true"
                 [min]="0"
                 [(ngModel)]="network.yearlyQuantityOfGbExchanged"
                 name="yearlyQuantityOfGbExchanged"
                 ngDefaultControl
-            ></p-inputNumber>
+                />
             <p
                 class="error-text"
                 *ngIf="
