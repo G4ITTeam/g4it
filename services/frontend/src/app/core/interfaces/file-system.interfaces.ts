@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 export interface FileSystemInputFile {
     inventoryId?: number;
     type: string;
@@ -13,7 +13,8 @@ export interface FileSystemInputFile {
 }
 
 export interface Metadata {
-    creationTime: string;
+    creationTime?: string;
+    size?: string;
 }
 
 export interface FileSystemUploadFile {
@@ -28,11 +29,19 @@ export interface FileType {
 }
 
 export interface LoadingBody {
-    files: LoadingFile[];
+    files: FileDescription[];
 }
 
-export interface LoadingFile {
+export interface FileDescription {
     name: string;
     type: string;
     metadata: Metadata;
+}
+
+export interface TemplateFileDescription {
+    name: string;
+    type: string;
+    metadata: Metadata;
+    displayFileName?: string;
+    csvFileType?: string;
 }

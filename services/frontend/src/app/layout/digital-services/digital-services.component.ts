@@ -12,7 +12,6 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
-import { Note } from "src/app/core/interfaces/note.interface";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
@@ -26,6 +25,7 @@ export class DigitalServicesComponent {
     selectedDigitalService: DigitalService = {} as DigitalService;
     sidebarVisible = false;
     digitalServiceId: any;
+
     constructor(
         private digitalServicesData: DigitalServicesDataService,
         private router: Router,
@@ -44,8 +44,9 @@ export class DigitalServicesComponent {
     }
 
     async retrieveDigitalServices() {
-        this.digitalServices = await lastValueFrom(this.digitalServicesData.list());
-        this.digitalServices.sort((x, y) => x.name.localeCompare(y.name));
+        const apiResult = await lastValueFrom(this.digitalServicesData.list());
+        apiResult.sort((x, y) => x.name.localeCompare(y.name));
+        this.digitalServices = [...apiResult];
     }
 
     async createNewDigitalService() {
@@ -85,11 +86,8 @@ export class DigitalServicesComponent {
             },
         });
     }
-    noteSaveValue(event: any) {
-        this.selectedDigitalService.note = {
-            content: event,
-        } as Note;
 
+    noteSaveValue(event: any) {
         // Get digital services data.
         this.digitalServicesData.get(this.selectedDigitalService.uid).subscribe((res) => {
             // update note
@@ -102,6 +100,9 @@ export class DigitalServicesComponent {
                     summary: this.translate.instant("common.note.save"),
                     sticky: false,
                 });
+                this.selectedDigitalService.note = {
+                    content: event,
+                };
             });
         });
     }

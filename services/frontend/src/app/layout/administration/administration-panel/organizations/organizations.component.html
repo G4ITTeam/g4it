@@ -3,69 +3,147 @@
         <p-dropdown
             appendTo="body"
             optionLabel="name"
-            [style]="{ height: '40px', width: '35%' }"
-            class="dropdown-placeholder-padding"
+            [style]="{ width: '35%' }"
             name="subscriber"
             [options]="subscribersDetails"
             placeholder="{{ 'administration.subsriber-placeholder' | translate }}"
             ngDefaultControl
             [(ngModel)]="subscriber"
-            (onChange)="enableList = true; getCurrentOrganizations()"
         >
-        </p-dropdown
-        ><br /><br />
+        </p-dropdown>
+
+        <div *ngIf="subscriber" class="inline-block vertical-align-middle">
+            <p-button
+                *ngIf="!editable"
+                styleClass="p-button-text"
+                [attr.aria-label]="'administration.accessibility.on-edit' | translate"
+                class="mx-1"
+                (onClick)="editable = true"
+            >
+                <img
+                    src="assets/images/icons/icon-edit.svg"
+                    alt="{{ 'common.edit' | translate }}"
+                />
+            </p-button>
+            <p-button
+                *ngIf="editable"
+                styleClass="p-button-text"
+                (onClick)="saveOrganizations(subscriber.organizations); editable = false"
+                class="mx-1"
+            >
+                <img
+                    src="assets/images/icons/icon-validate.svg"
+                    alt="{{ 'common.edit' | translate }}"
+                />
+            </p-button>
+            <p-button
+                *ngIf="editable"
+                styleClass="p-button-text"
+                (onClick)="editable = false"
+                class="mx-1"
+            >
+                <img
+                    src="assets/images/icons/icon-close.svg"
+                    alt="{{ 'common.edit' | translate }}"
+                />
+            </p-button>
+        </div>
+
         <div
-            class="h-2rem border-top-2 border-primary p-0 mt-1"
+            class="h-2rem border-top-2 border-primary p-0 mt-3"
             style="color: lightgray"
         ></div>
     </div>
-    <div  *ngIf="enableList">
-        <div *ngFor="let organization of organizations">
-            <div >
-                <input
-                    class="label-input-div-medium input-width inline-block p-2 mx-1"
-                    pInputText
-                    [(ngModel)]="organization.name"
-                    name="organization.name"
-                    placeholder="Name"
-                    [disabled]="organization.status === status.TO_BE_DELETED"
-                    readonly
+
+    <div *ngIf="subscriber" class="my-2">
+        <div *ngIf="editable">
+            <input
+                class="label-input-div-medium input-width inline-block p-2 mx-1"
+                pInputText
+                [(ngModel)]="newOrganization.name"
+                [placeholder]="'administration.organization.new' | translate"
+                name="newOrg"
+                ngDefaultControl
+                (ngModelChange)="checkOrganization($event, newOrganization, subscriber)"
+            />
+            <p-button
+                class="mx-2"
+                styleClass="grey-button-sidebar"
+                (click)="addOrganization(newOrganization)"
+                [disabled]="newOrganization.uiStatus !== 'OK'"
+                [attr.aria-label]="
+                    'administration.organization.accessibility.addAnOrganization'
+                        | translate
+                "
+                >{{
+                    "administration.organization.addAnOrganization" | translate
+                }}</p-button
+            >
+        </div>
+        <p class="error-text" *ngIf="newOrganization.uiStatus === 'DUPLICATE'">
+            {{
+                "administration.organization.duplicateOrganizationValidation" | translate
+            }}
+        </p>
+        <p class="error-text" *ngIf="newOrganization.uiStatus === 'SPACE'">
+            {{ "administration.organization.spaceValidation" | translate }}
+        </p>
+
+        <div *ngFor="let organization of subscriber.organizations">
+            <input
+                class="label-input-div-medium input-width inline-block p-2 mx-1"
+                [class.ng-invalid]="
+                    organization.uiStatus !== undefined && organization.uiStatus !== 'OK'
+                "
+                [class.ng-dirty]="
+                    organization.uiStatus !== undefined && organization.uiStatus !== 'OK'
+                "
+                [(ngModel)]="organization.name"
+                name="name"
+                placeholder="Name"
+                pInputText
+                [disabled]="!editable"
+                (ngModelChange)="checkOrganization($event, organization, subscriber)"
+            />
+            <p-button
+                styleClass="p-button-text"
+                [attr.aria-label]="'administration.accessibility.on-deletion' | translate"
+                class="mx-1"
+                *ngIf="editable && organization.status === status.ACTIVE"
+                (click)="confirmDelete($event, organization)"
+            >
+                <img
+                    src="assets/images/icons/icon-bin.svg"
+                    alt="{{ 'common.delete' | translate }}"
                 />
-                <p-button
-                    *ngIf="organization.status === status.ACTIVE"
-                    styleClass="p-button-text edit-button"
-                    [attr.aria-label]="
-                        'administration.accessibility.on-deletion' | translate
-                    "
-                    (click)="confirm($event, organization)"
-                    [style]="{ padding: '0.500rem 1rem', 'margin-top': '10px' }"
-                >
-                    <img
-                        src="assets/images/icons/icon-bin.svg"
-                        alt="{{ 'common.delete' | translate }}"
-                    />
-                </p-button>
-                <p-button
-                    styleClass="black-button-sidebar"
-                    *ngIf="organization.status === status.TO_BE_DELETED"
-                    (click)="confirmToActive(organization)"
-                    [style]="{ 'margin-top': '10px' }"
-                    >{{ "administration.cancel-deletion" | translate }}</p-button
-                >
-                <small *ngIf="organization.status === status.TO_BE_DELETED">
-                    &nbsp;&nbsp;&nbsp;
-                    {{
-                        "administration.cancel-deletion-message"
-                            | translate
-                                : {
-                                      date: organization.deletionDate | date: "dd/MM/yyyy"
-                                  }
-                    }}</small
-                >
-            </div>
+            </p-button>
+            <p-button
+                class="mx-2"
+                styleClass="black-button-sidebar"
+                *ngIf="organization.status === status.TO_BE_DELETED"
+                (click)="confirmToActive(organization)"
+                >{{ "administration.cancel-deletion" | translate }}</p-button
+            >
+            <small class="mx-1" *ngIf="organization.status === status.TO_BE_DELETED">
+                {{
+                    "administration.cancel-deletion-message"
+                        | translate
+                            : {
+                                  date: organization.deletionDate | date: "dd/MM/yyyy",
+                              }
+                }}</small
+            >
+            <p class="error-text" *ngIf="organization.uiStatus === 'DUPLICATE'">
+                {{
+                    "administration.organization.duplicateOrganizationValidation"
+                        | translate
+                }}
+            </p>
+            <p class="error-text" *ngIf="organization.uiStatus === 'SPACE'">
+                {{ "administration.organization.spaceValidation" | translate }}
+            </p>
         </div>
     </div>
-    <br *ngIf="enableList" />
 </div>
 <div class="card flex justify-content-center gap-2">
     <p-toast></p-toast>

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.scheduler;
 
 import jakarta.annotation.PostConstruct;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class StorageDeletionScheduler {
 
     @Value("${g4it.storage.retention.oninit:false}")
-    private Boolean onInit;
+    private boolean onInit;
 
     @Autowired
     private StorageDeletionService storageAutoDeletionService;

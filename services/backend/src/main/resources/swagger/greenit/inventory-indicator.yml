@@ -41,7 +41,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getEquipmentIndicators
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return equipment indicators
@@ -66,7 +66,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getApplicationIndicators
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return application indicators
@@ -103,7 +103,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getApplicationVmIndicators
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return application vm indicators
@@ -130,7 +130,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getEquipmentFilters
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return equipment filters
@@ -157,7 +157,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getApplicationFilters
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return application filters
@@ -182,7 +182,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getDataCenterIndicators
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return datacenters information
@@ -207,7 +207,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getPhysicalEquipmentAvgAge
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: Return physical equipments average age
@@ -234,7 +234,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: getPhysicalEquipmentsLowImpact
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         "200":
           description: return physical equipment with Low impact and number
@@ -261,7 +261,7 @@ paths:
       tags:
         - inventory-indicator
       operationId: exportIndicators
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       responses:
         '200':
           description: Export requested.

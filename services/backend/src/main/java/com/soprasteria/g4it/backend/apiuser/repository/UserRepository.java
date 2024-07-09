@@ -8,7 +8,6 @@
 package com.soprasteria.g4it.backend.apiuser.repository;
 
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,12 +37,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param subject the subject.
      * @return the user.
      */
-    @Cacheable(value = "findBySub", key = "#subject")
     Optional<User> findBySub(final String subject);
 
-
     /**
-     * Return all users from g4it_users where the first name, last name or email address contains the text  typed
+     * Return all users from g4it_users where the first name, last name or email
+     * address contains the text typed
      *
      * @param searchedName the searched string
      */

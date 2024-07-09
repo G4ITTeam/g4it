@@ -10,17 +10,10 @@ package com.soprasteria.g4it.backend.apiuser.repository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserRoleOrganization;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface UserRoleOrganizationRepository extends JpaRepository<UserRoleOrganization, Long> {
 
-    /**
-     * Find by userOrganization and return a list of matching UserRoleOrganizations
-     *
-     * @param userOrganization the linked userOrganization
-     * @return UserRoleOrganization list
-     */
-    List<UserRoleOrganization> findByUserOrganizations(final UserOrganization userOrganization);
-
+    @Transactional
+    void deleteByUserOrganizations(final UserOrganization userOrganization);
 }

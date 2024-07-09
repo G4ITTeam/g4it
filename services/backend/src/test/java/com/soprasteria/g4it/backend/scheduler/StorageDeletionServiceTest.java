@@ -29,7 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class StorageDeletionServiceTest {
+class StorageDeletionServiceTest {
 
     @InjectMocks
     StorageDeletionService storageDeletionService;
@@ -44,6 +44,7 @@ public class StorageDeletionServiceTest {
     void testStorageDeletionService_zeroOrganization() {
         Mockito.when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()))).thenReturn(List.of());
         storageDeletionService.executeDeletion();
+        Mockito.verify(organizationRepository).findAllByStatusIn(List.of(OrganizationStatus.ACTIVE.name()));
     }
 
     @Test

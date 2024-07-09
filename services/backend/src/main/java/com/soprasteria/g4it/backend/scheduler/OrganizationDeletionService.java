@@ -59,46 +59,42 @@ public class OrganizationDeletionService {
 
         for (Organization organizationEntity : organizations) {
             final String subscriber = organizationEntity.getSubscriber().getName();
-            final String organization = organizationEntity.getName();
+            final Long organizationId = organizationEntity.getId();
 
-            // TODO - if storage also need to deleted or not.
-            /*
-            boolean isDeleteExportStorageNow = offsetNow.isAfter(OffsetDateTime.from(organizationEntity.getDeletionDate()));
-            boolean isDeleteOutputStorageDataNow = offsetNow.isAfter(OffsetDateTime.from(organizationEntity.getDeletionDate()));
-            */
             final int dataRetentionDay = now.isAfter(organizationEntity.getDeletionDate()) ? 0 : -1;
             if (dataRetentionDay == 0) {
-                log.info("Deleting data of {}/{}", subscriber, organization);
+                log.info("Deleting data of {}/{}", subscriber, organizationEntity.getName());
                 // Delete Inventories
                 nbInventoriesDeleted += inventoryRepository.findByOrganization(organizationEntity).stream()
                         .mapToInt(inventory -> {
-                            inventoryDeleteService.deleteInventory(subscriber, organization, inventory.getId());
+                            inventoryDeleteService.deleteInventory(subscriber, organizationId, inventory.getId());
                             return 1;
                         })
                         .sum();
 
                 // Delete Digital services
-                nbDigitalServicesDeleted += digitalServiceService.getAllDigitalServicesByOrganization(subscriber, organization).stream()
+                nbDigitalServicesDeleted += digitalServiceService.getAllDigitalServicesByOrganization(organizationId).stream()
                         .mapToInt(digitalServiceBO -> {
-                            digitalServiceService.deleteDigitalService(organization, digitalServiceBO.getUid());
+                            digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
                             return 1;
                         })
                         .sum();
 
                 // Delete Export Files from storage
-                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organization, FileFolder.EXPORT, dataRetentionDay);
+                List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, dataRetentionDay);
+
                 // Update Export Batch Status in database
                 deletedExportFilePaths.forEach(fileName -> inventoryExportService.updateBatchStatusCodeToRemove(fileName));
                 deletedFilePaths.addAll(deletedExportFilePaths);
 
                 // Delete Output Files from storage
-                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organization, FileFolder.OUTPUT, dataRetentionDay);
+                List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.OUTPUT, dataRetentionDay);
                 deletedFilePaths.addAll(deletedOutputFilePaths);
 
                 // update organization status to "INACTIVE" if status is "TO_BE_DELETED"
                 if (organizationEntity.getStatus().equals(OrganizationStatus.TO_BE_DELETED.name())) {
                     organizationRepository.setStatusForOrganization(organizationEntity.getId(), OrganizationStatus.INACTIVE.name());
-                    log.info("Update status of {}/{} to {} ", subscriber, organization, OrganizationStatus.INACTIVE.name());
+                    log.info("Update status of {}/{} to {} ", subscriber, organizationEntity.getName(), OrganizationStatus.INACTIVE.name());
                 }
             }
         }

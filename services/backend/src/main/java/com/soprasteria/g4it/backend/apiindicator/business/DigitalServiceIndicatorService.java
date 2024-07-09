@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceIndicatorBO;
@@ -28,27 +28,21 @@ public class DigitalServiceIndicatorService {
     @Autowired
     private DigitalServiceIndicatorViewService digitalServiceIndicatorViewService;
 
-    /**
-     * Get inventory indicators.
-     *
-     * @param organization the organization.
-     * @param uid          the inventory date.
-     * @return indicators.
-     */
-    public List<DigitalServiceIndicatorBO> getDigitalServiceIndicators(final String organization, final String uid) {
-        return digitalServiceIndicatorViewService.getDigitalServiceIndicators(organization, uid);
+
+    public List<DigitalServiceIndicatorBO> getDigitalServiceIndicators(final String uid) {
+        return digitalServiceIndicatorViewService.getDigitalServiceIndicators(uid);
     }
 
-    public List<DigitalServiceTerminalIndicatorBO> getDigitalServiceTerminalIndicators(final String organization, final String uid) {
-        return digitalServiceIndicatorViewService.getDigitalServiceTerminalIndicators(organization, uid);
+    public List<DigitalServiceTerminalIndicatorBO> getDigitalServiceTerminalIndicators(final String uid) {
+        return digitalServiceIndicatorViewService.getDigitalServiceTerminalIndicators(uid);
     }
 
-    public List<DigitalServiceNetworkIndicatorBO> getDigitalServiceNetworkIndicators(final String organization, final String uid) {
-        return digitalServiceIndicatorViewService.getDigitalServiceNetworkIndicators(organization, uid);
+    public List<DigitalServiceNetworkIndicatorBO> getDigitalServiceNetworkIndicators(final String uid) {
+        return digitalServiceIndicatorViewService.getDigitalServiceNetworkIndicators(uid);
     }
 
-    public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String organization, final String uid) {
-        return digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(organization, uid);
+    public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String uid) {
+        return digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(uid);
     }
 
 }

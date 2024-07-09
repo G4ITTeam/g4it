@@ -15,7 +15,8 @@ public enum FileFolder {
     INPUT("input"),
     OUTPUT("output"),
     WORK("work"),
-    EXPORT("export");
+    EXPORT("export"),
+    TEMPLATE("template");
 
     @Getter
     private final String folderName;

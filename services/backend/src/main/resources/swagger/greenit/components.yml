@@ -18,7 +18,8 @@ components:
       in: path
       name: organization
       schema:
-        type: string
+        type: integer
+        format: int64
       required: true
       description: The organization name.
     inventoryIdPathParam:
@@ -127,6 +128,13 @@ components:
         type: string
       required: true
       description: The name to search a user.
+    templateFileParam:
+      in: path
+      name: name
+      schema:
+        type: string
+      required: true
+      description: The file name.
 
 
   responses:
@@ -189,17 +197,18 @@ components:
           type: array
           items:
             type: string
+
     LinkUserRoleRest:
-        description: User's roles to add
-        type: object
-        properties:
-          organizationId:
-            type: integer
-            format: int64
-          users:
-            type: array
-            items:
-              $ref: "#/components/schemas/UserRoleRest"
+      description: User's roles to add
+      type: object
+      properties:
+        organizationId:
+          type: integer
+          format: int64
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserRoleRest"
 
     UserSearchRest:
       description: search users
@@ -214,23 +223,27 @@ components:
           type: string
         email:
           type: string
+        roles:
+          type: array
+          items:
+            type: string
         linkedOrgIds:
-            type: array
-            items:
-              type: integer
-              format: int64
+          type: array
+          items:
+            type: integer
+            format: int64
 
     UserRoleRest:
-       description: User and accessible roles
-       type: object
-       properties:
-         userId:
-           type: integer
-           format: int64
-         roles:
-           type: array
-           items:
-             type: string
+      description: User and accessible roles
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        roles:
+          type: array
+          items:
+            type: string
     RolesRest:
       description: All the roles
       type: object
@@ -301,6 +314,11 @@ components:
           type: string
           format: date-time
         organization:
+          type: string
+        organizationId:
+          type: integer
+          format: int64
+        organizationStatus:
           type: string
         dataCenterCount:
           type: integer
@@ -609,8 +627,6 @@ components:
     PhysicalEquipmentLowImpactRest:
       type: object
       properties:
-        organisation:
-          type: string
         inventoryName:
           type: string
         paysUtilisation:

@@ -35,12 +35,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-   /* @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
-    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    public ResponseEntity<Void> handleMaxUploadSizeExceededException(final MaxUploadSizeExceededException ex, final WebRequest request) {
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).build();
-    }*/
-
     @ExceptionHandler(value = {G4itRestException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<RestError> handleG4itRestException(final G4itRestException ex, final WebRequest request) {

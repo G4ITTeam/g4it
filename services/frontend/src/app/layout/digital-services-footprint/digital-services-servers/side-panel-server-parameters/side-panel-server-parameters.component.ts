@@ -85,23 +85,37 @@ export class SidePanelServerParametersComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.digitalDataService.digitalService$.pipe(first()).subscribe((res) => {
-            this.digitalService = res;
-            this.digitalServiceBusiness.serverFormSubject$
-                .pipe(takeUntil(this.ngUnsubscribe))
-                .subscribe(async (res: DigitalServiceServerConfig) => {
-                    this.spinner.show();
-                    this.server = { ...res };
-
-                    await this.setHostReferential(res.type);
-                    this.server = { ...res };
-                    await this.setDatacenterReferential(res.datacenter);
-                    this.spinner.hide();
-                    if (this.server.uid === "" && !this.dataInitialized) {
-                        this.initializeDefaultValue();
-                    }
-                });
-        });
+        this.digitalDataService.digitalService$
+            .pipe(first())
+            .subscribe((digitalServiceResponse) => {
+                this.digitalService = digitalServiceResponse;
+                this.digitalServiceBusiness.serverFormSubject$
+                    .pipe(takeUntil(this.ngUnsubscribe))
+                    .subscribe(async (res: DigitalServiceServerConfig) => {
+                        this.spinner.show();
+                        this.server = { ...res };
+                        await this.setHostReferential(res.type);
+                        this.server = { ...res };
+                        await this.setDatacenterReferential(res.datacenter);
+                        this.spinner.hide();
+                        const serverSaved = digitalServiceResponse.servers.find(
+                            (r) => r.uid === res.uid,
+                        );
+                        const typeValueChanged = serverSaved?.type !== res.type;
+                        if (
+                            (this.server.uid === "" && !this.dataInitialized) ||
+                            typeValueChanged
+                        ) {
+                            this.initializeDefaultValue();
+                        }
+                        if (!typeValueChanged) {
+                            this.indexHostStorage = this.hostOptions.findIndex(
+                                (x) => x.value === serverSaved?.host?.value,
+                            );
+                            this.server.host = this.hostOptions[this.indexHostStorage];
+                        }
+                    });
+            });
 
         this.digitalServiceBusiness.dataInitializedSubject$
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -138,8 +152,12 @@ export class SidePanelServerParametersComponent implements OnInit {
             dcReferentials.push(datacenter);
         }
         this.datacenterOptions = dcReferentials;
-        this.datacenterOptions = this.datacenterOptions.map(this.formatDatacenterDisplayLabel);
-        this.server.datacenter = this.datacenterOptions.find(res=> res.uid === datacenter?.uid);
+        this.datacenterOptions = this.datacenterOptions.map(
+            this.formatDatacenterDisplayLabel,
+        );
+        this.server.datacenter = this.datacenterOptions.find(
+            (res) => res.uid === datacenter?.uid,
+        );
     }
 
     formatDatacenterDisplayLabel(data: ServerDC): ServerDC {
@@ -165,8 +183,10 @@ export class SidePanelServerParametersComponent implements OnInit {
         this.indexDatacenter = this.datacenterOptions.findIndex(
             (x) => x.name === "Default DC",
         );
-        
-        this.datacenterOptions = this.datacenterOptions.map(this.formatDatacenterDisplayLabel);
+
+        this.datacenterOptions = this.datacenterOptions.map(
+            this.formatDatacenterDisplayLabel,
+        );
         this.server.datacenter = this.datacenterOptions[0];
         this.server.quantity = 1;
         this.server.annualOperatingTime = 8760;
@@ -237,8 +257,12 @@ export class SidePanelServerParametersComponent implements OnInit {
     async addDatacenter(datacenter: ServerDC) {
         this.spinner.show();
         this.datacenterOptions.push(datacenter);
-        this.datacenterOptions = this.datacenterOptions.map(this.formatDatacenterDisplayLabel);
-        this.server.datacenter = this.datacenterOptions.find(res=> res.name === datacenter.name);
+        this.datacenterOptions = this.datacenterOptions.map(
+            this.formatDatacenterDisplayLabel,
+        );
+        this.server.datacenter = this.datacenterOptions.find(
+            (res) => res.name === datacenter.name,
+        );
         this.spinner.hide();
     }
 

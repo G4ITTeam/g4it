@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiinventory.controller;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryRestMapper;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.server.gen.api.InventoryApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
@@ -33,17 +34,25 @@ import java.util.List;
 public class InventoryController implements InventoryApiDelegate {
 
     /**
+     * User Service
+     */
+    @Autowired
+    UserService userService;
+    /**
+     * Auth Service
+     */
+    @Autowired
+    AuthService authService;
+    /**
      * Service to access inventory data.
      */
     @Autowired
     private InventoryService inventoryService;
-
     /**
      * Service to delete inventory data.
      */
     @Autowired
     private InventoryDeleteService inventoryDeleteService;
-
     /**
      * InventoryRest Mapper
      */
@@ -51,16 +60,10 @@ public class InventoryController implements InventoryApiDelegate {
     private InventoryRestMapper inventoryRestMapper;
 
     /**
-     * User Service
-     */
-    @Autowired
-    UserService userService;
-
-    /**
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<InventoryRest>> getInventories(final String subscriber, final String organization, final Long inventoryId) {
+    public ResponseEntity<List<InventoryRest>> getInventories(final String subscriber, final Long organization, final Long inventoryId) {
         return ResponseEntity.ok().body(inventoryRestMapper.toRest(this.inventoryService.getInventories(subscriber, organization, inventoryId)));
     }
 
@@ -68,7 +71,7 @@ public class InventoryController implements InventoryApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> deleteInventories(final String subscriber, final String organization) {
+    public ResponseEntity<Void> deleteInventories(final String subscriber, final Long organization) {
         log.info("Start Delete inventory for organization {}", organization);
         inventoryDeleteService.deleteInventories(subscriber, organization);
         log.info("End Delete inventory for organization {}", organization);
@@ -80,11 +83,11 @@ public class InventoryController implements InventoryApiDelegate {
      */
     @Override
     public ResponseEntity<Void> deleteInventory(final String subscriber,
-                                                final String organization,
+                                                final Long organization,
                                                 final Long inventoryId) {
-        log.info("Start Delete inventory {} - {}", organization, inventoryId);
+        log.info("Start Delete inventory on organizationId={} - inventoryId={}", organization, inventoryId);
         inventoryDeleteService.deleteInventory(subscriber, organization, inventoryId);
-        log.info("End Delete inventory {} - {}", organization, inventoryId);
+        log.info("End Delete inventory on organizationId={} - inventoryId={}", organization, inventoryId);
         return ResponseEntity.noContent().<Void>build();
     }
 
@@ -94,7 +97,7 @@ public class InventoryController implements InventoryApiDelegate {
      */
     @Override
     public ResponseEntity<InventoryRest> createInventory(final String subscriber,
-                                                         final String organization,
+                                                         final Long organization,
                                                          final InventoryCreateRest inventoryCreateRest) {
         return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.createInventory(subscriber, organization, inventoryCreateRest)), HttpStatus.CREATED);
     }
@@ -104,9 +107,9 @@ public class InventoryController implements InventoryApiDelegate {
      */
     @Override
     public ResponseEntity<InventoryRest> updateInventory(final String subscriber,
-                                                         final String organization,
+                                                         final Long organization,
                                                          final InventoryUpdateRest inventoryUpdateRest) {
-        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(subscriber, organization, inventoryUpdateRest, userService.getUserEntity())), HttpStatus.OK);
+        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.updateInventory(subscriber, organization, inventoryUpdateRest, authService.getUser())), HttpStatus.OK);
     }
 
 }

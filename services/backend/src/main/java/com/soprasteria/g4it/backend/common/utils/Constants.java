@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.common.utils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Stream;
 
 public final class Constants {
 
@@ -46,11 +47,27 @@ public final class Constants {
     public static final String JWT_LAST_NAME = "family_name";
     public static final String JWT_SUB = "sub";
     public static final String ROLE_INVENTORY_READ = "ROLE_INVENTORY_READ";
+    public static final String ROLE_INVENTORY_WRITE = "ROLE_INVENTORY_WRITE";
     public static final String ROLE_DIGITAL_SERVICE_READ = "ROLE_DIGITAL_SERVICE_READ";
     public static final String ROLE_DIGITAL_SERVICE_WRITE = "ROLE_DIGITAL_SERVICE_WRITE";
     public static final String ROLE_SUBSCRIBER_ADMINISTRATOR = "ROLE_SUBSCRIBER_ADMINISTRATOR";
     public static final String ROLE_ORGANIZATION_ADMINISTRATOR = "ROLE_ORGANIZATION_ADMINISTRATOR";
+
+    public static final List<String> ALL_BASIC_ROLES = List.of(
+            ROLE_DIGITAL_SERVICE_WRITE,
+            ROLE_DIGITAL_SERVICE_READ,
+            ROLE_INVENTORY_WRITE,
+            ROLE_INVENTORY_READ
+    );
+
+    public static final List<String> ALL_ROLES = Stream.concat(
+                    Stream.of(ROLE_SUBSCRIBER_ADMINISTRATOR, ROLE_ORGANIZATION_ADMINISTRATOR),
+                    ALL_BASIC_ROLES.stream())
+            .toList();
+
     public static final String DEMO = "DEMO";
+    public static final Long INTERNAL_ORGANIZATION = 0L;
+    public static final String INTERNAL_SUBSCRIBER = "--INTERNAL-G4IT--";
 
     public static final List<String> STATUS_IN_PROGRESS = List.of(
             ExportBatchStatus.LOADING_SIP_REFERENTIAL.name(),
@@ -59,9 +76,13 @@ public final class Constants {
             ExportBatchStatus.CLEANING_WORKING_FOLDERS.name()
     );
 
-    public final static List<String> ORGANIZATION_ACTIVE_STATUS = List.of(
+    public final static List<String> ORGANIZATION_ACTIVE_OR_DELETED_STATUS = List.of(
             OrganizationStatus.ACTIVE.name(),
             OrganizationStatus.TO_BE_DELETED.name()
     );
+
+    private Constants() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 
 }

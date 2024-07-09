@@ -1,17 +1,14 @@
 import {
     Component,
-    ElementRef,
     EventEmitter,
     Input,
     Output,
     SecurityContext,
-    SimpleChange,
+    SimpleChanges,
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ViewChild } from "@angular/core";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { ConfirmPopup } from "primeng/confirmpopup";
 import { TranslateService } from "@ngx-translate/core";
+import { ConfirmationService, MessageService } from "primeng/api";
 
 @Component({
     selector: "app-common-editor",
@@ -19,8 +16,6 @@ import { TranslateService } from "@ngx-translate/core";
     providers: [ConfirmationService, MessageService],
 })
 export class CommonEditorComponent {
-    @ViewChild("editor", { static: false }) editor!: ElementRef;
-
     @Input() styleClass = "";
     @Input() maxContentLength = 20000;
     @Input() content: string | undefined = undefined;
@@ -41,8 +36,8 @@ export class CommonEditorComponent {
         private confirmationService: ConfirmationService,
     ) {}
 
-    ngOnChanges(changes: { [property: string]: SimpleChange }) {
-        let change: SimpleChange = changes["content"];
+    ngOnChanges(changes: SimpleChanges) {
+        let change = changes["content"];
 
         if (change?.currentValue === null) {
             this.editorTextValue = "";
@@ -50,10 +45,8 @@ export class CommonEditorComponent {
         }
 
         if (change?.currentValue) {
-            if (change?.currentValue) {
-                this.editorTextValue = decodeURIComponent(change?.currentValue);
-                this.editorTextValueUnmodified = decodeURIComponent(change?.currentValue);
-            }
+            this.editorTextValue = decodeURIComponent(change?.currentValue);
+            this.editorTextValueUnmodified = decodeURIComponent(change?.currentValue);
         }
     }
 
@@ -92,7 +85,6 @@ export class CommonEditorComponent {
     }
 
     cancelContent(event: any) {
-
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             acceptLabel: this.translate.instant("common.yes"),

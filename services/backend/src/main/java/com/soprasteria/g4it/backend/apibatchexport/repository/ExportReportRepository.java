@@ -43,4 +43,5 @@ public interface ExportReportRepository extends JpaRepository<ExportReport, Long
      * @return Optional<ExportReport>
      */
     Optional<ExportReport> findByBatchName(String batchName);
+
 }

@@ -22,9 +22,11 @@ router.get("/me", (req, res) => {
                     {
                         name: "DEMO",
                         defaultFlag: false,
-                        roles: ["ROLE_DIGITAL_SERVICE"],
+                        roles: [
+                            "ROLE_DIGITAL_SERVICE_READ",
+                            "ROLE_DIGITAL_SERVICE_WRITE",
+                        ],
                     },
-                   
                 ],
             },
             {
@@ -49,33 +51,24 @@ router.get("/me", (req, res) => {
 });
 
 router.get("", (req, res) => {
-    let userId = req.query.userId;
     res.send({
         users: [
-    {
-      "id": 0,
-      "firstName": "Denis",
-      "lastName": "Lemercier",
-      "email": "denis.lemercier@mail.com",
-      "role": [
-        "DIGITAL_SERVICE_READ",
-        "DIGITAL_SERVICE_WRITE",
-        "INVENTORY_READ"
-      ]
-    },
-    {
-      "id": 2,
-      "firstName": "Prenom",
-      "lastName": "Nom",
-      "email": "prenom.nom@mail2.com",
-      "role": [
-        // "DIGITAL_SERVICE_READ",
-        // "DIGITAL_SERVICE_WRITE",
-        // "ORGANIZATION_ADMINISTRATOR"
-      ]
-    }
-  ]
-});
+            {
+                id: 0,
+                firstName: "Denis",
+                lastName: "Lemercier",
+                email: "denis.lemercier@mail.com",
+                role: ["DIGITAL_SERVICE_READ", "DIGITAL_SERVICE_WRITE"],
+            },
+            {
+                id: 2,
+                firstName: "Prenom",
+                lastName: "Nom",
+                email: "prenom.nom@mail2.com",
+                role: [],
+            },
+        ],
+    });
 });
 
 router.post("", (req, res) => {

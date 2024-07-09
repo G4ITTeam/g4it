@@ -27,27 +27,13 @@ class PhysicalEquipmentLowImpactViewRepositoryTest {
     private PhysicalEquipmentLowImpactViewRepository physicalEquipmentLowImpactViewRepository;
 
     @Test
-    void givenUnknownParam_shouldGedPhysicalEquipmentLowImpactIndicators() {
-        final String subscriber = "SSG";
-        final String organization = "bad organization";
-        final Long inventoryId = 601L;
-
-        final List<PhysicalEquipmentLowImpactView> indicatorView = physicalEquipmentLowImpactViewRepository
-                .findPhysicalEquipmentLowImpactIndicators(subscriber, organization, inventoryId);
-
-        assertThat(indicatorView).isEmpty();
-    }
-
-    @Test
     void givenValidParam_shouldGedPhysicalEquipmentLowImpactIndicators() {
-        final String subscriber = "SSG";
-        final String organization = "G4IT";
         final Long inventoryId = 601L;
 
-        final List<PhysicalEquipmentLowImpactView> indicatorView = physicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicators(subscriber, organization, inventoryId);
+        final List<PhysicalEquipmentLowImpactView> indicatorView = physicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
 
         assertThat(indicatorView).hasSize(2);
-        assertThat(indicatorView.stream().allMatch(PhysicalEquipmentLowImpactView::getLowImpact)).isEqualTo(false);
+        assertThat(indicatorView.stream().allMatch(PhysicalEquipmentLowImpactView::getLowImpact)).isFalse();
     }
 
 }

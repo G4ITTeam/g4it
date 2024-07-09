@@ -21,7 +21,6 @@ import java.io.Serializable;
                 columns = {
                         @ColumnResult(name = "id", type = Long.class),
                         @ColumnResult(name = "inventory_id", type = Long.class),
-                        @ColumnResult(name = "organisation"),
                         @ColumnResult(name = "inventory_name"),
                         @ColumnResult(name = "pays_utilisation"),
                         @ColumnResult(name = "type"),
@@ -32,21 +31,17 @@ import java.io.Serializable;
                 }
         )
 )
+
 @NamedNativeQuery(
-        name = "PhysicalEquipmentLowImpactView.findPhysicalEquipmentLowImpactIndicators",
+        name = "PhysicalEquipmentLowImpactView.findPhysicalEquipmentLowImpactIndicatorsByOrgId",
         resultSetMapping = "PhysicalEquipmentLowImpactIndicatorsMapping",
         query = """
                 SELECT Row_number()
-                         OVER ()                                                  AS id,
-                       inv.id                                                     AS
-                       inventory_id,
-                       org.NAME                                                   AS
-                       organisation,
-                       inv.NAME                                                   AS
-                       inventory_name,
-                       COALESCE(NULLIF(dc.localisation, ''), ep.pays_utilisation) AS
-                       pays_utilisation,
-                       Regexp_replace(ep.type, Concat(:organization, '_'), '')    AS type,
+                       OVER ()                                                    AS id,
+                       inv.id                                                     AS inventory_id,
+                       inv.NAME                                                   AS inventory_name,
+                       COALESCE(NULLIF(dc.localisation, ''), ep.pays_utilisation) AS pays_utilisation,
+                       ep.type                                                    AS type,
                        ep.nom_entite,
                        ep.statut,
                        Sum(Cast(ep.quantite AS INT))                              AS quantite,
@@ -54,18 +49,11 @@ import java.io.Serializable;
                 FROM   equipement_physique ep
                        INNER JOIN inventory inv
                                ON inv.id = ep.inventory_id
-                       INNER JOIN g4it_organization org
-                               ON org.id = inv.organization_id
-                       INNER JOIN g4it_subscriber sub
-                               ON sub.id = org.subscriber_id
                        LEFT JOIN data_center dc
                               ON ep.inventory_id = dc.inventory_id
                                  AND ep.nom_court_datacenter = dc.nom_court_datacenter
-                WHERE  org.NAME = :organization
-                       AND sub.NAME = :subscriber
-                       AND inv.id = :inventoryId
+                WHERE inv.id = :inventoryId
                 GROUP  BY inv.id,
-                          org.NAME,
                           inv.NAME,
                           dc.localisation,
                           ep.pays_utilisation,
@@ -83,8 +71,6 @@ public class PhysicalEquipmentLowImpactView implements Serializable {
     private Long id;
 
     private Long inventoryId;
-
-    private String organisation;
 
     private String inventoryName;
 

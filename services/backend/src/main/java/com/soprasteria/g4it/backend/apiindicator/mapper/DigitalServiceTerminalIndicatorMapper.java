@@ -40,7 +40,7 @@ public interface DigitalServiceTerminalIndicatorMapper {
                 .map(entry -> DigitalServiceTerminalIndicatorBO.builder()
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey()))
                         .impacts(toImpact(entry.getValue()))
-                        .build()
-                ).collect(toList());
+                        .build())
+                .collect(toList());
     }
 }

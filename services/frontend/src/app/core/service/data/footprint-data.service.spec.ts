@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -122,7 +122,7 @@ describe("FootprintDataService", () => {
         });
 
         const req = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/equipments`
+            `inventories/${inventoryDate}/indicators/equipments`,
         );
         expect(req.request.method).toEqual("GET");
         req.flush(footprint);
@@ -166,7 +166,7 @@ describe("FootprintDataService", () => {
         });
 
         const req = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/datacenters`
+            `inventories/${inventoryDate}/indicators/datacenters`,
         );
         expect(req.request.method).toEqual("GET");
         req.flush(datacenter);
@@ -209,7 +209,6 @@ describe("FootprintDataService", () => {
         ];
         const physicalEquipmentLowImpact: PhysicalEquipmentLowImpact[] = [
             {
-                organisation: "SSG",
                 inventoryDate: "04-2023",
                 paysUtilisation: "France",
                 type: "Monitor",
@@ -219,7 +218,6 @@ describe("FootprintDataService", () => {
                 lowImpact: true,
             },
             {
-                organisation: "SSG",
                 inventoryDate: "04-2023",
                 paysUtilisation: "Spain",
                 type: "Smartphone",
@@ -229,7 +227,6 @@ describe("FootprintDataService", () => {
                 lowImpact: false,
             },
             {
-                organisation: "SSG",
                 inventoryDate: "04-2023",
                 paysUtilisation: "Germany",
                 type: "Monitor",
@@ -245,13 +242,13 @@ describe("FootprintDataService", () => {
         });
 
         const req2 = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/physicalEquipmentsAvgAge`
+            `inventories/${inventoryDate}/indicators/physicalEquipmentsAvgAge`,
         );
         expect(req2.request.method).toEqual("GET");
         req2.flush(physicalEquipmentAvgAge);
 
         const req1 = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/physicalEquipmentsLowImpact`
+            `inventories/${inventoryDate}/indicators/physicalEquipmentsLowImpact`,
         );
         expect(req1.request.method).toEqual("GET");
         req1.flush(physicalEquipmentLowImpact);
@@ -308,7 +305,7 @@ describe("FootprintDataService", () => {
         });
 
         const req = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/equipments/filters`
+            `inventories/${inventoryDate}/indicators/equipments/filters`,
         );
         expect(req.request.method).toEqual("GET");
         req.flush(filters);

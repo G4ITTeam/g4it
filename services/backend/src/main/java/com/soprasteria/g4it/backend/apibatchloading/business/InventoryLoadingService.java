@@ -37,7 +37,7 @@ public class InventoryLoadingService {
      * @return spring batch job instance id.
      */
     public Long launchLoadingBatchJob(final InventoryLoadingSession session) {
-        final String inventoryName = inventoryService.getInventory(session.getSubscriber(), session.getOrganization(), session.getInventoryId()).getName();
+        final String inventoryName = inventoryService.getInventory(session.getSubscriber(), session.getOrganizationId(), session.getInventoryId()).getName();
         session.setInventoryName(inventoryName);
         return inventoryLoadingJobService.launchInventoryIntegration(session);
     }
@@ -46,10 +46,10 @@ public class InventoryLoadingService {
     /**
      * Delete loading batch job.
      *
-     * @param organization the organization.
-     * @param inventoryId  the inventory id.
+     * @param organizationId the organization's id.
+     * @param inventoryId    the inventory id.
      */
-    public void deleteLoadingBatchJob(final String organization, final Long inventoryId) {
-        inventoryLoadingJobService.deleteJobInstances(organization, inventoryId);
+    public void deleteLoadingBatchJob(final Long organizationId, final Long inventoryId) {
+        inventoryLoadingJobService.deleteJobInstances(organizationId, inventoryId);
     }
 }

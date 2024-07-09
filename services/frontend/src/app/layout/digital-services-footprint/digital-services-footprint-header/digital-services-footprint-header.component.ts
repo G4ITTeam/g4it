@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -90,6 +90,19 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.digitalServicesData.get(this.digitalService.uid),
         );
         this.spinner.hide();
+        const urlSegments = this.router.url.split("/").slice(1);
+        if (urlSegments.length > 3) {
+            const subscriber = urlSegments[1];
+            const organization = urlSegments[3];
+            // Ensure digitalServiceId is not undefined or null
+            const digitalServiceId = this.digitalService?.uid;
+
+            if (digitalServiceId) {
+                this.router.navigate([
+                    `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                ]);
+            }
+        }
     }
 
     canLaunchCompute(): boolean {
@@ -110,7 +123,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, subscribers, subscriber, organizations, organization] = this.router.url.split("/");
+        let [_, subscribers, subscriber, organizations, organization] =
+            this.router.url.split("/");
         return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
     }
 

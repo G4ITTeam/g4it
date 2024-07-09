@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.modeldb;
 
 import jakarta.persistence.*;
@@ -42,5 +42,5 @@ public class Role implements Serializable {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-    private List<UserRoleOrganization> UserRoleOrganization;
+    private List<UserRoleOrganization> userRoleOrganization;
 }

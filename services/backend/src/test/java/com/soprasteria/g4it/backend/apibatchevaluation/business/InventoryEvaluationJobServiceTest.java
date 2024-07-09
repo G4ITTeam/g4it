@@ -4,10 +4,12 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchevaluation.business;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.exception.InventoryEvaluationRuntimeException;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.config.EvaluationBatchConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.soprasteria.g4it.backend.TestUtils.ORGANIZATION_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,11 +54,15 @@ class InventoryEvaluationJobServiceTest {
         ReflectionTestUtils.setField(service, "localWorkingFolderBasePath", "./target/test-classes/");
     }
 
+    @Mock
+    private OrganizationService organizationService;
+
     @Test
     void whenCallLaunchInventoryEvaluation_thenReturnJobId() throws Exception {
         final String organization = "org";
         final String inventoryName = "06-2023";
         final Long inventoryId = 4L;
+        final Long organizationId = 1L;
 
         final JobInstance instance = new JobInstance(1L, "testJob");
         final LocalDateTime startTime = LocalDateTime.now();
@@ -69,7 +76,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenReturn(execution);
 
-        final Long jobId = service.launchInventoryEvaluation(organization, inventoryName, inventoryId);
+        final Long jobId = service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId);
 
         assertThat(jobId).isEqualTo(1L);
 
@@ -81,6 +88,7 @@ class InventoryEvaluationJobServiceTest {
         final String organization = "org";
         final String inventoryName = "06-2023";
         final Long inventoryId = 4L;
+        final Long organizationId = 1L;
 
         final LocalDateTime startTime = LocalDateTime.now();
         final LocalDateTime endTime = LocalDateTime.now();
@@ -92,7 +100,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobExecutionAlreadyRunningException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
                 .hasMessageContaining("Job is already running.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -104,6 +112,7 @@ class InventoryEvaluationJobServiceTest {
         final String organization = "org";
         final String inventoryName = "06-2023";
         final Long inventoryId = 4L;
+        final Long organizationId = 1L;
 
         final LocalDateTime startTime = LocalDateTime.now();
         final LocalDateTime endTime = LocalDateTime.now();
@@ -115,7 +124,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobRestartException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
                 .hasMessageContaining("Illegal attempt at restarting Job.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -127,6 +136,7 @@ class InventoryEvaluationJobServiceTest {
         final String organization = "org";
         final String inventoryName = "06-2023";
         final Long inventoryId = 4L;
+        final Long organizationId = 1L;
 
         final LocalDateTime startTime = LocalDateTime.now();
         final LocalDateTime endTime = LocalDateTime.now();
@@ -138,7 +148,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobInstanceAlreadyCompleteException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
                 .hasMessageContaining("An instance of this Job already exists.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -150,6 +160,7 @@ class InventoryEvaluationJobServiceTest {
         final String organization = "org";
         final String inventoryName = "06-2023";
         final Long inventoryId = 4L;
+        final Long organizationId = 1L;
 
         final LocalDateTime startTime = LocalDateTime.now();
         final LocalDateTime endTime = LocalDateTime.now();
@@ -161,7 +172,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobParametersInvalidException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
                 .hasMessageContaining("Invalid parameters.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -173,6 +184,8 @@ class InventoryEvaluationJobServiceTest {
         // Given
         final Long inventoryId = 4L;
         final String organization = "org";
+        final Long organizationId = 1L;
+        final Organization linkedOrganization = Organization.builder().id(organizationId).name(organization).build();
 
         // Build Job Instances
         final LocalDateTime startTime = LocalDateTime.now();
@@ -206,6 +219,7 @@ class InventoryEvaluationJobServiceTest {
         execution3.setStatus(BatchStatus.COMPLETED);
         execution3.setJobInstance(instance3);
 
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(jobExplorer.findJobInstancesByJobName(EvaluationBatchConfiguration.EVALUATE_INVENTORY_JOB, 0, Integer.MAX_VALUE)).thenReturn(List.of(instance1, instance2, instance3));
         when(jobExplorer.getJobExecutions(instance1)).thenReturn(List.of(execution1));
         when(jobExplorer.getJobExecutions(instance2)).thenReturn(List.of(execution2));
@@ -213,7 +227,7 @@ class InventoryEvaluationJobServiceTest {
         doNothing().when(jobRepository).deleteJobExecution(any());
         doNothing().when(jobRepository).deleteJobInstance(any());
 
-        service.deleteJobInstances(organization, inventoryId);
+        service.deleteJobInstances(organizationId, inventoryId);
 
         verify(jobExplorer, times(1)).findJobInstancesByJobName(EvaluationBatchConfiguration.EVALUATE_INVENTORY_JOB, 0, Integer.MAX_VALUE);
         verify(jobExplorer, times(3)).getJobExecutions(any());
@@ -229,6 +243,8 @@ class InventoryEvaluationJobServiceTest {
     void shouldRemoveJobInstanceForAnOrganization() {
         // Given
         final String organization = "org";
+        final Long organizationId = 1L;
+        final Organization linkedOrganization = Organization.builder().id(organizationId).name(organization).build();
 
         // Build Job Instances
         final LocalDateTime startTime = LocalDateTime.now();
@@ -262,6 +278,7 @@ class InventoryEvaluationJobServiceTest {
         execution3.setStatus(BatchStatus.FAILED);
         execution3.setJobInstance(instance3);
 
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(jobExplorer.findJobInstancesByJobName(EvaluationBatchConfiguration.EVALUATE_INVENTORY_JOB, 0, Integer.MAX_VALUE)).thenReturn(List.of(instance1, instance2, instance3));
         when(jobExplorer.getJobExecutions(instance1)).thenReturn(List.of(execution1));
         when(jobExplorer.getJobExecutions(instance2)).thenReturn(List.of(execution2));
@@ -269,7 +286,7 @@ class InventoryEvaluationJobServiceTest {
         doNothing().when(jobRepository).deleteJobExecution(any());
         doNothing().when(jobRepository).deleteJobInstance(any());
 
-        service.deleteJobInstances(organization, null);
+        service.deleteJobInstances(organizationId, null);
 
         verify(jobExplorer, times(1)).findJobInstancesByJobName(EvaluationBatchConfiguration.EVALUATE_INVENTORY_JOB, 0, Integer.MAX_VALUE);
         verify(jobExplorer, times(3)).getJobExecutions(any());

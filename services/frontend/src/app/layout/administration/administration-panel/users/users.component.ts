@@ -7,34 +7,52 @@
  */
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { UserDetails } from "src/app/core/interfaces/user.interfaces";
+import { TranslateService } from "@ngx-translate/core";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
+import { Role, RoleRightMap } from "src/app/core/interfaces/roles.interfaces";
+import {
+    Organization,
+    Subscriber,
+    UserDetails,
+} from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { Constants } from "src/constants";
 
 @Component({
     selector: "app-users",
     templateUrl: "./users.component.html",
+    providers: [ConfirmationService, MessageService],
 })
 export class UsersComponent {
     userDetails!: UserDetails[];
-    organization: any;
-    organizations: any;
+    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
+    organizationlist: OrganizationWithSubscriber[] = [];
     enableList = false;
     clearForm: any;
     enableSearchButton: boolean = true;
     membersAndSearchVisible = false;
     subscribersDetails: any;
-    organizationlist: any[] = [];
     membersList: any;
+    filteredMembers: any[] = [];
     openSearchResult: boolean = false;
     searchResult: any;
     addOrganizationEnable: boolean = false;
     userDetail!: UserDetails;
     membersListVisible: boolean = false;
     searchForm!: FormGroup;
+    updateOrganizationEnable: boolean = false;
+
+    sidebarCreateMode = false; // true for create mode, false for update mode
+    sidebarVisible = false;
+
     constructor(
         private administrationService: AdministrationService,
         private formBuilder: FormBuilder,
+        private confirmationService: ConfirmationService,
+        private translate: TranslateService,
+        private userService: UserService,
     ) {}
 
     ngOnInit() {
@@ -47,27 +65,30 @@ export class UsersComponent {
     getUsers() {
         this.administrationService.getUsers().subscribe((res) => {
             this.subscribersDetails = res;
-            this.subscribersDetails.map((res: any) => {
-                res.organizations.map((org: any) => {
-                    if (org.status === Constants.ORGANIZATION_STATUSES.ACTIVE) {
-                        this.organizationlist.push({
-                            subscriberName: res.name,
-                            subscriberId: res.id,
+
+            const list: OrganizationWithSubscriber[] = [];
+            this.subscribersDetails.forEach((subscriber: Subscriber) => {
+                subscriber.organizations.forEach((org: Organization) => {
+                    const roles = this.userService.getRoles(subscriber, org);
+
+                    if (
+                        org.status === Constants.ORGANIZATION_STATUSES.ACTIVE &&
+                        (roles.includes(Role.SubscriberAdmin) ||
+                            roles.includes(Role.OrganizationAdmin))
+                    ) {
+                        list.push({
+                            subscriberName: subscriber.name,
+                            subscriberId: subscriber.id,
                             organizationName: org.name,
                             organizationId: org.id,
+                            roles,
+                            displayLabel: `${org.name} - (${subscriber.name})`,
                         });
                     }
                 });
             });
-            this.organizationlist = [...new Set(this.organizationlist)].map(
-                (org: any) => {
-                    return {
-                        ...org,
-                        displayLabel:
-                            org.organizationName + "-" + "(" + org.subscriberName + ")",
-                    };
-                },
-            );
+
+            this.organizationlist = list;
         });
     }
 
@@ -75,13 +96,10 @@ export class UsersComponent {
         return this.searchForm.controls;
     }
 
-    getCurrentOrganizations(event: any) {
-        this.organizations = event.value.organizations;
-    }
-
     checkForValidation() {
+        const searchName = this.searchForm.value.searchName.trim();
         this.enableSearchButton =
-            this.searchForm.value.searchName.trim().length >= 3 ? false : true;
+            searchName.length >= 3 || searchName.length === 0 ? false : true;
     }
 
     clearSearchField() {
@@ -89,33 +107,110 @@ export class UsersComponent {
         this.enableSearchButton = true;
     }
 
+    enrichAdmin(user: any) {
+        if (!user.firstName) user.firstName = "";
+        if (!user.lastName) user.lastName = "";
+
+        user.isOrganizationAdmin = user.roles.includes(Role.OrganizationAdmin);
+        user.isSubscriberAdmin = user.roles.includes(Role.SubscriberAdmin);
+        user.isModule = this.getRole(user.roles, "INVENTORY_");
+        user.dsModule = this.getRole(user.roles, "DIGITAL_SERVICE_");
+        user.role = this.getRole(user.roles, "ADMINISTRATOR");
+        return user;
+    }
+
     searchList() {
         let searchData = this.searchForm.value.searchName.trim();
-        this.administrationService
-            .getSearchDetails(
-                searchData,
-                this.organization.subscriberId,
-                this.organization.organizationId,
-            )
-            .subscribe((res) => {
-                this.searchResult = res;
-            });
+        if (searchData.length === 0) {
+            this.getUsersDetails();
+        } else {
+            this.administrationService
+                .getSearchDetails(
+                    searchData,
+                    this.organization.subscriberId,
+                    this.organization.organizationId,
+                )
+                .subscribe((res: any) => {
+                    this.filteredMembers = res.map((user: any) => this.enrichAdmin(user));
+                });
+        }
     }
 
     getUsersDetails() {
         this.administrationService
             .getUserDetails(this.organization.organizationId)
             .subscribe((res) => {
-                this.membersList = res;
+                this.membersList = res.map((user: any) => this.enrichAdmin(user));
+                this.filteredMembers = [...this.membersList];
             });
     }
 
-    openSidepanelForAddOrg(user: UserDetails) {
-        this.addOrganizationEnable = true;
-        this.userDetail = user;
+    isAdmin(roles: string[]): boolean {
+        return (
+            roles.includes(Role.OrganizationAdmin) || roles.includes(Role.SubscriberAdmin)
+        );
     }
 
-    isAlreadyMemberOfOrg(linkedOrgIds: Number[]) {
-        return linkedOrgIds.includes(this.organization.organizationId);
+    getRole(roles: string[], type: string) {
+        if (!roles || roles.length === 0) return "";
+
+        if (type === "ADMINISTRATOR") {
+            return this.isAdmin(roles)
+                ? "administration.role.admin"
+                : "administration.role.user";
+        }
+
+        if (this.isAdmin(roles)) {
+            return "administration.role.write";
+        }
+
+        const userRoles = roles
+            .filter((role) => role.includes(type) && RoleRightMap[role])
+            .map((role) => `administration.role.${RoleRightMap[role]}`);
+
+        if (userRoles.length > 1) {
+            return "administration.role.write";
+        }
+
+        return userRoles[0] || "";
+    }
+
+    deleteUserDetails(event: Event, user: UserDetails) {
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            message: this.translate.instant("administration.user.delete-message", {
+                FirstName: user.firstName,
+                LastName: user.lastName,
+            }),
+            header: this.translate.instant("administration.delete-confirmation"),
+            icon: "pi pi-info-circle",
+            acceptLabel: this.translate.instant("administration.delete"),
+            acceptButtonStyleClass: "p-button-danger center",
+            rejectButtonStyleClass: Constants.CONSTANT_VALUE.NONE,
+            acceptIcon: Constants.CONSTANT_VALUE.NONE,
+            rejectIcon: Constants.CONSTANT_VALUE.NONE,
+            rejectVisible: false,
+
+            accept: () => {
+                let body = {
+                    organizationId: this.organization.organizationId,
+                    users: [
+                        {
+                            userId: user.id,
+                            roles: user?.roles,
+                        },
+                    ],
+                };
+                this.administrationService.deleteUserDetails(body).subscribe((res) => {
+                    this.searchList();
+                });
+            },
+        });
+    }
+
+    openSidepanelForAddORUpdateOrg(user: UserDetails) {
+        this.sidebarVisible = true;
+        this.sidebarCreateMode = user.roles.length === 0;
+        this.userDetail = user;
     }
 }

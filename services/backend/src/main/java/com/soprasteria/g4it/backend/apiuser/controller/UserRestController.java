@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiuser.controller;
 
-import com.soprasteria.g4it.backend.apiuser.business.UserService;
+import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
 import com.soprasteria.g4it.backend.server.gen.api.UserApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRest;
@@ -22,10 +22,10 @@ import org.springframework.stereotype.Service;
 public class UserRestController implements UserApiDelegate {
 
     /**
-     * User Service.
+     * Auth Service.
      */
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     /**
      * UserRest Mapper.
@@ -38,6 +38,6 @@ public class UserRestController implements UserApiDelegate {
      */
     @Override
     public ResponseEntity<UserRest> getUser() {
-        return ResponseEntity.ok(userRestMapper.toDto(userService.getUser()));
+        return ResponseEntity.ok(userRestMapper.toDto(authService.getUser()));
     }
 }

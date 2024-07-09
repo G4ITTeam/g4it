@@ -9,27 +9,27 @@ package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationMapper;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
-import com.soprasteria.g4it.backend.apiuser.modeldb.UserOrganization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
+import com.soprasteria.g4it.backend.apiuser.repository.UserRoleOrganizationRepository;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import static com.soprasteria.g4it.backend.common.utils.Constants.ORGANIZATION_ACTIVE_STATUS;
 
 /**
  * Organization service.
@@ -38,21 +38,11 @@ import static com.soprasteria.g4it.backend.common.utils.Constants.ORGANIZATION_A
 @Slf4j
 public class OrganizationService {
 
-    @Value("${g4it.organization.deletion.day}")
-    private Integer organizationDataDeletionDays;
-
-    /**
-     * The repository to access organization data.
-     */
-    @Autowired
-    private OrganizationRepository organizationRepository;
-
     /**
      * Organization Mapper.
      */
     @Autowired
     OrganizationMapper organizationMapper;
-
     /**
      * Repository to manage user organization.
      */
@@ -60,15 +50,42 @@ public class OrganizationService {
     UserOrganizationRepository userOrganizationRepository;
 
     /**
-     * Retrieve the organization by name and subscriber name.
+     * Repository to manage user role.
+     */
+    @Autowired
+    UserRoleOrganizationRepository userRoleOrganizationRepository;
+    /**
+     * The Role Service
+     */
+    @Autowired
+    RoleService roleService;
+
+    /**
+     * The Subscriber Service
+     */
+    @Autowired
+    SubscriberService subscriberService;
+
+    @Value("${g4it.organization.deletion.day}")
+    private Integer organizationDataDeletionDays;
+    /**
+     * The repository to access organization data.
+     */
+    @Autowired
+    private OrganizationRepository organizationRepository;
+    @Autowired
+    private FileSystem fileSystem;
+
+
+    /**
+     * Retrieve the active Organization Entity.
      *
-     * @param subscriberName   the client subscriber's name.
-     * @param organizationName the linked organization's name.
+     * @param organizationId the organization id.
      * @return the organization.
      */
-    //@Cacheable(value = "Organization", key = "{#subscriberName, #organizationName}")
-    public Organization getOrganizationBySubNameAndName(final String subscriberName, final String organizationName) {
-        return organizationRepository.findBySubscriberNameAndName(subscriberName, organizationName).orElseThrow();
+    @Cacheable("Organization")
+    public Organization getOrganizationById(final Long organizationId) {
+        return organizationRepository.findByIdAndStatusIn(organizationId, List.of(OrganizationStatus.ACTIVE.name())).orElseThrow(() -> new G4itRestException("404", String.format("organization %d not found", organizationId)));
     }
 
     /**
@@ -94,33 +111,23 @@ public class OrganizationService {
      *
      * @param organizationUpsertRest the organizationUpsertRest.
      * @param user                   the user.
-     * @param subscriber             the subscriber.
+     * @param subscriberId           the subscriber id.
      * @return organization BO.
      */
-    public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, User user, Subscriber subscriber) {
-        Long subscriberId = subscriber.getId();
+    @Transactional
+    public OrganizationBO createOrganization(OrganizationUpsertRest organizationUpsertRest, UserBO user, Long subscriberId) {
 
         // Check if organization with same name already exist on this subscriber.
-        final Optional<Organization> optOrganization = organizationRepository.findBySubscriberIdAndName(
-                organizationUpsertRest.getSubscriberId(),
-                organizationUpsertRest.getName()
-        );
-
-        if (optOrganization.isPresent()) {
-            throw new G4itRestException("409", String.format("organization '%s' already exists in '%s'", organizationUpsertRest.getName(), subscriberId));
-        }
+        organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), organizationUpsertRest.getName())
+                .ifPresent(organization -> {
+                    throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", organizationUpsertRest.getName(), subscriberId));
+                });
 
         // create organization
-        final Organization organizationToCreate = organizationMapper.toEntity(organizationUpsertRest.getName(), subscriber, user, OrganizationStatus.ACTIVE.name());
+        final Organization organizationToCreate = organizationMapper.toEntity(organizationUpsertRest.getName(), subscriberService.getSubscriptionById(subscriberId), User.builder().id(user.getId()).build(), OrganizationStatus.ACTIVE.name());
+        organizationToCreate.setIsMigrated(true);
         organizationRepository.save(organizationToCreate);
-        // Insert entry in "UserOrganization" table.
-        UserOrganization userOrganization = UserOrganization.builder()
-                .user(user)
-                .organization(organizationToCreate)
-                .defaultFlag(true)
-                .build();
-        // TODO - Assign all roles to this user for newly created organization
-        userOrganizationRepository.save(userOrganization);
+
         return organizationMapper.toBusinessObject(organizationToCreate);
     }
 
@@ -128,51 +135,60 @@ public class OrganizationService {
      * Update the organization.
      *
      * @param organizationUpsertRest the organizationUpsertRest.
-     * @param user                   the user.
+     * @param userId                 the user id.
      * @return OrganizationBO
      */
     @Transactional
-    public OrganizationBO updateOrganization(final Long organizationId, final OrganizationUpsertRest organizationUpsertRest, User user) {
+    public OrganizationBO updateOrganization(final Long organizationId, final OrganizationUpsertRest organizationUpsertRest, Long userId) {
 
-        final Organization organizationToSave = getOrganizationByStatus(organizationUpsertRest.getSubscriberId(), organizationId, ORGANIZATION_ACTIVE_STATUS);
+        final Organization organizationToSave = getOrganizationByStatus(organizationUpsertRest.getSubscriberId(), organizationId, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS);
 
-        if (ObjectUtils.isEmpty(organizationUpsertRest.getStatus())) {
-            // If organization status to set 'ACTIVE' again from 'TO_BE_DELETED'
-            if (organizationToSave.getStatus().equals(OrganizationStatus.TO_BE_DELETED.name())) {
-                // set status to active and remove deletion date
-                organizationToSave.setDeletionDate(null);
-                organizationToSave.setDataRetentionDay(null);
-                organizationToSave.setStorageRetentionDayExport(null);
-                organizationToSave.setStorageRetentionDayOutput(null);
-                organizationToSave.setStatus(OrganizationStatus.ACTIVE.name());
-            } else {
-                // Handle update in organization's name
-                if (!organizationToSave.getName().equals(organizationUpsertRest.getName())) {
-                    organizationToSave.setName(organizationUpsertRest.getName());
-                } else {
-                    throw new G4itRestException("404", String.format("nothing to update in the organization '%s' ", organizationId));
-                }
+        final String currentStatus = organizationToSave.getStatus();
+        final String newStatus = organizationUpsertRest.getStatus().name();
+
+        final String currentOrganization = organizationToSave.getName();
+        final String newOrganization = organizationUpsertRest.getName();
+
+        if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.ACTIVE.name())) {
+            if (currentOrganization.equals(newOrganization)) {
+                throw new G4itRestException("304", String.format("nothing to update in the organization '%s' ", organizationToSave.getId()));
             }
-        } else {
-            // If organization status to set 'TO_BE_DELETED'
-            if (organizationUpsertRest.getStatus().name().equals(OrganizationStatus.TO_BE_DELETED.name()) && organizationToSave.getStatus().equals(OrganizationStatus.ACTIVE.name())) {
 
+            // Handle update in organization's name
+            // Check if organization with same name already exist on this subscriber.
+            organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), newOrganization)
+                    .ifPresent((org) -> {
+                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, organizationUpsertRest.getSubscriberId()));
+                    });
+
+            log.info("Update Organization name in file system from '{}' to '{}'", currentOrganization, newOrganization);
+            organizationToSave.setName(newOrganization);
+
+        } else {
+            Integer dataDeletionDays = null;
+            LocalDateTime deletionDate = null;
+
+            // Case current organization is ACTIVE and update it to TO_BE_DELETED
+            if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.TO_BE_DELETED.name())) {
                 // Get data retention days
-                Integer dataDeletionDays = organizationUpsertRest.getDataRetentionDays() == null ?
+                dataDeletionDays = organizationUpsertRest.getDataRetentionDays() == null ?
                         organizationDataDeletionDays :
                         organizationUpsertRest.getDataRetentionDays().intValue();
 
-                organizationToSave.setDeletionDate(LocalDateTime.now().plusDays(dataDeletionDays.longValue()));
-                organizationToSave.setDataRetentionDay(dataDeletionDays);
-                organizationToSave.setStorageRetentionDayExport(dataDeletionDays);
-                organizationToSave.setStorageRetentionDayOutput(dataDeletionDays);
-                organizationToSave.setStatus(organizationUpsertRest.getStatus().name());
+                deletionDate = LocalDateTime.now().plusDays(dataDeletionDays.longValue());
             }
+
+            organizationToSave.setDeletionDate(deletionDate);
+            organizationToSave.setDataRetentionDay(dataDeletionDays);
+            organizationToSave.setStorageRetentionDayExport(dataDeletionDays);
+            organizationToSave.setStorageRetentionDayOutput(dataDeletionDays);
+            organizationToSave.setStatus(organizationUpsertRest.getStatus().name());
         }
-        organizationToSave.setLastUpdatedBy(user);
+        organizationToSave.setLastUpdatedBy(User.builder()
+                .id(userId)
+                .build());
         organizationToSave.setLastUpdateDate(LocalDateTime.now());
         organizationRepository.save(organizationToSave);
         return organizationMapper.toBusinessObject(organizationToSave);
     }
-
 }

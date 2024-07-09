@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import {
     HttpEvent,
     HttpHandler,
@@ -14,6 +14,7 @@ import {
 import { Injectable } from "@angular/core";
 import { Observable, combineLatest, map, mergeMap, take } from "rxjs";
 
+import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import { UserService } from "../service/business/user.service";
 
@@ -28,7 +29,9 @@ export class ApiInterceptor implements HttpInterceptor {
         if (!this.isReqToApiEndpoint(req)) return next.handle(req);
 
         // On not secured endpoints, we only need to add base URL
-        if (!environment.securedEndpoints.some(endpoint => req.url.includes(endpoint))){
+        if (
+            !environment.securedEndpoints.some((endpoint) => req.url.includes(endpoint))
+        ) {
             req = req.clone({
                 url: this.formatUrl([environment.apiBaseUrl, req.url]),
             });
@@ -45,22 +48,22 @@ export class ApiInterceptor implements HttpInterceptor {
                 req.clone({
                     url: this.formatUrl([
                         environment.apiBaseUrl,
-                        'subscribers',
-                        subscriber,
-                        'organizations',
-                        organization.name,
+                        "subscribers",
+                        subscriber.name,
+                        "organizations",
+                        organization.id.toString(),
                         req.url,
                     ]),
-                })
+                }),
             ),
-            mergeMap((req) => next.handle(req))
+            mergeMap((req) => next.handle(req)),
         );
     }
 
     isReqToApiEndpoint(req: HttpRequest<any>) {
-        const enpoints = Object.values(environment.apiEndpoints);
-
-        return enpoints.some((endpoint) => req.url.includes(endpoint));
+        return Object.values(Constants.ENDPOINTS).some((endpoint) =>
+            req.url.includes(endpoint),
+        );
     }
 
     formatUrl(segments: string[]) {

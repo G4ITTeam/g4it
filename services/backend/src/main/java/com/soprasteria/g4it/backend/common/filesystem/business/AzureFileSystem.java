@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.azure.storage.blob.BlobServiceClient;
@@ -65,5 +65,4 @@ public class AzureFileSystem implements FileSystem {
                 blobServiceClient.getBlobContainerClient(storageName),
                 organization, String.join("/", "azure-blob:/", storageName));
     }
-
 }

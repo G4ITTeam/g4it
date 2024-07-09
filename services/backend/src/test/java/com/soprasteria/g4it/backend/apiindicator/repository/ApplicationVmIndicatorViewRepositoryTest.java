@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationVmIndicatorView;
@@ -33,10 +33,9 @@ class ApplicationVmIndicatorViewRepositoryTest {
 
     @Test
     void givenValidParam_shouldGetEquipmentIndicators() {
-        final String organizationName = "SSG";
         final String applicationName = "application-1";
         final List<ApplicationVmIndicatorView> indicators = applicationVmIndicatorViewRepository.findIndicators(
-                organizationName, batchName, inventoryId,
+                batchName, inventoryId,
                 applicationName, criteria);
 
         assertThat(indicators).hasSize(8)
@@ -44,16 +43,15 @@ class ApplicationVmIndicatorViewRepositoryTest {
                         ApplicationVmIndicatorView::getCluster,
                         ApplicationVmIndicatorView::getImpact,
                         ApplicationVmIndicatorView::getSip)
-                .contains(Tuple.tuple("Personal Computer", "PY1LNX02", 308d, 0.3618208516886931));
+                .contains(Tuple.tuple("SSG_Personal Computer", "PY1LNX02", 308d, 0.3618208516886931));
     }
 
     @Test
     void givenUnknownParam_shouldGedEquipmentIndicators() {
-        final String organizationName = "Unknown";
         final String applicationName = "Unknown-1";
 
         final List<ApplicationVmIndicatorView> indicators = applicationVmIndicatorViewRepository.findIndicators(
-                organizationName, batchName, inventoryId,
+                batchName, inventoryId,
                 applicationName, criteria);
 
         assertThat(indicators).isEmpty();

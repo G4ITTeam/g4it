@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb;
 
 import jakarta.persistence.*;
@@ -43,7 +43,7 @@ import java.io.Serializable;
                             ia.etapeacv                                                     AS life_cycle,
                             COALESCE(ia.domaine, '')                                        AS "domain",
                             COALESCE(ia.sous_domaine, '')                                   AS sub_domain,
-                            REGEXP_REPLACE(ep.type, CONCAT(ia.nom_organisation, '_'), '')   AS "type"
+                            ep.type                                                         AS "type"
                         FROM ind_indicateur_impact_application ia
                         INNER JOIN g4it_evaluation_report er on er.batch_name = ia.nom_lot
                         INNER JOIN inventory i on i.id = er.inventory_id
@@ -68,7 +68,7 @@ import java.io.Serializable;
                             ia.etapeacv                                                     AS life_cycle,
                             COALESCE(ia.domaine, '')                                        AS "domain",
                             COALESCE(ia.sous_domaine, '')                                   AS sub_domain,
-                            REGEXP_REPLACE(ep.type, CONCAT(ia.nom_organisation, '_'), '')   AS "type"
+                            ep.type                                                         AS "type"
                         FROM ind_indicateur_impact_application ia
                         INNER JOIN g4it_evaluation_report er on er.batch_name = ia.nom_lot
                         INNER JOIN inventory i on i.id = er.inventory_id

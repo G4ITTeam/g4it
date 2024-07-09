@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-
 /**
  * Application indicator mapper.
  */
@@ -56,7 +55,8 @@ public interface ApplicationIndicatorMapper {
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey().getKey()))
                         .unit(entry.getKey().getValue())
                         .impacts(toImpact(entry.getValue()))
-                        .build()).collect(toList());
+                        .build())
+                .collect(toList());
     }
 
 }

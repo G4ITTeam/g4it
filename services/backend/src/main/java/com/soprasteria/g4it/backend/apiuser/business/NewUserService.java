@@ -12,7 +12,6 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,7 +50,6 @@ public class NewUserService {
      * @param accessRoles      the list of roles
      * @return the user created
      */
-    @Transactional
     public User createUser(final Subscriber subscriber,
                            final Organization demoOrganization,
                            User newUser, final UserBO userInfo,

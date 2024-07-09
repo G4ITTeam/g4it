@@ -52,26 +52,31 @@ class AzureGreenItFileSystemApplicationTests {
     /**
      * Organization associated to test container
      */
-    private final String ORGANIZATION = "INTEGRATION_TEST";
+    private final String ORGANIZATION = "0";
 
     /**
      * The real subscriber name in Azure.
      */
-    private final String SUBSCRIBER = "FS_TEST";
-
-    @Autowired
-    private FileSystem fileSystem;
-
+    private final String SUBSCRIBER = "FS-TEST";
     @Autowired
     ResourceLoader resourceLoader;
-
+    @Autowired
+    private FileSystem fileSystem;
     @MockBean
     private CacheManager cacheManager;
 
     private static boolean hasAzureEnvVars() {
         var hasEnvVar = System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT") != null;
         if (hasEnvVar) {
-            System.out.println("""
+            log.info("ENV VARIABLES:");
+            log.info("AZURE_CLIENT_ID : {}", System.getenv("AZURE_CLIENT_ID"));
+            log.info("AZURE_CLIENT_SECRET : {}...", System.getenv("AZURE_CLIENT_SECRET").substring(0, 5));
+            log.info("AZURE_TENANT_ID : {}", System.getenv("AZURE_TENANT_ID"));
+            log.info("AZURE_SUBSCRIPTION_ID : {}", System.getenv("AZURE_SUBSCRIPTION_ID"));
+            log.info("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT : {}", System.getenv("SPRING_CLOUD_AZURE_KEYVAULT_SECRET_ENDPOINT"));
+        }
+        if (!hasEnvVar) {
+            log.info("""
                     To activate azure filestorage tests, you need to set variables:
                     - AZURE_CLIENT_ID
                     - AZURE_CLIENT_SECRET
@@ -334,6 +339,6 @@ class AzureGreenItFileSystemApplicationTests {
         fs.writeFile(FileFolder.OUTPUT, folder + "filename2", "Content");
 
         fs.deleteFolder(FileFolder.OUTPUT, null);
-        Assertions.assertThat(fs.listFiles(FileFolder.OUTPUT).size()).isEqualTo(0);
+        Assertions.assertThat(fs.listFiles(FileFolder.OUTPUT)).isEmpty();
     }
 }

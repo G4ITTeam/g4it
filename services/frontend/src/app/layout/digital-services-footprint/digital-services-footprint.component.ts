@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -35,10 +35,21 @@ export class DigitalServicesFootprintComponent implements OnInit {
         private digitalServicesData: DigitalServicesDataService,
         private route: ActivatedRoute,
         private spinner: NgxSpinnerService,
-        private translate: TranslateService
+        private translate: TranslateService,
     ) {}
 
     async ngOnInit(): Promise<void> {
+        this.spinner.show();
+        const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
+        const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
+        // If the digital service is not found, 404 is catched by the interceptor.
+        // Therefore we can continue without those verifications.
+        this.digitalService = digitalService;
+        this.spinner.hide();
+        this.updateTabItems();
+    }
+
+    updateTabItems() {
         this.tabItems = [
             {
                 label: this.translate.instant("digital-services.Terminal"),
@@ -60,21 +71,16 @@ export class DigitalServicesFootprintComponent implements OnInit {
             {
                 label: this.translate.instant("digital-services.visualize"),
                 routerLink: "dashboard",
+                disabled: this.digitalService.lastCalculationDate === null,
             },
         ];
-        this.spinner.show();
-        const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
-        const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
-        // If the digital service is not found, 404 is catched by the interceptor.
-        // Therefore we can continue without those verifications.
-        this.digitalService = digitalService;
-        this.spinner.hide();
     }
 
     async updateDigitalService() {
         // digital service is already updated thanks to data binding
         this.digitalService = await lastValueFrom(
-            this.digitalServicesData.update(this.digitalService)
+            this.digitalServicesData.update(this.digitalService),
         );
+        this.updateTabItems();
     }
 }

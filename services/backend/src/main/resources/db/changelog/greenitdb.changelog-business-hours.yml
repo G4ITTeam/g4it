@@ -33,4 +33,16 @@ databaseChangeLog:
                 ('saturday',NULL,NULL),
                 ('sunday',NULL,NULL);
 
-
+  - changeSet:
+      id: change-day-column-business_hours
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: business_hours
+            columns:
+              - column:
+                  name: weekday
+                  type: varchar
+        - sql:
+            - sql:
+                UPDATE business_hours set weekday = day;

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +27,8 @@ public class InventoryCorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("*")
-            .allowedMethods("GET", "POST", "DELETE", "HEAD", "PUT", "PATCH", "OPTIONS")
-            .maxAge(3600);
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "DELETE", "HEAD", "PUT", "PATCH", "OPTIONS")
+                .maxAge(3600);
     }
 }

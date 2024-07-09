@@ -11,10 +11,8 @@ import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
-import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileDeletionService;
@@ -34,9 +32,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OrganizationDeletionServiceTest {
-    private static final String SUBSCRIBER = "SUBSCRIBER";
-    private static final String ORGANIZATION = "ORGANIZATION";
+class OrganizationDeletionServiceTest {
     @InjectMocks
     OrganizationDeletionService organizationDeletionService;
 
@@ -52,15 +48,10 @@ public class OrganizationDeletionServiceTest {
     @Mock
     DigitalServiceService digitalServiceService;
 
-    @InjectMocks
-    private InventoryService inventoryService;
-
-    @Mock
-    private OrganizationService organizationService;
-
     @Mock
     private InventoryRepository inventoryRepo;
 
+    final static Long ORGANIZATION_ID = 1L;
 
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithPastDate() {
@@ -69,7 +60,7 @@ public class OrganizationDeletionServiceTest {
         final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), LocalDateTime.now());
 
         when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(inventoryEntity1.get()));
-        when(digitalServiceService.getAllDigitalServicesByOrganization(SUBSCRIBER, ORGANIZATION)).thenReturn(List.of(digitalServiceBO));
+        when(digitalServiceService.getAllDigitalServicesByOrganization(ORGANIZATION_ID)).thenReturn(List.of(digitalServiceBO));
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
         when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
@@ -82,15 +73,13 @@ public class OrganizationDeletionServiceTest {
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithFutureDate() {
         final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), LocalDateTime.now().plusDays(1));
-        final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build());
-        final DigitalServiceBO digitalServiceBO = TestUtils.createDigitalServiceBO();
 
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
 
         // EXECUTE
         organizationDeletionService.executeDeletion();
         verify(inventoryDeleteService, times(0)).deleteInventory(any(), any(), anyLong());
-        verify(digitalServiceService, times(0)).deleteDigitalService(any(), any());
+        verify(digitalServiceService, times(0)).deleteDigitalService(any());
         verify(fileDeletionService, times(0)).deleteFiles(any(), any(), eq(FileFolder.EXPORT), eq(0));
         verify(fileDeletionService, times(0)).deleteFiles(any(), any(), eq(FileFolder.OUTPUT), eq(0));
     }
@@ -98,14 +87,12 @@ public class OrganizationDeletionServiceTest {
     @Test
     void testStorageDeletionService_inActiveStatus() {
         final Organization linkedOrganization = TestUtils.createOrganizationWithStatus(OrganizationStatus.INACTIVE.name());
-        final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build());
-        final DigitalServiceBO digitalServiceBO = TestUtils.createDigitalServiceBO();
 
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
         // EXECUTE
         organizationDeletionService.executeDeletion();
         verify(inventoryDeleteService, times(0)).deleteInventory(any(), any(), anyLong());
-        verify(digitalServiceService, times(0)).deleteDigitalService(any(), any());
+        verify(digitalServiceService, times(0)).deleteDigitalService(any());
 
     }
 

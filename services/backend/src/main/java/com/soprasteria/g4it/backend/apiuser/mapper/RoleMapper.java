@@ -24,8 +24,5 @@ public interface RoleMapper {
      * @return the OrganizationRest list.
      */
     List<RoleBO> toDto(final List<Role> source);
-
-
-    // List<RolesRest> toRest(final List<RoleBO> entities);
-
+    
 }

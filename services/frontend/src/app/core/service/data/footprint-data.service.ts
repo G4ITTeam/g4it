@@ -4,11 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin } from "rxjs";
-import { environment } from "src/environments/environment";
+import { Constants } from "src/constants";
 import { Filter, FilterApplicationReceived } from "../../store/filter.repository";
 import {
     ApplicationCriteriaFootprint,
@@ -19,7 +19,7 @@ import {
     PhysicalEquipmentLowImpact,
 } from "../../store/footprint.repository";
 
-const endpoint = environment.apiEndpoints.inventories;
+const endpoint = Constants.ENDPOINTS.inventories;
 
 @Injectable({
     providedIn: "root",
@@ -29,29 +29,29 @@ export class FootprintDataService {
 
     getFootprint(inventoryId: number): Observable<Criterias> {
         return this.http.get<Criterias>(
-            `${endpoint}/${inventoryId}/indicators/equipments`
+            `${endpoint}/${inventoryId}/indicators/equipments`,
         );
     }
 
     getApplicationFootprint(inventoryId: number): Observable<ApplicationFootprint[]> {
         return this.http.get<ApplicationFootprint[]>(
-            `${endpoint}/${inventoryId}/indicators/applications`
+            `${endpoint}/${inventoryId}/indicators/applications`,
         );
     }
 
     getApplicationCriteriaFootprint(
         inventoryId: number,
         app: string,
-        criteria: string
+        criteria: string,
     ): Observable<ApplicationCriteriaFootprint[]> {
         return this.http.get<ApplicationCriteriaFootprint[]>(
-            `${endpoint}/${inventoryId}/indicators/applications/${app}/${criteria}`
+            `${endpoint}/${inventoryId}/indicators/applications/${app}/${criteria}`,
         );
     }
 
     getFilters(inventoryId: number): Observable<Filter> {
         return this.http.get<Filter>(
-            `${endpoint}/${inventoryId}/indicators/equipments/filters`
+            `${endpoint}/${inventoryId}/indicators/equipments/filters`,
         );
     }
 
@@ -59,31 +59,31 @@ export class FootprintDataService {
         inventoryId: number,
         domain = "",
         subDomain = "",
-        applicationName = ""
+        applicationName = "",
     ): Observable<FilterApplicationReceived> {
-        const obj :any = {}
-        if (domain) obj.domain = domain
+        const obj: any = {};
+        if (domain) obj.domain = domain;
         if (subDomain) obj.subDomain = subDomain;
         if (applicationName) obj.applicationName = applicationName;
 
         return this.http.get<FilterApplicationReceived>(
             `${endpoint}/${inventoryId}/indicators/applications/filters`,
-            { params: new HttpParams({fromObject: obj}) }
+            { params: new HttpParams({ fromObject: obj }) },
         );
     }
 
     getDatacenters(inventoryId: number) {
         return this.http.get<Datacenter[]>(
-            `${endpoint}/${inventoryId}/indicators/datacenters`
+            `${endpoint}/${inventoryId}/indicators/datacenters`,
         );
     }
 
     getPhysicalEquipments(inventoryId: number) {
         const averageAge$ = this.http.get<PhysicalEquipmentAvgAge[]>(
-            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsAvgAge`
+            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsAvgAge`,
         );
         const lowImpact$ = this.http.get<PhysicalEquipmentLowImpact[]>(
-            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsLowImpact`
+            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsLowImpact`,
         );
         return forkJoin([averageAge$, lowImpact$]);
     }
@@ -97,6 +97,9 @@ export class FootprintDataService {
     }
 
     downloadExportResultsFile(inventoryId: number): Observable<any> {
-        return this.http.get(`${endpoint}/${inventoryId}/indicators/export/download`, { responseType: 'blob', headers: {'Accept': 'application/zip'}});
+        return this.http.get(`${endpoint}/${inventoryId}/indicators/export/download`, {
+            responseType: "blob",
+            headers: { Accept: "application/zip" },
+        });
     }
 }

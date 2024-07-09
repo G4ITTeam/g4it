@@ -1,0 +1,69 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - TemplateFileSystem
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: template-file-system
+    description: All endpoint to interact with TemplateFileSystem
+
+paths:
+  /subscribers/{subscriber}/organizations/{organization}/template-files:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+    get:
+      summary: Get template files and data model information
+      description: Get template files and data model information
+      operationId: getTemplateFiles
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      tags:
+        - template-file-system
+      responses:
+        '200':
+          description: Return  template files and data model information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FileDescriptionRest"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+
+  /subscribers/{subscriber}/organizations/{organization}/template-files/{name}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/templateFileParam'
+    get:
+      summary: Endpoint to retrieve template file in storage.
+      description: Endpoint to retrieve template file in storage.
+      operationId: downloadTemplatesFile
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      tags:
+        - template-file-system
+      responses:
+        '200':
+          description: Download template file
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+                format: binary
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'

@@ -97,7 +97,39 @@
             <button class="round-button-add" (click)="addComponent()">
                 + {{ "common.add" | translate }}
             </button>
-            <div class="button-bottom-right">
+            <hr class="p-my-2" />
+            <div>
+                <div id="openTitle" class="text-xl">
+                    {{ "inventories.templates.starter-pack" | translate }}
+                </div>
+                <div>
+                    <ul aria-labelledby="openTitle" tabindex="0">
+                        <li class="my-2" *ngFor="let data of templateFiles">
+                            <span
+                                [class.font-semibold]="
+                                    ['zip', 'xlsx'].includes(data.type)
+                                "
+                                [class.text-lg]="['zip', 'xlsx'].includes(data.type)"
+                                class="vertical-align-middle my-1"
+                            >
+                                {{ data.displayFileName }}
+                            </span>
+
+                            <button
+                                class="bg-transparent border-none cursor-pointer vertical-align-middle"
+                                (click)="downloadTemplateFile(data.name)"
+                            >
+                                <img
+                                    src="assets/images/icons/icon-download.svg"
+                                    height="24px"
+                                />
+                            </button>
+                        </li>
+                        <br />
+                    </ul>
+                </div>
+            </div>
+            <div class="text-right">
                 <p-button styleClass="white-button" (click)="close()">{{
                     "common.cancel" | translate
                 }}</p-button>

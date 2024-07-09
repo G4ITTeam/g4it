@@ -44,7 +44,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     };
 
     /**
-     * User Service.
+     * Auth Service.
      */
     @Autowired
     private AuthService authService;
@@ -69,7 +69,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             final String[] urlSplit = request.getRequestURI().split("/");
             final Pair<String, String> subOrg = authService.getSubscriberAndOrganization(urlSplit);
 
-            JwtAuthenticationToken newAuth = authService.getJwtToken(userInfo, subOrg.getFirst(), subOrg.getSecond());
+            JwtAuthenticationToken newAuth = authService.getJwtToken(userInfo, subOrg.getFirst(), Long.parseLong(subOrg.getSecond()));
             SecurityContextHolder.getContext().setAuthentication(newAuth);
 
             authService.checkUserRightForDigitalService(urlSplit);

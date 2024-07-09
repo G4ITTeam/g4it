@@ -71,5 +71,5 @@ public class UserSubscriber implements Serializable {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "userSubscribers", fetch = FetchType.LAZY)
-    private List<UserRoleSubscriber> UserRoleSubscriber;
+    private List<UserRoleSubscriber> userRoleSubscriber;
 }

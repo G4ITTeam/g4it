@@ -9,31 +9,35 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { environment } from "src/environments/environment";
+import { Constants } from "src/constants";
 import {
-    Subscriber,
     OrganizationUpsertRest,
+    Subscriber,
 } from "../../interfaces/administration.interfaces";
 
-const endpoint = environment.apiEndpoints.subscribers;
-const endpointForOrg = environment.apiEndpoints.organizations;
-const endpointForUser = environment.apiEndpoints.users;
+const endpoint = Constants.ENDPOINTS.subscribers;
+const endpointForOrg = Constants.ENDPOINTS.organizations;
+const endpointForUser = Constants.ENDPOINTS.users;
 
 @Injectable({
     providedIn: "root",
 })
 export class AdministrationDataService {
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    getOrganizations(): Observable<Subscriber> {
-        return this.http.get<Subscriber>(`${endpoint}`);
+    getOrganizations(): Observable<Subscriber[]> {
+        return this.http.get<Subscriber[]>(`${endpoint}`);
     }
 
     getUsers(): Observable<Subscriber> {
         return this.http.get<Subscriber>(`${endpointForOrg}`);
     }
 
-    deleteOrganization(
+    postOrganization(body: OrganizationUpsertRest): Observable<OrganizationUpsertRest> {
+        return this.http.post<OrganizationUpsertRest>(`${endpointForOrg}`, body);
+    }
+
+    updateOrganization(
         organizationId: number,
         body: OrganizationUpsertRest,
     ): Observable<OrganizationUpsertRest> {
@@ -44,14 +48,28 @@ export class AdministrationDataService {
     }
 
     getUserDetails(organizationId: number): Observable<any> {
-        return this.http.get<any>(`${endpointForOrg}/users?organizationId=${organizationId}`);
+        return this.http.get<any>(
+            `${endpointForOrg}/users?organizationId=${organizationId}`,
+        );
     }
 
-    getSearchDetails(searchName: string, subscriberId: number, organizationId: number): Observable<any> {
-        return this.http.get<any>(`${endpoint}/${endpointForUser}?searchedName=${searchName}&subscriberId=${subscriberId}&organizationId=${organizationId}`);
+    getSearchDetails(
+        searchName: string,
+        subscriberId: number,
+        organizationId: number,
+    ): Observable<any> {
+        return this.http.get<any>(
+            `${endpoint}/${endpointForUser}?searchedName=${searchName}&subscriberId=${subscriberId}&organizationId=${organizationId}`,
+        );
     }
 
-    postOrganization(body: any): Observable<any> {
+    postUserToOrganizationAndAddRoles(body: any): Observable<any> {
         return this.http.post<any>(`${endpointForOrg}/users`, body);
+    }
+
+    deleteUserDetails(body: any): Observable<any> {
+        return this.http.delete<any>(`${endpointForOrg}/users`, {
+            body,
+        });
     }
 }

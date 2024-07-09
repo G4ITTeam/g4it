@@ -18,10 +18,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BusinessHoursMapper {
 
-        @Mapping(source = "startTime", target = "startTime", dateFormat = "h:mm a")
-        @Mapping(source = "endTime", target = "endTime", dateFormat = "h:mm a")
-        BusinessHoursRest getModelFromEntity(BusinessHours entity);
+    @Mapping(source = "startTime", target = "startTime", dateFormat = "h:mm a")
+    @Mapping(source = "endTime", target = "endTime", dateFormat = "h:mm a")
+    @Mapping(source = "weekday", target = "day")
+    BusinessHoursRest getModelFromEntity(BusinessHours entity);
 
-        @Mapping(source = "manufacturingDate", target = "manufacturingDate", dateFormat = "dd.MM.yyyy")
-        public abstract  List<BusinessHoursRest> toBusinessHoursRest(final List<BusinessHours> source);
+    @Mapping(source = "manufacturingDate", target = "manufacturingDate", dateFormat = "dd.MM.yyyy")
+    List<BusinessHoursRest> toBusinessHoursRest(final List<BusinessHours> source);
 }

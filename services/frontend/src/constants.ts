@@ -52,6 +52,24 @@ export abstract class Constants {
     static readonly BLUE_COLOR = "#00B2FF";
     static readonly UNSPECIFIED = "(Unspecified)";
 
+    static readonly ENDPOINTS = {
+        inventories: "inventories",
+        digitalServices: "digital-services",
+        users: "users",
+        subscribers: "administrator/subscribers",
+        organizations: "administrator/organizations",
+        version: "version",
+        businessHours: "business-hours",
+        templateFiles: "template-files",
+    };
+
+    static readonly CSV_FILES_TYPES = [
+        "datacenter",
+        "physical",
+        "virtual",
+        "application",
+    ];
+
     static readonly INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES = [
         "COMPLETED",
         "COMPLETED_WITH_ERRORS",
@@ -84,13 +102,13 @@ export abstract class Constants {
     static readonly EXPORT_REMOVED = "REMOVED";
 
     static readonly ORGANIZATION_STATUSES = {
-        ACTIVE : "ACTIVE",
-        TO_BE_DELETED:"TO_BE_DELETED"
-    }
+        ACTIVE: "ACTIVE",
+        TO_BE_DELETED: "TO_BE_DELETED",
+    };
 
     static readonly CONSTANT_VALUE = {
-        NONE : "none"
-    }
+        NONE: "none",
+    };
 
     static readonly EXPORT_BATCH_FAILED_STATUSES = [
         "REMOVED",
@@ -109,47 +127,46 @@ export abstract class Constants {
 
     static readonly ROLE_VALUES = [
         {
-            value:"admin",
-            id:1
+            value: "admin",
+            id: 1,
         },
         {
-            value:"user",
-            id:2
-        }
+            value: "user",
+            id: 2,
+        },
     ];
 
     static readonly IS_MODULE_VALUES = [
         {
-            value:"Read",
-            id:1
+            value: "Read",
+            id: 1,
         },
         {
-            value:"Write",
-            id:2
+            value: "Write",
+            id: 2,
         },
         {
-            value:"No access",
-            id:3
-        }
+            value: "No access",
+            id: 3,
+        },
     ];
 
     static readonly DS_MODULE_VALUES = [
         {
-            value:"Read",
-            id:1
+            value: "Read",
+            id: 1,
         },
         {
-            value:"Write",
-            id:2
+            value: "Write",
+            id: 2,
         },
         {
-            value:"No access",
-            id:3
-        }
-
+            value: "No access",
+            id: 3,
+        },
     ];
     static readonly RECIPIENT_MAIL = "support.g4it@soprasteria.com";
     static readonly SUBJECT_MAIL = "Support Request";
     static readonly SPACE = " ";
-    static readonly ADMIN = "admin"
+    static readonly ADMIN = "admin";
 }

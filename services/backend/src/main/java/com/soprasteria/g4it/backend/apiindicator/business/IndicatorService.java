@@ -12,10 +12,14 @@ import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapp
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationVmIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationIndicatorView;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentIndicatorView;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationIndicatorViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationVmIndicatorViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.EquipmentIndicatorViewRepository;
+import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.external.numecoeval.repository.NumEcoEvalRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,102 +70,126 @@ public class IndicatorService {
     @Autowired
     private ApplicationVmIndicatorMapper applicationVmIndicatorMapper;
 
+    @Autowired
+    private OrganizationService organizationService;
+
+
     /**
      * Retrieve equipment indicators.
      *
-     * @param organization the organization name.
-     * @param batchName    the num-eco-eval batch name.
+     * @param subscriber     the subscriber
+     * @param organizationId the organizationId
+     * @param batchName      the num-eco-eval batch name.
      * @return indicator by criteria.
      */
-    public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String organization, final String batchName) {
-        final List<EquipmentIndicatorView> indicators = equipmentIndicatorViewRepository.findIndicators(organization, batchName);
-        final Map<String, List<EquipmentIndicatorView>> indicatorsMap = indicators.stream().collect(Collectors.groupingBy(EquipmentIndicatorView::getCriteria));
+    public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String subscriber, final Long organizationId, final String batchName) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+
+        final Map<String, List<EquipmentIndicatorView>> indicatorsMap = equipmentIndicatorViewRepository.findIndicators(batchName).stream()
+                .peek(equipmentIndicatorView -> equipmentIndicatorView.setEquipment(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), equipmentIndicatorView.getEquipment())))
+                .collect(Collectors.groupingBy(EquipmentIndicatorView::getCriteria));
+
         return indicatorsMap.entrySet().stream()
                 .collect(Collectors.toMap(
                         map -> transformCriteriaNameToCriteriaKey(map.getKey()),
                         map -> equipmentIndicatorMapper.toDto(map.getValue())));
+
     }
 
     /**
      * Retrieve application indicators.
      *
-     * @param organizationName the organization name.
-     * @param batchName        the num-eco-eval batch name.
+     * @param subscriber     subscriber
+     * @param organizationId organization id
+     * @param batchName      the num-eco-eval batch name.
      * @return indicator by criteria.
      */
-    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String organizationName, final String batchName, Long inventoryId) {
-        return applicationIndicatorMapper.toDto(applicationIndicatorViewRepository.findIndicators(organizationName, batchName, inventoryId));
+    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final String batchName, Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+
+        final List<ApplicationIndicatorView> applicationIndicatorViews = applicationIndicatorViewRepository.findIndicators(batchName, inventoryId).stream()
+                .peek(applicationIndicatorView ->
+                        applicationIndicatorView.setEquipmentType(
+                                TypeUtils.getShortType(subscriber, linkedOrganization.getName(), applicationIndicatorView.getEquipmentType())
+                        ))
+                .toList();
+        return applicationIndicatorMapper.toDto(applicationIndicatorViews);
     }
 
     /**
      * Retrieve application indicators.
      *
-     * @param organizationName the organization name.
-     * @param batchName        the num-eco-eval batch name.
-     * @param inventoryId      the inventory id
-     * @param applicationName  the application name.
-     * @param criteria         the criteria key.
+     * @param subscriber      the subscriber
+     * @param organizationId  the organization id
+     * @param batchName       the num-eco-eval batch name.
+     * @param inventoryId     the inventory id
+     * @param applicationName the application name.
+     * @param criteria        the criteria key.
      * @return indicator by criteria.
      */
-    public List<ApplicationIndicatorBO<ApplicationVmImpactBO>> getApplicationVmIndicators(final String organizationName, final String batchName,
+    public List<ApplicationIndicatorBO<ApplicationVmImpactBO>> getApplicationVmIndicators(final String subscriber,
+                                                                                          final Long organizationId,
+                                                                                          final String batchName,
                                                                                           final Long inventoryId,
                                                                                           final String applicationName, final String criteria) {
-        return applicationVmIndicatorMapper.toDto(applicationVmIndicatorViewRepository
-                .findIndicators(organizationName, batchName, inventoryId, applicationName, transformCriteriaKeyToCriteriaName(criteria)));
+
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final var result = applicationVmIndicatorViewRepository.findIndicators(batchName, inventoryId, applicationName, transformCriteriaKeyToCriteriaName(criteria)).stream()
+                .peek(indicator -> indicator.setEquipmentType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getEquipmentType())))
+                .toList();
+        return applicationVmIndicatorMapper.toDto(result);
+
     }
 
     /**
      * Delete indicators.
      *
-     * @param organization the organization.
-     * @param batchName    the batch name.
+     * @param batchName the batch name.
      */
-    public void deleteIndicators(final String organization, final String batchName) {
-        log.info("Deleting NumEcoEval inputs and indicators for organization={} and batchName={}", organization, batchName);
-        // removing all data entry for indicators
-        NumEcoEvalRepository.EN_TABLES.forEach(table -> numEcoEvalRepository.deleteByOrganizationAndBatchName(table, organization, batchName));
-
+    public void deleteIndicators(final String batchName) {
+        log.info("Deleting NumEcoEval inputs and indicators for batchName={}", batchName);
+        NumEcoEvalRepository.EN_TABLES.forEach(table -> numEcoEvalRepository.deleteByBatchName(table, batchName));
         // removing all indicators
-        NumEcoEvalRepository.IND_TABLES.forEach(table -> numEcoEvalRepository.deleteByOrganizationAndBatchName(table, organization, batchName));
+        NumEcoEvalRepository.IND_TABLES.forEach(table -> numEcoEvalRepository.deleteByBatchName(table, batchName));
     }
 
     /**
      * Retrieve datacenter indicators.
      *
-     * @param subscriber   the subscriber.
-     * @param organization the organization.
-     * @param inventoryId  the inventory id.
+     * @param subscriber     the subscriber.
+     * @param organizationId the organization's id.
+     * @param inventoryId    the inventory id.
      * @return datacenter indicators.
      */
-    public List<DataCentersInformationBO> getDataCenterIndicators(final String subscriber, final String organization, final Long inventoryId) {
-        return dataCenterIndicatorService.getDataCenterIndicators(subscriber, organization, inventoryId);
+    public List<DataCentersInformationBO> getDataCenterIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
+        return dataCenterIndicatorService.getDataCenterIndicators(subscriber, organizationId, inventoryId);
     }
 
     /**
      * Retrieve average age indicators.
      *
-     * @param subscriber   the subscriber.
-     * @param organization the organization.
-     * @param inventoryId  the inventory id.
+     * @param subscriber     the subscriber.
+     * @param organizationId the organization's id.
+     * @param inventoryId    the inventory id.
      * @return average age indicators.
      */
 
-    public List<PhysicalEquipmentsAvgAgeBO> getPhysicalEquipmentAvgAge(final String subscriber, final String organization, final long inventoryId) {
-        return physicalEquipmentIndicatorService.getPhysicalEquipmentAvgAge(subscriber, organization, inventoryId);
+    public List<PhysicalEquipmentsAvgAgeBO> getPhysicalEquipmentAvgAge(final String subscriber, Long organizationId, final long inventoryId) {
+        return physicalEquipmentIndicatorService.getPhysicalEquipmentAvgAge(subscriber, organizationId, inventoryId);
     }
 
     /**
      * Retrieve low impact indicators.
      *
-     * @param subscriber   the subscriber.
-     * @param organization the organization.
-     * @param inventoryId  the inventory id.
+     * @param subscriber     the subscriber.
+     * @param organizationId the organization's id.
+     * @param inventoryId    the inventory id.
      * @return low impact indicators.
      */
     public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber,
-                                                                             final String organization,
+                                                                             final Long organizationId,
                                                                              final Long inventoryId) {
-        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organization, inventoryId);
+        return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
     }
 
 }

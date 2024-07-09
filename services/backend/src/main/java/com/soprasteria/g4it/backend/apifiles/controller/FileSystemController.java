@@ -59,7 +59,7 @@ public class FileSystemController implements FileSystemApiDelegate {
      */
     @Override
     public ResponseEntity<List<FileDescriptionRest>> listFiles(final String subscriber,
-                                                               final String organization,
+                                                               final Long organization,
                                                                final Long inventoryId) {
         try {
             return ResponseEntity.ok().body(fileSystemService.listFiles(subscriber, organization));
@@ -73,12 +73,14 @@ public class FileSystemController implements FileSystemApiDelegate {
      */
     @Override
     public ResponseEntity<Map<String, List<String>>> uploadCSV(final String subscriber,
-                                                               final String organization,
+                                                               final Long organization,
                                                                final Long inventoryId,
                                                                final List<MultipartFile> datacenters,
                                                                final List<MultipartFile> applications,
                                                                final List<MultipartFile> physicalEquipments,
-                                                               final List<MultipartFile> virtualEquipments) {
+                                                               final List<MultipartFile> virtualEquipments
+
+    ) {
 
         List<String> datacenterFiles = fileSystemService.manageFiles(subscriber, organization, datacenters);
         List<String> physicalEquipmentFiles = fileSystemService.manageFiles(subscriber, organization, physicalEquipments);
@@ -98,7 +100,7 @@ public class FileSystemController implements FileSystemApiDelegate {
      */
     @Override
     public ResponseEntity<Resource> downloadResultsFile(@PathVariable final String subscriber,
-                                                        @PathVariable final String organization,
+                                                        @PathVariable final Long organization,
                                                         @PathVariable final Long inventoryId,
                                                         @PathVariable final String batchName) {
 
@@ -113,7 +115,7 @@ public class FileSystemController implements FileSystemApiDelegate {
                     inventoryId, subscriber, organization));
         }
 
-        final String filePath = String.join("/", subscriber, organization, FileFolder.OUTPUT.getFolderName(), filename.get());
+        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.OUTPUT.getFolderName(), filename.get());
 
         try {
             InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.OUTPUT, filename.get());

@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apibatchloading.controller;
 import com.soprasteria.g4it.backend.apibatchloading.business.InventoryLoadingService;
 import com.soprasteria.g4it.backend.apibatchloading.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.apibatchloading.model.InventoryLoadingSession;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.server.gen.api.InventoryLoadingApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import lombok.NoArgsConstructor;
@@ -34,22 +35,27 @@ public class LoadingController implements InventoryLoadingApiDelegate {
     @Autowired
     private FileDescriptionRestMapper fileDescriptionRestMapper;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public ResponseEntity<Long> launchLoadingBatch(final String subscriber,
-                                                   final String organization,
+                                                   final Long organization,
                                                    final Long inventoryId,
                                                    final List<FileDescriptionRest> filesDescription,
-                                                   final String lang) {
+                                                   final String lang
+    ) {
         final InventoryLoadingSession session = InventoryLoadingSession.builder()
                 .files(fileDescriptionRestMapper.toBusinessObject(filesDescription))
                 .sessionDate(new Date())
                 .subscriber(subscriber)
-                .organization(organization)
+                .organization(organizationService.getOrganizationById(organization).getName())
                 .inventoryId(inventoryId)
                 .locale(LocaleContextHolder.getLocale())
+                .organizationId(organization)
                 .build();
         return ResponseEntity.accepted().body(inventoryLoadingService.launchLoadingBatchJob(session));
     }

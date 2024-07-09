@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.external.numecoeval.business;
 
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.RapportImportRest;
@@ -101,7 +101,7 @@ class NumEcoEvalRemotingServiceTest {
     void shouldGetCalculationProgress() {
         StatutCalculRest statutCalculRest = new StatutCalculRest();
         statutCalculRest.setEtat("50%");
-        Mockito.when(calculationClient.getCalculationsStatus(any(), any())).thenReturn(statutCalculRest);
+        Mockito.when(calculationClient.getCalculationsStatus(any(), anyString())).thenReturn(statutCalculRest);
 
         String batchName = "db501e7a-871f-4a61-8672-0947bdc82a3e";
         String organization = "DEMO-1";

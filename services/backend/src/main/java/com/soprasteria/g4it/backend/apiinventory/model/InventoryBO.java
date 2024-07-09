@@ -34,6 +34,10 @@ public class InventoryBO {
 
     private String organization;
 
+    private Long organizationId;
+
+    private String organizationStatus;
+
     private Long dataCenterCount;
 
     private Long physicalEquipmentCount;

@@ -57,12 +57,14 @@ class LocalGreenItFileSystemApplicationTests {
         assertFalse(new File("target/local-filesystem/input").exists());
         assertFalse(new File("target/local-filesystem/work").exists());
         assertFalse(new File("target/local-filesystem/output").exists());
+        assertFalse(new File("target/local-filesystem/template").exists());
 
         Assertions.assertEquals(LocalFileStorage.class, fileSystem.mount("local", "G4IT").getClass());
 
         assertTrue(new File("target/local-filesystem/local/G4IT/input").exists());
         assertTrue(new File("target/local-filesystem/local/G4IT/work").exists());
         assertTrue(new File("target/local-filesystem/local/G4IT/output").exists());
+        assertTrue(new File("target/local-filesystem/local/G4IT/template").exists());
     }
 
 }

@@ -18,8 +18,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class PhysicalEquipmentLowImpactBO {
 
-    private String organisation;
-
     private String inventoryName;
 
     private String paysUtilisation;

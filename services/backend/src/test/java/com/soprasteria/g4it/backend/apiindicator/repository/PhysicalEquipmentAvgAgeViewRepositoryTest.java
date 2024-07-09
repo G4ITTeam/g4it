@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentAvgAgeView;
@@ -28,24 +28,11 @@ class PhysicalEquipmentAvgAgeViewRepositoryTest {
 
     @Test
     void givenValidParam_shouldGedPhysicalEquipmentAvgAgeIndicators() {
-        final String subscriber = "SSG";
-        final String organization = "G4IT";
         final Long inventoryId = 601L;
 
-        final List<PhysicalEquipmentAvgAgeView> indicatorView = physicalEquipmentAvgAgeViewRepository.findPhysicalEquipmentAvgAgeIndicators(subscriber, organization, inventoryId);
+        final List<PhysicalEquipmentAvgAgeView> indicatorView = physicalEquipmentAvgAgeViewRepository.findPhysicalEquipmentAvgAgeIndicators(inventoryId);
 
         assertThat(indicatorView).hasSize(2);
-    }
-
-    @Test
-    void givenUnknownParam_shouldGedPhysicalEquipmentAvgAgeIndicators() {
-        final String subscriber = "SSG";
-        final String organization = "bad organization";
-        final Long inventoryId = 601L;
-
-        final List<PhysicalEquipmentAvgAgeView> indicatorView = physicalEquipmentAvgAgeViewRepository.findPhysicalEquipmentAvgAgeIndicators(subscriber, organization, inventoryId);
-
-        assertThat(indicatorView).isEmpty();
     }
 
 }

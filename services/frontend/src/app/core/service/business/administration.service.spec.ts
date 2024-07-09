@@ -1,10 +1,10 @@
-import { TestBed } from "@angular/core/testing";
 import {
     HttpClientTestingModule,
     HttpTestingController,
 } from "@angular/common/http/testing";
-import { AdministrationService } from "./administration.service";
+import { TestBed } from "@angular/core/testing";
 import { Constants } from "src/constants";
+import { AdministrationService } from "./administration.service";
 
 describe("AdministrationService", () => {
     let service: AdministrationService;
@@ -36,7 +36,7 @@ describe("AdministrationService", () => {
             status: Constants.ORGANIZATION_STATUSES.TO_BE_DELETED,
             dataRetentionDay: 7,
         };
-        service.deleteOrganization(updateJson.subscriberId, updateJson).subscribe();
+        service.updateOrganization(updateJson.subscriberId, updateJson).subscribe();
 
         const req = httpMock.expectOne(`administrator/organizations?organizationId=1`);
         expect(req.request.method).toEqual("PUT");
@@ -51,7 +51,7 @@ describe("AdministrationService", () => {
             status: Constants.ORGANIZATION_STATUSES.ACTIVE,
             dataRetentionDay: null,
         };
-        service.deleteOrganization(updateJson.subscriberId, updateJson).subscribe();
+        service.updateOrganization(updateJson.subscriberId, updateJson).subscribe();
 
         const req = httpMock.expectOne(`administrator/organizations?organizationId=1`);
         expect(req.request.method).toEqual("PUT");
@@ -61,7 +61,9 @@ describe("AdministrationService", () => {
 
     it("should get User Details", () => {
         service.getUserDetails(organizationId).subscribe();
-        const req = httpMock.expectOne(`administrator/organizations/users?organizationId=1`);
+        const req = httpMock.expectOne(
+            `administrator/organizations/users?organizationId=1`,
+        );
         expect(req.request.method).toEqual("GET");
 
         httpMock.verify();
@@ -69,7 +71,9 @@ describe("AdministrationService", () => {
 
     it("should get user Search Deatails", () => {
         service.getSearchDetails(searchName, subscriberId, organizationId).subscribe();
-        const req = httpMock.expectOne(`administrator/subscribers/users?searchedName=${searchName}&subscriberId=${subscriberId}&organizationId=${organizationId}`);
+        const req = httpMock.expectOne(
+            `administrator/subscribers/users?searchedName=${searchName}&subscriberId=${subscriberId}&organizationId=${organizationId}`,
+        );
         expect(req.request.method).toEqual("GET");
 
         httpMock.verify();
@@ -85,15 +89,59 @@ describe("AdministrationService", () => {
                         "ROLE_INVENTORY_READ",
                         "ROLE_INVENTORY_WRITE",
                         "ROLE_DIGITAL_SERVICE_READ",
-                        "ROLE_DIGITAL_SERVICE_WRITE"
-                    ]
-                }
-            ]
-        }
-        service.postOrganization(body).subscribe();
+                        "ROLE_DIGITAL_SERVICE_WRITE",
+                    ],
+                },
+            ],
+        };
+        service.postUserToOrganizationAndAddRoles(body).subscribe();
 
         const req = httpMock.expectOne(`administrator/organizations/users`);
         expect(req.request.method).toEqual("POST");
+
+        httpMock.verify();
+    });
+    it("should update organization", () => {
+        const body = {
+            organizationId: organizationId,
+            users: [
+                {
+                    userId: 1,
+                    roles: [
+                        "ROLE_INVENTORY_READ",
+                        "ROLE_INVENTORY_WRITE",
+                        "ROLE_DIGITAL_SERVICE_READ",
+                        "ROLE_DIGITAL_SERVICE_WRITE",
+                    ],
+                },
+            ],
+        };
+        service.postUserToOrganizationAndAddRoles(body).subscribe();
+
+        const req = httpMock.expectOne(`administrator/organizations/users`);
+        expect(req.request.method).toEqual("POST");
+
+        httpMock.verify();
+    });
+    it("should delete organization", () => {
+        const body = {
+            organizationId: organizationId,
+            users: [
+                {
+                    userId: 1,
+                    roles: [
+                        "ROLE_INVENTORY_READ",
+                        "ROLE_INVENTORY_WRITE",
+                        "ROLE_DIGITAL_SERVICE_READ",
+                        "ROLE_DIGITAL_SERVICE_WRITE",
+                    ],
+                },
+            ],
+        };
+        service.deleteUserDetails(body).subscribe();
+
+        const req = httpMock.expectOne(`administrator/organizations/users`);
+        expect(req.request.method).toEqual("DELETE");
 
         httpMock.verify();
     });

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -14,18 +14,28 @@
     <version>2.1.1-SNAPSHOT</version>
     <name>backend</name>
     <description>G4IT - Manager - Backend</description>
+
     <properties>
         <java.version>21</java.version>
-
-        <swagger.version>2.2.20</swagger.version>
+        <swagger.version>2.2.22</swagger.version>
         <mapstruct.dependency.version>1.5.5.Final</mapstruct.dependency.version>
-        <maven-openapi-generator-plugin.version>7.2.0</maven-openapi-generator-plugin.version>
-        <jackson.databind.version>0.2.6</jackson.databind.version>
-        <azure.spring.version>5.8.0</azure.spring.version>
-        <lombok.dependency.version>1.18.30</lombok.dependency.version>
-        <liquibase.dependency.version>4.23.0</liquibase.dependency.version>
-        <spring.batch.test.version>5.0.4</spring.batch.test.version>
-        <keycloak-adapter-bom.version>24.0.2</keycloak-adapter-bom.version>
+        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+
+        <lombok.dependency.version>1.18.32</lombok.dependency.version>
+        <liquibase-core.version>4.28.0</liquibase-core.version>
+        <keycloak-adapter-bom.version>24.0.5</keycloak-adapter-bom.version>
+
+        <spring-cloud-azure-starter-storage-blob.version>5.13.0</spring-cloud-azure-starter-storage-blob.version>
+        <spring-cloud-azure-starter-keyvault.version>5.13.0</spring-cloud-azure-starter-keyvault.version>
+
+        <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
+        <guava.version>33.2.1-jre</guava.version>
+        <zt-zip.version>1.17</zt-zip.version>
+        <vavr.version>0.10.4</vavr.version>
+
+        <maven-openapi-generator-plugin.version>7.6.0</maven-openapi-generator-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <sonar.coverage.exclusions>
             **/gen/**/*.java,
@@ -111,19 +121,19 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.dependency.version}</version>
+            <version>${liquibase-core.version}</version>
         </dependency>
 
         <!-- Azure deps -->
         <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-storage-blob</artifactId>
-            <version>${azure.spring.version}</version>
+            <version>${spring-cloud-azure-starter-storage-blob.version}</version>
         </dependency>
         <dependency>
             <groupId>com.azure.spring</groupId>
             <artifactId>spring-cloud-azure-starter-keyvault</artifactId>
-            <version>4.13.0</version>
+            <version>${spring-cloud-azure-starter-keyvault.version}</version>
         </dependency>
 
         <!-- Other deps -->
@@ -150,36 +160,32 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.3.0</version>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
-            <version>${jackson.databind.version}</version>
+            <version>${jackson-databind-nullable.version}</version>
         </dependency>
 
         <!-- Tools -->
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
-            <version>0.10.4</version>
+            <version>${vavr.version}</version>
         </dependency>
         <dependency>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-zip</artifactId>
-            <version>1.16</version>
+            <version>${zt-zip.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.0.0-jre</version>
+            <version>${guava.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.15.1</version>
-        </dependency>
+
 
         <!-- TEST -->
         <dependency>
@@ -190,7 +196,6 @@
         <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-test</artifactId>
-            <version>${spring.batch.test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -407,7 +412,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
+                <version>${jacoco-maven-plugin.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/gen/**/*</exclude>
@@ -455,7 +460,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>

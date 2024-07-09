@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationIndicatorView;
@@ -29,10 +29,9 @@ class ApplicationIndicatorViewRepositoryTest {
 
     @Test
     void givenValidParam_shouldGetEquipmentIndicators() {
-        final String organizationName = "SSG";
         final String batchName = "44ad614e-94ad-46fb-b541-5053d8a45ee6";
 
-        final List<ApplicationIndicatorView> indicators = applicationIndicatorViewRepository.findIndicators(organizationName, batchName, 501L);
+        final List<ApplicationIndicatorView> indicators = applicationIndicatorViewRepository.findIndicators(batchName, 501L);
 
         assertThat(indicators).hasSize(64)
                 .filteredOn(e -> "application-1".equals(e.getApplicationName())
@@ -44,16 +43,15 @@ class ApplicationIndicatorViewRepositoryTest {
                         ApplicationIndicatorView::getImpact,
                         ApplicationIndicatorView::getSip)
                 .hasSize(2)
-                .contains(Tuple.tuple("Personal Computer", "Domain 1", "Sub domain 1", 616d, 0.7236417033773862),
-                        Tuple.tuple("Personal Computer", "", "", 308d, 0.3618208516886931));
+                .contains(Tuple.tuple("SSG_Personal Computer", "Domain 1", "Sub domain 1", 616d, 0.7236417033773862),
+                        Tuple.tuple("SSG_Personal Computer", "", "", 308d, 0.3618208516886931));
     }
 
     @Test
     void givenUnknownParam_shouldGedEquipmentIndicators() {
-        final String organizationName = "Unknown";
         final String batchName = "44ad614e-94ad-46fb-b541-5053d8a45ee6";
 
-        final List<ApplicationIndicatorView> equipmentIndicatorView = applicationIndicatorViewRepository.findIndicators(organizationName, batchName, 1L);
+        final List<ApplicationIndicatorView> equipmentIndicatorView = applicationIndicatorViewRepository.findIndicators(batchName, 1L);
 
         assertThat(equipmentIndicatorView).isEmpty();
     }

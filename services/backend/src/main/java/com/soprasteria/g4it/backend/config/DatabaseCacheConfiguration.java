@@ -31,7 +31,7 @@ public class DatabaseCacheConfiguration {
     @CacheEvict(value = {
             "Organization",
             "getFiltersByBatchName",
-            "getBusinessHours"
+            "getBusinessHours",
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.database.ttl}")
     public void emptyDatabaseCaches() {
@@ -44,9 +44,10 @@ public class DatabaseCacheConfiguration {
     @CacheEvict(value = {
             "getVersion",
             "getJwtToken",
-            "findBySub",
             "existsByUidAndUserId",
-            "RoleRepository_findByName"
+            "RoleRepository_findByName",
+            "getUserByName",
+            "listTemplatesFiles"
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.short.ttl}")
     public void emptyShortTtlCaches() {

@@ -54,14 +54,16 @@ public class StorageDeletionService {
         List<String> deletedFilePaths = new ArrayList<>();
         for (Organization organizationEntity : organizations) {
             final String subscriber = organizationEntity.getSubscriber().getName();
-            final String organization = organizationEntity.getName();
+            final Long organizationId = organizationEntity.getId();
 
             // organization > subscriber > default
             final Integer retentionExport = Optional.ofNullable(organizationEntity.getStorageRetentionDayExport())
                     .orElse(Optional.ofNullable(organizationEntity.getSubscriber().getStorageRetentionDayExport())
                             .orElse(storageRetentionDayExport));
 
-            List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organization, FileFolder.EXPORT, retentionExport);
+            List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, retentionExport);
+
+
             // Update Export Batch Status in database
             deletedExportFilePaths.forEach(fileName -> inventoryExportService.updateBatchStatusCodeToRemove(fileName));
             deletedFilePaths.addAll(deletedExportFilePaths);
@@ -70,12 +72,11 @@ public class StorageDeletionService {
                     .orElse(Optional.ofNullable(organizationEntity.getSubscriber().getStorageRetentionDayOutput())
                             .orElse(storageRetentionDayOutput));
 
-            List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organization, FileFolder.OUTPUT, retentionOutput);
+            List<String> deletedOutputFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.OUTPUT, retentionOutput);
             deletedFilePaths.addAll(deletedOutputFilePaths);
         }
 
         log.info("Deletion of {} files - {}, execution time={} ms", deletedFilePaths.size(), deletedFilePaths, System.currentTimeMillis() - start);
     }
-
 
 }

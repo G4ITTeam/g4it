@@ -71,6 +71,6 @@ public class UserOrganization implements Serializable {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "userOrganizations", fetch = FetchType.LAZY)
-    private List<UserRoleOrganization> UserRoleOrganization;
+    private List<UserRoleOrganization> userRoleOrganization;
 
 }

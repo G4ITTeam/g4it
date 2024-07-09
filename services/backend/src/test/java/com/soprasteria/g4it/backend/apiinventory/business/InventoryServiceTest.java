@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 class InventoryServiceTest {
 
     private static final String SUBSCRIBER = "SUBSCRIBER";
-    private static final String ORGANIZATION = "ORGANIZATION";
+    private static final Long ORGANIZATION_ID = 1L;
 
     @InjectMocks
     private InventoryService inventoryService;
@@ -65,14 +65,14 @@ class InventoryServiceTest {
         final Inventory inventoryEntity2 = Inventory.builder().id(2L).name("04-2023").build();
         final List<Inventory> inventorysEntitiesList = List.of(inventoryEntity1, inventoryEntity2);
 
-        when(organizationService.getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(inventorysEntitiesList);
 
-        final List<InventoryBO> result = inventoryService.getInventories(SUBSCRIBER, ORGANIZATION, null);
+        final List<InventoryBO> result = inventoryService.getInventories(SUBSCRIBER, ORGANIZATION_ID, null);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-        verify(organizationService, times(1)).getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION);
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(inventoryRepo, times(1)).findByOrganization(linkedOrganization);
 
     }
@@ -88,14 +88,14 @@ class InventoryServiceTest {
         final Inventory inventoryEntity1 = Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build();
         var inventoryOptional = Optional.of(inventoryEntity1);
 
-        when(organizationService.getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(this.inventoryRepo.findByOrganizationAndId(linkedOrganization, inventoryId)).thenReturn(inventoryOptional);
 
-        final List<InventoryBO> result = this.inventoryService.getInventories(SUBSCRIBER, ORGANIZATION, inventoryId);
+        final List<InventoryBO> result = this.inventoryService.getInventories(SUBSCRIBER, ORGANIZATION_ID, inventoryId);
 
         assertThat(result).hasSameSizeAs(expectedInventoryList);
 
-        verify(organizationService, times(1)).getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION);
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(inventoryRepo, times(1)).findByOrganizationAndId(linkedOrganization, inventoryId);
     }
 
@@ -120,7 +120,7 @@ class InventoryServiceTest {
 
         when(inventoryRepo.findByOrganizationAndId(any(), eq(inventoryId))).thenReturn(Optional.of(inventory));
 
-        final InventoryBO result = inventoryService.getInventory(SUBSCRIBER, ORGANIZATION, inventoryId);
+        final InventoryBO result = inventoryService.getInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryId);
 
         assertThat(result).isEqualTo(expected);
 
@@ -142,15 +142,15 @@ class InventoryServiceTest {
                 .name("03-2023")
                 .organization(linkedOrganization).build();
 
-        when(organizationService.getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(inventoryRepo.findByOrganizationAndName(linkedOrganization, inventoryName))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(inventory));
         when(inventoryRepo.save(any())).thenReturn(inventory);
 
-        InventoryBO actual = inventoryService.createInventory(SUBSCRIBER, ORGANIZATION, inventoryCreateRest);
+        InventoryBO actual = inventoryService.createInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCreateRest);
 
-        verify(organizationService, times(1)).getOrganizationBySubNameAndName(SUBSCRIBER, ORGANIZATION);
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(inventoryRepo, times(1)).findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName());
         verify(inventoryRepo, times(1)).save(any());
 

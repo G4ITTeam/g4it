@@ -6,10 +6,10 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component } from "@angular/core";
-import { Subject, firstValueFrom, take, takeUntil } from "rxjs";
-import { UserDataService } from "./core/service/data/user-data.service";
+import { Router } from "@angular/router";
 import { KeycloakService } from "keycloak-angular";
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
+import { Subject, firstValueFrom } from "rxjs";
+import { UserDataService } from "./core/service/data/user-data.service";
 
 @Component({
     selector: "app-root",

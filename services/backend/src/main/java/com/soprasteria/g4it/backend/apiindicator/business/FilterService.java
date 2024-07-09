@@ -15,6 +15,9 @@ import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentFilters;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationFiltersRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.EquipmentFiltersRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
+import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,31 +45,45 @@ public class FilterService {
     private ApplicationFiltersRepository applicationFiltersRepository;
 
     /**
+     * The Organization Service
+     */
+    private OrganizationService organizationService;
+
+    /**
      * Retrieve equipment filters.
      *
+     * @param subscriber   the subscriber
      * @param organization the organization.
      * @param inventoryId  the inventory id.
      * @param batchName    the batch name.
      * @return filters.
      */
-    public EquipmentFiltersBO getEquipmentFilters(final String organization, final Long inventoryId, final String batchName) {
-        final List<EquipmentFilters> equipmentFiltersList = equipmentFiltersRepository.getFiltersByInventoryId(organization, inventoryId, batchName);
+    public EquipmentFiltersBO getEquipmentFilters(final String subscriber, final Organization organization, final Long inventoryId, final String batchName) {
+        final List<EquipmentFilters> equipmentFiltersList = equipmentFiltersRepository.getFiltersByInventoryId(inventoryId, batchName);
         return EquipmentFiltersBO.builder()
                 .status(equipmentFiltersList.stream().map(EquipmentFilters::getStatus).distinct().toList())
                 .countries(equipmentFiltersList.stream().map(EquipmentFilters::getCountry).distinct().toList())
-                .equipments(equipmentFiltersList.stream().map(EquipmentFilters::getType).distinct().toList())
+                .equipments(equipmentFiltersList.stream().map(equipmentFilters -> TypeUtils.getShortType(subscriber, organization.getName(), equipmentFilters.getType())).distinct().toList())
                 .entities(equipmentFiltersList.stream().map(EquipmentFilters::getEntity).distinct().toList())
                 .build();
     }
 
+
     /**
      * Retrieve application filters.
      *
-     * @param inventoryId the inventory unique identifier.
-     * @param batchName   the num-eco-eval batch name.
+     * @param subscriber      the subscriber
+     * @param organizationId  the organization id
+     * @param inventoryId     the inventory unique identifier.
+     * @param batchName       the num-eco-eval batch name.
+     * @param domain          the domain
+     * @param subDomain       the sub domain
+     * @param applicationName the application name
      * @return applications filters.
      */
-    public ApplicationFiltersBO getApplicationFilters(final Long inventoryId, final String batchName,
+    public ApplicationFiltersBO getApplicationFilters(final String subscriber,
+                                                      final Long organizationId,
+                                                      final Long inventoryId, final String batchName,
                                                       final String domain, final String subDomain, final String applicationName) {
         List<ApplicationFilters> applicationFilters;
         if (applicationName == null) {
@@ -75,7 +92,12 @@ public class FilterService {
             applicationFilters = applicationFiltersRepository.getFiltersByBatchNameAndApplicationName(inventoryId, batchName, applicationName);
         }
 
-        List<ApplicationFilters> filteredApplicationFilters = applicationFilters.stream().toList();
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+
+        List<ApplicationFilters> filteredApplicationFilters = applicationFilters.stream()
+                .peek(applicationFilters1 -> applicationFilters1.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), applicationFilters1.getType())))
+                .toList();
+
         if (domain != null) {
             final String localDomain = domain.equals(Constants.UNSPECIFIED) ? "" : domain;
             filteredApplicationFilters = filteredApplicationFilters.stream().filter(filter -> localDomain.equals(filter.getDomain())).toList();

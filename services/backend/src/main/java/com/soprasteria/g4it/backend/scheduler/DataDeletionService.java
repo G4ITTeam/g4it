@@ -45,6 +45,7 @@ public class DataDeletionService {
     @Autowired
     private OrganizationService organizationService;
 
+
     /**
      * Execute the deletion
      * Get all subscribers and organizations
@@ -60,7 +61,7 @@ public class DataDeletionService {
 
         for (Organization organizationEntity : organizations) {
             final String subscriber = organizationEntity.getSubscriber().getName();
-            final String organization = organizationEntity.getName();
+            final Long organizationId = organizationEntity.getId();
 
             // organization > subscriber > default
             final Integer retentionDay = Optional.ofNullable(organizationEntity.getDataRetentionDay())
@@ -71,16 +72,16 @@ public class DataDeletionService {
             nbInventoriesDeleted += inventoryRepository.findByOrganization(organizationEntity).stream()
                     .filter(inventory -> now.minusDays(retentionDay).isAfter(inventory.getLastUpdateDate()))
                     .mapToInt(inventory -> {
-                        inventoryDeleteService.deleteInventory(subscriber, organization, inventory.getId());
+                        inventoryDeleteService.deleteInventory(subscriber, organizationId, inventory.getId());
                         return 1;
                     })
                     .sum();
 
             // Digital services
-            nbDigitalServicesDeleted += digitalServiceService.getAllDigitalServicesByOrganization(subscriber, organization).stream()
+            nbDigitalServicesDeleted += digitalServiceService.getAllDigitalServicesByOrganization(organizationId).stream()
                     .filter(digitalServiceBO -> now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate()))
                     .mapToInt(digitalServiceBO -> {
-                        digitalServiceService.deleteDigitalService(organization, digitalServiceBO.getUid());
+                        digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
                         return 1;
                     })
                     .sum();

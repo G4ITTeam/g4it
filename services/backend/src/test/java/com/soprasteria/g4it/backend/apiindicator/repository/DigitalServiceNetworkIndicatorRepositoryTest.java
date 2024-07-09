@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceNetworkIndicatorView;
@@ -29,32 +29,18 @@ class DigitalServiceNetworkIndicatorRepositoryTest {
     @Test
     void givenValidParam_shouldGedDigitalServiceNetworkIndicators() {
         //GIVEN
-        final String organization = "G4IT";
         final String uid = "uid";
 
-        List<DigitalServiceNetworkIndicatorView> indicatorViewList = digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(organization, uid);
+        List<DigitalServiceNetworkIndicatorView> indicatorViewList = digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(uid);
 
         assertThat(indicatorViewList).hasSize(5);
     }
 
-    @Test
-    void givenUnknownOrganization_shouldGedNoIndicators() {
-        //GIVEN
-        final String organization = "Unknown Organization";
-        final String uid = "uid";
-
-        List<DigitalServiceNetworkIndicatorView> indicatorViewList = digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(organization, uid);
-
-        assertThat(indicatorViewList).isEmpty();
-    }
-
-    @Test
     void givenUnknownUid_shouldGedNoIndicators() {
         //GIVEN
-        final String organization = "G4IT";
         final String uid = "Unknown Uid";
 
-        List<DigitalServiceNetworkIndicatorView> indicatorViewList = digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(organization, uid);
+        List<DigitalServiceNetworkIndicatorView> indicatorViewList = digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(uid);
 
         assertThat(indicatorViewList).isEmpty();
     }

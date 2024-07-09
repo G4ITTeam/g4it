@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
@@ -99,5 +99,9 @@ public class MockFileStorage implements FileStorage {
     @Override
     public long getFileSize(FileFolder folder, String fileName) {
         return 0;
+    }
+
+    @Override
+    public void renameOrganization(String newOrganization) throws IOException {
     }
 }

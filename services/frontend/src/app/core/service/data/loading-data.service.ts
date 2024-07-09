@@ -4,15 +4,15 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
-import { environment } from "src/environments/environment";
-import { LoadingBody, LoadingFile } from "../../interfaces/file-system.interfaces";
+import { Constants } from "src/constants";
+import { FileDescription, LoadingBody } from "../../interfaces/file-system.interfaces";
 
-const endpoint = environment.apiEndpoints.inventories;
+const endpoint = Constants.ENDPOINTS.inventories;
 
 @Injectable({
     providedIn: "root",
@@ -20,9 +20,12 @@ const endpoint = environment.apiEndpoints.inventories;
 export class LoadingDataService {
     data: LoadingBody | undefined;
 
-    constructor(private http: HttpClient, private translate: TranslateService) {}
+    constructor(
+        private http: HttpClient,
+        private translate: TranslateService,
+    ) {}
 
-    launchLoading(fileList: LoadingFile[], inventoryId: number): Observable<number> {
+    launchLoading(fileList: FileDescription[], inventoryId: number): Observable<number> {
         const headers = new HttpHeaders({
             "content-type": "application/json",
             "Accept-Language": this.translate.currentLang,

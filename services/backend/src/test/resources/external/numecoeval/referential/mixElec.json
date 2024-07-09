@@ -2,245 +2,245 @@
   {
     "pays": "Albania",
     "raccourcisAnglais": "AL",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.0000031651,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Albania",
     "raccourcisAnglais": "AL",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 0.0207635,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Albania",
     "raccourcisAnglais": "AL",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 1.61553e-9,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Albania",
     "raccourcisAnglais": "AL",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 0.0014664,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Albania",
     "raccourcisAnglais": "AL",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 2.29556e-7,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Armenia",
     "raccourcisAnglais": "AM",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.000726222,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Armenia",
     "raccourcisAnglais": "AM",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 0.252002,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Armenia",
     "raccourcisAnglais": "AM",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 5.4582e-9,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Armenia",
     "raccourcisAnglais": "AM",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 1.56547,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Armenia",
     "raccourcisAnglais": "AM",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 8.54245e-8,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Netherlands Antilles",
     "raccourcisAnglais": "AN",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.0107951,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Netherlands Antilles",
     "raccourcisAnglais": "AN",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 1.13161,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Netherlands Antilles",
     "raccourcisAnglais": "AN",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 9.61629e-8,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Netherlands Antilles",
     "raccourcisAnglais": "AN",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 0.00874025,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Netherlands Antilles",
     "raccourcisAnglais": "AN",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 4.49103e-8,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Angola",
     "raccourcisAnglais": "AO",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.0113371,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Angola",
     "raccourcisAnglais": "AO",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 0.412014,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Angola",
     "raccourcisAnglais": "AO",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 9.53959e-8,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Angola",
     "raccourcisAnglais": "AO",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 0.00190206,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Angola",
     "raccourcisAnglais": "AO",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 1.24074e-7,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Argentina",
     "raccourcisAnglais": "AR",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.00327536,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Argentina",
     "raccourcisAnglais": "AR",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 0.476811,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Argentina",
     "raccourcisAnglais": "AR",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 3.0122e-8,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Argentina",
     "raccourcisAnglais": "AR",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 0.241544,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "Argentina",
     "raccourcisAnglais": "AR",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 7.68612e-8,
     "source": "Base IMPACTS 2.02"
   },
   {
     "pays": "France",
     "raccourcisAnglais": "FR",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.000209809,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "France",
     "raccourcisAnglais": "FR",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 0.0800844,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "France",
     "raccourcisAnglais": "FR",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 0.00000000415844,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "France",
     "raccourcisAnglais": "FR",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 3.23443,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "France",
     "raccourcisAnglais": "FR",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 0.0000000485798,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "Germany",
     "raccourcisAnglais": "DE",
-    "critere": "Acidification",
+    "critere": "C1",
     "valeur": 0.00176241,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "Germany",
     "raccourcisAnglais": "DE",
-    "critere": "Climate change",
+    "critere": "C2",
     "valeur": 0.650114,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "Germany",
     "raccourcisAnglais": "DE",
-    "critere": "Particulate matter and respiratory inorganics",
+    "critere": "C3",
     "valeur": 0.0000000102637,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "Germany",
     "raccourcisAnglais": "DE",
-    "critere": "Ionising radiation",
+    "critere": "C4",
     "valeur": 0.958296,
     "source": "Base IMPACTS®3.0"
   },
   {
     "pays": "Germany",
     "raccourcisAnglais": "DE",
-    "critere": "Resource use (minerals and metals)",
+    "critere": "C5",
     "valeur": 0.0000000878733,
     "source": "Base IMPACTS®3.0"
   }

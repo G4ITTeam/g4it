@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiuser.business;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,14 +24,11 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    @InjectMocks
-    private AuthService authService;
-
+    public static final long organizationId = 1L;
     // Given global
     private static final String subscriber = "subscriber";
     private static final String organization = "organization";
     private static final List<String> roles = List.of("Role 1", "Role2");
-
     private static final UserBO user = UserBO.builder()
             .id(0)
             .subscribers(
@@ -38,30 +36,54 @@ class AuthServiceTest {
                             .name(subscriber)
                             .organizations(List.of(OrganizationBO.builder()
                                     .name(organization)
+                                    .id(organizationId)
                                     .roles(roles)
                                     .build()))
+                            .roles(List.of())
                             .build())
             )
             .build();
-
+    @InjectMocks
+    private AuthService authService;
 
     @Test
     void testControlAccess_nominalCase_returnAllRoles() {
-        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, subscriber, organization);
+        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, subscriber, organizationId);
         Assertions.assertEquals(roles, actual);
     }
 
     @Test
+    void testControlAccess_subscriberAdminCase_returnAllRoles() {
+        var adminSubscriber = UserBO.builder()
+                .id(0)
+                .subscribers(
+                        List.of(SubscriberBO.builder()
+                                .name(subscriber)
+                                .organizations(List.of(OrganizationBO.builder()
+                                        .name(organization)
+                                        .roles(List.of())
+                                        .build()))
+                                .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                                .build())
+                )
+                .build();
+
+        List<String> actual = ReflectionTestUtils.invokeMethod(authService, "controlAccess", adminSubscriber, subscriber, organizationId);
+        Assertions.assertEquals(Constants.ALL_ROLES, actual);
+    }
+
+
+    @Test
     void testControlAccess_withUnknownSubscriber_thenUnauthorized() throws Exception {
         Assertions.assertThrows(AuthorizationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, "BadSubscriber", organization);
+            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, "BadSubscriber", organizationId);
         });
     }
 
     @Test
     void testControlAccess_withUnknownOrganization_thenUnauthorized() {
         Assertions.assertThrows(AuthorizationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, subscriber, "BadOrganization");
+            ReflectionTestUtils.invokeMethod(authService, "controlAccess", user, subscriber, 3L);
         });
     }
 
@@ -73,13 +95,15 @@ class AuthServiceTest {
                         .name(subscriber)
                         .organizations(List.of(OrganizationBO.builder()
                                 .name(organization)
+                                .id(organizationId)
                                 .roles(List.of())
                                 .build()))
+                        .roles(List.of())
                         .build()))
                 .build();
 
         Assertions.assertThrows(AuthorizationException.class, () -> {
-            ReflectionTestUtils.invokeMethod(authService, "controlAccess", userWithoutRole, subscriber, organization);
+            ReflectionTestUtils.invokeMethod(authService, "controlAccess", userWithoutRole, subscriber, organizationId);
         });
     }
 

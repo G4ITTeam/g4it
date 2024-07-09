@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.*;
+import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_INVENTORY_ID;
 
 /**
  * Repository to calculate the physical equipment low impact indicators view.
@@ -23,16 +23,13 @@ import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.*;
 @Repository
 public interface PhysicalEquipmentLowImpactViewRepository extends JpaRepository<PhysicalEquipmentLowImpactView, Long> {
 
+
     /**
      * method to recovery of main indicators.
      *
-     * @param subscriber   the subscriber.
-     * @param organization the organization name.
-     * @param inventoryId  the inventory id.
+     * @param inventoryId the inventory id.
      * @return main indicators
      */
     @Query(nativeQuery = true)
-    List<PhysicalEquipmentLowImpactView> findPhysicalEquipmentLowImpactIndicators(@Param(PARAM_SUBSCRIBER) final String subscriber,
-                                                                                  @Param(PARAM_ORGANIZATION) final String organization,
-                                                                                  @Param(PARAM_INVENTORY_ID) final Long inventoryId);
+    List<PhysicalEquipmentLowImpactView> findPhysicalEquipmentLowImpactIndicatorsByOrgId(@Param(PARAM_INVENTORY_ID) final Long inventoryId);
 }

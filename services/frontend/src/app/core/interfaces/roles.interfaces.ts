@@ -13,3 +13,24 @@ export enum Role {
     SubscriberAdmin = "ROLE_SUBSCRIBER_ADMINISTRATOR",
     OrganizationAdmin = "ROLE_ORGANIZATION_ADMINISTRATOR",
 }
+
+export let BasicRoles = [
+    Role.InventoryRead,
+    Role.InventoryWrite,
+    Role.DigitalServiceRead,
+    Role.DigitalServiceWrite,
+];
+
+export let RoleRightMap: any = {
+    ROLE_INVENTORY_READ: "read",
+    ROLE_DIGITAL_SERVICE_READ: "read",
+    ROLE_INVENTORY_WRITE: "write",
+    ROLE_DIGITAL_SERVICE_WRITE: "write",
+    ROLE_ORGANIZATION_ADMINISTRATOR: "admin",
+    ROLE_SUBSCRIBER_ADMINISTRATOR: "admin",
+};
+
+export interface RoleValue {
+    value?: string;
+    code: Role;
+}

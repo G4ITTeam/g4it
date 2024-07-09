@@ -11,7 +11,6 @@ export interface User {
     email: string;
     firstName: string;
     lastName: string;
-    userId: number;
     subscribers: Subscriber[];
 }
 
@@ -27,6 +26,7 @@ export interface Organization {
     id: number;
     name: string;
     defaultFlag: boolean;
+    status: string;
     roles: Role[];
 }
 
@@ -39,9 +39,9 @@ export interface OrganizationData {
 }
 
 export interface UserDetails {
-    email: String
-    firstName: String
-    id: number
-    lastName: String
-    role: []
+    email: string;
+    firstName: string;
+    id: number;
+    lastName: string;
+    roles: Role[];
 }

@@ -168,6 +168,56 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
+    put:
+      summary: Edit multiple users' rights
+      operationId: updateRoleAccess
+      requestBody:
+        description:  Mandatory user and role details to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LinkUserRoleRest"
+      tags:
+        - administrator
+      responses:
+        '204':
+          description: Rights has been updated.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserInfoRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      summary: Delete user-organization link
+      operationId: deleteUserOrgLink
+      requestBody:
+        description:  Mandatory user and organization details to unlink.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LinkUserRoleRest"
+      tags:
+        - administrator
+      responses:
+        '204':
+          description: link between user and organization has been deleted.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
   /administrator/subscribers/users:
     get:
       tags:

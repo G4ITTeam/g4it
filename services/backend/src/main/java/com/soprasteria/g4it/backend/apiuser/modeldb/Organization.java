@@ -102,4 +102,9 @@ public class Organization extends AbstractBaseEntity implements Serializable {
     @OneToMany(mappedBy = "organization")
     private List<Inventory> inventory;
 
+    /**
+     * Boolean isMigrated: true if organization name has been migrated to organization id
+     */
+    private Boolean isMigrated = true;
+
 }

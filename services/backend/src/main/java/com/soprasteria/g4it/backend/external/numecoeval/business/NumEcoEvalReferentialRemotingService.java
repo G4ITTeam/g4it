@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.external.numecoeval.client.ReferentialClient
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class NumEcoEvalReferentialRemotingService {
     /**
      * Set containing the criteria.
      */
+    @Value("${g4it.criteria}")
     private Set<String> criterias;
 
     /**
@@ -100,17 +102,13 @@ public class NumEcoEvalReferentialRemotingService {
      * @return if country has a low impact.
      */
     public boolean isLowImpact(final String country) {
-        if (this.criterias == null || this.criterias.isEmpty()) {
-            this.criterias = referentialClient.getMixElec().stream()
-                    .map(MixElectriqueDTO::getCritere)
-                    .collect(Collectors.toSet());
-        }
         if (this.countrySumImpactMap == null || this.countrySumImpactMap.isEmpty()) {
             this.countrySumImpactMap = this.getCountryList().stream()
                     .collect(Collectors.toMap(
                             refCountry -> refCountry,
-                            refCountry -> this.criterias.stream()
+                            refCountry -> criterias.stream()
                                     .mapToInt(criteria -> getMixElecQuartileIndex(criteria, refCountry))
+                                    .filter(Objects::nonNull)
                                     .sum()
                     ));
 

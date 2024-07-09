@@ -80,7 +80,7 @@ class ExportApplicationTests {
     @Test
     void givenReferenceInput_whenJobExecuted_thenSuccess() throws Exception {
         final String subscriber = "SSG";
-        final String organization = "local";
+        final Long organizationId = 1L;
 
         final String WORKING_FOLDER = String.join(File.separator, fileSystemLocalPath, "local_folder_1");
 
@@ -90,8 +90,8 @@ class ExportApplicationTests {
                 .addString("delete.local.working.folder", "true")
                 .addLong("inventory.id", 1L)
                 .addString("inventory.date", "03-2022")
-                .addString("organization", organization)
                 .addString("subscriber", subscriber)
+                .addLong("organization.id", organizationId)
                 .toJobParameters());
 
         // General Assertions
@@ -99,7 +99,7 @@ class ExportApplicationTests {
 
         final Resource outputPath = new ClassPathResource(WORKING_FOLDER);
         assertThat(outputPath.exists()).isFalse();
-        final File outputExportPath = Path.of(fileSystemLocalPath).resolve(subscriber).resolve(organization).resolve("export").toFile();
+        final File outputExportPath = Path.of(fileSystemLocalPath).resolve(subscriber).resolve(organizationId.toString()).resolve("export").toFile();
         assertThat(outputExportPath).isNotEmptyDirectory();
     }
 

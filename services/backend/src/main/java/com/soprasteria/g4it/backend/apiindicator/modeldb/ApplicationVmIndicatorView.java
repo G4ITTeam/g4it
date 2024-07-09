@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb;
 
 import jakarta.persistence.*;
@@ -40,7 +40,7 @@ import java.io.Serializable;
             ia.critere                                                       AS criteria,
             ia.etapeacv                                                      AS life_cycle,
             ia.type_environnement                                            AS environment,
-            REGEXP_REPLACE(ep.type, CONCAT(o.name, '_'), '')                 AS equipment_type,
+            ep.type                                                          AS equipment_type,
             COALESCE(ev.cluster, '')                                         AS "cluster",
             ev.nom_vm                                                        AS vm_name,
             SUM(ia.impact_unitaire)                                          AS impact,
@@ -51,8 +51,6 @@ import java.io.Serializable;
             ON er.batch_name = ia.nom_lot
         INNER JOIN inventory i
             ON i.id = er.inventory_id
-        INNER JOIN g4it_organization o
-            ON i.organization_id = o.id
         INNER JOIN ref_sustainable_individual_package ref_sip
             ON ref_sip.criteria  = ia.critere
         CROSS JOIN equipement_physique ep
@@ -65,7 +63,6 @@ import java.io.Serializable;
         AND ia.nom_lot = :batchName
         AND ia.nom_equipement_physique = ep.nom_equipement_physique
         AND ia.nom_equipement_physique = ev.nom_equipement_physique
-        AND ia.nom_organisation = :organization
         AND ia.nom_equipement_virtuel = ev.nom_vm
         GROUP BY
             ia.critere,
@@ -74,9 +71,9 @@ import java.io.Serializable;
             ep.type,
             ev.cluster,
             ev.nom_vm,
-            ia.unite,
-            o.name;
+            ia.unite;
         """)
+
 @Data
 @Entity
 @SuperBuilder

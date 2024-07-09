@@ -56,61 +56,46 @@ import static org.mockito.Mockito.*;
 @DirtiesContext
 class InventoryLoadingAppTests {
 
+    private static final Path testFolder = Path.of("src/test/resources/apibatchloading");
+    private static final String localJobWorkingPath = "local_folder_1";
+    private static final String subscriber = "SSG";
+    private static final String organization = "G4IT";
+    private static final Long organizationId = 1L;
+    Path outputPath;
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
-
     @Autowired
     @Qualifier("loadInventoryJob")
     private Job job;
-
     @Autowired
     private JobRepositoryTestUtils jobRepositoryTestUtils;
-
     @Autowired
     private ResourceLoader resourceLoader;
-
     @Autowired
     private DataCenterRepository dataCenterRepository;
-
     @Autowired
     private PhysicalEquipmentRepository physicalEquipmentRepository;
-
     @Autowired
     private InventoryRepository inventoryRepository;
-
     @Autowired
     private VirtualEquipmentRepository virtualEquipmentRepository;
-
     @Autowired
     private ApplicationRepository applicationRepository;
-
     @Autowired
     private OrganizationRepository organizationRepository;
-
     @Autowired
     private JobLauncher jobLauncher;
-
     @MockBean
     private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
-
     @MockBean
     private CacheManager cacheManager;
-
     @Value("${filesystem.local.path}")
     private String fileSystemBasePath;
-
-    private static final Path testFolder = Path.of("src/test/resources/apibatchloading");
-    private static final String localJobWorkingPath = "local_folder_1";
-
-    private static final String subscriber = "SSG";
-    private static final String organization = "G4IT";
-    Path outputPath;
-
     private long inventoryId;
 
     @BeforeEach
     public void beforeEach() {
-        outputPath = Path.of(fileSystemBasePath).resolve(subscriber).resolve(organization).resolve("output");
+        outputPath = Path.of(fileSystemBasePath).resolve(subscriber).resolve(organizationId.toString()).resolve("output");
 
         this.jobLauncherTestUtils.setJobLauncher(jobLauncher);
         this.jobLauncherTestUtils.setJob(job);
@@ -195,7 +180,7 @@ class InventoryLoadingAppTests {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve("work").resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         // Mock NumEcoEval
@@ -207,7 +192,7 @@ class InventoryLoadingAppTests {
                 .addString("local.working.folder", localJobWorkingPath)
                 .addString("delete.local.working.folder", "true")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(BATCH_NAME_JOB_PARAM, UUID.randomUUID().toString())
@@ -253,11 +238,11 @@ class InventoryLoadingAppTests {
         // PhysicalEquipment Assertions
         final List<String> physicalEquipmentAllBadLines = Files.readAllLines(outputPath.resolve(formattedSessionDate).resolve("rejected_physical_equipment_" + formattedSessionDate + ".csv"));
         assertThat(physicalEquipmentAllBadLines)
-                .hasSize(25) // 1 header and 24 bad lines
+                .hasSize(24) // 1 header and 24 bad lines
                 .contains("nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur;inputFileName;lineNumber;message", Index.atIndex(0))
                 .satisfies(
                         lst -> {
-                            assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_champs_obligatoire.csv")).count()).isEqualTo(5);
+                            assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_champs_obligatoire.csv")).count()).isEqualTo(4);
                             assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_format.csv")).count()).isEqualTo(14);
                             assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_referentiel.csv")).count()).isEqualTo(4);
                             assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_coherence.csv")).count()).isEqualTo(1);
@@ -267,7 +252,6 @@ class InventoryLoadingAppTests {
                         "Desktop 2;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;3;Field 'quantite' must be a positive integer.",
                         "Desktop 6;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.6;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;9;Field 'nbCoeur' must be a positive integer.",
                         "Desktop 12;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;v;0;HP;;;;equipementPhysique_avec_erreur_format.csv;15;Field 'goTelecharge' must be a positive integer.",
-                        "Serveur 2;Sopra Steria Group;mockData;;3;ServeurCalcul;actif;300;FR;;2017-02-22;;15;Datacenter 9;1500;500;dell;100;250;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;3;Field 'modele' is mandatory.",
                         "Desktop 1;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;v;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;2;Field 'quantite' must be a positive integer.",
                         "Laptop 1;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;2020/02/31;;;;120;100;HP;;;;equipementPhysique_avec_erreur_format.csv;4;Field 'dateAchat' of type date must be in format 'YYYY-MM-DD'.",
                         "Desktop 5;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.7;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;8;Field 'nbCoeur' must be a positive integer.",
@@ -291,7 +275,7 @@ class InventoryLoadingAppTests {
 
         final List<String> physicalEquipmentAllValidLines = Files.readAllLines(outputPath.resolve(formattedSessionDate).resolve("accepted_physical_equipment_" + formattedSessionDate + ".csv"));
         assertThat(physicalEquipmentAllValidLines)
-                .hasSize(18) // 1 header and 18 valid lines
+                .hasSize(19) // 1 header and 18 valid lines
                 .contains("nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur", Index.atIndex(0))
                 .contains(
                         "Serveur;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7",
@@ -406,7 +390,7 @@ class InventoryLoadingAppTests {
         // DB Verifications
         assertThat(inventoryRepository.findById(inventoryId)).get().extracting(Inventory::getDataCenterCount,
                         Inventory::getPhysicalEquipmentCount, Inventory::getVirtualEquipmentCount, Inventory::getApplicationCount)
-                .contains(5L, 33L, 12L, 4L);
+                .contains(5L, 36L, 12L, 4L);
     }
 
     /**
@@ -429,7 +413,7 @@ class InventoryLoadingAppTests {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve("work").resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         // when we have an existing datacenter entity
@@ -451,7 +435,7 @@ class InventoryLoadingAppTests {
                 .addString("delete.local.working.folder", "true")
                 .addString("zip.results", "false")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(INVENTORY_NAME_JOB_PARAM, "04-2023")
@@ -499,7 +483,7 @@ class InventoryLoadingAppTests {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve("work").resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         // when we launch the job
@@ -508,7 +492,7 @@ class InventoryLoadingAppTests {
                 .addString("delete.local.working.folder", "true")
                 .addString("zip.results", "true")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(INVENTORY_NAME_JOB_PARAM, "04-2023")
@@ -541,7 +525,7 @@ class InventoryLoadingAppTests {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve("work").resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         // when
@@ -549,7 +533,7 @@ class InventoryLoadingAppTests {
                 .addString("local.working.folder", localJobWorkingPath)
                 .addString("delete.local.working.folder", "true")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(INVENTORY_NAME_JOB_PARAM, "04-2023")
@@ -595,7 +579,7 @@ class InventoryLoadingAppTests {
                 .addString("local.working.folder", localJobWorkingPath)
                 .addString("delete.local.working.folder", "true")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(INVENTORY_NAME_JOB_PARAM, "04-2023")
@@ -627,7 +611,7 @@ class InventoryLoadingAppTests {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve("work").resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         // Mock NumEcoEval
@@ -641,7 +625,7 @@ class InventoryLoadingAppTests {
                 .addString("local.working.folder", localJobWorkingPath)
                 .addString("delete.local.working.folder", "true")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(INVENTORY_NAME_JOB_PARAM, "04-2023")
@@ -666,7 +650,7 @@ class InventoryLoadingAppTests {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve("work").resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         // Mock NumEcoEval
@@ -678,7 +662,7 @@ class InventoryLoadingAppTests {
                 .addString("local.working.folder", localJobWorkingPath)
                 .addString("delete.local.working.folder", "true")
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                 .addDate("session.date", calendar.getTime())
                 .addString(INVENTORY_NAME_JOB_PARAM, "04-2023")

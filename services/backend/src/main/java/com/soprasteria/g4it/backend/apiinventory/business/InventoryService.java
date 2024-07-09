@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReport
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
@@ -65,39 +66,78 @@ public class InventoryService {
     @Autowired
     private NumEcoEvalRemotingService numEcoEvalRemotingService;
 
+
+    /**
+     * Retrieve the last batch name in inventory.
+     *
+     * @param inventory the inventory.
+     * @return the inventory's last batch name if present, or else empty.
+     */
+    public Optional<String> getLastBatchName(final InventoryBO inventory) {
+        if (inventory.getEvaluationReports() == null) return Optional.empty();
+
+        return inventory.getEvaluationReports().stream()
+                .filter(report -> "COMPLETED".equals(report.getBatchStatusCode()) && report.getEndTime() != null)
+                .max(Comparator.comparing(InventoryEvaluationReportBO::getEndTime))
+                .map(AbstractReportBO::getBatchName);
+    }
+
     /**
      * Retrieve all inventory of an organization if inventoryId is null.
      * Filter on inventoryId if not null
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the linked organization name.
-     * @param inventoryId      the inventory id optional query param
+     * @param subscriberName the client subscriber name.
+     * @param organizationId the linked organization's id.
+     * @param inventoryId    the inventory id optional query param
      * @return inventories BO.
      */
-    public List<InventoryBO> getInventories(final String subscriberName, final String organizationName, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public List<InventoryBO> getInventories(final String subscriberName, final Long organizationId, final Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         var inventories = inventoryId == null ?
                 inventoryRepository.findByOrganization(linkedOrganization) :
                 inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).stream().toList();
 
         /* Update calculation progress percentage */
-        updateEvaluationProgressPercentage(new ArrayList<>(inventories));
+        List<Inventory> inventoriesToBeUpdated = new ArrayList<>();
+        inventories.forEach(inventory -> Optional.ofNullable(inventory.getEvaluationReports()).orElse(new ArrayList<>())
+                .stream()
+                .filter(report -> EvaluationBatchStatus.CALCUL_IN_PROGRESS.name().equals(report.getBatchStatusCode()))
+                .forEach(report -> {
+                    String calculProgressPercentage = numEcoEvalRemotingService.getCalculationsProgress(report.getBatchName(), String.valueOf(organizationId));
+                    if (calculProgressPercentage == null) return;
+
+                    report.setProgressPercentage(calculProgressPercentage);
+                    log.info("Updating calculation progress percentage to '{}' for inventory : {} ", calculProgressPercentage, inventory);
+                    if (COMPLETE_PROGRESS_PERCENTAGE.equals(calculProgressPercentage)) {
+                        report.setBatchStatusCode(BatchStatus.COMPLETED.name());
+                        log.info("Updating batch status to 'COMPLETED' of batch : '{}' ", report.getBatchName());
+                    }
+                    inventoriesToBeUpdated.add(inventory);
+                }));
+
+
+        if (!inventoriesToBeUpdated.isEmpty()) {
+            inventoryRepository.saveAll(inventoriesToBeUpdated);
+        }
+
         return inventoryMapper.toBusinessObject(inventories);
     }
 
     /**
      * Retrieving an inventory for an organization and inventory id.
      *
-     * @param inventoryId the inventory id.
-     * @return inventory BO.
+     * @param subscriberName subscriberName
+     * @param organizationId organizationId
+     * @param inventoryId    inventoryId
+     * @return InventoryBO
      */
-    public InventoryBO getInventory(final String subscriberName, final String organizationName, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public InventoryBO getInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId);
 
         if (inventory.isEmpty())
-            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryId, subscriberName, organizationName));
+            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryId, subscriberName, organizationId));
 
         return inventoryMapper.toBusinessObject(inventory.get());
     }
@@ -106,15 +146,15 @@ public class InventoryService {
      * Create an inventory.
      *
      * @param subscriberName      the client subscriber name.
-     * @param organizationName    the linked organization name.
+     * @param organizationId      the linked organization's id.
      * @param inventoryCreateRest the inventoryCreateRest.
      * @return inventory BO.
      */
-    public InventoryBO createInventory(final String subscriberName, final String organizationName, final InventoryCreateRest inventoryCreateRest) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public InventoryBO createInventory(final String subscriberName, final Long organizationId, final InventoryCreateRest inventoryCreateRest) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         if (inventoryRepository.findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName()).isPresent()) {
-            throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationName));
+            throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationId));
         }
 
         final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest.getName(), inventoryCreateRest.getType().name());
@@ -131,15 +171,17 @@ public class InventoryService {
     /**
      * Create an inventory.
      *
+     * @param subscriberName      the subscriberName.
+     * @param organizationId      the organization's id
      * @param inventoryUpdateRest the inventoryUpdateRest.
-     * @param user                the user entity
-     * @return inventory BO.
+     * @param user                the user.
+     * @return InventoryBO
      */
-    public InventoryBO updateInventory(final String subscriberName, final String organizationName, final InventoryUpdateRest inventoryUpdateRest, User user) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public InventoryBO updateInventory(final String subscriberName, final Long organizationId, final InventoryUpdateRest inventoryUpdateRest, UserBO user) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final Optional<Inventory> inventory = inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryUpdateRest.getId());
         if (inventory.isEmpty())
-            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), subscriberName, organizationName));
+            throw new G4itRestException("404", String.format("inventory %d not found in %s/%s", inventoryUpdateRest.getId(), subscriberName, organizationId));
 
         final Inventory inventoryToSave = inventory.get();
         inventoryToSave.setName(inventoryUpdateRest.getName());
@@ -149,15 +191,16 @@ public class InventoryService {
         if (inventoryUpdateRest.getNote() == null) {
             note = null;
         } else {
+            final User userEntity = User.builder().id(user.getId()).build();
             if (inventoryToSave.getNote() == null) {
                 note = Note.builder()
                         .content(inventoryUpdateRest.getNote().getContent())
-                        .createdBy(user)
+                        .createdBy(userEntity)
                         .build();
             } else {
                 note.setContent(inventoryUpdateRest.getNote().getContent());
             }
-            note.setLastUpdatedBy(user);
+            note.setLastUpdatedBy(userEntity);
         }
         inventoryToSave.setNote(note);
 
@@ -165,46 +208,6 @@ public class InventoryService {
         return inventoryMapper.toBusinessObject(inventoryToSave);
     }
 
-    /**
-     * Retrieve the last batch name in inventory.
-     *
-     * @param inventory the inventory.
-     * @return the inventory's last batch name if present, or else empty.
-     */
-    public Optional<String> getLastBatchName(final InventoryBO inventory) {
-        return Optional.ofNullable(inventory.getEvaluationReports()).orElse(new ArrayList<>())
-                .stream()
-                .filter(report -> "COMPLETED".equals(report.getBatchStatusCode()) && report.getEndTime() != null)
-                .max(Comparator.comparing(InventoryEvaluationReportBO::getEndTime)).map(AbstractReportBO::getBatchName);
-    }
-
-
-    /**
-     * Update the calculation progress percentage for evaluation report
-     *
-     * @param inventories the inventory.
-     */
-    private void updateEvaluationProgressPercentage(final List<Inventory> inventories) {
-        List<Inventory> inventoriesToBeUpdated = new ArrayList<>();
-        inventories.forEach(inventory -> Optional.ofNullable(inventory.getEvaluationReports()).orElse(new ArrayList<>())
-                .stream()
-                .filter(report -> EvaluationBatchStatus.CALCUL_IN_PROGRESS.name().equals(report.getBatchStatusCode()))
-                .forEach(report -> {
-                    String calculProgressPercentage = numEcoEvalRemotingService.getCalculationsProgress(report.getBatchName(), inventory.getOrganization().getName());
-                    if (calculProgressPercentage == null) return;
-
-                    report.setProgressPercentage(calculProgressPercentage);
-                    log.info("Updating calculation progress percentage to '{}' for inventory : {} ", calculProgressPercentage, inventory);
-                    if (COMPLETE_PROGRESS_PERCENTAGE.equals(calculProgressPercentage)) {
-                        report.setBatchStatusCode(BatchStatus.COMPLETED.name());
-                        log.info("Updating batch status to 'COMPLETED' of batch : '{}' ", report.getBatchName());
-                    }
-                    inventoriesToBeUpdated.add(inventory);
-                }));
-
-
-        inventoryRepository.saveAll(inventoriesToBeUpdated);
-    }
 
 }
 

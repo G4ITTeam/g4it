@@ -250,7 +250,16 @@
         "download-result": "Download integration result file for",
         "creation-successful": "Inventaire créé avec succès",
         "new-inventory-choose": "Choisissez entre une version du SI et une simulation",
-        "input-simulation-aria": "Ecrivez le nom de votre simulation"
+        "input-simulation-aria": "Ecrivez le nom de votre simulation",
+        "templates": {
+            "datacenter-template-file": "Fichier de modèle de datacenter ({{type}}, {{size}} Ko )",
+            "physical-template-file": "Fichier modèle d'équipement physique ({{type}}, {{size}} Ko )",
+            "virtual-template-file": "Fichier de modèle d'équipement virtuel ({{type}}, {{size}} Ko )",
+            "application-template-file": "Fichier de modèle d'application ({{type}}, {{size}} Ko )",
+            "all-template-files": "Tous les fichiers modèles ({{type}}, {{size}} Ko )",
+            "data-model": "Modèle de données ({{type}}, {{size}} Ko )",
+            "starter-pack": "Kit de départ"
+        }
     },
     "inventories-footprint": {
         "filter": "Filtrer ma visualisation",
@@ -463,7 +472,8 @@
         "subsriber-placeholder": "Sélectionnez le souscripteur",
         "accessibility": {
             "placeholder": "Sélection du souscripteur, {{name}} actuellement sélectionné.",
-            "on-deletion": "Confirmez la suppresion de la suppression de toutes les données de l'organisation."
+            "on-deletion": "Confirmez la suppresion de la suppression de toutes les données de l'organisation.",
+            "on-edit": "Changer le nom de l'organisation"
         },
         "user-placeholder": "Choisissez l'organisation",
         "delete": "Supprimer",
@@ -472,11 +482,12 @@
         "delete-confirmation": "Confirmation de la suppresion",
         "delete-message": "Au bout de 7 jours, toutes les données relatives à l'organisation seront supprimées. Êtes-vous sûr de vouloir supprimer cette organisation ?",
         "user": {
-            "aceessAndUser": "Sélectionnez l'accès et le rôle",
+            "accessAndRole": "Sélectionnez l'accès et le rôle",
             "access": "Accéder",
-            "is-module": "Module SI",
-            "ds-module": "Module de services numériques",
+            "is-module": "Module Système d'Information",
+            "ds-module": "Module Services Numériques",
             "role": "Rôle",
+            "actions": "Actions",
             "add": "AJOUTER À L'ORGANISATION",
             "select-org": "Sélectionnez une organisation",
             "search-user": "Rechercher un utilisateur référencé",
@@ -490,7 +501,24 @@
             "no-results": "Aucun résultat",
             "already-member": "DÉJÀ MEMBRE",
             "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
+            "delete-message": "L'utilisateur {{FirstName}} {{LastName}} n'aura plus accès à cette organisation. Êtes-vous sur de vouloir continuer ?",
             "search": "Recherche"
+        },
+        "role": {
+            "read": "Lecture",
+            "write": "Ecriture",
+            "user": "Utilisateur",
+            "admin": "Administrateur"
+        },
+        "organization": {
+            "new": "Nouvelle organisation",
+            "addAnOrganization": "Ajouter une organisation",
+            "addAnOrganizationValidation": "Les caractères spéciaux ne sont pas autorisés sauf -_",
+            "duplicateOrganizationValidation": "L'organisation existe déjà",
+            "spaceValidation": "L'espace n'est pas autorisé",
+            "accessibility": {
+                "addAnOrganization": "Ajouter l'organisation"
+            }
         }
     }
 }

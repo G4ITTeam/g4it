@@ -19,14 +19,12 @@ describe("UserDataService", () => {
     let userService: UserDataService;
     let organization: string = "SSG";
     let userInfo: User = {
-
         email: "prenom.nom@soprasteria.com",
         firstName: "prenom",
         lastName: "nom",
-        userId: 1,
         subscribers: [
             {
-                id:1,
+                id: 1,
                 name: "SSG",
                 defaultFlag: true,
                 organizations: [
@@ -34,16 +32,33 @@ describe("UserDataService", () => {
                         id: 1,
                         name: "SSG",
                         defaultFlag: true,
-                        roles: [Role.InventoryRead, Role.DigitalServiceRead, Role.InventoryWrite, Role.DigitalServiceWrite],
+                        status: "ACTIVE",
+                        roles: [
+                            Role.InventoryRead,
+                            Role.DigitalServiceRead,
+                            Role.InventoryWrite,
+                            Role.DigitalServiceWrite,
+                        ],
                     },
                     {
                         id: 2,
                         name: "G4IT",
                         defaultFlag: false,
-                        roles: [Role.InventoryRead, Role.DigitalServiceRead, Role.InventoryWrite, Role.DigitalServiceWrite],
+                        status: "ACTIVE",
+                        roles: [
+                            Role.InventoryRead,
+                            Role.DigitalServiceRead,
+                            Role.InventoryWrite,
+                            Role.DigitalServiceWrite,
+                        ],
                     },
                 ],
-                roles: [Role.InventoryRead, Role.DigitalServiceRead, Role.InventoryWrite, Role.DigitalServiceWrite],
+                roles: [
+                    Role.InventoryRead,
+                    Role.DigitalServiceRead,
+                    Role.InventoryWrite,
+                    Role.DigitalServiceWrite,
+                ],
             },
         ],
     };

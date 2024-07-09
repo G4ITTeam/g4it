@@ -27,10 +27,8 @@ public class TestUtils {
 
     public static String SUBSCRIBER = "SUBSCRIBER";
     public static String ORGANIZATION = "ORGANIZATION";
+    public static Long ORGANIZATION_ID = 1L;
     public static String EMAIL = "user.test@unitaire";
-    public static String FIRSTNAME = "user";
-    public static String LASTNAME = "test";
-    public static String SUBJECT = "7L-269202gdjG0hJl";
     public static String ROLE = "ROLE";
 
     public static UserBO createUserBO(final List<String> userRoles) {
@@ -45,6 +43,14 @@ public class TestUtils {
                                 .build()))
                         .build()))
                 .build();
+    }
+
+    public static Subscriber createSubscriber() {
+        return Subscriber.builder().id(1L).name(SUBSCRIBER).build();
+    }
+
+    public static Subscriber createSubscriber(Long SubscriberId) {
+        return Subscriber.builder().id(SubscriberId).name(SUBSCRIBER).build();
     }
 
     public static Organization createOrganization() {
@@ -85,6 +91,7 @@ public class TestUtils {
 
     public static Organization createToBeDeletedOrganization(String status, LocalDateTime deletionDate) {
         return Organization.builder()
+                .id(ORGANIZATION_ID)
                 .name(ORGANIZATION)
                 .status(OrganizationStatus.TO_BE_DELETED.name())
                 .deletionDate(deletionDate)
@@ -114,16 +121,29 @@ public class TestUtils {
                                 .subscriber(Subscriber.builder().id(subscriberId).name(SUBSCRIBER).build()).build()).build())).build();
     }
 
-    public static User createUser(List<UserSubscriber> userSubscribers, List<UserOrganization> userOrganizations) {
-        return User.builder().email(EMAIL)
-                .userSubscribers(userSubscribers)
-                .userOrganizations(userOrganizations)
+    public static UserBO createUserBOAdminSub() {
+        return UserBO.builder().email(EMAIL)
+                .subscribers(List.of(
+                        SubscriberBO.builder()
+                                .id(1L)
+                                .roles(List.of())
+                                .build(),
+                        SubscriberBO.builder()
+                                .id(2L)
+                                .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                                .build()))
                 .build();
     }
 
-    public static Subscriber createSubscriber(Long SubscriberId) {
-        return Subscriber.builder().id(SubscriberId).name(SUBSCRIBER).build();
+    public static UserBO createUserBONoRole() {
+        return UserBO.builder().email(EMAIL)
+                .subscribers(List.of(SubscriberBO.builder()
+                        .id(1L)
+                        .roles(List.of())
+                        .build()))
+                .build();
     }
+
 
     public static UserOrganization createUserOrganization(Long organizationId, List<Role> roles, String status) {
         return UserOrganization
@@ -132,12 +152,12 @@ public class TestUtils {
 
     public static UserOrganization createUserOrganization(Long subId, Long orgId, List<Role> roles, String status, LocalDateTime deletionDate, List<UserRoleOrganization> userRoleOrganization) {
         return UserOrganization
-                .builder().defaultFlag(true).roles(roles).organization(createOrganization(subId, orgId, status, deletionDate)).UserRoleOrganization(userRoleOrganization).build();
+                .builder().defaultFlag(true).roles(roles).organization(createOrganization(subId, orgId, status, deletionDate)).userRoleOrganization(userRoleOrganization).build();
     }
 
     public static UserSubscriber createUserSubscriber(Long subscriberId, List<Role> roles, List<UserRoleSubscriber> userRoleSubscriberList) {
         return UserSubscriber
-                .builder().defaultFlag(true).roles(roles).subscriber(createSubscriber(subscriberId)).UserRoleSubscriber(userRoleSubscriberList).build();
+                .builder().defaultFlag(true).roles(roles).subscriber(createSubscriber(subscriberId)).userRoleSubscriber(userRoleSubscriberList).build();
     }
 
     public static OrganizationUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
@@ -179,5 +199,15 @@ public class TestUtils {
 
 
     }
+
+    public static UserOrganization createUserOrganization(Long organizationId, Long userId) {
+        return UserOrganization.builder()
+                .id(1L)
+                .organization(Organization.builder().id(organizationId).name(ORGANIZATION).build())
+                .user(User.builder().id(userId).email(EMAIL).build())
+                .defaultFlag(true)
+                .build();
+    }
+
 
 }

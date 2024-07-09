@@ -1,3 +1,8 @@
+### G4IT ###
+storage
+!storage
+storage/*
+!storage/--INTERNAL-G4IT--
 
 ### Maven ###
 target/

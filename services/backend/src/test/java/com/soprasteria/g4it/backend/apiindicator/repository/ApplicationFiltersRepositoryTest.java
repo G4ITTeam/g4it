@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationFilters;
@@ -40,6 +40,6 @@ class ApplicationFiltersRepositoryTest {
         assertThat(filters.stream().map(ApplicationFilters::getEnvironment).toList()).contains("Developpement", "Test");
         assertThat(filters.stream().map(ApplicationFilters::getLifeCycle).toList()).contains("DISTRIBUTION", "FABRICATION", "FIN_DE_VIE", "UTILISATION");
         assertThat(filters.stream().map(ApplicationFilters::getDomain).toList()).contains("Domain 1", "Domain 6");
-        assertThat(filters.stream().map(ApplicationFilters::getType).toList()).contains("Personal Computer", "Server");
+        assertThat(filters.stream().map(ApplicationFilters::getType).toList()).contains("SSG_Personal Computer", "Server");
     }
 }

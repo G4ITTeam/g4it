@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
@@ -50,4 +50,6 @@ public class LocalFileSystem implements FileSystem {
         Arrays.stream(FileFolder.values()).forEach(e -> Paths.get(localPath, subscriber, organization, e.getFolderName()).toFile().mkdirs());
         return new LocalFileStorage(Paths.get(localPath, subscriber, organization).toString());
     }
+
+
 }

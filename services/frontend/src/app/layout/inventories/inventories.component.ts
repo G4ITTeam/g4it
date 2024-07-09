@@ -4,19 +4,19 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
-import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
-import { InventoryService } from "src/app/core/service/business/inventory.service";
-import { Constants } from "src/constants";
 import { sortByProperty } from "sort-by-property";
-import { TranslateService } from "@ngx-translate/core";
+import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
+import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { Constants } from "src/constants";
 
 @Component({
     selector: "app-inventories",

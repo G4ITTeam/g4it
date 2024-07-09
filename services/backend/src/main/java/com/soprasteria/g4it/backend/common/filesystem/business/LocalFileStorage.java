@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
@@ -21,7 +21,6 @@ import org.springframework.util.FileSystemUtils;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -78,14 +77,16 @@ public class LocalFileStorage implements FileStorage {
                     .map(p -> {
                                 try {
                                     final BasicFileAttributes attributes = Files.readAttributes(p, BasicFileAttributes.class);
-                                    final FileTime creationTime = attributes.creationTime();
 
                                     String relativeFilePath = String.join(File.separator, organization, folder.getFolderName(), p.toFile().getAbsolutePath().replace(folderPath.toFile().getAbsolutePath(), "").substring(1));
 
                                     return FileDescription.builder()
                                             .name(relativeFilePath)
                                             .type(FileType.UNKNOWN)
-                                            .metadata(Map.of("creationTime", creationTime.toString()))
+                                            .metadata(Map.of(
+                                                    "creationTime", attributes.creationTime().toString(),
+                                                    "size", String.valueOf(attributes.size())
+                                            ))
                                             .build();
                                 } catch (final IOException e) {
                                     log.error("Cannot read attributes of file {}", p.toFile().getAbsolutePath(), e);
@@ -184,6 +185,11 @@ public class LocalFileStorage implements FileStorage {
         return toFile(folder, fileName).length();
     }
 
+    @Override
+    public void renameOrganization(String newOrganization) throws IOException {
+        Files.move(Path.of(localPath), Path.of(Path.of(localPath).getParent().toString(), newOrganization));
+    }
+
     private Path toPath(final FileFolder folder) {
         return toPath(folder, "");
     }
@@ -211,4 +217,5 @@ public class LocalFileStorage implements FileStorage {
     private void createNecessaryFolders(final Path filePath) {
         createNecessaryFolders(filePath.toFile());
     }
+
 }

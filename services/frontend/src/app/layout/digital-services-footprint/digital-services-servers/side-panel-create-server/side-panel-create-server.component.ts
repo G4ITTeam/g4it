@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -16,7 +16,7 @@ import { UserService } from "src/app/core/service/business/user.service";
 @Component({
     selector: "app-side-panel-create-server",
     templateUrl: "./side-panel-create-server.component.html",
-    providers:[MessageService]
+    providers: [MessageService],
 })
 export class SidePanelCreateServerComponent implements OnInit {
     oldType: string = "";
@@ -48,7 +48,7 @@ export class SidePanelCreateServerComponent implements OnInit {
         private _formBuilder: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
     ngOnInit(): void {
@@ -56,13 +56,6 @@ export class SidePanelCreateServerComponent implements OnInit {
             this.server = res;
             this.oldType = res.type;
             this.oldMutualisationType = res.mutualizationType;
-            if (this.server.uid !== "") {
-                this.serverForm.get("mutualizationType")?.disable();
-                this.serverForm.get("type")?.disable();
-            } else {
-                this.serverForm.get("mutualizationType")?.enable();
-                this.serverForm.get("type")?.enable();
-            }
         });
     }
 

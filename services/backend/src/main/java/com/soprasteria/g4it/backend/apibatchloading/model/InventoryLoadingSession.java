@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.model;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
@@ -56,6 +56,11 @@ public class InventoryLoadingSession {
      */
     @Setter
     private String inventoryName;
+
+    /**
+     * Organization on which the job should operate
+     */
+    private final Long organizationId;
 
     /**
      * The locale to use to validate data.

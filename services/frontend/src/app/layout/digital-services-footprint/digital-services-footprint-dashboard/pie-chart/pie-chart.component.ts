@@ -10,7 +10,6 @@ import { EChartsOption } from "echarts";
 import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 @Component({
     selector: "app-pie-chart",
     templateUrl: "./pie-chart.component.html",
@@ -63,8 +62,7 @@ export class PieChartComponent extends AbstractDashboard {
                     );
                     return `
                     <div style="display: flex; align-items: center; height: 30px;">
-                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
-                            params.color
+                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color
                         }; border-radius: 50%; margin-right: 5px;"></span>
                         <span style="font-weight: bold; margin-right: 15px;">${name}</span>
                     </div>

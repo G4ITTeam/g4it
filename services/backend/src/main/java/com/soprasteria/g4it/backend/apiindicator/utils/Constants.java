@@ -23,6 +23,11 @@ public final class Constants {
     public static final String PARAM_ORGANIZATION = "organization";
 
     /**
+     * The organization id parameter name.
+     */
+    public static final String PARAM_ORGANIZATION_ID = "organizationId";
+
+    /**
      * The inventory identifier parameter name.
      */
     public static final String PARAM_INVENTORY_ID = "inventoryId";
@@ -56,5 +61,9 @@ public final class Constants {
      * The Unspecified constant
      */
     public static final String UNSPECIFIED = "(Unspecified)";
+
+    private Constants() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 
 }

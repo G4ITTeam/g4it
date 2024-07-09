@@ -4,12 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.external.numecoeval.client;
 
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.CalculsApi;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.ImportsApi;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.*;
+import com.soprasteria.g4it.backend.exception.NumEcoEvalConnectorRuntimeException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,7 @@ public class CalculationClient {
      * Import CSV files into the API of NumEcoEval api-expositiondonneesentrees
      *
      * @param batchName            the batch name
-     * @param organisation         the organisation
+     * @param organizationId       the organization id
      * @param batchDate            the batch date or null
      * @param dataCenterCsv        the csv file datacenter
      * @param physicalEquipmentCsv the csv file physical equipment
@@ -65,7 +66,7 @@ public class CalculationClient {
      * @param applicationCsv       the csv file application
      * @return the list of RapportImportRest
      */
-    public List<RapportImportRest> importCSV(final String batchName, final String organisation, final LocalDate batchDate,
+    public List<RapportImportRest> importCSV(final String batchName, final String organizationId, final LocalDate batchDate,
                                              final File dataCenterCsv,
                                              final File physicalEquipmentCsv,
                                              final File virtualEquipmentCsv,
@@ -75,12 +76,12 @@ public class CalculationClient {
 
         final ResponseEntity<List<RapportImportRest>> response = importsApi.importCSVWithHttpInfo(batchName, dataCenterCsv,
                         physicalEquipmentCsv, virtualEquipmentCsv, applicationCsv, null, null,
-                        batchDateString, organisation)
+                        batchDateString, organizationId)
                 .block();
 
         if (response == null) {
-            log.error("NumEcoEval returned null response when calling POST /importCSV");
-            throw new RuntimeException();
+            throw new NumEcoEvalConnectorRuntimeException("NumEcoEval returned null response when calling POST /importCSV");
+
         }
         return response.getBody();
     }
@@ -88,11 +89,12 @@ public class CalculationClient {
     /**
      * Get the status and progress percentage of the calculation of the batch
      *
-     * @param batchName    the batch name
-     * @param organization the organization
+     * @param batchName      the batch name
+     * @param organizationId the organizationId as string
      * @return the StatutCalculRest
      */
-    public StatutCalculRest getCalculationsStatus(final String batchName, final String organization) {
-        return calculsApi.statutPourCalcul(batchName, organization).block();
+    public StatutCalculRest getCalculationsStatus(final String batchName, final String organizationId) {
+        return calculsApi.statutPourCalcul(batchName, organizationId).block();
     }
+
 }

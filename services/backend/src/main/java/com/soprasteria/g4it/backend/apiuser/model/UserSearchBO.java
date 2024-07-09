@@ -39,4 +39,8 @@ public class UserSearchBO {
      */
     private List<Long> linkedOrgIds;
     
+    /**
+     * The roles of the user.
+     */
+    private List<String> roles;
 }

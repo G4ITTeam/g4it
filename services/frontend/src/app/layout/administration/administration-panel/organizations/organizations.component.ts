@@ -8,58 +8,78 @@
 import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
+import { take } from "rxjs";
 import {
-    OrganizationUpsertRest,
     Organization,
+    OrganizationUpsertRest,
     Subscriber,
 } from "src/app/core/interfaces/administration.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
-import { UserService } from "src/app/core/service/business/user.service";
+import { UserDataService } from "src/app/core/service/data/user-data.service";
 import { Constants } from "src/constants";
+
 @Component({
     selector: "app-organizations",
     templateUrl: "./organizations.component.html",
     providers: [ConfirmationService, MessageService],
 })
 export class OrganizationsComponent {
+    editable = false;
     subscribersDetails!: Subscriber[];
+    unmodifiedSubscribersDetails!: Subscriber[];
     subscriber: any;
-    organizations!: Organization[];
+    newOrganization: Organization = {} as Organization;
+
     status = Constants.ORGANIZATION_STATUSES;
-    enableList = false;
+
     constructor(
         private confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
         private translate: TranslateService,
-        private userService: UserService,
+        private userDataService: UserDataService,
     ) {}
 
     ngOnInit() {
-        this.administrationService.getOrganizations().subscribe((res: any) => {
+        this.init();
+    }
+
+    init(subscriber: string | undefined = undefined) {
+        this.administrationService.getOrganizations().subscribe((res: Subscriber[]) => {
             this.subscribersDetails = res;
-        });
-        this.userService.updateOrganization = [];
-    }
-
-    getCurrentOrganizations() {
-        this.administrationService.getOrganizations().subscribe((res: any) => {
-            res.find((subscriber: any) => {
-                if (subscriber.name === this.subscriber.name) {
-                    this.organizations = subscriber.organizations;
-                    this.userService.updateOrganization = [];
-                    this.organizations.map((res) => {
-                        if (
-                            res.status === Constants.ORGANIZATION_STATUSES.TO_BE_DELETED
-                        ) {
-                            this.userService.updateOrganization.push(res.id);
-                        }
-                    });
-                }
-            });
+            this.unmodifiedSubscribersDetails = JSON.parse(JSON.stringify(res));
+            if (subscriber) {
+                this.subscriber = this.unmodifiedSubscribersDetails.find(
+                    (s) => s.name === subscriber,
+                );
+            }
         });
     }
 
-    confirm(event: Event, organization: Organization) {
+    checkOrganization(event: any, organization: Organization, subscriber: Subscriber) {
+        const organizations =
+            this.unmodifiedSubscribersDetails.find((s) => s.name === subscriber.name)
+                ?.organizations || [];
+
+        organization.uiStatus = undefined;
+
+        if (event.trim().includes(" ")) {
+            organization.uiStatus = "SPACE";
+            return;
+        }
+
+        if (
+            organizations.some((org) => org.name === event && org.id !== organization.id)
+        ) {
+            organization.uiStatus = "DUPLICATE";
+            return;
+        }
+
+        if (event && !organizations.some((org) => org.name === event)) {
+            organization.uiStatus = "OK";
+        }
+    }
+
+    confirmDelete(event: Event, organization: Organization) {
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             message: this.translate.instant("administration.delete-message"),
@@ -75,9 +95,8 @@ export class OrganizationsComponent {
             accept: () => {
                 this.updateOrganization(organization.id, {
                     subscriberId: this.subscriber.id,
-                    name: organization.name,
-                    status: this.status.TO_BE_DELETED,
-                    dataRetentionDay: null,
+                    name: organization.name.trim(),
+                    status: Constants.ORGANIZATION_STATUSES.TO_BE_DELETED,
                 });
             },
         });
@@ -86,17 +105,44 @@ export class OrganizationsComponent {
     confirmToActive(organization: Organization) {
         this.updateOrganization(organization.id, {
             subscriberId: this.subscriber.id,
-            name: organization.name,
-            status: null,
-            dataRetentionDay: 0,
+            name: organization.name.trim(),
+            status: Constants.ORGANIZATION_STATUSES.ACTIVE,
+        });
+    }
+
+    saveOrganizations(organizations: Organization[]) {
+        organizations
+            .filter((organization) => organization.uiStatus === "OK")
+            .forEach((organization) => {
+                this.updateOrganization(organization.id, {
+                    subscriberId: this.subscriber.id,
+                    name: organization.name,
+                    status: organization.status,
+                });
+            });
+    }
+
+    addOrganization(organization: Organization) {
+        if (organization === undefined) return;
+        let body = {
+            subscriberId: this.subscriber.id,
+            name: organization.name.trim(),
+            status: Constants.ORGANIZATION_STATUSES.ACTIVE,
+        };
+        this.administrationService.postOrganization(body).subscribe((_) => {
+            this.init(this.subscriber.name);
+            this.newOrganization = {} as Organization;
+            this.editable = false;
+            this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
         });
     }
 
     updateOrganization(organizationId: number, body: OrganizationUpsertRest) {
         this.administrationService
-            .deleteOrganization(organizationId, body)
+            .updateOrganization(organizationId, body)
             .subscribe((_) => {
-                this.getCurrentOrganizations();
+                this.init(this.subscriber.name);
+                this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
             });
     }
 }

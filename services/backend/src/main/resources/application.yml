@@ -3,6 +3,10 @@ version: "1.0.0"
 server:
   port: 8080
   shutdown: graceful
+  compression:
+    enabled: true
+    min-response-size: 2048
+    mime-types: application/json
 
 # NumEcoEval configs
 num-eco-eval:
@@ -12,6 +16,7 @@ num-eco-eval-referential:
   base-url: http://localhost:18080
 
 g4it:
+  criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
   data:
     retention:
       cron: "0 0 0 * * *"
@@ -35,7 +40,7 @@ g4it:
       cron: "0 0 0 * * *"
       day: "7"
 
-filesystem.local.path: "C:\\tmp\\"
+filesystem.local.path: ".\\storage"
 
 spring:
   profiles:
@@ -60,6 +65,7 @@ spring:
       max-active: 100
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
     properties:
       hibernate:
         jdbc:
@@ -82,6 +88,9 @@ spring:
       resolve-lazily: true
       max-request-size: 100MB
       max-file-size: 100MB
+  threads:
+    virtual:
+      enabled: true
 
 # Batch configs
 evaluation:

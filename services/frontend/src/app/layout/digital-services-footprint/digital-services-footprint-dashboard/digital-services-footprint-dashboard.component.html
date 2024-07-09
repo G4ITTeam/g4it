@@ -100,6 +100,8 @@
             <app-radial-chart
                 *ngIf="chartType == 'radial'"
                 [globalVisionChartData]="globalVisionChartData"
+                [selectedCriteria]="selectedCriteria"
+                (selectedCriteriaChange)="handleChartChange($event)"
             ></app-radial-chart>
             <app-pie-chart
                 *ngIf="chartType == 'pie'"

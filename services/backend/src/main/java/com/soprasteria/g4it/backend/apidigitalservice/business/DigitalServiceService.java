@@ -18,6 +18,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DatacenterDigit
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -29,7 +30,6 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.exception.UnableToGenerateFileException;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -97,17 +98,17 @@ public class DigitalServiceService {
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
 
+
     /**
      * Create a new digital service.
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the linked organization name.
-     * @param userId           the userId.
+     * @param organizationId the linked organization's id.
+     * @param userId         the userId.
      * @return the business object corresponding on the digital service created.
      */
-    public DigitalServiceBO createDigitalService(final String subscriberName, final String organizationName, final long userId) {
+    public DigitalServiceBO createDigitalService(final Long organizationId, final long userId) {
         // Get the linked organization.
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         // Get last index to create digital service.
         final List<DigitalService> userDigitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
@@ -143,41 +144,41 @@ public class DigitalServiceService {
         return digitalServiceMapper.toBusinessObject(digitalServiceSaved);
     }
 
+
     /**
      * Get the digital service list linked to a user.
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the organization name.
+     * @param organizationId the organization's id.
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getAllDigitalServicesByOrganization(final String subscriberName, final String organizationName) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public List<DigitalServiceBO> getAllDigitalServicesByOrganization(final Long organizationId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganization(linkedOrganization);
         return digitalServiceMapper.toBusinessObject(digitalServices);
     }
 
+
     /**
      * Get the digital service list linked to a user.
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the organization name.
-     * @param userId           the userId.
+     * @param organizationId the organization's id.
+     * @param userId         the userId.
      * @return the digital service list.
      */
-    public List<DigitalServiceBO> getDigitalServices(final String subscriberName, final String organizationName, final long userId) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
         return digitalServiceMapper.toBusinessObject(digitalServices);
     }
 
+
     /**
      * Delete a digital service.
      *
-     * @param organization      the organization.
      * @param digitalServiceUid the digital service UID.
      */
-    public void deleteDigitalService(final String organization, final String digitalServiceUid) {
-        indicatorService.deleteIndicators(organization, digitalServiceUid);
+    public void deleteDigitalService(final String digitalServiceUid) {
+        indicatorService.deleteIndicators(digitalServiceUid);
         digitalServiceRepository.deleteById(digitalServiceUid);
     }
 
@@ -188,7 +189,7 @@ public class DigitalServiceService {
      * @param user           the user entity
      * @return the updated digital service.
      */
-    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final User user) {
+    public DigitalServiceBO updateDigitalService(final DigitalServiceBO digitalService, final UserBO user) {
 
         // Check if digital service exist.
         final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalService.getUid());
@@ -200,7 +201,7 @@ public class DigitalServiceService {
         }
 
         // Merge digital service.
-        digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, user);
+        digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, User.builder().id(user.getId()).build());
 
         // Save the updated digital service.
         return digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
@@ -229,12 +230,13 @@ public class DigitalServiceService {
     /**
      * Run calculations in numEcoEval.
      *
-     * @param organizationName  the linked organization.
+     * @param organizationId    the linked organization's id.
      * @param digitalServiceUid the digital service id.
      */
-    public void runCalculations(final String organizationName, final String digitalServiceUid) {
+    public void runCalculations(final Long organizationId, final String digitalServiceUid) {
         // Remove indicators.
-        indicatorService.deleteIndicators(organizationName, digitalServiceUid);
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        indicatorService.deleteIndicators(digitalServiceUid);
 
         final DigitalServiceBO digitalService = getDigitalService(digitalServiceUid);
 
@@ -267,11 +269,11 @@ public class DigitalServiceService {
 
             // Call numEcoEval.
             numEcoEvalRemotingService.callInputDataExposition(datacenterResource, physicalEquipmentResource, virtualEquipmentResource, null,
-                    organizationName, null, digitalServiceUid);
-            try {
-                FileUtils.deleteDirectory(dir);
-            } catch (final IOException e) {
-                LOGGER.error("Unable to delete temp csv folder {}", dir.getAbsolutePath(), e);
+                    String.valueOf(linkedOrganization.getId()), null, digitalServiceUid);
+
+            final boolean isDelete = FileSystemUtils.deleteRecursively(dir);
+            if (!isDelete) {
+                LOGGER.error("Unable to delete temp csv folder {}", dir.getAbsolutePath());
                 throw new UnableToGenerateFileException();
             }
 

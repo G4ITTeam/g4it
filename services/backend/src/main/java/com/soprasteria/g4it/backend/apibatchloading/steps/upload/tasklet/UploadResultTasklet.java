@@ -23,6 +23,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -91,35 +92,7 @@ public class UploadResultTasklet implements Tasklet {
                 log.info("Creating archives");
 
                 // Archive with all files and rejected files only
-                final Path acceptedArchivePath = Path.of(resultFilePath.toFile().toString(), sessionPath + "_accepted.zip");
-                final Path rejectedArchivePath = Path.of(resultFilePath.toFile().toString(), sessionPath + "_results.zip");
-                final List<ZipEntrySource> rejectedEntries = new ArrayList<>();
-                final List<ZipEntrySource> acceptedEntries = new ArrayList<>();
-                for (Path path : paths) {
-                    if (path.toFile().getName().startsWith("rejected_")) {
-                        long lines = 0;
-                        try (LineNumberReader lnr = new LineNumberReader(new FileReader(path.toFile()))) {
-                            while (lnr.readLine() != null) {
-                                lines++;
-                                if (lines > 1) {
-                                    rejectedEntries.add(new FileSource(path.getFileName().toString(), path.toFile()));
-                                    break;
-                                }
-                            }
-                        }
-
-                    } else {
-                        acceptedEntries.add(new FileSource(path.getFileName().toString(), path.toFile()));
-                    }
-                }
-
-                ZipUtil.pack(rejectedEntries.toArray(new ZipEntrySource[0]), rejectedArchivePath.toFile());
-                ZipUtil.pack(acceptedEntries.toArray(new ZipEntrySource[0]), acceptedArchivePath.toFile());
-                uploadFile(rejectedArchivePath);
-                uploadFile(acceptedArchivePath);
-
-                stepContribution.getStepExecution().getExecutionContext().putString(FILE_URL_CONTEXT_KEY, fileStorage.getFileUrl(FileFolder.OUTPUT, Path.of(sessionPath, rejectedArchivePath.toFile().getName()).toString()));
-                stepContribution.getStepExecution().getExecutionContext().putLong(FILE_LENGTH_CONTEXT_KEY, fileStorage.getFileSize(FileFolder.OUTPUT, Path.of(sessionPath, rejectedArchivePath.toFile().getName()).toString()));
+                handleFiles(stepContribution, paths);
 
                 return RepeatStatus.FINISHED;
             }
@@ -127,6 +100,38 @@ public class UploadResultTasklet implements Tasklet {
             paths.forEach(path -> Try.run(() -> uploadFile(path)).getOrElseThrow(e -> new InventoryIntegrationRuntimeException(e.getMessage())));
         }
         return RepeatStatus.FINISHED;
+    }
+
+    private void handleFiles(StepContribution stepContribution, DirectoryStream<Path> paths) throws IOException {
+        final Path acceptedArchivePath = Path.of(resultFilePath.toFile().toString(), sessionPath + "_accepted.zip");
+        final Path rejectedArchivePath = Path.of(resultFilePath.toFile().toString(), sessionPath + "_results.zip");
+        final List<ZipEntrySource> rejectedEntries = new ArrayList<>();
+        final List<ZipEntrySource> acceptedEntries = new ArrayList<>();
+        for (Path path : paths) {
+            if (path.toFile().getName().startsWith("rejected_")) {
+                long lines = 0;
+                try (LineNumberReader lnr = new LineNumberReader(new FileReader(path.toFile()))) {
+                    while (lnr.readLine() != null) {
+                        lines++;
+                        if (lines > 1) {
+                            rejectedEntries.add(new FileSource(path.getFileName().toString(), path.toFile()));
+                            break;
+                        }
+                    }
+                }
+
+            } else {
+                acceptedEntries.add(new FileSource(path.getFileName().toString(), path.toFile()));
+            }
+        }
+
+        ZipUtil.pack(rejectedEntries.toArray(new ZipEntrySource[0]), rejectedArchivePath.toFile());
+        ZipUtil.pack(acceptedEntries.toArray(new ZipEntrySource[0]), acceptedArchivePath.toFile());
+        uploadFile(rejectedArchivePath);
+        uploadFile(acceptedArchivePath);
+
+        stepContribution.getStepExecution().getExecutionContext().putString(FILE_URL_CONTEXT_KEY, fileStorage.getFileUrl(FileFolder.OUTPUT, Path.of(sessionPath, rejectedArchivePath.toFile().getName()).toString()));
+        stepContribution.getStepExecution().getExecutionContext().putLong(FILE_LENGTH_CONTEXT_KEY, fileStorage.getFileSize(FileFolder.OUTPUT, Path.of(sessionPath, rejectedArchivePath.toFile().getName()).toString()));
     }
 
     private void uploadFile(final Path path) throws IOException {

@@ -4,10 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 
+import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationDomainsFiltersBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationFiltersBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentFiltersBO;
@@ -15,8 +16,11 @@ import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationFilters;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentFilters;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationFiltersRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.EquipmentFiltersRepository;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,12 +41,22 @@ class FilterServiceTest {
     @Mock
     private ApplicationFiltersRepository applicationFiltersRepository;
 
+    @Mock
+    private OrganizationService organizationService;
+
     @InjectMocks
     private FilterService filterService;
 
+    private static final String subscriber = TestUtils.createSubscriber().getName();
+    private static final Organization organization = TestUtils.createOrganization();
+
+    @BeforeEach
+    void init() {
+        lenient().when(organizationService.getOrganizationById(any())).thenReturn(organization);
+    }
+
     @Test
     void shouldReturnEquipmentFilters() {
-        final String organization = "SSG";
         final Long inventoryId = 1L;
         final String batchName = "batchName";
 
@@ -54,29 +68,28 @@ class FilterServiceTest {
         List<EquipmentFilters> equipmentFiltersList = new ArrayList<>();
         equipmentFiltersList.add(filter);
 
-        when(this.equipmentFiltersRepository.getFiltersByInventoryId(organization, inventoryId, batchName)).thenReturn(equipmentFiltersList);
+        when(this.equipmentFiltersRepository.getFiltersByInventoryId(inventoryId, batchName)).thenReturn(equipmentFiltersList);
 
-        this.filterService.getEquipmentFilters(organization, inventoryId, batchName);
+        this.filterService.getEquipmentFilters(subscriber, organization, inventoryId, batchName);
 
-        verify(this.equipmentFiltersRepository, times(1)).getFiltersByInventoryId(organization, inventoryId, batchName);
+        verify(this.equipmentFiltersRepository, times(1)).getFiltersByInventoryId(inventoryId, batchName);
     }
 
     @Test
     void getEquipmentFilters_whenDataNotExists() {
-        final String organization = "SSG";
         final Long inventoryId = 1L;
         final String batchName = "batchName";
 
-        when(equipmentFiltersRepository.getFiltersByInventoryId(organization, inventoryId, batchName)).thenReturn(new ArrayList<>());
+        when(equipmentFiltersRepository.getFiltersByInventoryId(inventoryId, batchName)).thenReturn(new ArrayList<>());
 
-        final EquipmentFiltersBO filters = filterService.getEquipmentFilters(organization, inventoryId, batchName);
+        final EquipmentFiltersBO filters = filterService.getEquipmentFilters(subscriber, organization, inventoryId, batchName);
 
         Assertions.assertThat(filters.getCountries()).isEmpty();
         Assertions.assertThat(filters.getEntities()).isEmpty();
         Assertions.assertThat(filters.getStatus()).isEmpty();
         Assertions.assertThat(filters.getEquipments()).isEmpty();
 
-        verify(equipmentFiltersRepository, times(1)).getFiltersByInventoryId(organization, inventoryId, batchName);
+        verify(equipmentFiltersRepository, times(1)).getFiltersByInventoryId(inventoryId, batchName);
     }
 
     @Test
@@ -121,7 +134,7 @@ class FilterServiceTest {
 
         when(this.applicationFiltersRepository.getFiltersByBatchName(inventoryId, batchName)).thenReturn(filters);
 
-        final ApplicationFiltersBO actualFilters = this.filterService.getApplicationFilters(inventoryId, batchName, null, null, null);
+        final ApplicationFiltersBO actualFilters = this.filterService.getApplicationFilters(subscriber, organization.getId(), inventoryId, batchName, null, null, null);
         Assertions.assertThat(actualFilters.getLifeCycles()).hasSize(4).contains("lifeCycle1", "lifeCycle2", "lifeCycle3", "lifeCycle4");
         Assertions.assertThat(actualFilters.getEnvironments()).hasSize(3).contains("env1", "env2", "env3");
         Assertions.assertThat(actualFilters.getTypes()).hasSize(3).contains("type1", "type2", "type3");
@@ -139,7 +152,7 @@ class FilterServiceTest {
 
         when(applicationFiltersRepository.getFiltersByBatchName(inventoryId, batchName)).thenReturn(new ArrayList<>());
 
-        final ApplicationFiltersBO filters = filterService.getApplicationFilters(inventoryId, batchName, null, null, null);
+        final ApplicationFiltersBO filters = filterService.getApplicationFilters(subscriber, organization.getId(), inventoryId, batchName, null, null, null);
 
         Assertions.assertThat(filters.getDomains()).isEmpty();
         Assertions.assertThat(filters.getEnvironments()).isEmpty();

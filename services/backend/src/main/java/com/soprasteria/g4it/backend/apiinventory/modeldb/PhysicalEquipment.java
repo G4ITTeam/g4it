@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractValidationBaseEntity;
@@ -44,7 +44,6 @@ public class PhysicalEquipment extends AbstractValidationBaseEntity implements S
     private String nomSourceDonnee;
 
     @Size(max = 255, message = "{modele.size}")
-    @NotBlank(message = "{modele.not.blank}")
     private String modele;
 
     @Pattern(regexp = "^[1-9][\\d]*$", message = "{quantite.pattern}")

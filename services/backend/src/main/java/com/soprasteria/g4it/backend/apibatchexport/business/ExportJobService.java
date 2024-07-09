@@ -41,6 +41,7 @@ public class ExportJobService {
     public static final String ORGANIZATION_JOB_PARAM = "organization";
 
     public static final String SUBSCRIBER_JOB_PARAM = "subscriber";
+    public static final String ORGANIZATION_ID_JOB_PARAM = "organization.id";
 
     /**
      * Async Job Launcher.
@@ -83,7 +84,8 @@ public class ExportJobService {
      * @return the job id.
      * @throws ExportRuntimeException when error occurs in batch job.
      */
-    public Long launchExport(final String subscriber, final String organization, final Long inventoryId, final String inventoryName, final String batchName) throws ExportRuntimeException {
+    public Long launchExport(final String subscriber, final String organization, final Long inventoryId,
+                             final String inventoryName, final String batchName, final Long organizationId) throws ExportRuntimeException {
         try {
             // trigger job execution
             final JobExecution jobExecution = asyncExportJobLauncher.run(exportJob,
@@ -94,6 +96,7 @@ public class ExportJobService {
                             .addString(BATCH_NAME_JOB_PARAM, batchName)
                             .addString(SUBSCRIBER_JOB_PARAM, subscriber)
                             .addString(ORGANIZATION_JOB_PARAM, organization)
+                            .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                             .toJobParameters());
 
             return jobExecution.getJobId();

@@ -578,19 +578,19 @@ databaseChangeLog:
       id: add-authorized_domains-column-in-g4it_subscriber
       author: G4IT Dev Team
       changes:
-      - addColumn:
-          tableName: g4it_subscriber
-          columns:
-            - column:
-                name: authorized_domains
-                type: text
-      - update:
-          columns:
-            - column:
-                name: authorized_domains
-                value: 'soprasteria.com'
-          tableName: g4it_subscriber
-          where: name = 'SOPRA-STERIA-GROUP'
+        - addColumn:
+            tableName: g4it_subscriber
+            columns:
+              - column:
+                  name: authorized_domains
+                  type: text
+        - update:
+            columns:
+              - column:
+                  name: authorized_domains
+                  value: 'soprasteria.com'
+            tableName: g4it_subscriber
+            where: name = 'SOPRA-STERIA-GROUP'
 
   - changeSet:
       id: add-new-roles-in-role-table
@@ -736,3 +736,83 @@ databaseChangeLog:
                   name: name
                   value: ROLE_ORGANIZATION_ADMINISTRATOR
             tableName: g4it_role
+
+  - changeSet:
+      id: delete-old-roles-mapping
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql:
+              delete from g4it_user_role_subscriber
+              where role_id in (select id from g4it_role where name in ('ROLE_INVENTORY', 'ROLE_DIGITAL_SERVICE'));
+        - sql:
+            sql:
+              delete from g4it_user_role_organization
+              where role_id in (select id from g4it_role where name in ('ROLE_INVENTORY', 'ROLE_DIGITAL_SERVICE'));
+        - sql:
+            sql:
+              delete from g4it_role
+              where name in ('ROLE_INVENTORY', 'ROLE_DIGITAL_SERVICE');
+
+  - changeSet:
+      id: add-column-is_migrated-g4it_organization
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_organization
+            columns:
+              - column:
+                  name: is_migrated
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: delete-obsolete-roles-mapping
+      author: G4IT Dev Team
+      changes:
+        - sql:
+            sql:
+              delete from g4it_user_role_organization uro where user_organization_id in (
+                select id from g4it_user_organization uo where uo.user_id in (
+                  select us.user_id  from g4it_user_role_subscriber urs
+                  inner join g4it_user_subscriber us on urs.user_subscriber_id = us.id
+                  inner join g4it_role r on r.id = urs.role_id
+                  where r.name = 'ROLE_SUBSCRIBER_ADMINISTRATOR'
+                )
+              );
+        - sql:
+            sql:
+              delete from g4it_user_role_organization where id in (
+                select uro.id from g4it_user_role_organization uro
+                inner join g4it_role r on r.id = uro.role_id
+                where (r.name like 'ROLE_DIGITAL_SERVICE_%' or r.name like 'ROLE_INVENTORY_%')
+                and uro.user_organization_id in (
+                  select uro.user_organization_id  from g4it_user_role_organization uro
+                  inner join g4it_role r on r.id = uro.role_id
+                  where r.name = 'ROLE_ORGANIZATION_ADMINISTRATOR'
+                )
+              );
+        - sql:
+            sql:
+              delete from g4it_user_role_organization where id in (
+                select uro.id from g4it_user_role_organization uro
+                inner join g4it_role r on r.id = uro.role_id
+                where r.name = 'ROLE_DIGITAL_SERVICE_READ'
+                and uro.user_organization_id in (
+                  select uro.user_organization_id  from g4it_user_role_organization uro
+                  inner join g4it_role r on r.id = uro.role_id
+                  where r.name = 'ROLE_DIGITAL_SERVICE_WRITE'
+                )
+              );
+        - sql:
+            sql:
+              delete from g4it_user_role_organization where id in (
+                select uro.id from g4it_user_role_organization uro
+                inner join g4it_role r on r.id = uro.role_id
+                where r.name = 'ROLE_INVENTORY_READ'
+                and uro.user_organization_id in (
+                select uro.user_organization_id  from g4it_user_role_organization uro
+                  inner join g4it_role r on r.id = uro.role_id
+                  where r.name = 'ROLE_INVENTORY_WRITE'
+                )
+              );

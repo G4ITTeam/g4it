@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.external.numecoeval.business;
 
 
@@ -66,14 +66,14 @@ public class NumEcoEvalRemotingService {
      * @param physicalEquipmentCsv the physical equipment csv file.
      * @param virtualEquipmentCsv  the virtual equipment csv file.
      * @param applicationCsv       the application csv file.
-     * @param organisation         the known organization.
+     * @param organizationId       the organization id as string.
      * @param batchDate            the batch date.
      * @param batchName            the batch name.
      * @throws NumEcoEvalConnectorRuntimeException when no csv file exist.
      */
     public void callInputDataExposition(final Resource dataCenterCsv, final Resource physicalEquipmentCsv,
                                         final Resource virtualEquipmentCsv, final Resource applicationCsv,
-                                        final String organisation, final String batchDate, final String batchName) throws NumEcoEvalConnectorRuntimeException {
+                                        final String organizationId, final String batchDate, final String batchName) throws NumEcoEvalConnectorRuntimeException {
 
         if (dataCenterCsv != null && dataCenterCsv.exists() ||
                 physicalEquipmentCsv != null && physicalEquipmentCsv.exists() ||
@@ -82,7 +82,7 @@ public class NumEcoEvalRemotingService {
 
             final var batchDateAsLocalDate = Optional.ofNullable(batchDate).map(LocalDate::parse).orElse(null);
 
-            final var rapportImportRest = calculationClient.importCSV(batchName, organisation, batchDateAsLocalDate,
+            final var rapportImportRest = calculationClient.importCSV(batchName, organizationId, batchDateAsLocalDate,
                     getFile(dataCenterCsv), getFile(physicalEquipmentCsv), getFile(virtualEquipmentCsv), getFile(applicationCsv));
 
             // Save report.
@@ -135,13 +135,13 @@ public class NumEcoEvalRemotingService {
     }
 
     /**
-     * @param batchName    the batch name
-     * @param organization the organization
+     * @param batchName      the batch name
+     * @param organizationId the organizationId as string
      * @return the String
      */
-    public String getCalculationsProgress(final String batchName, final String organization) {
+    public String getCalculationsProgress(final String batchName, final String organizationId) {
         try {
-            final var statutCalculRest = calculationClient.getCalculationsStatus(batchName, organization);
+            final var statutCalculRest = calculationClient.getCalculationsStatus(batchName, organizationId);
             return statutCalculRest.getEtat();
         } catch (Exception e) {
             log.error("Error occurs during fetching of calculation status: {}", e.getMessage());
@@ -149,4 +149,5 @@ public class NumEcoEvalRemotingService {
         return null;
 
     }
+
 }

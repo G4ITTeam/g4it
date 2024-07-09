@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchevaluation.controller;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.business.InventoryEvaluationService;
@@ -30,10 +30,10 @@ public class EvaluationController implements InventoryEvaluationApiDelegate {
      */
     @Override
     public ResponseEntity<Long> launchEvaluationBatch(final String subscriber,
-                                                      final String organization,
+                                                      final Long organization,
                                                       final Long inventoryId) {
         return ResponseEntity.accepted().body(
-                inventoryEvaluationService.launchEvaluationBatchJob(subscriber, organization, inventoryId)
+                inventoryEvaluationService.launchEvaluationBatchJob(subscriber, inventoryId, organization)
         );
     }
 

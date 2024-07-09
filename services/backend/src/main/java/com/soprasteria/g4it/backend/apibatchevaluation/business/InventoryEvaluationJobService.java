@@ -4,11 +4,14 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchevaluation.business;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.exception.InventoryEvaluationRuntimeException;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.config.EvaluationBatchConfiguration;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -79,21 +83,29 @@ public class InventoryEvaluationJobService {
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingFolderBasePath;
 
+    public static final String ORGANIZATION_ID = "organization.id";
+
+    @Autowired
+    private OrganizationService organizationService;
+
     /**
      * Launch Batch.
      *
-     * @param organization  the organization.
-     * @param inventoryName the inventory name.
+     * @param organization   the organization.
+     * @param inventoryName  the inventory name.
+     * @param inventoryId    the inventory's id.
+     * @param organizationId the organization's id.
      * @return the job id.
      * @throws InventoryEvaluationRuntimeException when error occurs in batch job.
      */
-    public Long launchInventoryEvaluation(final String organization, final String inventoryName, final Long inventoryId) throws InventoryEvaluationRuntimeException {
+    public Long launchInventoryEvaluation(final String organization, final String inventoryName, final Long inventoryId, final Long organizationId) throws InventoryEvaluationRuntimeException {
         try {
             // trigger job execution
             final JobExecution jobExecution = asyncEvaluationJobLauncher.run(evaluateInventoryJob,
                     new JobParametersBuilder()
                             .addString("local.working.folder", getRandomFolderName())
                             .addString(ORGANIZATION, organization)
+                            .addLong(ORGANIZATION_ID, organizationId)
                             .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
                             .addDate("processing.date", new Date())
                             .addString(BATCH_NAME_JOB_PARAM, UUID.randomUUID().toString())
@@ -115,24 +127,26 @@ public class InventoryEvaluationJobService {
         }
     }
 
+
+    private String getRandomFolderName() {
+        // We generate random folder name
+        return Paths.get(localWorkingFolderBasePath, UUID.randomUUID().toString()).toString();
+    }
+
     /**
      * Remove job instances for an organization and optionally an inventoryName.
      *
-     * @param organization the organization.
-     * @param inventoryId  the inventory id (Optional).
+     * @param organizationId the organization's id.
+     * @param inventoryId    the inventory id (Optional).
      */
-    public void deleteJobInstances(final String organization, final Long inventoryId) {
+    public void deleteJobInstances(final Long organizationId, final Long inventoryId) {
+
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+
         // Get all evaluate inventory.
         final List<JobInstance> runningJobExecutions = explorer.findJobInstancesByJobName(EvaluationBatchConfiguration.EVALUATE_INVENTORY_JOB, 0, Integer.MAX_VALUE);
 
-        final Predicate<JobExecution> jobExecutionPredicate;
-        if (inventoryId == null) {
-            // Get job instance for an organization.
-            jobExecutionPredicate = jobExecution -> StringUtils.equals(organization, jobExecution.getJobParameters().getString(ORGANIZATION));
-        } else {
-            // Get job instance for an inventory.
-            jobExecutionPredicate = jobExecution -> inventoryId.equals(jobExecution.getJobParameters().getLong(INVENTORY_ID_JOB_PARAM));
-        }
+        final Predicate<JobExecution> jobExecutionPredicate = getJobExecutionPredicate(linkedOrganization != null ? linkedOrganization.getName() : null, organizationId, inventoryId);
 
         // Extract job executions to remove.
         final List<JobExecution> jobExecutionsToRemove = runningJobExecutions
@@ -149,8 +163,20 @@ public class InventoryEvaluationJobService {
         jobInstancesToRemove.forEach(jobRepository::deleteJobInstance);
     }
 
-    private String getRandomFolderName() {
-        // We generate random folder name
-        return Paths.get(localWorkingFolderBasePath, UUID.randomUUID().toString()).toString();
+    private static Predicate<JobExecution> getJobExecutionPredicate(String organization, Long organizationId, Long inventoryId) {
+        final Predicate<JobExecution> jobExecutionPredicate;
+        if (inventoryId == null) {
+            // Get job instance for an organization.
+            jobExecutionPredicate = jobExecution -> {
+                if (!ObjectUtils.isEmpty(jobExecution.getJobParameters().getLong(ORGANIZATION_ID)))
+                    return Objects.equals(organizationId, jobExecution.getJobParameters().getLong(ORGANIZATION_ID));
+                else
+                    return StringUtils.equals(organization, jobExecution.getJobParameters().getString(ORGANIZATION));
+            };
+        } else {
+            // Get job instance for an inventory.
+            jobExecutionPredicate = jobExecution -> inventoryId.equals(jobExecution.getJobParameters().getLong(INVENTORY_ID_JOB_PARAM));
+        }
+        return jobExecutionPredicate;
     }
 }

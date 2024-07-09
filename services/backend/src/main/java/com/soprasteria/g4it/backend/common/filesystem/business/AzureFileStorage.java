@@ -42,6 +42,7 @@ import java.util.Optional;
  */
 @Slf4j
 @RequiredArgsConstructor
+
 public class AzureFileStorage implements FileStorage {
 
     /**
@@ -68,6 +69,7 @@ public class AzureFileStorage implements FileStorage {
      * The subscriber azure storage (start with azure-blob://[container-name].
      */
     private final String subscriberAzureStoragePrefix;
+
 
     /**
      * {@inheritDoc}
@@ -244,6 +246,23 @@ public class AzureFileStorage implements FileStorage {
         return 0;
     }
 
+    @Override
+    public void renameOrganization(String newOrganization) throws IOException {
+        final ListBlobsOptions options = new ListBlobsOptions();
+        options.setPrefix(String.join(FILE_PATH_DELIMITER, organization));
+        options.setDetails(new BlobListDetails().setRetrieveMetadata(true));
+        blobContainerClient.listBlobs(options, null).iterator()
+                .forEachRemaining(item -> {
+                    final String oldFilePath = Path.of(item.getName()).toString();
+                    final BlobClient oldBlobClient = blobContainerClient.getBlobClient(oldFilePath);
+                    final String newFilePath = oldFilePath.replaceFirst(organization, newOrganization);
+                    final BlobClient newBlobClient = blobContainerClient.getBlobClient(newFilePath);
+                    log.info("Moving {} to {}", oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
+                    newBlobClient.copyFromUrl(getSasUrl(oldBlobClient));
+                    oldBlobClient.delete();
+                });
+    }
+
     /**
      * Convert Azure BlobItem to the StorageBlobResource.
      *
@@ -314,4 +333,5 @@ public class AzureFileStorage implements FileStorage {
                 .setStartTime(OffsetDateTime.now().minusHours(1));
         return client.generateSas(values);
     }
+
 }

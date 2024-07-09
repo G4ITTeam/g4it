@@ -21,6 +21,7 @@ import java.util.List;
 @SuperBuilder
 public class UserBO {
 
+    @EqualsAndHashCode.Exclude
     long id;
 
     /**
@@ -31,29 +32,39 @@ public class UserBO {
     /**
      * The firstName of the user.
      */
+    @EqualsAndHashCode.Exclude
     private String firstName;
 
     /**
      * The lastName of the user.
      */
+    @EqualsAndHashCode.Exclude
     private String lastName;
 
     /**
      * The subject of the user.
      */
+    @EqualsAndHashCode.Exclude
     private String sub;
 
     /**
      * The domain of the user.
      */
+    @EqualsAndHashCode.Exclude
     private String domain;
 
     /**
      * User's subscriber.
      */
+    @EqualsAndHashCode.Exclude
     private List<SubscriberBO> subscribers;
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime creationDate;
+
+    /**
+     * The admin mode to show deleted organizations
+     */
+    private boolean adminMode = false;
 
 }

@@ -4,11 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.business;
 
 import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryIntegrationRuntimeException;
 import com.soprasteria.g4it.backend.apibatchloading.model.InventoryLoadingSession;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
 import com.soprasteria.g4it.backend.config.LoadingBatchConfiguration;
@@ -42,19 +44,19 @@ import static org.mockito.Mockito.*;
 class InventoryLoadingJobServiceTest {
 
     private final static String LOCAL_FILESYSTEM_PATH = "target/local-filestorage-test-loading";
-
+    public final Long ORGANIZATION_ID = 1L;
     @Mock
     private JobLauncher asyncJobLauncher;
-
     @Mock
     private JobRepository jobRepository;
     @Mock
     private JobExplorer jobExplorer;
     @Mock
     private FileSystem fileSystem;
-
     @InjectMocks
     private InventoryLoadingJobService service;
+    @Mock
+    private OrganizationService organizationService;
 
     @BeforeEach
     public void beforeEach() {
@@ -80,7 +82,7 @@ class InventoryLoadingJobServiceTest {
         execution.setExitStatus(ExitStatus.COMPLETED);
         execution.setStatus(BatchStatus.COMPLETED);
 
-        when(fileSystem.mount(subscriber, organization)).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
+        when(fileSystem.mount(subscriber, ORGANIZATION_ID.toString())).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
         when(asyncJobLauncher.run(any(), any())).thenReturn(execution);
 
         final Long jobId = service.launchInventoryIntegration(InventoryLoadingSession
@@ -88,6 +90,7 @@ class InventoryLoadingJobServiceTest {
                 .subscriber(subscriber)
                 .inventoryName(inventoryName)
                 .organization(organization)
+                .organizationId(ORGANIZATION_ID)
                 .sessionDate(new Date())
                 .files(new ArrayList<>())
                 .inventoryId(invenyoryId)
@@ -97,7 +100,7 @@ class InventoryLoadingJobServiceTest {
         assertThat(jobId).isEqualTo(1L);
 
         verify(asyncJobLauncher, times(1)).run(any(), any());
-        verify(fileSystem, times(1)).mount(subscriber, organization);
+        verify(fileSystem, times(1)).mount(subscriber, ORGANIZATION_ID.toString());
     }
 
     @Test
@@ -115,7 +118,7 @@ class InventoryLoadingJobServiceTest {
         execution.setExitStatus(ExitStatus.COMPLETED);
         execution.setStatus(BatchStatus.COMPLETED);
 
-        when(fileSystem.mount(subscriber, organization)).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
+        when(fileSystem.mount(subscriber, ORGANIZATION_ID.toString())).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobExecutionAlreadyRunningException(""));
 
         final InventoryLoadingSession session = InventoryLoadingSession
@@ -123,6 +126,7 @@ class InventoryLoadingJobServiceTest {
                 .subscriber(subscriber)
                 .inventoryName(inventoryName)
                 .organization(organization)
+                .organizationId(ORGANIZATION_ID)
                 .sessionDate(new Date())
                 .files(new ArrayList<>())
                 .inventoryId(inventoryId)
@@ -133,7 +137,7 @@ class InventoryLoadingJobServiceTest {
                 .isInstanceOf(InventoryIntegrationRuntimeException.class);
 
         verify(asyncJobLauncher, times(1)).run(any(), any());
-        verify(fileSystem, times(1)).mount(subscriber, organization);
+        verify(fileSystem, times(1)).mount(subscriber, ORGANIZATION_ID.toString());
     }
 
     @Test
@@ -151,7 +155,7 @@ class InventoryLoadingJobServiceTest {
         execution.setExitStatus(ExitStatus.COMPLETED);
         execution.setStatus(BatchStatus.COMPLETED);
 
-        when(fileSystem.mount(subscriber, organization)).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
+        when(fileSystem.mount(subscriber, ORGANIZATION_ID.toString())).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobRestartException(""));
 
         final InventoryLoadingSession session = InventoryLoadingSession
@@ -159,6 +163,7 @@ class InventoryLoadingJobServiceTest {
                 .subscriber(subscriber)
                 .inventoryName(inventoryName)
                 .organization(organization)
+                .organizationId(ORGANIZATION_ID)
                 .sessionDate(new Date())
                 .files(new ArrayList<>())
                 .inventoryId(inventoryId)
@@ -169,7 +174,7 @@ class InventoryLoadingJobServiceTest {
                 .isInstanceOf(InventoryIntegrationRuntimeException.class);
 
         verify(asyncJobLauncher, times(1)).run(any(), any());
-        verify(fileSystem, times(1)).mount(subscriber, organization);
+        verify(fileSystem, times(1)).mount(subscriber, ORGANIZATION_ID.toString());
     }
 
     @Test
@@ -187,7 +192,7 @@ class InventoryLoadingJobServiceTest {
         execution.setExitStatus(ExitStatus.COMPLETED);
         execution.setStatus(BatchStatus.COMPLETED);
 
-        when(fileSystem.mount(subscriber, organization)).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
+        when(fileSystem.mount(subscriber, ORGANIZATION_ID.toString())).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobInstanceAlreadyCompleteException(""));
 
         final InventoryLoadingSession session = InventoryLoadingSession
@@ -195,6 +200,7 @@ class InventoryLoadingJobServiceTest {
                 .subscriber(subscriber)
                 .inventoryName(inventoryName)
                 .organization(organization)
+                .organizationId(ORGANIZATION_ID)
                 .sessionDate(new Date())
                 .files(new ArrayList<>())
                 .inventoryId(inventoryId)
@@ -205,7 +211,7 @@ class InventoryLoadingJobServiceTest {
                 .isInstanceOf(InventoryIntegrationRuntimeException.class);
 
         verify(asyncJobLauncher, times(1)).run(any(), any());
-        verify(fileSystem, times(1)).mount(subscriber, organization);
+        verify(fileSystem, times(1)).mount(subscriber, ORGANIZATION_ID.toString());
     }
 
     @Test
@@ -222,7 +228,7 @@ class InventoryLoadingJobServiceTest {
         execution.setExitStatus(ExitStatus.COMPLETED);
         execution.setStatus(BatchStatus.COMPLETED);
 
-        when(fileSystem.mount(subscriber, organization)).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
+        when(fileSystem.mount(subscriber, ORGANIZATION_ID.toString())).thenReturn(new LocalFileStorage(LOCAL_FILESYSTEM_PATH));
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobParametersInvalidException(""));
 
         final InventoryLoadingSession session = InventoryLoadingSession
@@ -230,6 +236,7 @@ class InventoryLoadingJobServiceTest {
                 .subscriber(subscriber)
                 .inventoryName(inventoryName)
                 .organization(organization)
+                .organizationId(ORGANIZATION_ID)
                 .sessionDate(new Date())
                 .files(new ArrayList<>())
                 .inventoryId(4L)
@@ -240,7 +247,7 @@ class InventoryLoadingJobServiceTest {
                 .isInstanceOf(InventoryIntegrationRuntimeException.class);
 
         verify(asyncJobLauncher, times(1)).run(any(), any());
-        verify(fileSystem, times(1)).mount(subscriber, organization);
+        verify(fileSystem, times(1)).mount(subscriber, ORGANIZATION_ID.toString());
     }
 
     @Test
@@ -288,7 +295,7 @@ class InventoryLoadingJobServiceTest {
         doNothing().when(jobRepository).deleteJobExecution(any());
         doNothing().when(jobRepository).deleteJobInstance(any());
 
-        service.deleteJobInstances(organization, inventoryId);
+        service.deleteJobInstances(ORGANIZATION_ID, inventoryId);
 
         verify(jobExplorer, times(1)).findJobInstancesByJobName(LoadingBatchConfiguration.LOAD_INVENTORY_JOB, 0, Integer.MAX_VALUE);
         verify(jobExplorer, times(3)).getJobExecutions(any());
@@ -304,6 +311,7 @@ class InventoryLoadingJobServiceTest {
     void shouldRemoveJobInstanceForAnOrganization() {
         // Given
         final String organization = "org";
+        final Organization linkedOrganization = Organization.builder().id(ORGANIZATION_ID).name(organization).build();
 
         // Build Job Instances
         final LocalDateTime startTime = LocalDateTime.now();
@@ -337,6 +345,7 @@ class InventoryLoadingJobServiceTest {
         execution3.setStatus(BatchStatus.FAILED);
         execution3.setJobInstance(instance3);
 
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(jobExplorer.findJobInstancesByJobName(LoadingBatchConfiguration.LOAD_INVENTORY_JOB, 0, Integer.MAX_VALUE)).thenReturn(List.of(instance1, instance2, instance3));
         when(jobExplorer.getJobExecutions(instance1)).thenReturn(List.of(execution1));
         when(jobExplorer.getJobExecutions(instance2)).thenReturn(List.of(execution2));
@@ -344,7 +353,7 @@ class InventoryLoadingJobServiceTest {
         doNothing().when(jobRepository).deleteJobExecution(any());
         doNothing().when(jobRepository).deleteJobInstance(any());
 
-        service.deleteJobInstances(organization, null);
+        service.deleteJobInstances(ORGANIZATION_ID, null);
 
         verify(jobExplorer, times(1)).findJobInstancesByJobName(LoadingBatchConfiguration.LOAD_INVENTORY_JOB, 0, Integer.MAX_VALUE);
         verify(jobExplorer, times(3)).getJobExecutions(any());

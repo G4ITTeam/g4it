@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.MixElectriqueDTO;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.TypeEquipementDTO;
 import com.soprasteria.g4it.backend.external.numecoeval.client.ReferentialClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,12 +19,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +39,11 @@ class NumEcoEvalReferentialRemotingServiceTest {
     @Mock
     ReferentialClient referentialClient;
     private static final String testFolderRef = "external/numecoeval/referential";
+
+    @BeforeEach
+    void init() {
+        ReflectionTestUtils.setField(numEcoEvalReferentialRemotingService, "criterias", Set.of("C1", "C2", "C3", "C4", "C5"));
+    }
 
     @Test
     void shouldGetCountry() {
@@ -71,9 +79,9 @@ class NumEcoEvalReferentialRemotingServiceTest {
 
         Mockito.when(referentialClient.getMixElec()).thenReturn(mockMixElec);
 
-        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("Acidification", "Albania")).isEqualTo(1);
-        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("Climate change", "Angola")).isEqualTo(2);
-        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("Ionising radiation", "Armenia")).isEqualTo(4);
+        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("C1", "Albania")).isEqualTo(1);
+        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("C2", "Angola")).isEqualTo(2);
+        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("C4", "Armenia")).isEqualTo(4);
     }
 
     @Test

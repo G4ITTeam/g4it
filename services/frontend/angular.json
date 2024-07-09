@@ -37,7 +37,10 @@
                             "node_modules/quill/dist/quill.js"
                             ],
                         "allowedCommonJsDependencies": [
-                            "sort-by-property"
+                            "sort-by-property",
+                            "js-sha256",
+                            "quill-delta",
+                            "file-saver"
                          ]
                     },
                     "configurations": {
@@ -77,10 +80,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "frontend:build:production"
+                            "buildTarget": "frontend:build:production"
                         },
                         "development": {
-                            "browserTarget": "frontend:build:development"
+                            "buildTarget": "frontend:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -88,7 +91,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "frontend:build"
+                        "buildTarget": "frontend:build"
                     }
                 },
                 "test": {

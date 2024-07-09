@@ -7,19 +7,21 @@
  */
 package com.soprasteria.g4it.backend.apiuser.repository;
 
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.apiuser.modeldb.UserSubscriber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import java.util.List;
 
 @Repository
 public interface UserSubscriberRepository extends JpaRepository<UserSubscriber, Long> {
 
     /**
-     * Find List of Subscriber by user id
+     * Find userSubscribers by subscriber
      *
-     * @return the List of subscriber.
+     * @param subscriber
+     * @return the list of userSubscribers
      */
-    Set<UserSubscriber> findByUserId(Long userId);
+    List<UserSubscriber> findBySubscriber(Subscriber subscriber);
 }

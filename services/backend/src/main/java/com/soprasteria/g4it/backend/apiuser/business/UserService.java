@@ -14,13 +14,10 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.*;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
-import com.soprasteria.g4it.backend.exception.AuthorizationException;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,25 +47,9 @@ public class UserService {
     private NewUserService newUserService;
     @Autowired
     private CacheManager cacheManager;
-    /**
-     * The repository to access organization data.
-     */
     @Autowired
     private UserSubscriberRepository userSubscriberRepository;
 
-    /**
-     * Gets user's information.
-     *
-     * @return the user rest object.
-     */
-    public UserBO getUser() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
-            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "The token is not a JWT token");
-        }
-
-        return getUserByName(getUserFromToken(jwt));
-    }
 
     /**
      * Create a UserBo object from jwt token
@@ -88,26 +69,13 @@ public class UserService {
     }
 
     /**
-     * Gets user's information.
-     *
-     * @return the user rest object.
-     */
-    public User getUserEntity() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
-            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "The token is not a JWT token");
-        }
-
-        return userRepository.findByEmail(jwt.getClaim(Constants.JWT_EMAIL_FIELD)).orElseThrow();
-    }
-
-    /**
      * Gets user's information by its name.
      *
      * @param userInfo the userInfo (email, firstName, lastname and subject)
      * @return the user rest object.
      */
     @Transactional
+    @Cacheable("getUserByName")
     public UserBO getUserByName(final UserBO userInfo) {
         String sub = userInfo.getSub();
         String email = userInfo.getEmail();
@@ -118,10 +86,6 @@ public class UserService {
             userReturned = userSubject.get();
             if (!email.equals(userReturned.getEmail()) || !userInfo.getLastName().equals(userReturned.getLastName())) {
                 updateUserWithNewUserinfo(userReturned, userInfo);
-            }
-            if (userReturned.getUserOrganizations().stream().filter(org -> org.getOrganization().getStatus().equals(OrganizationStatus.ACTIVE.name())).toList().isEmpty()) {
-                throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "To access to G4IT, you must be added as a member of a organization, please contact your administrator" +
-                        "or the support at support.g4it@soprasteria.com.");
             }
         }
 
@@ -141,12 +105,10 @@ public class UserService {
                 User newUser = createNewUserWithDomain(accessRoles, userInfo);
 
                 if (newUser == null) {
-                    // organization doesn't exist in g4it_subscriber, add new user to g4it_user with no rights
+                    // user's domain doesn't exist in g4it_subscriber authorized domain, add new user to g4it_user with no rights
                     newUserService.createNewUser(userInfo);
-                    Objects.requireNonNull(cacheManager.getCache("findBySub")).evict(sub);
 
-                    throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "To access to G4IT, you must be added as a member of a organization, please contact your administrator" +
-                            "or the support at support.g4it@soprasteria.com.");
+                    return null;
                 } else
                     userReturned = userRepository.findById(newUser.getId()).orElseThrow();
             }
@@ -158,7 +120,8 @@ public class UserService {
                 .firstName(userReturned.getFirstName())
                 .lastName(userReturned.getLastName())
                 .email(userReturned.getEmail())
-                .subscribers(buildSubscribers(userReturned))
+                .subscribers(buildSubscribers(userReturned, userInfo.isAdminMode()))
+                .adminMode(userInfo.isAdminMode())
                 .build();
     }
 
@@ -176,11 +139,12 @@ public class UserService {
                 Organization demoOrg = organizationRepository.findBySubscriberNameAndName(subscriber.getName(), Constants.DEMO)
                         .orElseGet(() -> organizationRepository.save(Organization.builder()
                                 .name(Constants.DEMO)
+                                .status(OrganizationStatus.ACTIVE.name())
                                 .creationDate(LocalDateTime.now())
                                 .subscriber(subscriber)
                                 .build()));
                 newUser = newUserService.createUser(subscriber, demoOrg, newUser, userInfo, accessRoles);
-                Objects.requireNonNull(cacheManager.getCache("findBySub")).evict(userInfo.getSub());
+                clearUserCache(userInfo);
             }
         }
         return newUser;
@@ -209,70 +173,98 @@ public class UserService {
      * @param user the user.
      * @return the user's subscriber list.
      */
-    private List<SubscriberBO> buildSubscribers(final User user) {
+    public List<SubscriberBO> buildSubscribers(final User user, final boolean adminMode) {
 
         if (user.getUserSubscribers() == null || user.getUserOrganizations() == null) return List.of();
 
+        // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
+        List<SubscriberBO> results = new ArrayList<>(user.getUserSubscribers().stream()
+                .filter(userSubscriber -> userSubscriber.getRoles() != null &&
+                        userSubscriber.getRoles().stream().anyMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)))
+                .map(userSubscriber -> buildSubscriber(userSubscriber, adminMode))
+                .sorted(Comparator.comparing(SubscriberBO::getName))
+                .toList());
+
+        Set<String> adminSubscribers = results.stream().map(SubscriberBO::getName).collect(Collectors.toSet());
+
+        if (user.getUserOrganizations() == null) return results;
+
         // (subscriber, [userOrganization])
-        final Map<Subscriber, List<UserOrganization>> organizationBySubscriber = getOrganizationBySubscriberMap(user);
-
-        // subscriber: (id, userSubscriber)
-        final var userSubscriberMap = getUserSubscriberMap(user);
-
-        return organizationBySubscriber.entrySet().stream()
-                .map(orgBySub -> {
-                    List<UserOrganization> userOrgList = orgBySub.getValue().stream()
-                            .filter(userOrg -> userOrg.getOrganization().getStatus().equals(OrganizationStatus.ACTIVE.name()))
-                            .toList();
-                    return userSubscriberMap.containsKey(orgBySub.getKey().getId()) ?
-                            buildSubscriber(userSubscriberMap.get(orgBySub.getKey().getId()), userOrgList) : null;
-                })
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    /**
-     * Get the hashmap containing the subscriber as key and list of user organizations object as value.
-     *
-     * @param user the user.
-     * @return Map<Subscriber, List < UserOrganization>>
-     */
-    public Map<Subscriber, List<UserOrganization>> getOrganizationBySubscriberMap(User user) {
-        return user.getUserOrganizations().stream()
+        final Map<Subscriber, List<UserOrganization>> organizationBySubscriber = user.getUserOrganizations().stream()
                 .collect(Collectors.groupingBy(e -> e.getOrganization().getSubscriber()));
-    }
 
-    /**
-     * Get the hashmap containing the subscriber's id as key and UserSubscriber object as value.
-     *
-     * @param user the user
-     * @return HashMap<Long, UserSubscriber>
-     */
-    public HashMap<Long, UserSubscriber> getUserSubscriberMap(User user) {
-        final var userSubscriberMap = new HashMap<Long, UserSubscriber>();
-        for (final var userSubscriber : user.getUserSubscribers()) {
-            userSubscriberMap.put(userSubscriber.getSubscriber().getId(), userSubscriber);
-        }
-        return userSubscriberMap;
-    }
+        // Get the subscribers and subObjects on which the user has not ROLE_SUBSCRIBER_ADMINISTRATOR but other roles on organizations
+        results.addAll(organizationBySubscriber.entrySet().stream()
+                .filter(entry -> !adminSubscribers.contains(entry.getKey().getName()))
+                .map(userOrgsBySub -> buildSubscriberWithUserOrganizations(userOrgsBySub.getKey(), userOrgsBySub.getValue(), adminMode))
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(SubscriberBO::getName))
+                .toList());
 
+        return results;
+    }
 
     /**
      * Build subscriber.
      *
-     * @param userSubscriber    the user subscriber.
-     * @param userOrganizations the user's organization list.
+     * @param userSubscriber the user subscriber.
+     * @param adminMode      the adminMode
      * @return the user's subscriber.
      */
-    public SubscriberBO buildSubscriber(final UserSubscriber userSubscriber, final List<UserOrganization> userOrganizations) {
+    public SubscriberBO buildSubscriber(final UserSubscriber userSubscriber, final boolean adminMode) {
+
+        final List<Role> roles = userSubscriber.getRoles() == null ? List.of() : userSubscriber.getRoles();
+        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(OrganizationStatus.ACTIVE.name());
+
         return SubscriberBO.builder()
                 .defaultFlag(userSubscriber.getDefaultFlag())
                 .name(userSubscriber.getSubscriber().getName())
-                .organizations(userOrganizations.stream()
-                        .map(this::buildOrganization)
+                .organizations(userSubscriber.getSubscriber().getOrganizations().stream()
+                        .filter(organization -> status.contains(organization.getStatus()))
+                        .map(organization -> {
+                            OrganizationBO organizationBO = OrganizationBO.builder()
+                                    .roles(List.of())
+                                    .defaultFlag(false)
+                                    .name(organization.getName())
+                                    .id(organization.getId())
+                                    .status(organization.getStatus())
+                                    .deletionDate(organization.getDeletionDate())
+                                    .build();
+                            return organizationBO;
+                        })
+                        .sorted(Comparator.comparing(OrganizationBO::getName))
                         .toList())
-                .roles(userSubscriber.getRoles().stream().map(Role::getName).toList())
+                .roles(roles.stream().map(Role::getName).toList())
                 .id(userSubscriber.getSubscriber().getId())
+                .build();
+    }
+
+    /**
+     * Build the subscriber if any organization has at least one user role
+     *
+     * @param subscriber        the user subscriber.
+     * @param userOrganizations the user's organization list.
+     * @param adminMode         the adminMode
+     * @return the user's subscriber.
+     */
+    public SubscriberBO buildSubscriberWithUserOrganizations(final Subscriber subscriber, final List<UserOrganization> userOrganizations, final boolean adminMode) {
+
+        final List<String> status = adminMode ? Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS : List.of(OrganizationStatus.ACTIVE.name());
+
+        List<OrganizationBO> organizations = userOrganizations.stream()
+                .filter(userOrganization -> status.contains(userOrganization.getOrganization().getStatus()))
+                .map(this::buildOrganization)
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (organizations.isEmpty()) return null;
+
+        return SubscriberBO.builder()
+                .defaultFlag(false)
+                .name(subscriber.getName())
+                .organizations(organizations)
+                .roles(List.of())
+                .id(subscriber.getId())
                 .build();
     }
 
@@ -283,6 +275,8 @@ public class UserService {
      * @return the user's organization.
      */
     public OrganizationBO buildOrganization(final UserOrganization userOrganization) {
+        if (userOrganization.getRoles() == null || userOrganization.getRoles().isEmpty()) return null;
+
         return OrganizationBO.builder()
                 .roles(userOrganization.getRoles().stream().map(Role::getName).toList())
                 .defaultFlag(userOrganization.getDefaultFlag())
@@ -291,6 +285,41 @@ public class UserService {
                 .status(userOrganization.getOrganization().getStatus())
                 .deletionDate(userOrganization.getOrganization().getDeletionDate())
                 .build();
+    }
+
+    /**
+     * Clear user cache
+     *
+     * @param user the user.
+     */
+    public void clearUserCache(final UserBO user) {
+        List.of(false, true).forEach(isAdmin -> {
+            Objects.requireNonNull(cacheManager.getCache("getUserByName"))
+                    .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build());
+        });
+
+    }
+
+    /**
+     * Clear user cache
+     *
+     * @param user the user.
+     */
+    public void clearUserCache(final UserBO user, final String subscriber, Long organization) {
+        List.of(false, true).forEach(isAdmin -> {
+            Objects.requireNonNull(cacheManager.getCache("getUserByName"))
+                    .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build());
+        });
+        Objects.requireNonNull(cacheManager.getCache("getJwtToken"))
+                .evict(user.getEmail() + subscriber + organization);
+    }
+
+    /**
+     * Clear user cache
+     */
+    public void clearUserAllCache() {
+        Objects.requireNonNull(cacheManager.getCache("getUserByName")).clear();
+        Objects.requireNonNull(cacheManager.getCache("getJwtToken")).clear();
     }
 
 }

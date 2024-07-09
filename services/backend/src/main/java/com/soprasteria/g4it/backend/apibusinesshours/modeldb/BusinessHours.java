@@ -24,13 +24,14 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true)
 @SuperBuilder
 @Entity
-@Table(name="business_hours")
+@Table(name = "business_hours")
 public class BusinessHours implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String day;
+    private String weekday;
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime startTime;

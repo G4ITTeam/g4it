@@ -50,6 +50,14 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     List<Organization> findAllByStatusIn(List<String> status);
 
     /**
+     * Find all organizations by isMigrated.
+     *
+     * @param isMigrated the status isMigrated.
+     * @return the organization.
+     */
+    List<Organization> findAllByIsMigrated(Boolean isMigrated);
+
+    /**
      * Find organization by organization's name and subscriber's id.
      *
      * @param subscriberId     the subscriber's id

@@ -36,7 +36,6 @@ public class UserInfoBO {
      * The lastName of the user.
      */
     private String lastName;
-
     /**
      * The roles of the user.
      */

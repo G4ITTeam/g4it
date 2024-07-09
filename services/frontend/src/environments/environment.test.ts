@@ -10,16 +10,7 @@
 
 export const environment = {
     production: false,
-    securedEndpoints: ["inventories", "digital-services"],
-    apiEndpoints: {
-        inventories: "inventories",
-        digitalServices: "digital-services",
-        users: "users",
-        subscribers : "administrator/subscribers",
-        organizations: "administrator/organizations",
-        version: "version",
-        businessHours: "business-hours",
-    },
+    securedEndpoints: ["inventories", "digital-services", "template-files"],
     apiBaseUrl: "",
     keycloak: {
         issuer: "",

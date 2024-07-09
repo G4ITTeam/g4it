@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationIndicatorView;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.*;
+import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_BATCH_NAME;
+import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_INVENTORY_ID;
 
 /**
  * Repository to calculate the application indicators
@@ -26,14 +27,13 @@ public interface ApplicationIndicatorViewRepository extends JpaRepository<Applic
     /**
      * Method to recovery of main application indicators.
      *
-     * @param organization the organization name.
-     * @param batchName    the batch name.
-     * @param inventoryId  the inventory id.
+     * @param batchName   the batch name.
+     * @param inventoryId the inventory id.
      * @return main application indicators
      */
     @Query(nativeQuery = true)
-    List<ApplicationIndicatorView> findIndicators(@Param(PARAM_ORGANIZATION) final String organization,
-                                                  @Param(PARAM_BATCH_NAME) final String batchName,
+    List<ApplicationIndicatorView> findIndicators(@Param(PARAM_BATCH_NAME) final String batchName,
                                                   @Param(PARAM_INVENTORY_ID) final Long inventoryId);
+
 
 }

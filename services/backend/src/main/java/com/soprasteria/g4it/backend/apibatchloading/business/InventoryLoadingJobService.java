@@ -4,19 +4,22 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.business;
 
 import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryIntegrationRuntimeException;
 import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryLoadingException;
 import com.soprasteria.g4it.backend.apibatchloading.model.InventoryJobParams;
 import com.soprasteria.g4it.backend.apibatchloading.model.InventoryLoadingSession;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
 import com.soprasteria.g4it.backend.config.LoadingBatchConfiguration;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 @Service
@@ -44,39 +48,54 @@ public class InventoryLoadingJobService {
      * Class Logger.
      */
     public static final String ORGANIZATION = "organization";
-
+    public static final String ORGANIZATION_ID = "organization.id";
+    public static final String INVENTORY_ID_JOB_PARAM = "inventory.id";
     /**
      * Async Job Launcher.
      */
     @Autowired
     private JobLauncher asyncLoadingJobLauncher;
-
     /**
      * Repository to access spring batch metadata.
      */
     @Autowired
     private JobRepository jobRepository;
-
     /**
      * The Spring JobExplorer
      */
     @Autowired
     private JobExplorer explorer;
-
     /**
      * Job to launch.
      */
     @Autowired
     private Job loadInventoryJob;
-
     @Autowired
     private FileSystem fileSystem;
-
+    @Autowired
+    private OrganizationService organizationService;
     /**
      * Local working folder.
      */
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingFolderBasePath;
+
+    private static Predicate<JobExecution> getJobExecutionPredicate(String organization, Long organizationId, Long inventoryId) {
+        final Predicate<JobExecution> jobExecutionPredicate;
+        if (inventoryId == null) {
+            // Get job instance for an organization.
+            jobExecutionPredicate = jobExecution -> {
+                if (!ObjectUtils.isEmpty(jobExecution.getJobParameters().getLong(ORGANIZATION_ID)))
+                    return Objects.equals(organizationId, jobExecution.getJobParameters().getLong(ORGANIZATION_ID));
+                else
+                    return StringUtils.equals(organization, jobExecution.getJobParameters().getString(ORGANIZATION));
+            };
+        } else {
+            // Get job instance for an inventory.
+            jobExecutionPredicate = jobExecution -> inventoryId.equals(jobExecution.getJobParameters().getLong(INVENTORY_ID_JOB_PARAM));
+        }
+        return jobExecutionPredicate;
+    }
 
     /**
      * Launch the loading batch job.
@@ -93,6 +112,7 @@ public class InventoryLoadingJobService {
                     InventoryJobParams.builder()
                             .subscriber(session.getSubscriber())
                             .organization(session.getOrganization())
+                            .organizationId(session.getOrganizationId())
                             .sessionDate(session.getSessionDate())
                             .inventoryId(session.getInventoryId())
                             .localWorkingFolderBasePath(localWorkingFolderBasePath)
@@ -115,24 +135,38 @@ public class InventoryLoadingJobService {
         }
     }
 
+    private void prepareWorkingFolder(final InventoryLoadingSession session) throws InventoryLoadingException {
+        final FileStorage storage = fileSystem.mount(session.getSubscriber(), session.getOrganizationId().toString());
+
+        if (storage == null) {
+            throw new InventoryLoadingException("Can't mount storage for organization " + session.getOrganizationId());
+        }
+
+        for (final FileDescription file : session.getFiles()) {
+            try {
+                storage.moveAndRename(FileFolder.INPUT, FileFolder.WORK, file.getName(), filePath(session, file));
+            } catch (IOException e) {
+                throw new InventoryLoadingException("An error occured while preparing working folder", e);
+            }
+        }
+    }
+
+    private String filePath(final InventoryLoadingSession session, final FileDescription file) {
+        return String.format("%s/%s/%s", session.getSessionPath(), file.getType().name(), file.getName());
+    }
+
     /**
      * Remove job instances for an organization and optionally an inventoryId.
      *
-     * @param organization the organization.
-     * @param inventoryId  the inventory id (Optional).
+     * @param organizationId the organization's id.
+     * @param inventoryId    the inventory id (Optional).
      */
-    public void deleteJobInstances(final String organization, final Long inventoryId) {
+    public void deleteJobInstances(final Long organizationId, final Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         // Get all evaluate inventory.
         final List<JobInstance> runningJobExecutions = explorer.findJobInstancesByJobName(LoadingBatchConfiguration.LOAD_INVENTORY_JOB, 0, Integer.MAX_VALUE);
 
-        final Predicate<JobExecution> jobExecutionPredicate;
-        if (inventoryId == null) {
-            // Get job instance for an organization.
-            jobExecutionPredicate = jobExecution -> StringUtils.equals(organization, jobExecution.getJobParameters().getString(ORGANIZATION));
-        } else {
-            // Get job instance for an inventory.
-            jobExecutionPredicate = jobExecution -> inventoryId.equals(jobExecution.getJobParameters().getLong("inventory.id"));
-        }
+        final Predicate<JobExecution> jobExecutionPredicate = getJobExecutionPredicate(linkedOrganization != null ? linkedOrganization.getName() : null, organizationId, inventoryId);
 
         // Extract job executions to remove.
         final List<JobExecution> jobExecutionsToRemove = runningJobExecutions
@@ -149,24 +183,5 @@ public class InventoryLoadingJobService {
         jobInstancesToRemove.forEach(jobRepository::deleteJobInstance);
     }
 
-    private void prepareWorkingFolder(final InventoryLoadingSession session) throws InventoryLoadingException {
-        final FileStorage storage = fileSystem.mount(session.getSubscriber(), session.getOrganization());
-
-        if (storage == null) {
-            throw new InventoryLoadingException("Can't mount storage for organization " + session.getOrganization());
-        }
-
-        for (final FileDescription file : session.getFiles()) {
-            try {
-                storage.moveAndRename(FileFolder.INPUT, FileFolder.WORK, file.getName(), filePath(session, file));
-            } catch (IOException e) {
-                throw new InventoryLoadingException("An error occured while preparing working folder", e);
-            }
-        }
-    }
-
-    private String filePath(final InventoryLoadingSession session, final FileDescription file) {
-        return String.format("%s/%s/%s", session.getSessionPath(), file.getType().name(), file.getName());
-    }
 
 }

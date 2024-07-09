@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -21,7 +21,7 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 @Component({
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
-    providers:[MessageService]
+    providers: [MessageService],
 })
 export class DigitalServicesServersComponent {
     ngUnsubscribe = new Subject<void>();
@@ -44,7 +44,7 @@ export class DigitalServicesServersComponent {
         private spinner: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
     ngOnInit() {
@@ -52,18 +52,18 @@ export class DigitalServicesServersComponent {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
                 this.digitalService = res;
-                this.digitalService.servers.map(response=>{
-                    if(response.vm){
-                        const quantity = response.vm?.map(resp=> resp.quantity)
-                        if(quantity.length > 0){
-                            const sumOfVM = quantity?.reduce((vm,value)=> vm + value)
+                this.digitalService.servers.map((response) => {
+                    if (response.vm) {
+                        const quantity = response.vm?.map((resp) => resp.quantity);
+                        if (quantity.length > 0) {
+                            const sumOfVM = quantity?.reduce((vm, value) => vm + value);
                             response.sumOfVmQuantity = sumOfVM;
                         }
-                        if(response.sumOfVmQuantity === undefined){
+                        if (response.sumOfVmQuantity === undefined) {
                             response.sumOfVmQuantity = 0;
                         }
                     }
-                })
+                });
             });
         this.digitalServicesBusiness.panelSubject$
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -85,7 +85,7 @@ export class DigitalServicesServersComponent {
             uid: "",
             name: "Server A",
             mutualizationType: "Dedicated",
-            type: "Storage",
+            type: "Compute",
             quantity: 0,
             datacenter: {
                 uid: "",
@@ -111,7 +111,7 @@ export class DigitalServicesServersComponent {
     async deleteServers(server: DigitalServiceServerConfig) {
         this.spinner.show();
         let existingServerIndex = this.digitalService.servers?.findIndex(
-            (t) => t.uid === server.uid
+            (t) => t.uid === server.uid,
         );
         if (
             existingServerIndex !== -1 &&
@@ -121,7 +121,7 @@ export class DigitalServicesServersComponent {
             this.digitalService.servers.splice(existingServerIndex, 1);
         }
         this.digitalService = await lastValueFrom(
-            this.digitalServicesData.update(this.digitalService)
+            this.digitalServicesData.update(this.digitalService),
         );
         this.spinner.hide();
     }

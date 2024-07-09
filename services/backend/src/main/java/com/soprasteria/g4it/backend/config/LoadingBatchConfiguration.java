@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.config;
 
 import com.soprasteria.g4it.backend.apibatchloading.listener.InventoryJobExecutionListener;
@@ -142,17 +142,17 @@ public class LoadingBatchConfiguration {
     /**
      * Inject configured FileStorage in all jobs
      *
-     * @param subscriber   the client subscriber.
-     * @param organization the subscriber's organization.
-     * @param fileSystem   abstraction over local or distant filesystem
+     * @param subscriber     the client subscriber.
+     * @param organizationId the subscriber's organization.
+     * @param fileSystem     abstraction over local or distant filesystem
      * @return a filestorage to interact with files
      */
     @Bean
     @JobScope
     public FileStorage loadingFileStorage(@Value("#{jobParameters['subscriber']}") final String subscriber,
-                                          @Value("#{jobParameters['organization']}") final String organization,
+                                          @Value("#{jobParameters['organization.id']}") final Long organizationId,
                                           final FileSystem fileSystem) {
-        return fileSystem.mount(subscriber, organization);
+        return fileSystem.mount(subscriber, organizationId.toString());
     }
 
     /**

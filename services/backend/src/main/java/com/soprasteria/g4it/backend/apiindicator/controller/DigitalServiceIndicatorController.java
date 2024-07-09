@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.controller;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceIndicatorRestMapper;
@@ -69,9 +69,9 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      */
     @Override
     public ResponseEntity<List<DigitalServiceIndicatorRest>> getDigitalServiceIndicatorRest(final String subscriber,
-                                                                                            final String organization,
+                                                                                            final Long organization,
                                                                                             final String digitalServiceUid) {
-        final List<DigitalServiceIndicatorBO> indicators = indicatorService.getDigitalServiceIndicators(organization, digitalServiceUid);
+        final List<DigitalServiceIndicatorBO> indicators = indicatorService.getDigitalServiceIndicators(digitalServiceUid);
         return ResponseEntity.ok().body(this.digitalServiceIndicatorRestMapper.toDto(indicators));
     }
 
@@ -80,9 +80,9 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      */
     @Override
     public ResponseEntity<List<DigitalServiceTerminalIndicatorRest>> getDigitalServiceTerminalsIndicatorRest(final String subscriber,
-                                                                                                             final String organization,
+                                                                                                             final Long organization,
                                                                                                              final String digitalServiceUid) {
-        final List<DigitalServiceTerminalIndicatorBO> indicators = indicatorService.getDigitalServiceTerminalIndicators(organization, digitalServiceUid);
+        final List<DigitalServiceTerminalIndicatorBO> indicators = indicatorService.getDigitalServiceTerminalIndicators(digitalServiceUid);
         return ResponseEntity.ok().body(this.digitalServiceTerminalIndicatorRestMapper.toDto(indicators));
     }
 
@@ -91,9 +91,9 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      */
     @Override
     public ResponseEntity<List<DigitalServiceNetworkIndicatorRest>> getDigitalServiceNetworksIndicatorRest(final String subscriber,
-                                                                                                           final String organization,
+                                                                                                           final Long organization,
                                                                                                            final String digitalServiceUid) {
-        final List<DigitalServiceNetworkIndicatorBO> indicators = indicatorService.getDigitalServiceNetworkIndicators(organization, digitalServiceUid);
+        final List<DigitalServiceNetworkIndicatorBO> indicators = indicatorService.getDigitalServiceNetworkIndicators(digitalServiceUid);
         return ResponseEntity.ok().body(this.digitalServiceNetworkIndicatorRestMapper.toDto(indicators));
     }
 
@@ -102,9 +102,9 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      */
     @Override
     public ResponseEntity<List<DigitalServiceServerIndicatorRest>> getDigitalServiceServersIndicatorRest(final String subscriber,
-                                                                                                         final String organization,
+                                                                                                         final Long organization,
                                                                                                          final String digitalServiceUid) {
-        final List<DigitalServiceServerIndicatorBO> indicatorBO = indicatorService.getDigitalServiceServerIndicators(organization, digitalServiceUid);
+        final List<DigitalServiceServerIndicatorBO> indicatorBO = indicatorService.getDigitalServiceServerIndicators(digitalServiceUid);
         return ResponseEntity.ok(digitalServiceServerIndicatorRestMapper.toDto(indicatorBO));
     }
 }

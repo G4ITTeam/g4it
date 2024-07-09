@@ -5,5 +5,23 @@ databaseChangeLog:
       file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-ref.yml
   - include:
       file: db/changelog/numecoeval/greenitdb.changelog-numecoeval-indicateur.yml
+  # includes all configs files from src/main/resources/db.changelog
   - include:
-      file: db/changelog/greenitdb.changelog-master.yml
+      file: db/changelog/greenitdb.changelog-security-user.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-inventory-initialization.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-numecoeval-report-initialization.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-dataviz-initialization.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-security.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-digital-service-initialization.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-security-multi-orga.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-security-user-after.yml
+  # use test file for business-hours due to issue on h2 database with day field
+  - include:
+      file: db/changelog/test-greenitdb.changelog-business-hours.yml

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchevaluation.steps;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.business.InventoryEvaluationService;
@@ -60,10 +60,11 @@ public class CallNumEcoEvalInputDataExpositionStepConfiguration {
                                                                                              @Value("#{jobParameters['batch.name']}") final String batchName,
                                                                                              @Value("#{jobParameters['processing.date']}") final Date processingDate,
                                                                                              @Value("#{jobParameters['organization']}") final String organization,
+                                                                                             @Value("#{jobParameters['organization.id']}") final Long organizationId,
                                                                                              @Value("#{jobParameters['local.working.folder']}") final String localWorkingFolder) {
         return new CallNumEcoEvalInputDataExpositionTasklet(numEcoEvalRemotingService,
                 inventoryEvaluationService,
-                batchName, processingDate, organization,
+                batchName, processingDate, organizationId,
                 new FileSystemResource(Path.of(localWorkingFolder, "datacenter.csv")),
                 new FileSystemResource(Path.of(localWorkingFolder, "physical_equipment.csv")),
                 new FileSystemResource(Path.of(localWorkingFolder, "virtual_equipment.csv")),

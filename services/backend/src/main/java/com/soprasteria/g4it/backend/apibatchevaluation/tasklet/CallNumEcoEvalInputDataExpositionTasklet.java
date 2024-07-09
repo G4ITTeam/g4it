@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchevaluation.tasklet;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.business.InventoryEvaluationService;
@@ -48,9 +48,9 @@ public class CallNumEcoEvalInputDataExpositionTasklet implements Tasklet {
     private Date processingDate;
 
     /**
-     * The known organization.
+     * The organization id.
      */
-    private String organization;
+    private Long organizationId;
 
     /**
      * DataCenter Resource.
@@ -79,9 +79,9 @@ public class CallNumEcoEvalInputDataExpositionTasklet implements Tasklet {
     public RepeatStatus execute(final StepContribution stepContribution, final ChunkContext chunkContext) throws Exception {
         inventoryEvaluationService.updateBatchStatus(batchName, EvaluationBatchStatus.DATA_EXPOSITION_TO_NUMECOVAL);
         final String formattedProcessingDate = new SimpleDateFormat("yyyy-MM-dd").format(processingDate);
-        numEcoEvalRemotingService
-                .callInputDataExposition(dataCenterCsv, physicalEquipmentCsv, virtualEquipmentCsv, applicationCsv,
-                        organization, formattedProcessingDate, batchName);
+
+        numEcoEvalRemotingService.callInputDataExposition(dataCenterCsv, physicalEquipmentCsv, virtualEquipmentCsv, applicationCsv,
+                String.valueOf(organizationId), formattedProcessingDate, batchName);
         return RepeatStatus.FINISHED;
     }
 

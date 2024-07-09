@@ -5,18 +5,23 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { Subject, takeUntil } from "rxjs";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
-import { OrganizationData } from "src/app/core/interfaces/user.interfaces";
+import {
+    Organization,
+    OrganizationData,
+    Subscriber,
+    User,
+} from "src/app/core/interfaces/user.interfaces";
 import { Version } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
-import { BusineeHoursService } from "src/app/core/service/data/businee-hours.service";
+import { generateColor } from "src/app/core/utils/color";
 import { Constants } from "src/constants";
-import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 @Component({
     selector: "app-header",
@@ -33,7 +38,6 @@ export class HeaderComponent implements OnInit {
     selectedLanguage: string = "en";
 
     sideHeaderVisible: boolean = false;
-    @Input() sideHeaderVisibleForOrganization: boolean = false;
 
     ngUnsubscribe = new Subject<void>();
 
@@ -41,18 +45,23 @@ export class HeaderComponent implements OnInit {
 
     businessHoursData: BusinessHours[] = [];
 
-    selectedOrganization: OrganizationData | undefined;
+    selectedOrganization: Organization = {} as Organization;
+    selectedOrganizationData: OrganizationData | undefined = undefined;
+    selectedPath = "";
+
+    currentSubscriber: Subscriber = {} as Subscriber;
+
     days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
     weekendDays = ["saturday", "sunday"];
-    currentSubscriberName!: string;
+
+    isAdminOnSubscriberOrOrganization = false;
 
     constructor(
         private router: Router,
         public userService: UserService,
         private versionDataService: VersionDataService,
         private translate: TranslateService,
-        private busineeHoursService: BusineeHoursService,
-        public userDataService: UserDataService,
+        private businessHoursService: BusinessHoursService,
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = () => {
             return false;
@@ -67,41 +76,55 @@ export class HeaderComponent implements OnInit {
                 this.getPageFromUrl();
             }
         });
-        this.userService.organizations$
+        this.userService.user$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organizations: OrganizationData[]) => {
-                this.organizations = organizations;
+            .subscribe((user: User) => {
+                this.organizations = [];
+                user.subscribers.forEach((subscriber) => {
+                    subscriber.organizations.forEach((organization) => {
+                        this.organizations.push({
+                            color: generateColor(organization.name + subscriber.name),
+                            id: organization.id,
+                            name: organization.name,
+                            organization,
+                            subscriber: subscriber,
+                        });
+                    });
+                });
+                this.isAdminOnSubscriberOrOrganization =
+                    this.userService.hasAnyAdminRole(user);
             });
+
+        this.userService.currentSubscriber$.subscribe(
+            (subscriber) => (this.currentSubscriber = subscriber),
+        );
+
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organization: OrganizationData) => {
+            .subscribe((organization: Organization) => {
                 this.selectedOrganization = organization;
+                this.selectedOrganizationData = {
+                    color: generateColor(organization.name + this.currentSubscriber.name),
+                    id: organization.id,
+                    name: organization.name,
+                    organization,
+                    subscriber: this.currentSubscriber,
+                };
+                this.selectedPath = `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}`;
             });
+
         this.versionDataService
             .getVersion()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((version: Version) => {
                 this.version = version;
             });
-        this.busineeHoursService
+
+        this.businessHoursService
             .getBusinessHours()
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((businessHours: BusinessHours[]) => {
                 this.businessHoursData = businessHours;
-            });
-
-        this.userService.currentSubscriber$.subscribe(
-            (res) => (this.currentSubscriberName = res),
-        );
-    }
-
-    updatedOrganization() {
-        this.userService.organizations$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organizations: OrganizationData[]) => {
-                this.organizations = organizations.filter(
-                    (obj) => !this.userService.updateOrganization.includes(obj.id),
-                );
             });
     }
 
@@ -128,21 +151,20 @@ export class HeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        return `/subscribers/${this.currentSubscriberName}/organizations/${this.selectedOrganization?.name}/digital-services`;
+        return `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}/digital-services`;
     }
 
     changePageToInventories() {
-        return `/subscribers/${this.currentSubscriberName}/organizations/${this.selectedOrganization?.name}/inventories`;
+        return `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}/inventories`;
     }
 
     changePageToAdministraion() {
         let adminAccess = `/administration/users`;
         return adminAccess;
-
     }
 
     composeEmail() {
-        let subject = `[${this.currentSubscriberName}/${this.selectedOrganization?.name}] ${Constants.SUBJECT_MAIL}`;
+        let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
         let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
         window.location.href = email;
     }

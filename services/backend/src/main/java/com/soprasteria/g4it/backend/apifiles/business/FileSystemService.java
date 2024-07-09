@@ -9,14 +9,17 @@ package com.soprasteria.g4it.backend.apifiles.business;
 
 import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apibatchloading.mapper.FileDescriptionRestMapper;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,38 +48,56 @@ public class FileSystemService {
     @Autowired
     private FileDescriptionRestMapper fileDescriptionRestMapper;
 
+    @Autowired
+    private OrganizationService organizationService;
+
+
     /**
      * List files of subscriber and organization in INPUT directory
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
      * @return the list of files
      */
-    public List<FileDescriptionRest> listFiles(final String subscriber, final String organization) throws IOException {
-        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organization).listFiles(FileFolder.INPUT));
+    public List<FileDescriptionRest> listFiles(final String subscriber, final Long organizationId) throws IOException {
+        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organizationId.toString()).listFiles(FileFolder.INPUT));
     }
 
     /**
      * List files of subscriber and organization in INPUT directory
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
      * @return the list of files
      */
-    public List<FileDescriptionRest> listFiles(final String subscriber, final String organization, final FileFolder fileFolder) throws IOException {
-        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organization).listFiles(fileFolder));
+    public List<FileDescriptionRest> listFiles(final String subscriber, final Long organizationId, final FileFolder fileFolder) throws IOException {
+        return fileDescriptionRestMapper.toDto(fetchStorage(subscriber, organizationId.toString()).listFiles(fileFolder));
     }
 
     /**
      * List files of subscriber and organization in INPUT directory
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
      * @return the list of files
      */
-    public InputStream downloadFile(final String subscriber, final String organization, final FileFolder fileFolder, final String filename) throws IOException {
-        return fetchStorage(subscriber, organization).readFile(fileFolder, filename);
+    @Cacheable("listTemplatesFiles")
+    public List<FileDescriptionRest> listTemplatesFiles() throws IOException {
+        return fileDescriptionRestMapper.toDto(
+                fetchStorage(Constants.INTERNAL_SUBSCRIBER, String.valueOf(Constants.INTERNAL_ORGANIZATION))
+                        .listFiles(FileFolder.TEMPLATE)
+        );
     }
+
+    /**
+     * List files of subscriber and organization in INPUT directory
+     *
+     * @param subscriber     the subscriber
+     * @param organizationId the organizationId
+     * @return the list of files
+     */
+    public InputStream downloadFile(final String subscriber, final Long organizationId, final FileFolder fileFolder, final String filename) throws IOException {
+        return fetchStorage(subscriber, organizationId.toString()).readFile(fileFolder, filename);
+    }
+
 
     /**
      * Manage files :
@@ -84,15 +105,15 @@ public class FileSystemService {
      * - get fileStorage
      * - upload each file into fileStorage
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
-     * @param files        the list of file
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
+     * @param files          the list of file
      * @return the fileName list uploaded
      */
-    public List<String> manageFiles(final String subscriber, final String organization, final List<MultipartFile> files) {
+    public List<String> manageFiles(final String subscriber, final Long organizationId, final List<MultipartFile> files) {
         if (files == null) return List.of();
         checkFiles(files);
-        FileStorage fileStorage = fetchStorage(subscriber, organization);
+        FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
         return files.stream().map(file -> this.uploadFile(file, fileStorage)).toList();
     }
 
@@ -173,15 +194,15 @@ public class FileSystemService {
     /**
      * Delete file for subscriber, organization, fileFolder
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
-     * @param fileFolder   the fileFolder
-     * @param fileUrl      the fileUrl
+     * @param subscriber     the subscriber
+     * @param organizationId the organizationId
+     * @param fileFolder     the fileFolder
+     * @param fileUrl        the fileUrl
      */
-    public String deleteFile(String subscriber, String organization, FileFolder fileFolder, String fileUrl) {
+    public String deleteFile(String subscriber, Long organizationId, FileFolder fileFolder, String fileUrl) {
         String fileName = getFilenameFromUrl(fileUrl, 0);
         String deletedFilePath = null;
-        final FileStorage fileStorage = fileSystem.mount(subscriber, organization);
+        final FileStorage fileStorage = fileSystem.mount(subscriber, organizationId.toString());
         try {
             deletedFilePath = fileStorage.getFileUrl(fileFolder, fileName);
             fileStorage.delete(fileFolder, fileName);

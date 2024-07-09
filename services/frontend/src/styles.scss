@@ -2,6 +2,7 @@
 @import "assets/themes/primeng-theme.scss";
 @import "primeng/resources/primeng.css";
 @import "primeflex/primeflex.scss";
+@import "primeicons/primeicons.css";
 
 /* General */
 
@@ -213,9 +214,14 @@ p {
         url("assets/images/background/yellow-elipse.svg"),
         url("assets/images/background/fingerprint-background.svg");
     background-repeat: no-repeat;
-    background-position: bottom -475px left 38%, bottom -416px left 20%,
+    background-position:
+        bottom -475px left 38%,
+        bottom -416px left 20%,
         bottom -3px right -238px;
-    background-size: 1800px 1000px, 1500px 1000px, 900px 122%;
+    background-size:
+        1800px 1000px,
+        1500px 1000px,
+        900px 122%;
 }
 
 /* Header Panel */
@@ -229,6 +235,7 @@ p {
     border-radius: 2px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 80vh;
 }
 
 .menu-visible {
@@ -274,7 +281,8 @@ p {
     margin-right: 10px;
     margin-bottom: 10px;
     margin-top: 10px;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    box-shadow:
+        rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
         rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
@@ -300,8 +308,12 @@ p {
     background-image: url("assets/images/background/fingerprint.svg"),
         url("assets/images/background/fingerprint.svg");
     background-repeat: no-repeat;
-    background-position: top -139px left -10px, top -488px left 841px;
-    background-size: 967px 1146px, 771px 1096px;
+    background-position:
+        top -139px left -10px,
+        top -488px left 841px;
+    background-size:
+        967px 1146px,
+        771px 1096px;
     overflow: hidden;
 }
 
@@ -354,7 +366,8 @@ p {
     text-transform: uppercase;
 }
 
-.black-button, .black-button-sidebar {
+.black-button,
+.black-button-sidebar {
     background: var(--black-color);
     color: white;
 }
@@ -364,17 +377,20 @@ p {
     color: var(--black-color);
 }
 
-.grey-button , .grey-button-sidebar {
+.grey-button,
+.grey-button-sidebar {
     background: rgb(205, 205, 205);
     color: var(--black-color);
 }
 
-.white-button, .white-button-sidebar {
+.white-button,
+.white-button-sidebar {
     background: var(--white-color);
     color: black;
 }
 
-.yellow-button, .yellow-button-sidebar {
+.yellow-button,
+.yellow-button-sidebar {
     background: var(--secondary-color);
     color: var(--black-color);
 }
@@ -497,7 +513,6 @@ p {
     margin-right: 20px;
     cursor: pointer;
 }
-
 
 .white-radio-buttons .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
     background-color: white;
@@ -889,7 +904,10 @@ p {
 .information-card {
     border-top: 4px solid var(--primary-color);
     background-color: white;
-    box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+    box-shadow:
+        0 2px 1px -1px #0003,
+        0 1px 1px #00000024,
+        0 1px 3px #0000001f;
     border-radius: 4px;
     padding: 20px;
     padding-top: 10px;
@@ -935,7 +953,9 @@ p {
     padding-left: 20px;
     cursor: pointer;
     border-radius: 5px;
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -1361,7 +1381,8 @@ div.label-input-div-medium {
 }
 
 .disabled-text-black {
-    .p-disabled, .p-component:disabled {
+    .p-disabled,
+    .p-component:disabled {
         color: black !important;
     }
 }
@@ -1379,7 +1400,7 @@ div.label-input-div-medium {
 }
 
 .inventory-add-button-small {
-    background: #F9F9F9;
+    background: #f9f9f9;
     color: var(--black-color);
 }
 
@@ -1388,28 +1409,29 @@ div.label-input-div-medium {
     color: var(--black-color);
 }
 
-.confirm-popup-editor{
+.confirm-popup-editor {
     .p-confirm-popup .p-component {
         display: none;
     }
 }
 
-.dropdown-placeholder-padding{
-    .p-dropdown .p-dropdown-label.p-placeholder {
-        padding: 11px !important;
-    }
-    .p-dropdown .p-inputtext {
-        padding: 11px !important;
-    }
-}
-
-.input-width{
+.input-width {
     width: 246px;
     height: 40px;
-    margin-right : 20px;
+    margin-right: 20px;
 }
 
 .p-dialog .p-dialog-header .p-dialog-title {
     color: red;
 }
 
+.full-screen {
+    background: transparent;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    z-index: 90;
+}

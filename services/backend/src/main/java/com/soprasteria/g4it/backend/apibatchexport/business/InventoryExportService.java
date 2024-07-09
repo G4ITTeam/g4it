@@ -13,6 +13,8 @@ import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReportBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryExportReportBO;
+import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.utils.ExportBatchStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -38,29 +40,33 @@ public class InventoryExportService {
     @Autowired
     private ExportReportRepository exportReportRepository;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     /**
      * Create an export request for the inventory
      *
-     * @param subscriber   the subscriber.
-     * @param organization Organization
-     * @param inventoryId  Inventory id
+     * @param subscriber     the subscriber.
+     * @param inventoryId    Inventory id
+     * @param organizationId the organizationId.
      */
     public void createExportRequest(final String subscriber,
-                                    final String organization,
+                                    final Long organizationId,
                                     final Long inventoryId) {
 
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
         if (CollectionUtils.isEmpty(inventory.getEvaluationReports())
                 || inventory.getEvaluationReports().stream().noneMatch(report -> "COMPLETED".equals(report.getBatchStatusCode()))) {
             throw new EvaluationNotFoundException();
         }
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final String batchName = inventory.getEvaluationReports().stream()
+                .max(Comparator.comparing(InventoryEvaluationReportBO::getEndTime))
+                .orElseThrow()
+                .getBatchName();
 
-        exportJobService.launchExport(subscriber, organization, inventory.getId(), inventory.getName(),
-                inventory.getEvaluationReports()
-                        .stream()
-                        .max(Comparator.comparing(InventoryEvaluationReportBO::getEndTime))
-                        .orElseThrow()
-                        .getBatchName());
+        exportJobService.launchExport(subscriber, linkedOrganization.getName(), inventory.getId(), inventory.getName(),
+                batchName, organizationId);
     }
 
     /**
@@ -76,15 +82,15 @@ public class InventoryExportService {
     /**
      * Get the Export Report by Inventory Id
      *
-     * @param subscriber   the subscriber
-     * @param organization the organization
-     * @param inventoryId  the inventory id
+     * @param subscriber     the subscriber
+     * @param organizationId the organizationId
+     * @param inventoryId    the inventory id
      * @return the export object
      */
     public InventoryExportReportBO getExportReportByInventoryId(final String subscriber,
-                                                                final String organization,
+                                                                final Long organizationId,
                                                                 final Long inventoryId) {
-        return inventoryService.getInventory(subscriber, organization, inventoryId).getExportReport();
+        return inventoryService.getInventory(subscriber, organizationId, inventoryId).getExportReport();
     }
 
 

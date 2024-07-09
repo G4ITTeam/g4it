@@ -1,5 +1,4 @@
 <div
-    #button
     class="main-button-org-menu"
     *ngIf="selectedOrganization"
     [style.backgroundColor]="selectedOrganization.color"
@@ -13,8 +12,7 @@
     {{ selectedOrganization!.name.charAt(0) }}
 </div>
 <div
-    #menu
-    class="org-menu"
+    class="org-menu overflow-y-auto"
     [ngClass]="{ 'menu-visible': isMenuVisible }"
     *ngIf="selectedOrganization"
 >
@@ -56,8 +54,9 @@
                     {{ org.organization!.name }} ({{ org.subscriber!.name }})
                     <i
                         *ngIf="
-                            org.organization!.name == selectedOrganization!.name &&
-                            org.subscriber!.name == selectedOrganization!.subscriber!.name
+                            org.organization!.name === selectedOrganization!.name &&
+                            org.subscriber!.name ===
+                                selectedOrganization!.subscriber!.name
                         "
                         class="pi pi-check"
                         style="
@@ -71,3 +70,4 @@
         </li>
     </ul>
 </div>
+<div *ngIf="isMenuVisible" (click)="toggleMenu()" class="full-screen"></div>

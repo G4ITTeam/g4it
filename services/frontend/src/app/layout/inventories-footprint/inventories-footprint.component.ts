@@ -149,12 +149,13 @@ export class InventoriesFootprintComponent implements OnInit {
         ])
             .pipe(
                 tap(([particule, radiation, acidification, resource, climate]) => {
+                    // same order as criteria.ts
                     this.chartData = {
-                        "particulate-matter": this.translateLifeCycle(particule),
+                        "climate-change": this.translateLifeCycle(climate),
+                        "resource-use": this.translateLifeCycle(resource),
                         "ionising-radiation": this.translateLifeCycle(radiation),
                         acidification: this.translateLifeCycle(acidification),
-                        "resource-use": this.translateLifeCycle(resource),
-                        "climate-change": this.translateLifeCycle(climate),
+                        "particulate-matter": this.translateLifeCycle(particule),
                     };
                 }),
             )

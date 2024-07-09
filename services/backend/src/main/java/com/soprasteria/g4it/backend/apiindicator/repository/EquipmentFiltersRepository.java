@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
 import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentFilters;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.*;
+import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_BATCH_NAME;
+import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_INVENTORY_ID;
 
 
 /**
@@ -27,14 +28,13 @@ public interface EquipmentFiltersRepository extends JpaRepository<EquipmentFilte
     /**
      * Recovery of datacenter indicators.
      *
-     * @param organization the organization.
-     * @param inventoryId  the inventory id.
-     * @param batchName    the batch name.
+     * @param inventoryId the inventory id.
+     * @param batchName   the batch name.
      * @return main indicators
      */
     @Query(nativeQuery = true)
-    List<EquipmentFilters> getFiltersByInventoryId(@Param(PARAM_ORGANIZATION) final String organization,
-                                                   @Param(PARAM_INVENTORY_ID) final Long inventoryId,
+    List<EquipmentFilters> getFiltersByInventoryId(@Param(PARAM_INVENTORY_ID) final Long inventoryId,
                                                    @Param(PARAM_BATCH_NAME) final String batchName);
+
 
 }

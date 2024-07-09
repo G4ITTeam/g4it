@@ -33,7 +33,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static com.soprasteria.g4it.backend.apibatchloading.model.InventoryJobParams.ORGANIZATION_JOB_PARAM;
+import static com.soprasteria.g4it.backend.apibatchloading.model.InventoryJobParams.ORGANIZATION_ID_JOB_PARAM;
 import static com.soprasteria.g4it.backend.apibatchloading.model.InventoryJobParams.SUBSCRIBER_JOB_PARAM;
 
 @SpringBootTest
@@ -42,26 +42,20 @@ import static com.soprasteria.g4it.backend.apibatchloading.model.InventoryJobPar
 @DirtiesContext
 class ValidatePhysicalEquipmentHeaderTest {
 
+    private static final Path testFolder = Path.of("src/test/resources/apibatchloading/work");
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
-
     @Autowired
     private JobRepositoryTestUtils jobRepositoryTestUtils;
-
     @Autowired
     private JobLauncher jobLauncher;
-
     @Autowired
     @Qualifier("loadInventoryJob")
     private Job job;
-
     @Value("${filesystem.local.path}")
     private String fileSystemBasePath;
-
     @MockBean
     private CacheManager cacheManager;
-
-    private static final Path testFolder = Path.of("src/test/resources/apibatchloading/work");
 
     @BeforeEach
     public void beforeEach() {
@@ -72,7 +66,7 @@ class ValidatePhysicalEquipmentHeaderTest {
     @Test
     void shouldSkippedIfInvalidFileHeader() throws Exception {
         final String subscriber = "SSG";
-        final String organization = "local";
+        final Long organizationId = 1L;
 
         // given an existing input folder
         final Calendar calendar = Calendar.getInstance();
@@ -81,7 +75,7 @@ class ValidatePhysicalEquipmentHeaderTest {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         final ExecutionContext context = new ExecutionContext();
@@ -91,7 +85,7 @@ class ValidatePhysicalEquipmentHeaderTest {
         final JobParameters jobParameters = new JobParametersBuilder()
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
                 .addDate("session.date", calendar.getTime())
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .toJobParameters();
 
         // when we execute the step
@@ -106,6 +100,7 @@ class ValidatePhysicalEquipmentHeaderTest {
     void shouldPassForGoodFileHeader() throws Exception {
         final String subscriber = "SSG";
         final String organization = "local";
+        final Long organizationId = 1L;
 
         // given an existing input folder
         final Calendar calendar = Calendar.getInstance();
@@ -114,7 +109,7 @@ class ValidatePhysicalEquipmentHeaderTest {
 
         // Copy input file to work folder.
         FileSystemUtils.copyRecursively(new File(testFolder.resolve(formattedSessionDate).toString()),
-                new File(Path.of(fileSystemBasePath, subscriber, organization, FileFolder.WORK.getFolderName(),
+                new File(Path.of(fileSystemBasePath, subscriber, organizationId.toString(), FileFolder.WORK.getFolderName(),
                         formattedSessionDate).toString()));
 
         final ExecutionContext context = new ExecutionContext();
@@ -122,7 +117,7 @@ class ValidatePhysicalEquipmentHeaderTest {
 
         final JobParameters jobParameters = new JobParametersBuilder()
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
-                .addString(ORGANIZATION_JOB_PARAM, organization)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addDate("session.date", calendar.getTime())
                 .toJobParameters();
 

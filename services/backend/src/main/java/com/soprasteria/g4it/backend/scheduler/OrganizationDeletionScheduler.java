@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class OrganizationDeletionScheduler {
 
     @Value("${g4it.organization.deletion.oninit:false}")
-    private Boolean onInit;
+    private boolean onInit;
 
     @Autowired
     private OrganizationDeletionService organizationDeletionService;

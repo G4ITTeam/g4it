@@ -41,7 +41,9 @@
     <p-button
         *ngIf="userService.isAllowedInventoryWrite$ | async"
         styleClass="black-button"
-        (click)="name = ''; sidebarPurpose = 'new'; sidebarType = 'FILE'; sidebarVisible = true"
+        (click)="
+            name = ''; sidebarPurpose = 'new'; sidebarType = 'FILE'; sidebarVisible = true
+        "
         >{{ "inventories.add" | translate }}</p-button
     >
 </div>

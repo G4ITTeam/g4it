@@ -31,6 +31,8 @@ public interface InventoryMapper {
      * @return the business object.
      */
     @Mapping(target = "organization", source = "organization.name")
+    @Mapping(target = "organizationId", source = "organization.id")
+    @Mapping(target = "organizationStatus", source = "organization.status")
     InventoryBO toBusinessObject(final Inventory source);
 
     /**

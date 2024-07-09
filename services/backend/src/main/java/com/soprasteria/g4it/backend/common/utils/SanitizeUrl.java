@@ -9,6 +9,9 @@
 package com.soprasteria.g4it.backend.common.utils;
 
 public class SanitizeUrl {
+    private SanitizeUrl() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 
     /**
      * Returns the url without encoding %5C and %2F
@@ -20,7 +23,7 @@ public class SanitizeUrl {
             res = res.substring(0, res.indexOf("?"));
         }
         return res
-                .replaceAll("%5C", "/")
-                .replaceAll("%2F", "/");
+                .replace("%5C", "/")
+                .replace("%2F", "/");
     }
 }

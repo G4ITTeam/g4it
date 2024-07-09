@@ -22,7 +22,7 @@ paths:
         - inventory
       summary: Get an organization's inventory list
       operationId: getInventories
-      x-custom-role: "hasRole('INVENTORY_READ') or hasRole('INVENTORY_WRITE')"
+      x-custom-role: "hasRole('INVENTORY_READ')"
       parameters:
         - $ref: '#/components/parameters/inventoryIdQueryParam'
       responses:

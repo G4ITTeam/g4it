@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Injectable } from "@angular/core";
 import {
     createStore,
@@ -105,7 +105,6 @@ export interface PhysicalEquipmentAvgAge {
 }
 
 export interface PhysicalEquipmentLowImpact {
-    organisation: string;
     inventoryDate: string;
     paysUtilisation: string | null;
     type: string;
@@ -185,7 +184,7 @@ const AppGraphPositionStore = createStore(
         subdomain: "",
         app: "",
         graph: "global",
-    })
+    }),
 );
 
 utilsCriteria.getCriteriaShortList().forEach((name) =>
@@ -203,8 +202,8 @@ utilsCriteria.getCriteriaShortList().forEach((name) =>
             },
         }),
         withEntities<ImpactEntity, "id">(),
-        withActiveIds()
-    )
+        withActiveIds(),
+    ),
 );
 
 const particuleStore = getStore("particulate-matter")!;
@@ -219,7 +218,7 @@ const DatacenterStatsStore = createStore(
     withEntities<Datacenter, "dataCenterName">({
         idKey: "dataCenterName",
         initialValue: [],
-    })
+    }),
 );
 
 const PhysicalEquipmentStatsStore = createStore(
@@ -227,7 +226,7 @@ const PhysicalEquipmentStatsStore = createStore(
     withProps<PhysicalEquipmentStats>({
         lowImpact: [],
         averageAge: [],
-    })
+    }),
 );
 
 const ApplicationFootprintStore = createStore(
@@ -236,7 +235,7 @@ const ApplicationFootprintStore = createStore(
     withEntities<ApplicationFootprint, "criteria">({
         idKey: "criteria",
         initialValue: [],
-    })
+    }),
 );
 const ApplicationCriteriaFootprintStore = createStore(
     { name: "ApplicationCriteriaFootprint" },
@@ -244,7 +243,7 @@ const ApplicationCriteriaFootprintStore = createStore(
     withEntities<ApplicationCriteriaFootprint, "criteria">({
         idKey: "criteria",
         initialValue: [],
-    })
+    }),
 );
 
 @Injectable({ providedIn: "root" })
@@ -256,31 +255,30 @@ export class FootprintRepository {
     activeClimateImpacts$ = climateStore.pipe(selectActiveEntities());
 
     particuleComputedSelection$ = particuleStore.pipe(
-        select((state) => state.computedSelection)
+        select((state) => state.computedSelection),
     );
     acidificationComputedSelection$ = acidificationStore.pipe(
-        select((state) => state.computedSelection)
+        select((state) => state.computedSelection),
     );
     radiationComputedSelection$ = radiationStore.pipe(
-        select((state) => state.computedSelection)
+        select((state) => state.computedSelection),
     );
     resourceComputedSelection$ = resourceStore.pipe(
-        select((state) => state.computedSelection)
+        select((state) => state.computedSelection),
     );
     climateComputedSelection$ = climateStore.pipe(
-        select((state) => state.computedSelection)
+        select((state) => state.computedSelection),
     );
 
     datacentersStats$ = DatacenterStatsStore.pipe(selectAllEntities());
     physicalEquipmentStats$ = PhysicalEquipmentStatsStore.pipe(select((state) => state));
 
     applicationFootprint$ = ApplicationFootprintStore.pipe(selectAllEntities());
-    applicationCriteriaFootprint$ = ApplicationCriteriaFootprintStore.pipe(
-        selectAllEntities()
-    );
+    applicationCriteriaFootprint$ =
+        ApplicationCriteriaFootprintStore.pipe(selectAllEntities());
     appSelectedDomain$ = AppGraphPositionStore.pipe(select((state) => state.domain));
     appSelectedSubdomain$ = AppGraphPositionStore.pipe(
-        select((state) => state.subdomain)
+        select((state) => state.subdomain),
     );
     appSelectedApp$ = AppGraphPositionStore.pipe(select((state) => state.app));
     appSelectedGraph$ = AppGraphPositionStore.pipe(select((state) => state.graph));
@@ -337,7 +335,7 @@ export class FootprintRepository {
 
                     return countryMatch && entityMatch && equipmentMatch && statusMatch;
                 },
-            })
+            }),
         );
         const computedSelection: ComputedSelection = {
             acvStep: this.computeData(impacts, "acvStep"),
@@ -354,7 +352,7 @@ export class FootprintRepository {
 
     private computeData(
         impactsSelected: Impact[],
-        property: keyof ComputedSelection
+        property: keyof ComputedSelection,
     ): DataComputed[] {
         const summedData: DataComputed[] = [];
 
@@ -381,7 +379,7 @@ export class FootprintRepository {
 
     setPhysicalEquipmentStats(
         averageAge: PhysicalEquipmentAvgAge[],
-        lowImpact: PhysicalEquipmentLowImpact[]
+        lowImpact: PhysicalEquipmentLowImpact[],
     ): void {
         PhysicalEquipmentStatsStore.update(setProps({ lowImpact, averageAge }));
     }

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
 
 import {
@@ -16,6 +16,7 @@ import { Router, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { NgxSpinnerService } from "ngx-spinner";
+import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
@@ -24,12 +25,11 @@ import { SidebarModule } from "primeng/sidebar";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesServersComponent } from "./digital-services-servers.component";
 import { SidePanelCreateServerComponent } from "./side-panel-create-server/side-panel-create-server.component";
 import { SidePanelServerParametersComponent } from "./side-panel-server-parameters/side-panel-server-parameters.component";
-import { UserService } from "src/app/core/service/business/user.service";
-import { MessageService } from "primeng/api";
 
 const routes: Routes = [
     {
@@ -110,7 +110,7 @@ describe("DigitalServicesServersComponent", () => {
             uid: "",
             name: "Server A",
             mutualizationType: "Dedicated",
-            type: "Storage",
+            type: "Compute",
             quantity: 0,
             datacenter: {
                 uid: "",
@@ -184,7 +184,7 @@ describe("DigitalServicesServersComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
-            })
+            }),
         );
         const show = spyOn(spinner, "show");
         const hide = spyOn(spinner, "hide");
@@ -283,7 +283,7 @@ describe("DigitalServicesServersComponent", () => {
                     },
                 ],
                 networks: [],
-            })
+            }),
         );
         const show = spyOn(spinner, "show");
         const hide = spyOn(spinner, "hide");

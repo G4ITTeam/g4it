@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.business.InventoryEvaluationService;
@@ -59,46 +59,49 @@ public class InventoryDeleteService {
     @Autowired
     private InventoryIndicatorService inventoryIndicatorService;
 
+
     /**
      * Delete all inventories in an organization.
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the linked organization name.
+     * @param subscriberName the client subscriber name.
+     * @param organizationId the linked organization's id.
      */
-    public void deleteInventories(final String subscriberName, final String organizationName) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public void deleteInventories(final String subscriberName, final Long organizationId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         inventoryRepository.findByOrganization(linkedOrganization)
-                .forEach(inventory -> deleteInventory(subscriberName, organizationName, inventory));
+                .forEach(inventory -> deleteInventory(subscriberName, organizationId, inventory));
     }
+
 
     /**
      * Delete an inventory for an organization on a date.
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the organization name.
-     * @param inventoryId      the inventory id.
+     * @param subscriberName the client subscriber name.
+     * @param organizationId the organization id.
+     * @param inventoryId    the inventory id.
      */
-    public void deleteInventory(final String subscriberName, final String organizationName, final Long inventoryId) {
-        final Organization linkedOrganization = organizationService.getOrganizationBySubNameAndName(subscriberName, organizationName);
+    public void deleteInventory(final String subscriberName, final Long organizationId, final Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId)
-                .ifPresent(inventory -> deleteInventory(subscriberName, organizationName, inventory));
+                .ifPresent(inventory -> deleteInventory(subscriberName, organizationId, inventory));
     }
+
 
     /**
      * Delete the inventory based on the inventory database object
      *
-     * @param subscriberName   the client subscriber name.
-     * @param organizationName the organization name.
-     * @param inventory        the inventory database object.
+     * @param subscriberName the client subscriber name.
+     * @param organizationId the organization's id.
+     * @param inventory      the inventory database object.
      */
 
-    public void deleteInventory(final String subscriberName, final String organizationName, final Inventory inventory) {
+    public void deleteInventory(final String subscriberName, final Long organizationId, final Inventory inventory) {
         Long inventoryId = inventory.getId();
-        inventoryIndicatorService.deleteIndicators(subscriberName, organizationName, inventoryId);
+        inventoryIndicatorService.deleteIndicators(subscriberName, organizationId, inventoryId);
 
         // Remove batch job instance (all data linked to the repository to delete).
-        inventoryEvaluationService.deleteEvaluationBatchJob(organizationName, inventoryId);
-        inventoryLoadingService.deleteLoadingBatchJob(organizationName, inventoryId);
+        inventoryEvaluationService.deleteEvaluationBatchJob(organizationId, inventoryId);
+        inventoryLoadingService.deleteLoadingBatchJob(organizationId, inventoryId);
         inventoryExportService.deleteExportBatchJob(inventoryId);
 
         // Remove inventory.

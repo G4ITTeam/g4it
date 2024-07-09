@@ -17,6 +17,7 @@ import java.io.Serializable;
 /**
  * Equipment Indicator view to retrieve the inventory equipment indicators.
  */
+
 @SqlResultSetMapping(
         name = "EquipmentIndicatorsMapping",
         classes = @ConstructorResult(
@@ -30,7 +31,6 @@ import java.io.Serializable;
                         @ColumnResult(name = "status"),
                         @ColumnResult(name = "country"),
                         @ColumnResult(name = "batch_name"),
-                        @ColumnResult(name = "organization"),
                         @ColumnResult(name = "impact", type = Double.class),
                         @ColumnResult(name = "unit"),
                         @ColumnResult(name = "sip", type = Double.class)
@@ -38,12 +38,12 @@ import java.io.Serializable;
         )
 )
 @NamedNativeQuery(name = "EquipmentIndicatorView.findIndicators", resultSetMapping = "EquipmentIndicatorsMapping", query = """
-            SELECT ROW_NUMBER() OVER ()                                                                                     AS id,
-                ind_indicateur_impact_equipement_physique.critere                                                           AS criteria,
-                ind_indicateur_impact_equipement_physique.etapeacv                                                          AS acv_step,
-                ind_indicateur_impact_equipement_physique.nom_entite                                                        AS entity,
-                REGEXP_REPLACE(ind_indicateur_impact_equipement_physique.type_equipement, CONCAT(:organization, '_'), '')   AS equipment,
-                ind_indicateur_impact_equipement_physique.statut_equipement_physique                                        AS status,
+            SELECT ROW_NUMBER() OVER ()                                                AS id,
+                ind_indicateur_impact_equipement_physique.critere                      AS criteria,
+                ind_indicateur_impact_equipement_physique.etapeacv                     AS acv_step,
+                ind_indicateur_impact_equipement_physique.nom_entite                   AS entity,
+                ind_indicateur_impact_equipement_physique.type_equipement              AS equipment,
+                ind_indicateur_impact_equipement_physique.statut_equipement_physique   AS status,
                 CASE
                     WHEN en_equipement_physique.nom_court_datacenter <> ''
                         AND en_equipement_physique.nom_court_datacenter IS NOT NULL
@@ -53,7 +53,6 @@ import java.io.Serializable;
                     ELSE en_equipement_physique.pays_utilisation
                 END AS country,
                 ind_indicateur_impact_equipement_physique.nom_lot                                                           AS batch_name,
-                ind_indicateur_impact_equipement_physique.nom_organisation                                                  AS organization,
                 SUM(ind_indicateur_impact_equipement_physique.impact_unitaire)                                              AS impact,
                 ind_indicateur_impact_equipement_physique.unite                                                             AS unit,
                 SUM(ind_indicateur_impact_equipement_physique.impact_unitaire / ref_sip.individual_sustainable_package)     AS sip
@@ -62,15 +61,12 @@ import java.io.Serializable;
             INNER JOIN REF_SUSTAINABLE_INDIVIDUAL_PACKAGE ref_sip
                 ON ref_sip.criteria  = ind_indicateur_impact_equipement_physique.critere
             LEFT JOIN EN_DATA_CENTER data_center
-                ON data_center.nom_organisation = en_equipement_physique.nom_organisation
-                AND data_center.nom_lot = en_equipement_physique.nom_lot
+                ON data_center.nom_lot = en_equipement_physique.nom_lot
                 AND data_center.nom_court_datacenter = en_equipement_physique.nom_court_datacenter
             WHERE ind_indicateur_impact_equipement_physique.statut_indicateur = 'OK'
             AND ind_indicateur_impact_equipement_physique.nom_lot = :batchName
-            AND ind_indicateur_impact_equipement_physique.nom_organisation = :organization
             AND ind_indicateur_impact_equipement_physique.nom_equipement = en_equipement_physique.nom_equipement_physique
             AND en_equipement_physique.nom_lot = :batchName
-            AND en_equipement_physique.nom_organisation = :organization
             GROUP BY
                 ind_indicateur_impact_equipement_physique.critere,
                 ind_indicateur_impact_equipement_physique.etapeacv,
@@ -79,9 +75,9 @@ import java.io.Serializable;
                 ind_indicateur_impact_equipement_physique.nom_entite,
                 ind_indicateur_impact_equipement_physique.statut_equipement_physique,
                 ind_indicateur_impact_equipement_physique.nom_lot,
-                ind_indicateur_impact_equipement_physique.nom_organisation,
                 ind_indicateur_impact_equipement_physique.unite;
         """)
+
 @Data
 @Entity
 @SuperBuilder
@@ -104,8 +100,6 @@ public class EquipmentIndicatorView implements Serializable {
     private String country;
 
     private String batchName;
-
-    private String organization;
 
     private Double impact;
 

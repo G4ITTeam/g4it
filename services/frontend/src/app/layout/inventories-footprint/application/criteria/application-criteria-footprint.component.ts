@@ -8,10 +8,12 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { ECharts, EChartsOption } from "echarts";
+import { EChartsOption } from "echarts";
 import { NgxSpinnerService } from "ngx-spinner";
 import { combineLatestWith, first, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { EchartsRepository } from "src/app/core/store/echarts.repository";
 import { FilterRepository } from "src/app/core/store/filter.repository";
@@ -26,8 +28,6 @@ import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 @Component({
     selector: "app-application-criteria-footprint.component",
     templateUrl: "./application-criteria-footprint.component.html",
@@ -76,9 +76,16 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         private footprintService: FootprintService,
         private router: Router,
         override integerPipe: IntegerPipe,
-        override decimalsPipe: DecimalsPipe
+        override decimalsPipe: DecimalsPipe,
     ) {
-        super(filterRepo, footprintRepo, echartsRepo, translate, integerPipe, decimalsPipe);
+        super(
+            filterRepo,
+            footprintRepo,
+            echartsRepo,
+            translate,
+            integerPipe,
+            decimalsPipe,
+        );
     }
 
     ngOnInit() {
@@ -445,7 +452,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 }
             }
         });
-        impactOrderCriteria.sort(sortByProperty("sipImpact", "asc"));
+        impactOrderCriteria.sort(sortByProperty("sipImpact", "desc"));
         impactOrderCriteria.forEach((impact) => {
             xAxis.push(impact.vmAndEnvironnementName);
             yAxis.push(impact.sipImpact);

@@ -1,10 +1,9 @@
 <div class="layout">
     <header class="header">
-        <app-header [sideHeaderVisibleForOrganization]="sideHeaderVisibleForOrganization"></app-header>
+        <app-header></app-header>
     </header>
     <div class="main">
-        <h2 class="flex justify-content-between align-items-center flex-wrap mb-2">{{ "administration.title" |
-            translate }}</h2>
+        <h1 class="mb-2">{{ "administration.title" | translate }}</h1>
         <p-scrollPanel [style]="{ width: '100%', height: '88%' }">
             <p-tabMenu [model]="tabMenuList"></p-tabMenu>
             <router-outlet></router-outlet>

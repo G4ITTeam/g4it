@@ -46,6 +46,8 @@ class ExportJobServiceTest {
     @InjectMocks
     private ExportJobService service;
 
+    final static Long ORGANIZATION_ID = 1L;
+
     @BeforeEach
     public void beforeAll() {
         ReflectionTestUtils.setField(service, "localWorkingFolderBasePath", "./target/test-classes/");
@@ -59,6 +61,7 @@ class ExportJobServiceTest {
         final String batchName = "batchName";
         final Long inventoryId = 4L;
 
+
         final JobInstance instance = new JobInstance(1L, "testJob");
         final LocalDateTime startTime = LocalDateTime.now();
         final LocalDateTime endTime = LocalDateTime.now();
@@ -71,7 +74,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenReturn(execution);
 
-        final Long jobId = service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName);
+        final Long jobId = service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, ORGANIZATION_ID);
 
         assertThat(jobId).isEqualTo(1L);
 
@@ -96,7 +99,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobExecutionAlreadyRunningException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, ORGANIZATION_ID))
                 .hasMessageContaining("Job is already running.")
                 .isInstanceOf(ExportRuntimeException.class);
 
@@ -121,7 +124,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobRestartException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, ORGANIZATION_ID))
                 .hasMessageContaining("Illegal attempt at restarting Job.")
                 .isInstanceOf(ExportRuntimeException.class);
 
@@ -146,7 +149,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobInstanceAlreadyCompleteException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, ORGANIZATION_ID))
                 .hasMessageContaining("An instance of this Job already exists.")
                 .isInstanceOf(ExportRuntimeException.class);
 
@@ -171,7 +174,7 @@ class ExportJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobParametersInvalidException(""));
 
-        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName))
+        assertThatThrownBy(() -> service.launchExport(subscriber, organization, inventoryId, inventoryName, batchName, ORGANIZATION_ID))
                 .hasMessageContaining("Invalid parameters.")
                 .isInstanceOf(ExportRuntimeException.class);
 

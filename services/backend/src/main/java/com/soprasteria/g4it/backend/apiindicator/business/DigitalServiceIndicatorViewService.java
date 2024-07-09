@@ -4,14 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceIndicatorView;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceNetworkIndicatorView;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceServerIndicatorView;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceTerminalIndicatorView;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceNetworkIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceTerminalIndicatorMapper;
@@ -91,35 +88,48 @@ public class DigitalServiceIndicatorViewService {
     /**
      * Retrieve digital service indicator.
      *
-     * @param organization organization.
-     * @param uid          the digital service uid.
+     * @param uid the digital service uid.
      * @return indicator list.
      */
-    public List<DigitalServiceIndicatorBO> getDigitalServiceIndicators(final String organization, final String uid) {
-        final List<DigitalServiceIndicatorView> indicators = digitalServiceIndicatorRepository.findDigitalServiceIndicators(organization, uid);
-        return digitalServiceIndicatorMapper.toDto(indicators);
+    public List<DigitalServiceIndicatorBO> getDigitalServiceIndicators(final String uid) {
+        return digitalServiceIndicatorMapper.toDto(
+                digitalServiceIndicatorRepository.findDigitalServiceIndicators(uid)
+        );
     }
 
-    public List<DigitalServiceTerminalIndicatorBO> getDigitalServiceTerminalIndicators(final String organization, final String uid) {
-        final List<DigitalServiceTerminalIndicatorView> indicators = digitalServiceTerminalIndicatorRepository.findDigitalServiceTerminalIndicators(organization, uid);
-        return digitalServiceTerminalIndicatorMapper.toDto(indicators);
+    /**
+     * Retrieve digital service indicator.
+     *
+     * @param uid the digital service uid.
+     * @return indicator list.
+     */
+    public List<DigitalServiceTerminalIndicatorBO> getDigitalServiceTerminalIndicators(final String uid) {
+        return digitalServiceTerminalIndicatorMapper.toDto(
+                digitalServiceTerminalIndicatorRepository.findDigitalServiceTerminalIndicators(uid)
+        );
     }
 
-    public List<DigitalServiceNetworkIndicatorBO> getDigitalServiceNetworkIndicators(final String organization, final String uid) {
-        final List<DigitalServiceNetworkIndicatorView> indicators = digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(organization, uid);
-        return digitalServiceNetworkIndicatorMapper.toDto(indicators);
+    /**
+     * Retrieve digital service indicator.
+     *
+     * @param uid the digital service uid.
+     * @return indicator list.
+     */
+    public List<DigitalServiceNetworkIndicatorBO> getDigitalServiceNetworkIndicators(final String uid) {
+        return digitalServiceNetworkIndicatorMapper.toDto(
+                digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(uid)
+        );
+
     }
 
     /**
      * Get Server indicators.
      *
-     * @param organization the user organization.
-     * @param uid          unique digital service identifier.
+     * @param uid unique digital service identifier.
      * @return server indicator list.
      */
-    public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String organization, final String uid) {
-        final List<DigitalServiceServerIndicatorView> indicators = digitalServiceServerIndicatorRepository.findDigitalServiceServerIndicators(organization, uid);
-        return indicators.stream()
+    public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String uid) {
+        return digitalServiceServerIndicatorRepository.findDigitalServiceServerIndicators(uid).stream()
                 // (criteria, ([serverType, mutualizationType], serverName, indicators)
                 .collect(groupingBy(DigitalServiceServerIndicatorView::getCriteria,
                         groupingBy(indicator -> Pair.of(indicator.getType(), indicator.getMutualizationType()),
@@ -139,6 +149,7 @@ public class DigitalServiceIndicatorViewService {
                             ).toList());
                         }
                 ).toList();
+
     }
 
     /**

@@ -22,6 +22,7 @@ CHANGELOG.md merge=union
 *.gitmodules text
 *.toml text
 *.conf text
+*.csv text
 
 # Java
 *.java text

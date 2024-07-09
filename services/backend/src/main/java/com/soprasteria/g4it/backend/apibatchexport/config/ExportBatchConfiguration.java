@@ -65,17 +65,17 @@ public class ExportBatchConfiguration {
     /**
      * Inject configured FileStorage in all jobs
      *
-     * @param subscriber   the client subscriber.
-     * @param organization the subscriber's organization.
-     * @param fileSystem   Abstraction over local or distant filesystem
+     * @param subscriber     the client subscriber.
+     * @param organizationId the subscriber's organization.
+     * @param fileSystem     Abstraction over local or distant filesystem
      * @return a file storage to interact with files
      */
     @Bean
     @JobScope
     public FileStorage exportFileStorage(@Value("#{jobParameters['subscriber']}") final String subscriber,
-                                         @Value("#{jobParameters['organization']}") final String organization,
+                                         @Value("#{jobParameters['organization.id']}") final Long organizationId,
                                          final FileSystem fileSystem) {
-        return fileSystem.mount(subscriber, organization);
+        return fileSystem.mount(subscriber, organizationId.toString());
     }
 
     /**

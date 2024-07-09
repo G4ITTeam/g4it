@@ -10,38 +10,37 @@ import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { UserService } from "src/app/core/service/business/user.service";
-import { UserDataService } from "src/app/core/service/data/user-data.service";
 
 @Component({
     selector: "app-administration-panel",
     templateUrl: "./administration-panel.component.html",
 })
 export class AdministrationPanelComponent {
-    sideHeaderVisibleForOrganization = true;
-    tabItems!: MenuItem[];
     tabMenuList!: MenuItem[];
 
-    constructor( public userService: UserService,
-        private userDataService:UserDataService,
+    constructor(
+        public userService: UserService,
         public router: Router,
         private translate: TranslateService,
     ) {}
 
     ngOnInit() {
-        this.tabItems = [
-            {
-                label: this.translate.instant("administration.manage-users"),
-                routerLink: "users",
-            },
-            {
-                label: this.translate.instant("administration.manage-organizations"),
-                routerLink: "organizations",
-            }
-        ];
+        this.userService.user$.subscribe((user) => {
+            this.tabMenuList = [];
 
-        this.tabMenuList = this.tabItems;
-        if (!this.userDataService.isSubscriberAdmin) {
-            this.tabMenuList = this.tabItems?.slice(0,1)
-        }
+            if (this.userService.hasAnyAdminRole(user)) {
+                this.tabMenuList.push({
+                    label: this.translate.instant("administration.manage-users"),
+                    routerLink: "users",
+                });
+            }
+
+            if (this.userService.hasAnySubscriberAdminRole(user)) {
+                this.tabMenuList.push({
+                    label: this.translate.instant("administration.manage-organizations"),
+                    routerLink: "organizations",
+                });
+            }
+        });
     }
 }

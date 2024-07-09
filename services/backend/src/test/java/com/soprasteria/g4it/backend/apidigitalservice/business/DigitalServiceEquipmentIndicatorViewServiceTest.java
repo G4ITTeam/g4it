@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceIndicatorService;
@@ -35,51 +35,47 @@ class DigitalServiceEquipmentIndicatorViewServiceTest {
 
     @Test
     void shouldGetDigitalServiceIndicators() {
-        final String organization = "SSG";
         final String uid = "uid";
 
-        when(digitalServiceIndicatorViewService.getDigitalServiceIndicators(organization, uid)).thenReturn(List.of(DigitalServiceIndicatorBO.builder().build()));
+        when(digitalServiceIndicatorViewService.getDigitalServiceIndicators(uid)).thenReturn(List.of(DigitalServiceIndicatorBO.builder().build()));
 
-        Assertions.assertThat(indicatorService.getDigitalServiceIndicators(organization, uid)).hasSize(1);
+        Assertions.assertThat(indicatorService.getDigitalServiceIndicators(uid)).hasSize(1);
 
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceIndicators(organization, uid);
+        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceIndicators(uid);
 
     }
 
     @Test
     void shouldGetDigitalServiceTerminalIndicator() {
-        final String organization = "SSG";
         final String uid = "uid";
 
-        when(digitalServiceIndicatorViewService.getDigitalServiceTerminalIndicators(organization, uid)).thenReturn(List.of(DigitalServiceTerminalIndicatorBO.builder().build()));
+        when(digitalServiceIndicatorViewService.getDigitalServiceTerminalIndicators(uid)).thenReturn(List.of(DigitalServiceTerminalIndicatorBO.builder().build()));
 
-        Assertions.assertThat(indicatorService.getDigitalServiceTerminalIndicators(organization, uid)).hasSize(1);
+        Assertions.assertThat(indicatorService.getDigitalServiceTerminalIndicators(uid)).hasSize(1);
 
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceTerminalIndicators(organization, uid);
+        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceTerminalIndicators(uid);
     }
 
     @Test
     void shouldGetDigitalServiceNetworkIndicator() {
-        final String organization = "SSG";
         final String uid = "uid";
 
-        when(digitalServiceIndicatorViewService.getDigitalServiceNetworkIndicators(organization, uid)).thenReturn(List.of(DigitalServiceNetworkIndicatorBO.builder().build()));
+        when(digitalServiceIndicatorViewService.getDigitalServiceNetworkIndicators(uid)).thenReturn(List.of(DigitalServiceNetworkIndicatorBO.builder().build()));
 
-        Assertions.assertThat(indicatorService.getDigitalServiceNetworkIndicators(organization, uid)).hasSize(1);
+        Assertions.assertThat(indicatorService.getDigitalServiceNetworkIndicators(uid)).hasSize(1);
 
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceNetworkIndicators(organization, uid);
+        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceNetworkIndicators(uid);
     }
 
     @Test
     void shouldGetDigitalServiceServerIndicator() {
-        final String organization = "SSG";
         final String uid = "uid";
 
-        when(digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(organization, uid)).thenReturn(List.of(DigitalServiceServerIndicatorBO.builder().build()));
+        when(digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(uid)).thenReturn(List.of(DigitalServiceServerIndicatorBO.builder().build()));
 
-        Assertions.assertThat(indicatorService.getDigitalServiceServerIndicators(organization, uid)).hasSize(1);
+        Assertions.assertThat(indicatorService.getDigitalServiceServerIndicators(uid)).hasSize(1);
 
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceServerIndicators(organization, uid);
+        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceServerIndicators(uid);
     }
 
 }

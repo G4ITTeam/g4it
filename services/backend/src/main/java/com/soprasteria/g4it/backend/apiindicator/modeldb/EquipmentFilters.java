@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb;
 
 import jakarta.persistence.*;
@@ -55,10 +55,10 @@ import java.io.Serializable;
                 GROUP BY country, type, entity, status
             )
             SELECT DISTINCT
-                ROW_NUMBER() OVER ()                                    AS id,
+                ROW_NUMBER() OVER ()   AS id,
                 country,
                 entity,
-                REGEXP_REPLACE(type, CONCAT(:organization, '_'), '')    AS type,
+                type                   AS type,
                 status
             FROM filters
         """)

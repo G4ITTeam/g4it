@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
+import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DatacenterDigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.*;
@@ -20,6 +21,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DatacenterDigit
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
@@ -86,6 +88,8 @@ class DigitalServiceServiceTest {
     @InjectMocks
     private DigitalServiceService digitalServiceService;
 
+    final static Long ORGANIZATION_ID = 1L;
+
     @Test
     void shouldCreateNewDigitalService_first() {
         final long userId = 1;
@@ -99,16 +103,16 @@ class DigitalServiceServiceTest {
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).build();
         when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId)).thenReturn(existingDigitalService);
-        when(organizationService.getOrganizationBySubNameAndName(subscriber, organizationName)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(subscriber, organizationName, userId);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, userId);
 
         assertThat(result).isEqualTo(expectedBo);
 
-        verify(organizationService, times(1)).getOrganizationBySubNameAndName(subscriber, organizationName);
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(digitalServiceRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, userId);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
@@ -128,16 +132,16 @@ class DigitalServiceServiceTest {
 
         final DigitalService digitalServiceToSave = DigitalService.builder().organization(linkedOrganization).user(user).name(expectedName).build();
         when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId)).thenReturn(existingDigitalService);
-        when(organizationService.getOrganizationBySubNameAndName(subscriber, organizationName)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.save(any())).thenReturn(digitalServiceToSave);
         when(digitalServiceMapper.toBusinessObject(digitalServiceToSave)).thenReturn(expectedBo);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        final DigitalServiceBO result = digitalServiceService.createDigitalService(subscriber, organizationName, userId);
+        final DigitalServiceBO result = digitalServiceService.createDigitalService(ORGANIZATION_ID, userId);
 
         assertThat(result).isEqualTo(expectedBo);
 
-        verify(organizationService, times(1)).getOrganizationBySubNameAndName(subscriber, organizationName);
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(digitalServiceRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, userId);
         verify(digitalServiceRepository, times(1)).save(any());
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServiceToSave);
@@ -152,15 +156,15 @@ class DigitalServiceServiceTest {
         final Organization linkedOrganization = Organization.builder().name(organizationName).build();
 
         final List<DigitalService> digitalServices = List.of(DigitalService.builder().name("name").build());
-        when(organizationService.getOrganizationBySubNameAndName(subscriber, organizationName)).thenReturn(linkedOrganization);
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId)).thenReturn(digitalServices);
         List<DigitalServiceBO> digitalServiceBOs = List.of(DigitalServiceBO.builder().name("name").build());
         when(digitalServiceMapper.toBusinessObject(digitalServices)).thenReturn(digitalServiceBOs);
 
-        final List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(subscriber, organizationName, userId);
+        final List<DigitalServiceBO> result = digitalServiceService.getDigitalServices(ORGANIZATION_ID, userId);
 
         assertThat(result).isEqualTo(digitalServiceBOs);
-        verify(organizationService, times(1)).getOrganizationBySubNameAndName(subscriber, organizationName);
+        verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(digitalServiceRepository, times(1)).findByOrganizationAndUserId(linkedOrganization, userId);
         verify(digitalServiceMapper, times(1)).toBusinessObject(digitalServices);
     }
@@ -168,19 +172,21 @@ class DigitalServiceServiceTest {
     @Test
     void shouldDeleteDigitalService() {
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
-        final String organizationName = "test";
 
         doNothing().when(digitalServiceRepository).deleteById(digitalServiceUid);
-        doNothing().when(indicatorService).deleteIndicators(organizationName, digitalServiceUid);
+        doNothing().when(indicatorService).deleteIndicators(digitalServiceUid);
 
-        digitalServiceService.deleteDigitalService(organizationName, digitalServiceUid);
+        digitalServiceService.deleteDigitalService(digitalServiceUid);
 
         verify(digitalServiceRepository, times(1)).deleteById(digitalServiceUid);
-        verify(indicatorService, times(1)).deleteIndicators(organizationName, digitalServiceUid);
+        verify(indicatorService, times(1)).deleteIndicators(digitalServiceUid);
     }
 
     @Test
     void shouldUpdateDigitalService() {
+        final UserBO userBO = UserBO.builder().id(1).build();
+        final User user = User.builder().id(1).build();
+
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
 
         final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(digitalServiceUid).name("name").build();
@@ -190,22 +196,25 @@ class DigitalServiceServiceTest {
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
-        doNothing().when(digitalServiceMapper).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, null);
+        doNothing().when(digitalServiceMapper).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
         when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
         when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(inputDigitalServiceBO);
 
-        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, null);
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, userBO);
 
         assertThat(result).isEqualTo(inputDigitalServiceBO);
         verify(digitalServiceRepository, times(1)).findById(digitalServiceBO.getUid());
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalService);
-        verify(digitalServiceMapper, times(1)).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, null);
+        verify(digitalServiceMapper, times(1)).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
         verify(digitalServiceRepository, times(1)).save(digitalService);
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
     }
 
     @Test
     void shouldUpdateDigitalService_withRemovedTerminalAndNetwork() {
+        final UserBO userBO = UserBO.builder().id(1).build();
+        final User user = User.builder().id(1).build();
+
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
 
         final DigitalServiceBO inputDigitalServiceBO = DigitalServiceBO.builder().uid(digitalServiceUid).name("name").build();
@@ -218,16 +227,16 @@ class DigitalServiceServiceTest {
 
         when(digitalServiceRepository.findById(digitalService.getUid())).thenReturn(Optional.of(digitalService));
         when(digitalServiceMapper.toFullBusinessObject(digitalService)).thenReturn(digitalServiceBO);
-        doNothing().when(digitalServiceMapper).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, null);
+        doNothing().when(digitalServiceMapper).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
         when(digitalServiceRepository.save(digitalService)).thenReturn(digitalServiceUpdated);
         when(digitalServiceMapper.toFullBusinessObject(digitalServiceUpdated)).thenReturn(inputDigitalServiceBO);
 
-        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, null);
+        final DigitalServiceBO result = digitalServiceService.updateDigitalService(inputDigitalServiceBO, userBO);
 
         assertThat(result).isEqualTo(inputDigitalServiceBO);
         verify(digitalServiceRepository, times(1)).findById(digitalServiceBO.getUid());
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalService);
-        verify(digitalServiceMapper, times(1)).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, null);
+        verify(digitalServiceMapper, times(1)).mergeEntity(digitalService, inputDigitalServiceBO, digitalServiceReferentialService, user);
         verify(digitalServiceRepository, times(1)).save(digitalService);
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalServiceUpdated);
     }
@@ -312,7 +321,7 @@ class DigitalServiceServiceTest {
         final String organizationName = "test";
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
 
-        doNothing().when(indicatorService).deleteIndicators(organizationName, digitalServiceUid);
+        doNothing().when(indicatorService).deleteIndicators(digitalServiceUid);
         final DigitalService digitalService = DigitalService.builder().uid(digitalServiceUid).build();
         when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.of(digitalService));
         final DigitalServiceBO digitalServiceBo = DigitalServiceBO.builder()
@@ -373,9 +382,12 @@ class DigitalServiceServiceTest {
         when(digitalServiceReferentialService.getNetworkType("code")).thenReturn(NetworkTypeRef.builder().annualQuantityOfGo(10).build());
         when(digitalServiceRepository.save(digitalService)).thenReturn(digitalService);
 
-        digitalServiceService.runCalculations(organizationName, digitalServiceUid);
+        final Organization linkedOrganization = TestUtils.createOrganization();
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
 
-        verify(indicatorService, times(1)).deleteIndicators(organizationName, digitalServiceUid);
+        digitalServiceService.runCalculations(ORGANIZATION_ID, digitalServiceUid);
+
+        verify(indicatorService, times(1)).deleteIndicators(digitalServiceUid);
         verify(digitalServiceRepository, times(2)).findById(digitalServiceUid);
         verify(digitalServiceMapper, times(1)).toFullBusinessObject(digitalService);
         verify(fileInfo, times(1)).getMapping(FileType.EQUIPEMENT_PHYSIQUE);

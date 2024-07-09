@@ -9,7 +9,6 @@
 package com.soprasteria.g4it.backend.apiuser.mapper;
 
 import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
-import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import org.mapstruct.Mapper;
 
@@ -17,10 +16,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    //List<UserInfoRest> toRest(final List<UserInfoBO> userInfoBo);
-
     List<UserInfoBO> toBusinessObject(final List<User> source);
-
-    List<UserSearchBO> toBO(final List<User> source);
 
 }

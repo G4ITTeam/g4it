@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
@@ -42,7 +42,7 @@ export class DigitalServicesTerminalsSidePanelComponent {
         private _formBuilder: FormBuilder,
         private spinner: NgxSpinnerService,
         public userService: UserService,
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.initForm();

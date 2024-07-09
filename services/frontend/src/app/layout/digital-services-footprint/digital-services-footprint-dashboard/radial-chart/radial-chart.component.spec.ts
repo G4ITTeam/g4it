@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
@@ -63,11 +63,11 @@ describe("RadialChartComponent", () => {
         expect(echartsOption.angleAxis).toEqual({
             type: "category",
             data: [
-                "criteria.particulate-matter.title",
-                "criteria.acidification.title",
-                "criteria.ionising-radiation.title",
-                "criteria.resource-use.title",
                 "criteria.climate-change.title",
+                "criteria.resource-use.title",
+                "criteria.ionising-radiation.title",
+                "criteria.acidification.title",
+                "criteria.particulate-matter.title",
             ],
         });
         expect(echartsOption.legend).toEqual({

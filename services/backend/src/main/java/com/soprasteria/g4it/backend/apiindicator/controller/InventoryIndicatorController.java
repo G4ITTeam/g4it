@@ -65,7 +65,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<Map<String, EquipmentIndicatorRest>> getEquipmentIndicators(final String subscriber,
-                                                                                      final String organization,
+                                                                                      final Long organization,
                                                                                       final Long inventoryId) {
         final Map<String, EquipmentIndicatorBO> indicators = inventoryIndicatorService.getEquipmentIndicators(subscriber, organization, inventoryId);
         return ResponseEntity.ok().body(indicators.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, map -> this.indicatorRestMapper.toDto(map.getValue()))));
@@ -76,7 +76,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<List<ApplicationIndicatorRest>> getApplicationIndicators(final String subscriber,
-                                                                                   final String organization,
+                                                                                   final Long organization,
                                                                                    final Long inventoryId) {
         final List<ApplicationIndicatorBO<ApplicationImpactBO>> indicators = inventoryIndicatorService.getApplicationIndicators(subscriber, organization, inventoryId);
         return ResponseEntity.ok().body(this.indicatorRestMapper.toApplicationIndicatorDto(indicators));
@@ -87,7 +87,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<List<ApplicationVmIndicatorRest>> getApplicationVmIndicators(final String subscriber,
-                                                                                       final String organization,
+                                                                                       final Long organization,
                                                                                        final Long inventoryId,
                                                                                        final String applicationName,
                                                                                        final String criteria) {
@@ -101,7 +101,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<List<PhysicalEquipmentLowImpactRest>> getPhysicalEquipmentsLowImpact(final String subscriber,
-                                                                                               final String organization,
+                                                                                               final Long organization,
                                                                                                final Long inventoryId) {
         return ResponseEntity.ok(indicatorRestMapper.toLowImpactDto(inventoryIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organization, inventoryId)));
     }
@@ -111,7 +111,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<List<PhysicalEquipmentsAvgAgeRest>> getPhysicalEquipmentAvgAge(final String subscriber,
-                                                                                         final String organization,
+                                                                                         final Long organization,
                                                                                          final Long inventoryId) {
         return ResponseEntity.ok(indicatorRestMapper.toAvgAgeDto(inventoryIndicatorService.getPhysicalEquipmentAvgAge(subscriber, organization, inventoryId)));
     }
@@ -121,7 +121,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<Void> deleteIndicators(final String subscriber,
-                                                 final String organization,
+                                                 final Long organization,
                                                  final Long inventoryId) {
         inventoryIndicatorService.deleteIndicators(subscriber, organization, inventoryId);
         return ResponseEntity.noContent().build();
@@ -132,7 +132,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<List<DataCentersInformationRest>> getDataCenterIndicators(final String subscriber,
-                                                                                    final String organization,
+                                                                                    final Long organization,
                                                                                     final Long inventoryId) {
         return ResponseEntity.ok().body(
                 indicatorRestMapper.toDataCenterDto(inventoryIndicatorService.getDataCenterIndicators(subscriber, organization, inventoryId))
@@ -144,7 +144,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<EquipmentFiltersRest> getEquipmentFilters(final String subscriber,
-                                                                    final String organization,
+                                                                    final Long organization,
                                                                     final Long inventoryId) {
         return ResponseEntity.ok().body(
                 indicatorRestMapper.toEquipmentFiltersDto(inventoryIndicatorService.getEquipmentFilters(subscriber, organization, inventoryId))
@@ -156,7 +156,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<ApplicationFiltersRest> getApplicationFilters(final String subscriber,
-                                                                        final String organization,
+                                                                        final Long organization,
                                                                         final Long inventoryId,
                                                                         final String domain,
                                                                         final String subDomain,
@@ -171,7 +171,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<Void> exportIndicators(final String subscriber,
-                                                 final String organization,
+                                                 final Long organization,
                                                  final Long inventoryId) {
         inventoryExportService.createExportRequest(subscriber, organization, inventoryId);
         return ResponseEntity.<Void>ok().build();
@@ -182,7 +182,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      */
     @Override
     public ResponseEntity<Resource> getIndicatorsExportResult(final String subscriber,
-                                                              final String organization,
+                                                              final Long organization,
                                                               final Long inventoryId) {
 
         InventoryExportReportBO exportReport = inventoryExportService.getExportReportByInventoryId(subscriber, organization, inventoryId);
@@ -193,7 +193,7 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         }
 
         String filename = fileSystemService.getFilenameFromUrl(exportReport.getResultFileUrl(), 0);
-        final String filePath = String.join("/", subscriber, organization, FileFolder.EXPORT.getFolderName(), filename);
+        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.EXPORT.getFolderName(), filename);
         try {
             InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.EXPORT, filename);
             return ResponseEntity.ok(new InputStreamResource(inputStream));

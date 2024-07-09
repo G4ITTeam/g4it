@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.model;
 
 import lombok.Builder;
@@ -27,6 +27,7 @@ public class InventoryJobParams {
     public static final String INVENTORY_NAME_JOB_PARAM = "inventory.name";
     public static final String SUBSCRIBER_JOB_PARAM = "subscriber";
     public static final String ORGANIZATION_JOB_PARAM = "organization";
+    public static final String ORGANIZATION_ID_JOB_PARAM = "organization.id";
 
     /**
      * The client subscriber.
@@ -47,6 +48,8 @@ public class InventoryJobParams {
     private final Date sessionDate;
 
     private final Locale locale;
+
+    private final long organizationId;
 
     /**
      * Base path for the batch local working folder
@@ -78,6 +81,7 @@ public class InventoryJobParams {
                 .addString(SUBSCRIBER_JOB_PARAM, subscriber)
                 .addString(ORGANIZATION_JOB_PARAM, organization)
                 .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)
+                .addLong(ORGANIZATION_ID_JOB_PARAM, organizationId)
                 .addString("local.working.folder", genRandomFolderName())
                 .addString("delete.local.working.folder", Boolean.toString(deleteLocalWorkingFolder))
                 .addString("zip.results", Boolean.toString(zipResults))

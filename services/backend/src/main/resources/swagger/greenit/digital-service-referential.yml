@@ -18,7 +18,7 @@ paths:
       tags:
         - digital-service referential
       summary: Get terminal device type referential
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getTerminalDeviceTypeRef
       responses:
         '200':
@@ -42,7 +42,7 @@ paths:
       tags:
         - digital-service referential
       summary: Get country
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getCountryRef
       responses:
         '200':
@@ -66,7 +66,7 @@ paths:
       tags:
         - digital-service referential
       summary: Get network type
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getNetworkTypeRef
       responses:
         '200':
@@ -95,7 +95,7 @@ paths:
       tags:
         - digital-service referential
       summary: Get server host
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ') or hasRole('DIGITAL_SERVICE_WRITE')"
+      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
       operationId: getServerHost
       responses:
         '200':
