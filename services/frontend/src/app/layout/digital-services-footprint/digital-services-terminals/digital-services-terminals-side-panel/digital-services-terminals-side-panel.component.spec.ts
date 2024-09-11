@@ -10,15 +10,14 @@ import { CUSTOM_ELEMENTS_SCHEMA, forwardRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel.component";
-import { UserService } from "src/app/core/service/business/user.service";
 
 describe("DigitalServicesTerminalsSidePanelComponent", () => {
     let component: DigitalServicesTerminalsSidePanelComponent;
@@ -35,7 +34,6 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
                     ),
                     multi: true,
                 },
-                NgxSpinnerService,
                 DigitalServicesDataService,
                 TranslatePipe,
                 TranslateService,

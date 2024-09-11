@@ -4,9 +4,10 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Injectable } from "@angular/core";
 import { createStore, select, setProp, withProps } from "@ngneat/elf";
+import { Constants } from "src/constants";
 
 export interface Filter {
     countries: string[];
@@ -27,8 +28,8 @@ const filterStore = createStore(
     { name: "Filter" },
     withProps<FilterProps>({
         selectedCriteria: "",
-        selectedUnite: "Peopleeq",
-        selectedView: "acvStep",
+        selectedUnite: Constants.PEOPLEEQ,
+        selectedView: Constants.ACV_STEP,
         selectedFilters: {
             countries: [],
             entities: [],
@@ -41,7 +42,7 @@ const filterStore = createStore(
             status: [],
             equipments: [],
         },
-    })
+    }),
 );
 
 export interface FilterApplicationReceived {
@@ -86,7 +87,7 @@ const filterStoreApp = createStore(
             lifeCycles: [],
             domains: [],
         },
-    })
+    }),
 );
 
 @Injectable({ providedIn: "root" })
@@ -102,7 +103,7 @@ export class FilterRepository {
     allFilters$ = filterStore.pipe(select((state) => state.allFilters));
 
     selectedApplicationFilters$ = filterStoreApp.pipe(
-        select((state) => state.selectedFilters)
+        select((state) => state.selectedFilters),
     );
 
     allApplicationFilters$ = filterStoreApp.pipe(select((state) => state.allFilters));

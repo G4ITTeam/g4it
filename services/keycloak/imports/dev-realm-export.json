@@ -631,7 +631,7 @@
     "attributes" : {
       "oidc.ciba.grant.enabled" : "false",
       "backchannel.logout.session.required" : "false",
-      "login_theme" : "keycloak",
+      "login_theme" : "g4it",
       "post.logout.redirect.uris" : "+",
       "display.on.consent.screen" : "false",
       "oauth2.device.authorization.grant.enabled" : "false",
@@ -1224,7 +1224,7 @@
     "strictTransportSecurity" : "max-age=31536000; includeSubDomains"
   },
   "smtpServer" : { },
-  "loginTheme" : "g4it",
+  "loginTheme" : "keycloak",
   "accountTheme" : "keycloak.v3",
   "adminTheme" : "keycloak.v2",
   "emailTheme" : "base",
@@ -1358,8 +1358,9 @@
       }
     } ]
   },
-  "internationalizationEnabled" : false,
-  "supportedLocales" : [ ],
+  "internationalizationEnabled" : true,
+  "supportedLocales" : [ "en", "fr" ],
+  "defaultLocale" : "en",
   "authenticationFlows" : [ {
     "id" : "ef25cf70-a604-43d2-b147-0433947b25b0",
     "alias" : "Account verification options",

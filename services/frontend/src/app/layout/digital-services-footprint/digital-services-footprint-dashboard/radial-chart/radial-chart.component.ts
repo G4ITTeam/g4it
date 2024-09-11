@@ -8,7 +8,6 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
-import { getCriteriaShortList } from "src/app/core/utils/criteria";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
 
@@ -33,7 +32,7 @@ export class RadialChartComponent extends AbstractDashboard {
 
     loadRadialChartOption(radialChartData: DigitalServiceFootprint[]): EChartsOption {
         const order = ["Terminal", "Network", "Server"];
-        const criteriaOrder = getCriteriaShortList();
+        const criteriaOrder = Constants.CRITERIAS;
         radialChartData.sort((a: any, b: any) => {
             return order.indexOf(a.tier) - order.indexOf(b.tier);
         });
@@ -65,7 +64,9 @@ export class RadialChartComponent extends AbstractDashboard {
                     <div>${this.getCriteriaTranslation(
                         impact.criteria.split(" ").slice(0, 2).join(" "),
                     )} : ${this.integerPipe.transform(impact.sipValue)}
-                    ${this.translate.instant("common.peopleeq-min")} </div>
+                    ${this.translate.instant("common.peopleeq-min")}<br>
+                    ${this.decimalsPipe.transform(impact.unitValue)} ${impact.unit}
+                    </div>
                 </div>
             `;
                 },

@@ -592,3 +592,5 @@ databaseChangeLog:
               newDataType: double
               schemaName: public
               tableName: terminal
+
+

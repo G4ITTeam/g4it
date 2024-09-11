@@ -12,7 +12,6 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DividerModule } from "primeng/divider";
@@ -21,10 +20,10 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesServersComponent } from "../digital-services-servers.component";
 import { SidePanelServerParametersComponent } from "../side-panel-server-parameters/side-panel-server-parameters.component";
 import { SidePanelCreateServerComponent } from "./side-panel-create-server.component";
-import { UserService } from "src/app/core/service/business/user.service";
 
 const routes: Routes = [
     {
@@ -72,7 +71,6 @@ describe("SidePanelCreateServerComponent", () => {
                 MessageService,
                 UserService,
                 DigitalServiceBusinessService,
-                NgxSpinnerService,
                 FormBuilder,
             ],
         });

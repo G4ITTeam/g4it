@@ -7,7 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.repository;
 
-import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentFilters;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.Filters;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,25 +16,33 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_BATCH_NAME;
-import static com.soprasteria.g4it.backend.apiindicator.utils.Constants.PARAM_INVENTORY_ID;
 
 
 /**
  * Repository to calculate the filters.
  */
 @Repository
-public interface EquipmentFiltersRepository extends JpaRepository<EquipmentFilters, Long> {
+public interface EquipmentFiltersRepository extends JpaRepository<Filters, Long> {
 
     /**
      * Recovery of datacenter indicators.
      *
-     * @param inventoryId the inventory id.
-     * @param batchName   the batch name.
+     * @param batchName the batch name.
      * @return main indicators
      */
-    @Query(nativeQuery = true)
-    List<EquipmentFilters> getFiltersByInventoryId(@Param(PARAM_INVENTORY_ID) final Long inventoryId,
-                                                   @Param(PARAM_BATCH_NAME) final String batchName);
-
+    @Query(nativeQuery = true, value = """
+            select 0 as id, 'country' as field, array_agg(distinct country) as values from agg_equipment_indicator
+            where batch_name = :batchName
+            union
+            select 1 as id,'entity' as field, array_agg(distinct entity) as values from agg_equipment_indicator
+            where batch_name = :batchName
+            union
+            select 2 as id,'type' as field, array_agg(distinct equipment) as values from agg_equipment_indicator
+            where batch_name = :batchName
+            union
+            select 3 as id, 'status' as field, array_agg(distinct status) as values from agg_equipment_indicator
+            where batch_name = :batchName
+            """)
+    List<Filters> getFiltersByBatchName(@Param(PARAM_BATCH_NAME) final String batchName);
 
 }

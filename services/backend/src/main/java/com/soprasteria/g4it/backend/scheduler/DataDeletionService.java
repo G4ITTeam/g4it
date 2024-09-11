@@ -8,9 +8,9 @@
 package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
-import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
@@ -43,8 +43,7 @@ public class DataDeletionService {
     private DigitalServiceService digitalServiceService;
 
     @Autowired
-    private OrganizationService organizationService;
-
+    private DigitalServiceRepository digitalServiceRepository;
 
     /**
      * Execute the deletion
@@ -78,7 +77,7 @@ public class DataDeletionService {
                     .sum();
 
             // Digital services
-            nbDigitalServicesDeleted += digitalServiceService.getAllDigitalServicesByOrganization(organizationId).stream()
+            nbDigitalServicesDeleted += digitalServiceRepository.findByOrganization(organizationEntity).stream()
                     .filter(digitalServiceBO -> now.minusDays(retentionDay).isAfter(digitalServiceBO.getLastUpdateDate()))
                     .mapToInt(digitalServiceBO -> {
                         digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());

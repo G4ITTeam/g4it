@@ -9,8 +9,8 @@ package com.soprasteria.g4it.backend.apibatchexport.tasklet;
 
 import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apibatchexport.exception.ExportRuntimeException;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.ExportBatchStatus;
 import io.vavr.control.Try;
@@ -54,7 +54,7 @@ public class UploadExportResultTasklet implements Tasklet {
      * The inventory name.
      */
     private final long inventoryId;
-    
+
     /**
      * Batch Name
      */

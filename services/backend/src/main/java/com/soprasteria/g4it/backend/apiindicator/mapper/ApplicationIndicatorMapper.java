@@ -9,7 +9,7 @@ package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationIndicatorView;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.AggApplicationIndicator;
 import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mapstruct.Mapper;
@@ -27,20 +27,20 @@ import static java.util.stream.Collectors.toList;
 public interface ApplicationIndicatorMapper {
 
     /**
-     * Map application indicator view to impact business object.
+     * Map aggregated application indicator to impact business object.
      *
      * @param source data from database.
      * @return the impacts.
      */
-    List<ApplicationImpactBO> toImpact(final List<ApplicationIndicatorView> source);
+    List<ApplicationImpactBO> toImpact(final List<AggApplicationIndicator> source);
 
     /**
-     * Map application indicator view to impact business object.
+     * Map aggregated application indicator to impact business object.
      *
      * @param source data from database.
      * @return the impacts.
      */
-    ApplicationImpactBO toImpact(final ApplicationIndicatorView source);
+    ApplicationImpactBO toImpact(final AggApplicationIndicator source);
 
     /**
      * Map application indicators to indicator business object.
@@ -49,7 +49,7 @@ public interface ApplicationIndicatorMapper {
      * @return the indicator business object.
      */
     @Mapping(target = "impacts", source = "source")
-    default List<ApplicationIndicatorBO<ApplicationImpactBO>> toDto(final List<ApplicationIndicatorView> source) {
+    default List<ApplicationIndicatorBO<ApplicationImpactBO>> toDto(final List<AggApplicationIndicator> source) {
         return source.stream().collect(Collectors.groupingBy(ind -> Pair.of(ind.getCriteria(), ind.getUnit())))
                 .entrySet().stream().map(entry -> ApplicationIndicatorBO.builder()
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey().getKey()))

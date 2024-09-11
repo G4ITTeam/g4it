@@ -7,16 +7,15 @@
  */ 
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { NgxSpinnerService } from "ngx-spinner";
+import { MessageService } from "primeng/api";
 import {
     DigitalService,
     DigitalServiceServerConfig,
     ServerVM,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServiceBusinessService } from "./../../../../core/service/business/digital-services.service";
-import { UserService } from "src/app/core/service/business/user.service";
-import { MessageService } from "primeng/api";
 
 @Component({
     selector: "app-side-panel-list-vm",
@@ -74,7 +73,6 @@ export class SidePanelListVmComponent implements OnInit {
         private digitalDataService: DigitalServicesDataService,
         private router: Router,
         private route: ActivatedRoute,
-        private spinner: NgxSpinnerService,
         public userService:UserService
     ) {}
 
@@ -98,11 +96,9 @@ export class SidePanelListVmComponent implements OnInit {
     }
 
     deleteVm(rowNumber: number) {
-        this.spinner.show();
         if (rowNumber !== undefined && this.server.vm !== undefined) {
             this.server.vm.splice(rowNumber, 1);
         }
-        this.spinner.hide();
     }
 
     previousStep() {
@@ -110,10 +106,8 @@ export class SidePanelListVmComponent implements OnInit {
     }
 
     async submitServer() {
-        this.spinner.show();
         this.digitalServiceBusiness.setServerForm(this.server);
         this.digitalServiceBusiness.submitServerForm(this.server, this.digitalService);
-        this.spinner.hide();
         this.close();
     }
 

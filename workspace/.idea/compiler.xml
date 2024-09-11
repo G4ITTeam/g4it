@@ -15,15 +15,6 @@
         <module name="backend" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="api-event-calculs" target="17" />
-      <module name="api-event-donneesEntrees" target="17" />
-      <module name="api-expositiondonneesentrees" target="17" />
-      <module name="api-referentiel" target="17" />
-      <module name="calculs" target="17" />
-      <module name="common" target="17" />
-      <module name="core" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

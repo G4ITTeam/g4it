@@ -4,10 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
+import { Constants } from "src/constants";
 
 @Component({
     selector: "app-impact-button",
@@ -23,15 +24,10 @@ export class ImpactButtonComponent implements OnInit {
     @Input() selectedUnit: string = "";
     impactImage: string = "";
 
-    iconMap: any = {
-        "particulate-matter": "factory",
-        acidification: "ph",
-        "ionising-radiation": "ion",
-        "resource-use": "hourglass",
-        "climate-change": "climate",
-    };
-
-    constructor(private sanitizer: DomSanitizer, private translate: TranslateService) {}
+    constructor(
+        private sanitizer: DomSanitizer,
+        private translate: TranslateService,
+    ) {}
 
     renderHTML(html: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(html);
@@ -42,7 +38,7 @@ export class ImpactButtonComponent implements OnInit {
             this.impactImage = "assets/images/icons/icon-hourglass.svg";
             this.impactUnite = "N/A";
         }
-        this.impactImage = `assets/images/icons/icon-${this.iconMap[this.impact]}.svg`;
+        this.impactImage = `assets/images/icons/icon-${Constants.CRITERIA_ICON[this.impact]}.svg`;
     }
 
     changeCritere(critere: string) {

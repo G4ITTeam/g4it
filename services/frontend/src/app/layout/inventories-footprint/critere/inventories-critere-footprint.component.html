@@ -8,12 +8,9 @@
                 <div class="round-button-container">
                     <button
                         *ngFor="let dimension of dimensions"
-                        [class]="
-                            (filterRepo.selectedView$ | async) === dimension
-                                ? 'round-button-selected'
-                                : 'round-button'
-                        "
-                        (click)="filterRepo.updateSelectedView(dimension)"
+                        [class.round-button-selected]="dimension === selectedDimension()"
+                        [class.round-button]="dimension !== selectedDimension()"
+                        (click)="selectedDimension.set(dimension)"
                     >
                         {{
                             "inventories-footprint.round-button." + dimension | translate
@@ -22,33 +19,25 @@
                 </div>
             </p-card>
         </div>
-        <div *ngIf="noData; else chart" class="no-data-half">
-            <p class="text-half-empty">{{ "common.no-data" | translate }}</p>
-        </div>
-        <ng-template #chart>
-            <div
-                echarts
-                class="m-0"
-                [options]="options"
-            ></div>
-        </ng-template>
+        @if (options().series) {
+            <div echarts class="m-0" [options]="options()" style="height: 480px"></div>
+        } @else {
+            <div class="no-data-half">
+                <p class="text-half-empty">{{ "common.no-data" | translate }}</p>
+            </div>
+        }
     </div>
     <div>
         <p-card>
             <app-impact-aggregate-infos
-                [displayValue]="
-                    (filterRepo.selectedUnite$ | async) === 'impact' ? impact : sip
-                "
-                [selectedCriteria]="(filterRepo.selectedCriteria$ | async) ?? ''"
-                [unitOfCriteria]="(echartsRepo.unitOfCriteria$ | async) ?? ''"
-                [selectedUnit]="(filterRepo.selectedUnite$ | async) ?? ''"
-                (selectedUnitChange)="filterRepo.updateSelectedUnite($event)"
+                [displayValue]="totalValue"
+                [criteria]="footprintStore.criteria()"
+                [unit]="footprintStore.unit()"
+                (changeUnit)="changeUnitInStore($event)"
             ></app-impact-aggregate-infos>
             <app-information-card
-                [title]="infoCardTitle(filterRepo.selectedCriteria$ | async) | translate"
-                [content]="
-                    infoCardContent(filterRepo.selectedCriteria$ | async) | translate
-                "
+                [title]="infocard().title"
+                [content]="infocard().text"
             ></app-information-card>
         </p-card>
     </div>

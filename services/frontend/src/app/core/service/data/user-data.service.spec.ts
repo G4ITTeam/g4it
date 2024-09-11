@@ -22,6 +22,7 @@ describe("UserDataService", () => {
         email: "prenom.nom@soprasteria.com",
         firstName: "prenom",
         lastName: "nom",
+        id: 1,
         subscribers: [
             {
                 id: 1,
@@ -32,25 +33,25 @@ describe("UserDataService", () => {
                         id: 1,
                         name: "SSG",
                         defaultFlag: true,
-                        status: "ACTIVE",
                         roles: [
                             Role.InventoryRead,
                             Role.DigitalServiceRead,
                             Role.InventoryWrite,
                             Role.DigitalServiceWrite,
                         ],
+                        status: "ACTIVE",
                     },
                     {
                         id: 2,
                         name: "G4IT",
                         defaultFlag: false,
-                        status: "ACTIVE",
                         roles: [
                             Role.InventoryRead,
                             Role.DigitalServiceRead,
                             Role.InventoryWrite,
                             Role.DigitalServiceWrite,
                         ],
+                        status: "ACTIVE",
                     },
                 ],
                 roles: [

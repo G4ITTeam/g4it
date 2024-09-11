@@ -15,10 +15,12 @@ import {
 } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { NgxSpinnerService } from "ngx-spinner";
+import { TranslateService } from "@ngx-translate/core";
 import { Message, MessageService } from "primeng/api";
 import { Observable, throwError } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
+import { Constants } from "src/constants";
+import { UserService } from "../service/business/user.service";
 
 @Injectable({
     providedIn: "root",
@@ -37,7 +39,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     constructor(
         public router: Router,
         private messageService: MessageService,
-        private spinner: NgxSpinnerService
+        private userService: UserService,
+        private translate: TranslateService,
     ) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -46,11 +49,35 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             catchError((returnedError) => {
                 this.handleErrorPageNavigation(returnedError.status);
                 return throwError(() => new Error(this.getErrorMessage(returnedError)));
-            })
+            }),
         );
     }
 
     private getErrorMessage(error: any): string {
+        let isDigitalServiceRead = false;
+        this.userService.isAllowedDigitalServiceRead$.subscribe((res) => {
+            isDigitalServiceRead = res;
+        });
+
+        for (const key in Constants.ERRORS) {
+            if (
+                error.status === +key &&
+                error.url.includes("/digital-services") &&
+                isDigitalServiceRead
+            ) {
+                let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
+                this.router.navigateByUrl(
+                    `/subscribers/${subscriber}/organizations/${organization}/digital-services`,
+                );
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant(
+                        `digital-services.${Constants.ERRORS[key]}`,
+                    ),
+                });
+            }
+        }
+
         let errorMessage = "Unexpected problem occurred";
         if (error instanceof HttpErrorResponse) {
             errorMessage = `Error Status ${error.status}: ${error.error.error} - ${error.error.message}`;
@@ -64,7 +91,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         } else if (errorStatus == HttpStatusCode.PayloadTooLarge) {
             this.addToastMessage(
                 "Maximum file size exceeded",
-                "The maximum file size for import is 100MB"
+                "The maximum file size for import is 100MB",
             );
         }
     }
@@ -77,6 +104,5 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             sticky: true,
         };
         this.messageService.add(errMsg);
-        this.spinner.hide();
     }
 }

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.model;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +28,18 @@ public enum FileType {
     VIRTUAL_EQUIPMENT_INDICATOR("VIRTUAL_EQUIPMENT_INDICATOR"),
 
     APPLICATION_INDICATOR("APPLICATION_INDICATOR"),
+
+    TERMINAL("TERMINAL"),
+
+    NETWORK("NETWORK"),
+
+    SERVER("SERVER"),
+
+    VIRTUAL_MACHINE("VIRTUAL_MACHINE"),
+
+    DATACENTER_DIGITAL_SERVICE("DATACENTER_DIGITAL_SERVICE"),
+
+    PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE("PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE"),
 
     UNKNOWN("UNKNOWN");
 

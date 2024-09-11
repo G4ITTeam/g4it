@@ -23,7 +23,8 @@ import java.io.Serializable;
                         @ColumnResult(name = "criteria"),
                         @ColumnResult(name = "network_type"),
                         @ColumnResult(name = "raw_value", type = Float.class),
-                        @ColumnResult(name = "sip_value", type = Float.class)
+                        @ColumnResult(name = "sip_value", type = Float.class),
+                        @ColumnResult(name = "unit")
                 }
         )
 )
@@ -36,7 +37,8 @@ import java.io.Serializable;
                         ep.critere                                                  as criteria,
                         rf.description                                              as network_type,
                         sum(ep.impact_unitaire)                                     as raw_value,
-                        sum(ep.impact_unitaire/sip.individual_sustainable_package)  as sip_value
+                        sum(ep.impact_unitaire/sip.individual_sustainable_package)  as sip_value,
+                        ep.unite                                                    as unit
                     from
                         ind_indicateur_impact_equipement_physique ep
                     inner join
@@ -57,11 +59,10 @@ import java.io.Serializable;
                         ep.type_equipement = 'Network'
                     group by
                         ep.critere,
-                        rf.description
+                        rf.description,
+                        ep.unite
                 """
 )
-
-
 @Entity
 @Data
 @SuperBuilder
@@ -78,5 +79,7 @@ public class DigitalServiceNetworkIndicatorView implements Serializable {
     private Float rawValue;
 
     private Float sipValue;
+
+    private String unit;
 
 }

@@ -13,11 +13,11 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
+import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InventoryRepository } from "src/app/core/store/inventory.repository";
-import sanitize from "src/app/core/utils/filename-sanitizer";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 
@@ -43,6 +43,9 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     failedStatusCodeList = Constants.EXPORT_BATCH_FAILED_STATUSES;
     inProgressStatusCodeList = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES;
 
+    selectedOrganization = "";
+    selectedSubscriber = "";
+
     constructor(
         public inventoryRepo: InventoryRepository,
         private inventoryService: InventoryService,
@@ -64,9 +67,16 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
         ) {
             this.loopInventories();
         }
-        let [_, subscriber, organization] = this.router.url.split("/");
-        this.subscriber = subscriber;
-        this.organization = organization;
+        this.userService.currentSubscriber$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((subscriber: Subscriber) => {
+                this.selectedSubscriber = subscriber.name;
+            });
+        this.userService.currentOrganization$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((organization: Organization) => {
+                this.selectedOrganization = organization.name;
+            });
     }
 
     async initInventory() {
@@ -125,12 +135,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
             );
             saveAs(
                 blob,
-                `g4it_${this.subscriber}_${this.organization}_${sanitize(
-                    this.inventory.name,
-                    {
-                        replacement: "-",
-                    },
-                )}_export-result-files.zip`,
+                `g4it_${this.selectedSubscriber}_${this.selectedOrganization}_${this.inventoryId}_export-result-files.zip`,
             );
             await delay(2000);
         } catch (err) {

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
 import com.soprasteria.g4it.backend.external.numecoeval.modeldb.NumEcoEvalCalculationReport;
@@ -83,4 +83,8 @@ public class InventoryEvaluationReport implements Serializable {
     @JoinColumn(name = "batchName", referencedColumnName = "batchName", insertable = false, updatable = false)
     private NumEcoEvalCalculationReport numEcoEvalCalculationReport;
 
+    /**
+     * Boolean isAggregated, used for data migration
+     */
+    private Boolean isAggregated;
 }

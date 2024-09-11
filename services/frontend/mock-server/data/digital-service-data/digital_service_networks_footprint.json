@@ -8,14 +8,16 @@
 
                 "rawValue": 0.0000877423954079859,
 
-                "sipValue": 1.3603472709655762
+                "sipValue": 1.3603472709655762,
+                "unit": "Disease incidence"
             },
             {
                 "networkType": "Mobile EU",
 
                 "rawValue": 0.10297897458076477,
 
-                "sipValue": 2.461788845062256
+                "sipValue": 2.461788845062256,
+                "unit": "Disease incidence"
             }
         ]
     },
@@ -29,14 +31,16 @@
 
                 "rawValue": 1841.179443359375,
 
-                "sipValue": 2.162912607192993
+                "sipValue": 2.162912607192993,
+                "unit": "kg CO2 eq"
             },
             {
                 "networkType": "Mobile EU",
 
                 "rawValue": 0.10297897458076477,
 
-                "sipValue": 4.461788845062256
+                "sipValue": 4.461788845062256,
+                "unit": "kg CO2 eq"
             }
         ]
     },
@@ -50,14 +54,16 @@
 
                 "rawValue": 43641.55078125,
 
-                "sipValue": 0.6624903678894043
+                "sipValue": 0.6624903678894043,
+                "unit": "kBq U-235 eq"
             },
             {
                 "networkType": "Mobile EU",
 
                 "rawValue": 0.10297897458076477,
 
-                "sipValue": 1.461788845062256
+                "sipValue": 1.461788845062256,
+                "unit": "kBq U-235 eq"
             }
         ]
     },
@@ -71,14 +77,16 @@
 
                 "rawValue": 8.399413108825684,
 
-                "sipValue": 0.06719530373811722
+                "sipValue": 0.06719530373811722,
+                "unit": "mol H+ eq"
             },
             {
                 "networkType": "Mobile EU",
 
                 "rawValue": 0.10297897458076477,
 
-                "sipValue": 0.461788845062256
+                "sipValue": 0.461788845062256,
+                "unit": "mol H+ eq"
             }
         ]
     },
@@ -92,14 +100,16 @@
 
                 "rawValue": 0.10297897458076477,
 
-                "sipValue": 3.761788845062256
+                "sipValue": 3.761788845062256,
+                "unit": "kg Sb eq"
             },
             {
                 "networkType": "Mobile EU",
 
                 "rawValue": 0.10297897458076477,
 
-                "sipValue": 2.461788845062256
+                "sipValue": 2.461788845062256,
+                "unit": "kg Sb eq"
             }
         ]
     }

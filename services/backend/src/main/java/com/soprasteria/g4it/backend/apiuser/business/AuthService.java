@@ -8,6 +8,7 @@
 package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
@@ -41,6 +42,7 @@ public class AuthService {
     private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host");
     private UserService userService;
     private DigitalServiceRepository digitalServiceRepository;
+    private DigitalServiceSharedRepository digitalServiceSharedRepository;
 
     /**
      * Gets user's information.
@@ -213,7 +215,12 @@ public class AuthService {
         final String digitalServiceUid = urlSplit[6];
         if (NOT_DIGITAL_SERVICE.contains(digitalServiceUid)) return;
 
-        if (!digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, getUser().getId())) {
+        if (urlSplit.length > 7 && urlSplit[7].equals("shared")) {
+            return;
+        }
+
+        if (!(digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, getUser().getId())
+                || digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, getUser().getId()))) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "The user has no right to manage this digitalService");
         }
     }

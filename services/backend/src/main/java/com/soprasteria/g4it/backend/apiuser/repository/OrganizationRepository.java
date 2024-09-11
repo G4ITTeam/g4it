@@ -84,7 +84,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
      */
     @Transactional
     @Modifying
-    @Query("UPDATE Organization org SET org.id = ?1 WHERE org.status = ?2")
+    @Query("UPDATE Organization org SET org.status = ?2 WHERE org.id = ?1")
     void setStatusForOrganization(Long id, String status);
 
 }

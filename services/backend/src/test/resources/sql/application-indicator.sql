@@ -13,7 +13,7 @@ values
 ;
 
 merge into g4it_evaluation_report key(id) values
-(101, 501, 'COMPLETED', '44ad614e-94ad-46fb-b541-5053d8a45ee6', '2023-04-01 13:11:10', '2023-04-01 13:13:10','10%')
+(101, 501, 'COMPLETED', '44ad614e-94ad-46fb-b541-5053d8a45ee6', '2023-04-01 13:11:10', '2023-04-01 13:13:10','10%', false)
 ;
 
 INSERT INTO public.equipement_physique VALUES (257396, 501, 'physical-eq-1', 'ACME SERVICES', '', 'HP 8470w', '2', 'SSG_Personal Computer', 'Retired', '365', 'France', '', '2025-08-23', '2023-06-16', '', '', '', '', 14, 'work/20231010-070450/EQUIPEMENT_PHYSIQUE/equipementPhysique-light_02-08-2023 16-34.csv', '2023-10-10 07:04:50.32', '2023-10-10 07:04:51.217155', '2023-10-10 07:04:51.217161', NULL, NULL, NULL, NULL);

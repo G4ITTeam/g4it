@@ -11,7 +11,6 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Router, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
@@ -20,14 +19,14 @@ import { InputTextModule } from "primeng/inputtext";
 import { SidebarModule } from "primeng/sidebar";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesServersComponent } from "../digital-services-servers.component";
 import { SidePanelAddVmComponent } from "../side-panel-add-vm/side-panel-add-vm.component";
 import { SidePanelServerParametersComponent } from "../side-panel-server-parameters/side-panel-server-parameters.component";
 import { SidePanelListVmComponent } from "./side-panel-list-vm.component";
-import { UserService } from "src/app/core/service/business/user.service";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 const routes: Routes = [
     {
@@ -47,7 +46,6 @@ describe("SidePanelListVmComponent", () => {
     let fixture: ComponentFixture<SidePanelListVmComponent>;
     let ServiceBusiness: DigitalServiceBusinessService;
     let serviceData: DigitalServicesDataService;
-    let spinner: NgxSpinnerService;
     let router: Router;
 
     beforeEach(async () => {
@@ -75,13 +73,11 @@ describe("SidePanelListVmComponent", () => {
                 UserService,
                 DigitalServiceBusinessService,
                 DigitalServicesDataService,
-                NgxSpinnerService,
                 FormBuilder,
             ],
         });
         ServiceBusiness = TestBed.inject(DigitalServiceBusinessService);
         serviceData = TestBed.inject(DigitalServicesDataService);
-        spinner = TestBed.inject(NgxSpinnerService);
         router = TestBed.inject(Router);
         fixture = TestBed.createComponent(SidePanelListVmComponent);
         component = fixture.componentInstance;
@@ -110,8 +106,6 @@ describe("SidePanelListVmComponent", () => {
 
     it("should delete vm", () => {
         //spy and mock data
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         var server = component.server;
         server.vm = [
             {
@@ -130,14 +124,10 @@ describe("SidePanelListVmComponent", () => {
         //expectation
         fixture.detectChanges();
         expect(server.vm).toHaveSize(0);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
     });
 
     it("should not delete vm", () => {
         //spy and mock data
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         var server = component.server;
         server.vm = [
             {
@@ -156,8 +146,6 @@ describe("SidePanelListVmComponent", () => {
         //expectation
         fixture.detectChanges();
         expect(server.vm).toHaveSize(1);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
     });
 
     it("should navigate to parameters when click on previous", () => {
@@ -186,8 +174,6 @@ describe("SidePanelListVmComponent", () => {
             })
         );
         const setServerSpy = spyOn(ServiceBusiness, "setServerForm");
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const close = spyOn(component, "close");
         var server = component.server;
         server.uid = "uid";
@@ -200,8 +186,6 @@ describe("SidePanelListVmComponent", () => {
 
         //expectation
         expect(setServerSpy).toHaveBeenCalledWith(server);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
         expect(close).toHaveBeenCalled();
         expect(update).toHaveBeenCalledWith(digitalService);
         expect(digitalService.servers).toHaveSize(1);
@@ -222,8 +206,6 @@ describe("SidePanelListVmComponent", () => {
             })
         );
         const setServerSpy = spyOn(ServiceBusiness, "setServerForm");
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const close = spyOn(component, "close");
         var server = component.server;
         server.uid = "uid";
@@ -236,8 +218,6 @@ describe("SidePanelListVmComponent", () => {
 
         //expectation
         expect(setServerSpy).toHaveBeenCalledWith(server);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
         expect(close).toHaveBeenCalled();
         expect(update).toHaveBeenCalledWith(digitalService);
         expect(digitalService.servers).toHaveSize(1);

@@ -1,0 +1,33 @@
+<div class="my-3">
+    <div class="flex my-2">
+        <img src="assets/images/icons/icon-{{ icon }}.svg" alt="" width="44px" />
+        <span
+            class="flex align-items-center text-sm font-semibold uppercase letter-spacing-2 mx-3 relative"
+            tabIndex="0"
+            >{{ title }}
+            <div class="absolute h-2px bg-primary w-9 bottom-0 mb-2"></div
+        ></span>
+    </div>
+    <p-card>
+        <div class="grid">
+            @for (stat of stats; track $index) {
+                <div class="col-4 px-5 mt-2 mb-1" [class.text-gray-500]="!stat.value">
+                    <span tabIndex="0" class="relative text-3xl font-medium">
+                        <span class="mr-1">{{ stat.value ? stat.label : "--" }}</span>
+                        <i
+                            class="pi pi-info-circle text-xs absolute cursor-pointer ml-1"
+                            [style]="{ top: '3px' }"
+                            pTooltip="{{ stat.description }}"
+                            tooltipEvent="focus"
+                            tooltipPosition="right"
+                            tabindex="0"
+                        ></i>
+                    </span>
+                    <p>
+                        {{ stat.title }}
+                    </p>
+                </div>
+            }
+        </div>
+    </p-card>
+</div>

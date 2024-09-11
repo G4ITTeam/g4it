@@ -5,10 +5,9 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
@@ -16,6 +15,7 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as TimeUtils from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 
@@ -25,6 +25,8 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoryItemComponent implements OnInit {
+    private global = inject(GlobalStoreService);
+
     @Input() inventory: Inventory = {} as Inventory;
     @Input() open: boolean = false;
     @Output() reloadInventoriesAndLoop: EventEmitter<number> = new EventEmitter();
@@ -33,19 +35,21 @@ export class InventoryItemComponent implements OnInit {
     @Output() openSidebarForNote: EventEmitter<number> = new EventEmitter();
     @Output() openTab: EventEmitter<number> = new EventEmitter();
     @Output() closeTab: EventEmitter<number> = new EventEmitter();
+
+    batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
+
     constructor(
         private inventoryService: InventoryService,
         private evaluationService: EvaluationDataService,
         private footprintService: FootprintDataService,
         public router: Router,
         private confirmationService: ConfirmationService,
-        private spinner: NgxSpinnerService,
         private translate: TranslateService,
         private route: ActivatedRoute,
         public userService: UserService,
-    ) { }
+    ) {}
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     isRunning() {
         if (!this.inventory.lastEvaluationReport) return false;
@@ -54,31 +58,24 @@ export class InventoryItemComponent implements OnInit {
         );
     }
 
-    showEquipment() {
-        return (
-            this.inventory.lastEvaluationReport &&
-            this.inventory.physicalEquipmentCount > 0
-        );
-    }
+    showEquipment = () =>
+        this.inventory.lastEvaluationReport && this.inventory.physicalEquipmentCount > 0;
 
-    showApplication() {
-        return (
-            this.inventory.lastEvaluationReport &&
-            this.inventory.applicationCount > 0
-        );
-    }
+    showApplication = () =>
+        this.inventory.lastEvaluationReport && this.inventory.applicationCount > 0;
 
     confirmDelete(event: Event) {
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             acceptLabel: this.translate.instant("common.yes"),
             rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant("inventories.popup.delete-question")} ${this.inventory.name
-                } ?
+            message: `${this.translate.instant("inventories.popup.delete-question")} ${
+                this.inventory.name
+            } ?
             ${this.translate.instant("inventories.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
-                this.spinner.show();
+                this.global.setLoading(true);
                 await lastValueFrom(
                     this.footprintService.deleteIndicators(this.inventory.id),
                 );
@@ -86,6 +83,7 @@ export class InventoryItemComponent implements OnInit {
                     this.inventoryService.deleteInventory(this.inventory.id),
                 );
                 this.reloadInventoriesAndLoop.emit();
+                this.global.setLoading(false);
             },
         });
     }
@@ -96,13 +94,13 @@ export class InventoryItemComponent implements OnInit {
         let uri = undefined;
 
         if (redirectTo === "equipment" && this.inventory.physicalEquipmentCount > 0) {
-            uri = "multi-criteria";
+            uri = Constants.MUTLI_CRITERIA;
         } else if (redirectTo === "application" && this.inventory.applicationCount > 0) {
             uri = "application";
         }
 
         if (uri === undefined) return;
-        localStorage.setItem("selectedFiltersData", '')
+
         this.router.navigate([`${this.inventory.id}/footprint/${uri}`], {
             relativeTo: this.route,
         });
@@ -116,7 +114,6 @@ export class InventoryItemComponent implements OnInit {
             message: this.translate.instant("inventories.popup.estimate"),
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
-                this.spinner.show();
                 await lastValueFrom(
                     this.evaluationService.launchEstimation(
                         this.inventory.id,
@@ -125,7 +122,6 @@ export class InventoryItemComponent implements OnInit {
                 );
                 await TimeUtils.delay(2000);
                 this.reloadInventoryAndLoop.emit(this.inventory.id);
-                this.spinner.hide();
             },
         });
     }

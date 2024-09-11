@@ -9,7 +9,11 @@ package com.soprasteria.g4it.backend.common.filesystem.integration;
 
 import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.AzureFileSystem;
-import com.soprasteria.g4it.backend.common.filesystem.model.*;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,6 @@
  */
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
 import { Subject, lastValueFrom, takeUntil } from "rxjs";
 import {
@@ -41,7 +40,6 @@ export class DigitalServicesServersComponent {
     constructor(
         private digitalServicesData: DigitalServicesDataService,
         private digitalServicesBusiness: DigitalServiceBusinessService,
-        private spinner: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute,
         public userService: UserService,
@@ -99,6 +97,9 @@ export class DigitalServicesServersComponent {
         this.digitalServicesBusiness.setServerForm(newServer);
         this.router.navigate(["create"], { relativeTo: this.route });
         this.digitalServicesBusiness.openPanel();
+        this.digitalService.servers = JSON.parse(
+            JSON.stringify(this.digitalService.servers),
+        );
     }
 
     updateServer(server: DigitalServiceServerConfig) {
@@ -106,10 +107,12 @@ export class DigitalServicesServersComponent {
         this.digitalServicesBusiness.setServerForm({ ...server });
         this.router.navigate(["parameters"], { relativeTo: this.route });
         this.digitalServicesBusiness.openPanel();
+        this.digitalService.servers = JSON.parse(
+            JSON.stringify(this.digitalService.servers),
+        );
     }
 
     async deleteServers(server: DigitalServiceServerConfig) {
-        this.spinner.show();
         let existingServerIndex = this.digitalService.servers?.findIndex(
             (t) => t.uid === server.uid,
         );
@@ -123,6 +126,5 @@ export class DigitalServicesServersComponent {
         this.digitalService = await lastValueFrom(
             this.digitalServicesData.update(this.digitalService),
         );
-        this.spinner.hide();
     }
 }

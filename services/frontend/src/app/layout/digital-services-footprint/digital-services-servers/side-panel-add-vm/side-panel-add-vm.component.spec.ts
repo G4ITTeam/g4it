@@ -16,21 +16,19 @@ import {
     ReactiveFormsModule,
 } from "@angular/forms";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
-import { SidePanelAddVmComponent } from "./side-panel-add-vm.component";
 import { UserService } from "src/app/core/service/business/user.service";
+import { SidePanelAddVmComponent } from "./side-panel-add-vm.component";
 
 describe("SidePanelAddVmComponent", () => {
     let component: SidePanelAddVmComponent;
     let fixture: ComponentFixture<SidePanelAddVmComponent>;
     let serviceBusiness: DigitalServiceBusinessService;
-    let spinner: NgxSpinnerService;
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
@@ -53,7 +51,6 @@ describe("SidePanelAddVmComponent", () => {
                 MessageService,
                 UserService,
                 DigitalServiceBusinessService,
-                NgxSpinnerService,
                 {
                     provide: NG_VALUE_ACCESSOR,
                     useExisting: forwardRef(() => SidePanelAddVmComponent),
@@ -63,7 +60,6 @@ describe("SidePanelAddVmComponent", () => {
             ],
         });
         serviceBusiness = TestBed.inject(DigitalServiceBusinessService);
-        spinner = TestBed.inject(NgxSpinnerService);
         fixture = TestBed.createComponent(SidePanelAddVmComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -236,8 +232,6 @@ describe("SidePanelAddVmComponent", () => {
 
     it("should create new vm in server", () => {
         //spy and mock data
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const close = spyOn(component, "close");
         const setServerSpy = spyOn(serviceBusiness, "setServerForm");
 
@@ -252,8 +246,6 @@ describe("SidePanelAddVmComponent", () => {
 
         //expectation
         fixture.detectChanges();
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
         expect(close).toHaveBeenCalled();
         expect(server.vm).toHaveSize(1);
         expect(setServerSpy).toHaveBeenCalledWith(server);
@@ -262,8 +254,6 @@ describe("SidePanelAddVmComponent", () => {
 
     it("should update vm in server", () => {
         //spy and mock data
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const close = spyOn(component, "close");
         const setServerSpy = spyOn(serviceBusiness, "setServerForm");
 
@@ -292,8 +282,6 @@ describe("SidePanelAddVmComponent", () => {
 
         //expectation
         fixture.detectChanges();
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
         expect(close).toHaveBeenCalled();
         expect(server.vm).toHaveSize(1);
         expect(setServerSpy).toHaveBeenCalledWith(server);

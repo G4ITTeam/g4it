@@ -12,6 +12,7 @@ export const environment = {
     production: false,
     securedEndpoints: ["inventories", "digital-services", "template-files"],
     apiBaseUrl: "",
+    frontEndUrl: "http://localhost:4200",
     keycloak: {
         issuer: "",
         realm: "g4it",

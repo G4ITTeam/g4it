@@ -5,23 +5,28 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
+import { saveAs } from "file-saver";
+import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { lastValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
+import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
-
+import { GlobalStoreService } from "src/app/core/store/global.store";
+import { delay } from "src/app/core/utils/time";
 @Component({
     selector: "app-digital-services-footprint-header",
     templateUrl: "./digital-services-footprint-header.component.html",
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
+    private global = inject(GlobalStoreService);
+
     @Input() digitalService: DigitalService = {
         name: "...",
         uid: "",
@@ -35,21 +40,32 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     disableCalcul = true;
     sidebarVisible: boolean = false;
+    isLinkCopied = false;
+    selectedSubscriberName = "";
+    selectedOrganizationId!: number;
+    selectedOrganizationName = "";
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
         private router: Router,
-        private spinner: NgxSpinnerService,
         private confirmationService: ConfirmationService,
         private translate: TranslateService,
         public userService: UserService,
         private messageService: MessageService,
+        private clipboardService: ClipboardService,
     ) {}
 
     ngOnInit() {
         this.digitalServicesData.digitalService$.subscribe((res) => {
             this.digitalService = res;
             this.disableCalcul = !this.canLaunchCompute();
+        });
+        this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
+            this.selectedSubscriberName = subscriber.name;
+        });
+        this.userService.currentOrganization$.subscribe((organization: Organization) => {
+            this.selectedOrganizationId = organization.id;
+            this.selectedOrganizationName = organization.name;
         });
     }
 
@@ -72,7 +88,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             ${this.translate.instant("digital-services.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
-                this.spinner.show();
                 await lastValueFrom(
                     this.digitalServicesData.delete(this.digitalService.uid),
                 );
@@ -82,14 +97,14 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     async launchCalcul() {
-        this.spinner.show();
+        this.global.setLoading(true);
         await lastValueFrom(
             this.digitalServicesData.launchCalcul(this.digitalService.uid),
         );
         this.digitalService = await lastValueFrom(
             this.digitalServicesData.get(this.digitalService.uid),
         );
-        this.spinner.hide();
+        this.global.setLoading(false);
         const urlSegments = this.router.url.split("/").slice(1);
         if (urlSegments.length > 3) {
             const subscriber = urlSegments[1];
@@ -151,5 +166,31 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 sticky: false,
             });
         });
+    }
+
+    async copyUrl() {
+        this.isLinkCopied = true;
+        const url = await firstValueFrom(
+            this.digitalServicesData.copyUrl(this.digitalService.uid),
+        );
+        this.clipboardService.copy(url);
+
+        await delay(10000);
+        this.isLinkCopied = false;
+    }
+
+    async exportData() {
+        try {
+            const filename = `g4it_${this.selectedSubscriberName}_${this.selectedOrganizationName}_${this.digitalService.uid}_export-result-files`;
+            const blob: Blob = await lastValueFrom(
+                this.digitalServicesData.downloadFile(this.digitalService.uid),
+            );
+            saveAs(blob, filename);
+        } catch (err) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant("common.fileNoLongerAvailable"),
+            });
+        }
     }
 }

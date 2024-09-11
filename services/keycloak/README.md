@@ -35,9 +35,9 @@ Open git bash in the `g4it` repository.
 
 ```shell
 podman exec -it keycloak bash
-/opt/bitnami/keycloak/bin/kc.sh export --file /tmp/dev-int-g4it-realm-export.json --realm g4it
+/opt/bitnami/keycloak/bin/kc.sh export --file /tmp/dev-realm-export.json --realm g4it
 exit
-podman cp keycloak:/tmp/dev-int-g4it-realm-export.json services/keycloak/imports/dev-int-g4it-realm-export.json
+podman cp keycloak:/tmp/dev-realm-export.json services/keycloak/imports/dev-realm-export.json
 ```
 
 ## Extension configuration for home.idp.discovery.domains

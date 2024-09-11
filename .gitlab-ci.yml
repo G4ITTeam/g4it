@@ -12,6 +12,8 @@ workflow:
       when: always
     - if: $CI_COMMIT_TAG
       when: always
+    - if: $ONLY != ''
+      when: always
     - when: never
 
 child:

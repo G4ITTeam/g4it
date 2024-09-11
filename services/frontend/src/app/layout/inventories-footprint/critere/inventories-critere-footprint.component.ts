@@ -5,10 +5,17 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
-import { EChartsOption } from "echarts";
-import { combineLatest, takeUntil } from "rxjs";
+import { Component, Input, Signal, computed, inject, signal } from "@angular/core";
 
+import { EChartsOption } from "echarts";
+import {
+    EchartPieDataItem,
+    FootprintCalculated,
+} from "src/app/core/interfaces/footprint.interface";
+import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { Criteria, Criterias } from "src/app/core/store/footprint.repository";
+import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../abstract-dashboard";
 
@@ -16,56 +23,119 @@ import { AbstractDashboard } from "../abstract-dashboard";
     selector: "app-inventories-critere-footprint",
     templateUrl: "./inventories-critere-footprint.component.html",
 })
-export class InventoriesCritereFootprintComponent
-    extends AbstractDashboard
-    implements OnInit
-{
-    unitOfCriteria: string = "";
-    selectedCriteria: string = "";
+export class InventoriesCritereFootprintComponent extends AbstractDashboard {
+    protected footprintStore = inject(FootprintStoreService);
+    private footprintService = inject(FootprintService);
 
-    impact: number = 0;
-    sip: number = 0;
+    @Input() footprint: Criteria = {} as Criteria;
+    @Input() filterFields: string[] = [];
 
-    options: EChartsOption = {};
+    dimensions = Constants.EQUIPMENT_DIMENSIONS;
+    selectedDimension = signal(this.dimensions[0]);
 
-    echartsData: any = [];
-    noData = false;
+    totalValue = 0;
 
-    ngOnInit(): void {
-        combineLatest([this.echartsRepo.critereChart$, this.filterRepo.selectedView$])
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(([chartData, selectedView]) => {
-                // We always have one element representing half the donut.
-                this.noData = chartData.length === 0;
+    options: Signal<EChartsOption> = computed(() => {
+        const criteria = this.footprintStore.criteria();
 
-                if (this.noData) {
-                    return;
-                }
-                this.updateEchartsOptions(selectedView, chartData);
-            });
+        const footprint: Criterias = {};
+        footprint[criteria] = this.footprint;
 
-        this.echartsRepo.unitOfCriteria$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((unit) => {
-                this.unitOfCriteria = unit;
-            });
+        const footprintCalculated = this.footprintService.calculate(
+            footprint,
+            this.footprintStore.filters(),
+            this.selectedDimension(),
+            this.filterFields,
+        );
 
-        this.echartsRepo.criteriaImpact$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(({ impact, sip }) => {
-                this.impact = impact;
-                this.sip = sip;
-            });
+        this.totalValue = this.footprintService.calculateTotal(
+            footprintCalculated,
+            this.footprintStore.unit(),
+        );
 
-        this.filterRepo.selectedCriteria$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((selectedCriteria) => {
-                this.selectedCriteria = selectedCriteria;
-            });
+        return this.renderChart(
+            footprintCalculated,
+            this.selectedDimension(),
+            this.footprintStore.unit(),
+        );
+    });
+
+    unitOfCriteria = computed(() =>
+        this.translate.instant(
+            `inventories-footprint.critere.${this.footprintStore.criteria()}.unite`,
+        ),
+    );
+
+    changeUnitInStore(unit: string) {
+        this.footprintStore.setUnit(unit);
     }
 
-    updateEchartsOptions(selectedView: string, echartsData: any[]) {
-        this.options = {
+    infocard = computed(() => {
+        return {
+            title: this.translate.instant(
+                `inventories-footprint.critere.${this.footprintStore.criteria()}.title`,
+            ),
+            text: this.translate.instant(
+                `inventories-footprint.critere.${this.footprintStore.criteria()}.text`,
+            ),
+        };
+    });
+
+    renderChart(
+        footprintCalculated: FootprintCalculated[],
+        selectedView: string,
+        unit: string,
+    ): EChartsOption {
+        if (footprintCalculated.length === 0) {
+            return {};
+        }
+
+        const lifecycleMap = getLifeCycleMap();
+        const echartsData: EchartPieDataItem[] = [];
+        const otherData: any = [];
+
+        const total = footprintCalculated.reduce(
+            (sum, current) =>
+                sum +
+                (unit === Constants.PEOPLEEQ ? current.total.sip : current.total.impact),
+            0,
+        );
+        footprintCalculated.forEach((item) => {
+            const sumValue =
+                unit === Constants.PEOPLEEQ ? item.total.sip : item.total.impact;
+            const translated = lifecycleMap.get(item.data);
+            const v: any = {
+                value: sumValue,
+                name: translated ? translated : item.data,
+            };
+            var percent = (sumValue / total) * 100;
+            if (percent < 1) v.percent = percent;
+            percent < 1 ? otherData.push(v) : echartsData.push(v);
+        });
+
+        // Push the single data entry for multiple entities with impact less than 1%.
+        if (otherData.length > 0) {
+            echartsData.push({
+                name: "other",
+                value: otherData
+                    .map((data: any) => data.value)
+                    .reduce((sum: number, current: number) => sum + current, 0),
+                otherData: otherData.sort((a: any, b: any) => a.value < b.value),
+            });
+        }
+        if (selectedView == Constants.ACV_STEP) {
+            echartsData.sort((a: any, b: any) => {
+                return (
+                    getLifeCycleList().indexOf(a.name) -
+                    getLifeCycleList().indexOf(b.name)
+                );
+            });
+        } else {
+            // Sort by alphabetical order
+            echartsData.sort((a: any, b: any) => a.name.localeCompare(b.name));
+        }
+
+        return {
             height: 700,
             tooltip: {
                 enterable: true,
@@ -74,7 +144,9 @@ export class InventoriesCritereFootprintComponent
                 formatter: (params: any) => {
                     return this.getToolTipHtml(
                         echartsData[params.dataIndex],
-                        this.getUnitTranslation(this.selectedCriteria),
+                        unit === Constants.PEOPLEEQ
+                            ? Constants.PEOPLEEQ
+                            : this.unitOfCriteria(),
                         params.color,
                         selectedView,
                     );
@@ -120,20 +192,29 @@ export class InventoriesCritereFootprintComponent
         let maxHeight = 250;
         let tooltipLines = [];
 
+        const translatedUnit =
+            unit === Constants.PEOPLEEQ
+                ? this.translate.instant(
+                      `common.${Constants.PEOPLEEQ.toLocaleLowerCase()}`,
+                  )
+                : unit;
+
+        const pipe = unit === Constants.PEOPLEEQ ? this.integerPipe : this.decimalsPipe;
+
         if (chartValue.name.toLowerCase() === "other") {
             tooltipLines = chartValue.otherData.map((data: any) =>
                 this.getTooltipItemHtml(
                     data.name,
-                    `${data.percent.toFixed(3)}% - ${this.decimalsPipe.transform(
+                    `${data.percent.toFixed(3)}% - ${pipe.transform(
                         data.value,
-                    )} ${unit}`,
+                    )} ${translatedUnit}`,
                 ),
             );
         } else {
             tooltipLines = [
                 this.getTooltipItemHtml(
                     this.existingTranslation(chartValue.name, selectedView),
-                    `${this.decimalsPipe.transform(chartValue.value)} ${unit}`,
+                    `${pipe.transform(chartValue.value)} ${translatedUnit}`,
                     color,
                 ),
             ];
@@ -173,21 +254,5 @@ export class InventoriesCritereFootprintComponent
                 <div class="ml-2">${value}</div>
             </div>
          `;
-    }
-
-    infoCardTitle(selectedCriteria: string | null) {
-        if (!selectedCriteria) return "";
-        return `inventories-footprint.critere.${selectedCriteria}.title`;
-    }
-
-    infoCardContent(selectedCriteria: string | null) {
-        if (!selectedCriteria) return "";
-        return `inventories-footprint.critere.${selectedCriteria}.text`;
-    }
-
-    getUnitTranslation(input: string) {
-        return this.translate.instant(
-            "inventories-footprint.critere." + input + ".unite",
-        );
     }
 }

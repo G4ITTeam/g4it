@@ -70,4 +70,12 @@ public class Terminal extends AbstractBaseEntity {
      */
     private Double lifespan;
 
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the deviceType description
+     */
+    public String getDeviceTypeDescription() {
+        return deviceType.getDescription();
+    }
 }

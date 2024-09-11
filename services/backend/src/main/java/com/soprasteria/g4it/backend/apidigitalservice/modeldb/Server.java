@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
@@ -115,6 +115,60 @@ public class Server extends AbstractBaseEntity {
     public void addVirtualEquipment(final VirtualEquipmentDigitalService virtualEquipmentDigitalService) {
         virtualEquipmentDigitalService.setServer(this);
         virtualEquipmentDigitalServices.add(virtualEquipmentDigitalService);
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the datacenterDigitalService name
+     */
+    public String getDatacenterDigitalServiceName() {
+        return datacenterDigitalService.getName();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the serverCharacteristic type
+     */
+    public String getServerCharacteristicType() {
+        return serverCharacteristic.getType();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the serverHost description
+     */
+    public String getServerHostDescription() {
+        return serverHost.getDescription();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the serverHost externalReferentialDescription
+     */
+    public String getServerHostExternalReferentialDescription() {
+        return serverHost.getExternalReferentialDescription();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the serverHost nbOfVcpu
+     */
+    public Integer getServerHostNbOfVcpu() {
+        return serverCharacteristic.getCharacteristicValue();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the serverHost totalDisk
+     */
+    public Integer getServerHostTotalDisk() {
+        return serverCharacteristic.getCharacteristicValue();
     }
 
 }

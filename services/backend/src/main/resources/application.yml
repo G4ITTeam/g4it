@@ -39,12 +39,18 @@ g4it:
       oninit: "false"
       cron: "0 0 0 * * *"
       day: "7"
+  digitalServiceLink:
+    deletion:
+      oninit: "false"
+      cron: "0 0 */12 * * *"
 
 filesystem.local.path: ".\\storage"
 
+local.working.folder:  ".\\storagetmp"
+
 spring:
   profiles:
-    active: local
+    active: dev, local
   main:
     allow-bean-definition-overriding: true
   security:

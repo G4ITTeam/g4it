@@ -46,6 +46,8 @@ export class PieChartComponent extends AbstractDashboard {
                 name: this.existingTranslation(item.tier, "digital-services"),
                 value: value,
                 tier: item.tier,
+                unitValue: selectedImpact.unitValue,
+                unit: selectedImpact.unit,
             };
         });
         seriesData.sort((a: any, b: any) => {
@@ -62,13 +64,15 @@ export class PieChartComponent extends AbstractDashboard {
                     );
                     return `
                     <div style="display: flex; align-items: center; height: 30px;">
-                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color
+                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${
+                            params.color
                         }; border-radius: 50%; margin-right: 5px;"></span>
                         <span style="font-weight: bold; margin-right: 15px;">${name}</span>
                     </div>
                     <div>${percentage} %</div>
                     <div>${this.integerPipe.transform(params.value)}
-                    ${this.translate.instant("common.peopleeq-min")} </div>
+                    ${this.translate.instant("common.peopleeq-min")}<br>
+                    ${this.decimalsPipe.transform(params.data?.unitValue)} ${params.data?.unit} </div>
                     `;
                 },
             },

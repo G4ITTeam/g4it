@@ -1,30 +1,9 @@
-<ngx-spinner
-    bdColor="rgba(0, 0, 0, 0.54)"
-    size="medium"
-    color="#fff"
-    type="ball-pulse"
-    [fullScreen]="true"
-    role="progressbar"
-    aria-live="assertive"
-    [attr.aria-label]="'common.loading' | translate"
-    ><span
-        style="
-            position: absolute;
-            left: -10000px;
-            top: auto;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        "
-    >
-        {{ "common.loading" | translate }}</span
-    ></ngx-spinner
->
+<app-spinner></app-spinner>
 <div class="layout">
     <header class="header">
         <app-header></app-header>
     </header>
-    <div class="main">
+    <main>
         <router-outlet></router-outlet>
-    </div>
+    </main>
 </div>

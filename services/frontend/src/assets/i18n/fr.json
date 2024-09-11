@@ -5,6 +5,7 @@
         "powered-by": "Maintenu par ",
         "powered-by-sopra": "Maintenu par Sopra Steria",
         "open-time": "4h00 - 19h00",
+        "user-info": "Utilisateur",
         "lang": "Langue",
         "open-hours": "Heures d'ouverture",
         "french": "Français",
@@ -32,6 +33,10 @@
         "no-data": "Aucun résultats disponibles",
         "loading": "Chargement en cours",
         "choose-csv": "Importer un ficher .csv",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "disconnect": "Se déconnecter",
         "week": {
             "monday": "Lundi",
             "tuesday": "Mardi",
@@ -84,9 +89,15 @@
         "fileNoLongerAvailable": "La fichier n'est plus disponible",
         "other": "Autres",
         "otherLegend": "Autres (inférieur à 1%)",
-        "mailTo": "MAILTO@G4IT.COM"
+        "mailTo": "support.g4it@soprasteria.com"
     },
     "digital-services": {
+        "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
+        "headerForSharedWithMe": "PARTAGÉ{{plural}} AVEC MOI ({{count}})",
+        "copyLink": "COPIER LE LIEN",
+        "not-found": "Le service numérique n'existe pas.",
+        "expired": "Le lien de service numérique a expiré.",
+        "linkCopied": "LIEN COPIÉ !",
         "title": "Mes Services Numériques",
         "add": "Evaluer Un Nouveau Service",
         "empty-digital-services": "Vous n'avez pas de service numérique.",
@@ -97,7 +108,7 @@
         "Network": "Réseaux",
         "visualize": "Visualiser",
         "lifecycle": "Cycle de vie",
-        "vm": "MV",
+        "vm": "VM",
         "country": "Pays",
         "type": "Type",
         "popup": {
@@ -151,7 +162,7 @@
         "allocation": "Allocation",
         "type": "Type",
         "quantity": "Quantité",
-        "vms": "MVs",
+        "vms": "VMs",
         "quantity.vm": "Quantité (+VMs)",
         "host": "Hôte",
         "hosting-efficiency": "Éfficacité de l'hébergement",
@@ -173,12 +184,12 @@
         "additional": "Paramètres additionnels",
         "add": {
             "datacenter": "Ajouter un Datacenter",
-            "vm": "+ Ajouter une MV"
+            "vm": "+ Ajouter une VM"
         },
         "vm": "Machines Virtuelles",
         "vcpu": "vCPU",
         "disk": "Disque",
-        "error.vcpu": "La somme des vCPUs des MVs dépasse la capacité du serveur",
+        "error.vcpu": "La somme des vCPUs des VMs dépasse la capacité du serveur",
         "error.disk": "La capacité de stockage des machines virtuelles dépasse les capacités du serveur",
         "pue.rule": "doit être >= 1"
     },
@@ -195,13 +206,13 @@
     "Nov": "nov",
     "Dec": "déc",
     "inventories": {
-        "headerForIS": "MON SYSTEME D'INFORMATION",
+        "headerForIS": "MES VERSIONS DU SI",
         "headerForSimulation": "MES SIMULATIONS",
         "searchSimulator": "Recherche par nom",
         "duplicateSimulation": "La simulation existe déjà",
         "nameValidation": "Les caractères spéciaux ne sont pas autorisés",
         "inventory": "Inventaire",
-        "title": "Mon Impact",
+        "title": "Mon Système d'information - Organisation {{OrganizationName}}",
         "add": "Nouvel Inventaire",
         "created": "créé",
         "details.equipment": "EQUIPEMENT",
@@ -212,7 +223,8 @@
             "data_extraction": "Extraction des données pour l'évaluation",
             "data_exposition": "Soumission des données à NumEcoEval en cours",
             "calculation_submission": "Lancement du calcul",
-            "calculation_in_progress": "Calcul en cours"
+            "calculation_in_progress": "Calcul en cours",
+            "aggregation_in_progress": "Agrégation en cours"
         },
         "history": {
             "loadings": "HISTORIQUE DES CHARGEMENTS",
@@ -277,8 +289,8 @@
         },
         "header": {
             "manage": "Manage inventories",
-            "export": "Exporter mes resultats",
-            "download": "Télécharger mes résultats"
+            "export": "Exporter",
+            "download": "Télécharger"
         },
         "round-button": {
             "acvStep": "Cycle de vie",
@@ -382,6 +394,14 @@
         "subscriber-or-organization-not-found": {
             "title": "Aucun souscripteur ou organisation trouvé",
             "text": "Demandez à votre administrateur de vous rattacher à une organisation"
+        },
+        "insuffisant-right-subscriber": {
+            "title": "Souscripteur non autorisé",
+            "text": "Demandez à votre administrateur de vous rattacher au souscripteur"
+        },
+        "insuffisant-right-organization": {
+            "title": "Organisation non autorisée",
+            "text": "Demandez à votre administrateur de vous rattacher à l'organisation"
         }
     },
     "digital-services-cards": {
@@ -495,10 +515,10 @@
             "members": "membres",
             "member": "membre",
             "first-name": "Prénom",
-            "last-name": "Nom de famille",
+            "last-name": "Nom",
             "mail": "Mail",
             "search-result": "Résultat de la recherche",
-            "no-results": "Aucun résultat",
+            "no-results": "Aucun utilisateur trouvé",
             "already-member": "DÉJÀ MEMBRE",
             "searchEmailValidation": "Les caractères spéciaux ne sont pas autorisés sauf @.-_",
             "delete-message": "L'utilisateur {{FirstName}} {{LastName}} n'aura plus accès à cette organisation. Êtes-vous sur de vouloir continuer ?",

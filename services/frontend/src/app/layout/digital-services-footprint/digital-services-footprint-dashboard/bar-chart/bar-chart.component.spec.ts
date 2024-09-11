@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -18,9 +18,9 @@ import {
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
-import { BarChartComponent } from "./bar-chart.component";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
-declare var require: any
+import { BarChartComponent } from "./bar-chart.component";
+declare var require: any;
 
 describe("BarChartComponent", () => {
     let component: BarChartComponent;
@@ -74,7 +74,18 @@ describe("BarChartComponent", () => {
             {
                 name: "networks",
                 type: "bar",
-                data: [0.06719530373811722, 0.461788845062256],
+                data: [
+                    {
+                        value: 0.06719530373811722,
+                        rawValue: 8.399413108825684,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.461788845062256,
+                        rawValue: 0.10297897458076477,
+                        unit: "mol H+ eq",
+                    },
+                ],
             },
         ]);
         expect(echartsOption.xAxis).toEqual([
@@ -85,7 +96,7 @@ describe("BarChartComponent", () => {
     it("should generate valid EChartsOption for Terminals (country case)", () => {
         const barChartData: DigitalServiceTerminalsImpact[] =
             digitalServicesService.transformTerminalData(
-                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json")
+                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json"),
             );
         component.selectedCriteria = "acidification";
         component.terminalsRadioButtonSelected = "country";
@@ -100,7 +111,24 @@ describe("BarChartComponent", () => {
             {
                 name: "terminals",
                 type: "bar",
-                data: [0.021531153353862464, "1"],
+                data: [
+                    {
+                        value: 0.021531153353862464,
+                        name: "Estonia",
+                        nbUsers: 50,
+                        usageTime: 120,
+                        rawValue: 2.6913942471146584,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: "1",
+                        name: "France",
+                        nbUsers: 521,
+                        usageTime: 1139.4721689059502,
+                        rawValue: 157.2206110842526,
+                        unit: "mol H+ eq",
+                    },
+                ],
             },
         ]);
         expect(echartsOption.xAxis).toEqual([
@@ -111,7 +139,7 @@ describe("BarChartComponent", () => {
     it("should generate valid EChartsOption for Terminals (type case)", () => {
         const barChartData: DigitalServiceTerminalsImpact[] =
             digitalServicesService.transformTerminalData(
-                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json")
+                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json"),
             );
         component.selectedCriteria = "acidification";
         component.terminalsRadioButtonSelected = "type";
@@ -126,7 +154,32 @@ describe("BarChartComponent", () => {
             {
                 name: "terminals",
                 type: "bar",
-                data: ["1", 0.01639388015610166, 0.005949393307673745],
+                data: [
+                    {
+                        value: "1",
+                        name: "Desktop",
+                        nbUsers: 450,
+                        usageTime: 1293.3333333333333,
+                        rawValue: 157.1190961971879,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.01639388015610166,
+                        name: "Laptop",
+                        nbUsers: 21,
+                        usageTime: 365,
+                        rawValue: 2.0492349676787853,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.005949393307673745,
+                        name: "Tv box / decoder",
+                        nbUsers: 100,
+                        usageTime: 100,
+                        rawValue: 0.7436741665005684,
+                        unit: "mol H+ eq",
+                    },
+                ],
             },
         ]);
         expect(echartsOption.xAxis).toEqual([
@@ -140,7 +193,7 @@ describe("BarChartComponent", () => {
     it("should generate valid EChartsOption for Terminals Child (type case)", () => {
         const barChartData: DigitalServiceTerminalsImpact[] =
             digitalServicesService.transformTerminalData(
-                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json")
+                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json"),
             );
         component.selectedCriteria = "acidification";
         component.terminalsRadioButtonSelected = "type";
@@ -157,8 +210,38 @@ describe("BarChartComponent", () => {
                 name: "terminals",
                 type: "bar",
                 data: [
-                    0.015151364728808403, 0.0007935588946565986, 0.0002599900763016194,
-                    0.00018896645633503795,
+                    {
+                        value: 0.015151364728808403,
+                        rawValue: 1.8939205408096313,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.0007935588946565986,
+                        rawValue: 0.09919486194849014,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.0002599900763016194,
+                        rawValue: 0.03249875828623772,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.00018896645633503795,
+                        rawValue: 0.023620806634426117,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        unit: "mol H+ eq",
+                    },
                 ],
             },
         ]);
@@ -173,7 +256,7 @@ describe("BarChartComponent", () => {
     it("should generate valid EChartsOption for Terminals Child (country case)", () => {
         const barChartData: DigitalServiceTerminalsImpact[] =
             digitalServicesService.transformTerminalData(
-                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json")
+                require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json"),
             );
         component.selectedCriteria = "acidification";
         component.terminalsRadioButtonSelected = "country";
@@ -190,8 +273,38 @@ describe("BarChartComponent", () => {
                 name: "terminals",
                 type: "bar",
                 data: [
-                    1.0752224563620985, 0.06498291179013904, 0.06556420828565024,
-                    0.05199528380762786,
+                    {
+                        value: 1.0752224563620985,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        rawValue: 134.4028114080429,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.06498291179013904,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        rawValue: 8.122863572090864,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.06556420828565024,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        rawValue: 8.19552568718791,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.05199528380762786,
+                        name: undefined,
+                        nbUsers: undefined,
+                        usageTime: undefined,
+                        rawValue: 6.499410416930914,
+                        unit: "mol H+ eq",
+                    },
                 ],
             },
         ]);
@@ -220,6 +333,8 @@ describe("BarChartComponent", () => {
                     [
                         "digital-services-servers.server-type.Dedicated-Storage",
                         0.016719065246038937,
+                        3211.715221903284,
+                        "mol H+ eq",
                     ],
                 ],
                 type: "bar",
@@ -233,6 +348,8 @@ describe("BarChartComponent", () => {
                     [
                         "digital-services-servers.server-type.Dedicated-Storage",
                         0.016719065246038937,
+                        3211.715221903284,
+                        "mol H+ eq",
                     ],
                 ],
                 type: "bar",
@@ -246,6 +363,8 @@ describe("BarChartComponent", () => {
                     [
                         "digital-services-servers.server-type.Shared-Compute",
                         0.6209409557758594,
+                        3211.715221903284,
+                        "mol H+ eq",
                     ],
                 ],
                 type: "bar",
@@ -275,15 +394,27 @@ describe("BarChartComponent", () => {
                 name: "servers",
                 type: "bar",
                 data: [
-                    0.37939472556712334, 0.0036639668990612407, 0.23510612851362,
-                    0.002776134796054795,
+                    {
+                        value: 0.37939472556712334,
+                        rawValue: 3211.715221903284,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.0036639668990612407,
+                        rawValue: 3211.715221903284,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.23510612851362,
+                        rawValue: 3211.715221903284,
+                        unit: "mol H+ eq",
+                    },
+                    {
+                        value: 0.002776134796054795,
+                        rawValue: 3211.715221903284,
+                        unit: "mol H+ eq",
+                    },
                 ],
-            },
-        ]);
-        expect(echartsOption.xAxis).toEqual([
-            {
-                type: "category",
-                data: LifeCycleUtils.getLifeCycleList(),
             },
         ]);
     });
@@ -306,13 +437,14 @@ describe("BarChartComponent", () => {
             {
                 name: "servers",
                 type: "bar",
-                data: [0.6209409557758594],
-            },
-        ]);
-        expect(echartsOption.xAxis).toEqual([
-            {
-                type: "category",
-                data: ["Vm B"],
+                data: [
+                    {
+                        value: 0.6209409557758594,
+                        rawValue: 3211.715221903284,
+                        unit: "mol H+ eq",
+                        quantity: 4,
+                    },
+                ],
             },
         ]);
     });

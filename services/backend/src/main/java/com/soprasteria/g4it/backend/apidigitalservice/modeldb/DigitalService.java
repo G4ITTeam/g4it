@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -116,6 +116,22 @@ public class DigitalService {
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "digitalService")
     private List<DatacenterDigitalService> datacenterDigitalServices = new ArrayList<>();
+
+    /**
+     * Digital service links
+     */
+    @ToString.Exclude
+    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<DigitalServiceLink> digitalServiceLinks;
+
+    /**
+     * Mapped digital services with users
+     */
+    @ToString.Exclude
+    @OneToMany(mappedBy = "digitalService", cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<DigitalServiceShared> digitalServiceShared;
 
     /**
      * Add Terminal.

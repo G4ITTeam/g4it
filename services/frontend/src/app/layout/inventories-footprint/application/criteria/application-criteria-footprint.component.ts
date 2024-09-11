@@ -5,11 +5,10 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { NgxSpinnerService } from "ngx-spinner";
 import { combineLatestWith, first, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
@@ -24,6 +23,7 @@ import {
     FootprintRepository,
     ImpactGraph,
 } from "src/app/core/store/footprint.repository";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
@@ -33,6 +33,8 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
     templateUrl: "./application-criteria-footprint.component.html",
 })
 export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
+    private global = inject(GlobalStoreService);
+
     selectedCriteria = {
         name: "",
         unite: "",
@@ -66,7 +68,6 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
     maxNumberOfBarsToBeDisplayed: number = 10;
 
     constructor(
-        private spinner: NgxSpinnerService,
         private inventoryRepo: InventoryRepository,
         private appComponent: InventoriesApplicationFootprintComponent,
         override filterRepo: FilterRepository,
@@ -216,7 +217,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
 
     CallAppApi() {
         if (this.selectedApp === "") return;
-        this.spinner.show();
+        this.global.setLoading(true);
         this.footprintService
             .initApplicationCriteriaFootprint(
                 this.selectedInventoryId,
@@ -225,7 +226,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             )
             .subscribe(() => {
                 this.options = this.loadBarChartOption();
-                this.spinner.hide();
+                this.global.setLoading(false);
             });
     }
 

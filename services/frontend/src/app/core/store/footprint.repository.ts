@@ -25,15 +25,11 @@ import {
     withActiveIds,
     withEntities,
 } from "@ngneat/elf-entities";
-import * as utilsCriteria from "src/app/core/utils/criteria";
+import { Constants } from "src/constants";
 import { Filter } from "./filter.repository";
 
 export interface Criterias {
-    radiation: Criteria;
-    acidification: Criteria;
-    climate: Criteria;
-    resource: Criteria;
-    particule: Criteria;
+    [key: string]: Criteria;
 }
 
 export interface Criteria {
@@ -90,6 +86,18 @@ export interface Datacenter {
     pue: number;
     count?: number;
     avgWeightedPue?: number;
+}
+
+export interface PhysicalEquipment {
+    organisation: string;
+    inventoryDate: string;
+    country: string | null;
+    type: string;
+    nomEntite: string | null;
+    statut: string;
+    poids: number;
+    ageMoyen: number;
+    avgWeightedAge?: number;
 }
 
 export interface PhysicalEquipmentAvgAge {
@@ -187,7 +195,7 @@ const AppGraphPositionStore = createStore(
     }),
 );
 
-utilsCriteria.getCriteriaShortList().forEach((name) =>
+Constants.CRITERIAS.forEach((name) =>
     createStore(
         { name },
         withProps<CriteriaProps>({
@@ -306,9 +314,9 @@ export class FootprintRepository {
     }
 
     updateActiveImpacts(filters: Filter) {
-        utilsCriteria
-            .getCriteriaShortList()
-            .forEach((storeName) => this.updateStoreActiveImpacts(storeName, filters));
+        Constants.CRITERIAS.forEach((storeName) =>
+            this.updateStoreActiveImpacts(storeName, filters),
+        );
     }
 
     private updateStoreActiveImpacts(storeName: string, filters: Filter) {
@@ -319,18 +327,19 @@ export class FootprintRepository {
             getAllEntitiesApply({
                 filterEntity: (impact) => {
                     let {
-                        country = "Empty",
-                        entity = "Empty",
-                        equipment = "Empty",
-                        status = "Empty",
+                        country = Constants.EMPTY,
+                        entity = Constants.EMPTY,
+                        equipment = Constants.EMPTY,
+                        status = Constants.EMPTY,
                     } = impact;
-                    const countryToCheck = country === null ? "Empty" : country;
+                    const countryToCheck = country === null ? Constants.EMPTY : country;
                     const countryMatch = filters.countries.includes(countryToCheck);
-                    const entityToCheck = entity === null ? "Empty" : entity;
+                    const entityToCheck = entity === null ? Constants.EMPTY : entity;
                     const entityMatch = filters.entities.includes(entityToCheck);
-                    const equipmentToCheck = equipment === null ? "Empty" : equipment;
+                    const equipmentToCheck =
+                        equipment === null ? Constants.EMPTY : equipment;
                     const equipmentMatch = filters.equipments.includes(equipmentToCheck);
-                    const statusToCheck = status === null ? "Empty" : status;
+                    const statusToCheck = status === null ? Constants.EMPTY : status;
                     const statusMatch = filters.status.includes(statusToCheck);
 
                     return countryMatch && entityMatch && equipmentMatch && statusMatch;
@@ -357,7 +366,7 @@ export class FootprintRepository {
         const summedData: DataComputed[] = [];
 
         impactsSelected.forEach((impact) => {
-            const impactName: string = impact[property] || "Empty";
+            const impactName: string = impact[property] || Constants.EMPTY;
             const existingData = summedData.find((data) => impactName === data.name);
             if (existingData !== undefined) {
                 existingData.impact += impact.impact;

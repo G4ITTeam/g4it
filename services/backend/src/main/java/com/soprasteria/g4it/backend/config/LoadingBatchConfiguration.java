@@ -12,8 +12,8 @@ import com.soprasteria.g4it.backend.apibatchloading.steps.common.decider.WriteVa
 import com.soprasteria.g4it.backend.apiinventory.repository.ApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiinventory.repository.PhysicalEquipmentRepository;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;

@@ -4,8 +4,9 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { RouterModule, Routes } from "@angular/router";
+import { Constants } from "src/constants";
 import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
 import { InventoriesApplicationFootprintComponent } from "./inventories-application-footprint.component";
 import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
@@ -16,7 +17,7 @@ const routes: Routes = [
         component: InventoriesApplicationFootprintComponent,
         children: [
             {
-                path: "multi-criteria",
+                path: Constants.MUTLI_CRITERIA,
                 component: ApplicationMulticriteriaFootprintComponent,
             },
             {
@@ -25,7 +26,7 @@ const routes: Routes = [
             },
             {
                 path: "",
-                redirectTo: "multi-criteria",
+                redirectTo: Constants.MUTLI_CRITERIA,
                 pathMatch: "full",
             },
         ],

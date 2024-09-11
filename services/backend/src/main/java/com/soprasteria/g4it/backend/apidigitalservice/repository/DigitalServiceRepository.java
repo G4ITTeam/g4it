@@ -43,7 +43,7 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
      *
      * @param uid    the uid.
      * @param userId the userId to find.
-     * @return the digitalService.
+     * @return the boolean.
      */
     @Cacheable("existsByUidAndUserId")
     boolean existsByUidAndUserId(final String uid, final long userId);

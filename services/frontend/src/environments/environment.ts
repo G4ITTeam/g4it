@@ -18,6 +18,7 @@ export const environment = {
         realm: "g4it",
         clientId: "g4it",
     },
+    frontEndUrl: "http://localhost:4200",
     matomo: {
         trackerUrl: "", // DO NOT COMMIT AN OTHER VALUE
         siteId: "0",

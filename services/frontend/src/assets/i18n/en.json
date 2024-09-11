@@ -5,6 +5,7 @@
         "powered-by": "Powered By ",
         "powered-by-sopra": "Powered By Sopra Steria",
         "open-time": "4am - 7pm UTC",
+        "user-info": "User",
         "lang": "Language",
         "open-hours": "Service opening hours",
         "french": "French",
@@ -32,6 +33,10 @@
         "no-data": "No results available",
         "loading": "Loading in progress",
         "choose-csv": "Choose a .csv file",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "disconnect": "Disconnect",
         "week": {
             "monday": "Monday",
             "tuesday": "Tuesday",
@@ -85,9 +90,15 @@
         "fileNoLongerAvailable": "The file is no longer available",
         "other": "Other",
         "otherLegend": "Other (less than 1%)",
-        "mailTo": "MAILTO@G4IT.COM"
+        "mailTo": "support.g4it@soprasteria.com"
     },
     "digital-services": {
+        "headerForCreatedByMe": "CREATED BY ME ({{count}})",
+        "headerForSharedWithMe": "SHARED WITH ME ({{count}})",
+        "copyLink": "COPY LINK",
+        "not-found": "Digital service does not exist.",
+        "expired": "Digital service link is expired.",
+        "linkCopied": "LINK COPIED !",
         "title": "My Digital Services",
         "add": "Evaluate New Service",
         "empty-digital-services": "You do not have any digital service.",
@@ -117,7 +128,7 @@
         "type": "Type of device",
         "country": "Country",
         "nb-user": "Number of unique users",
-        "yearly-usage": "Average time spend per user per years",
+        "yearly-usage": "Average time spent per user per year",
         "hours": "hours",
         "table-yearly-usage": "Yearly usage time per user",
         "lifespan": "Average device lifespan (years)"
@@ -129,7 +140,7 @@
         "add": "+ ADD NETWORK",
         "id": "#",
         "type": "Type",
-        "yearly-go": "Total quantity of GB exchanged by years for all users",
+        "yearly-go": "Total quantity of GB exchanged by year for all users",
         "table-yearly-go": "Yearly quantity of GB exchanged"
     },
     "digital-services-servers": {
@@ -196,13 +207,13 @@
     "Nov": "Nov",
     "Dec": "Dec",
     "inventories": {
-        "headerForIS": "MY INFORMATION SYSTEM",
+        "headerForIS": "MY IS VERSION",
         "headerForSimulation": "MY SIMULATIONS",
         "searchSimulator": "Search by simulation name",
         "duplicateSimulation": "Simulation already exist",
         "nameValidation": "Special characters are not allowed",
         "inventory": "Inventory",
-        "title": "My Footprint",
+        "title": "My Information System - Organization {{OrganizationName}}",
         "add": "New inventory",
         "created": "created",
         "details.equipment": "EQUIPMENT",
@@ -213,7 +224,8 @@
             "data_extraction": "Data extraction to be submitted",
             "data_exposition": "Submission to NumEcoEval in progress",
             "calculation_submission": "Starting calulation",
-            "calculation_in_progress": "Calculation in progress"
+            "calculation_in_progress": "Calculation in progress",
+            "aggregation_in_progress": "Aggregation in progress"
         },
         "history": {
             "loadings": "LOADING HISTORY",
@@ -278,8 +290,8 @@
         },
         "header": {
             "manage": "Manage inventories",
-            "export": "Export my results",
-            "download": "Download my results"
+            "export": "Export",
+            "download": "Download"
         },
         "round-button": {
             "acvStep": "Lifecycle",
@@ -383,6 +395,14 @@
         "subscriber-or-organization-not-found": {
             "title": "No souscripteur or organisation found",
             "text": "Please ask your administrator to attach you to an organization"
+        },
+        "insuffisant-right-subscriber": {
+            "title": "Subscriber not authorized",
+            "text": "Please ask your administrator to attach you to the subscriber"
+        },
+        "insuffisant-right-organization": {
+            "title": "Organization not authorized",
+            "text": "Please ask your administrator to attach you to the organization"
         }
     },
     "digital-services-cards": {
@@ -499,7 +519,7 @@
             "last-name": "Last Name",
             "mail": "Mail",
             "search-result": "Search result",
-            "no-results": "No results",
+            "no-results": "No referenced user found",
             "already-member": "ALREADY MEMBER",
             "searchEmailValidation": "Special characters are not allowed except @.-_",
             "delete-message": "The user {{FirstName}} {{LastName}} will no longer have access to this organization. Are you sure you want to proceed ?",

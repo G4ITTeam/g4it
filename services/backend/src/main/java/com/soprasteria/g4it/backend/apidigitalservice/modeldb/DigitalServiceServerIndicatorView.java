@@ -31,7 +31,8 @@ import java.io.Serializable;
                         @ColumnResult(name = "pue", type = Double.class),
                         @ColumnResult(name = "country"),
                         @ColumnResult(name = "raw_value", type = Double.class),
-                        @ColumnResult(name = "sip_value", type = Double.class)
+                        @ColumnResult(name = "sip_value", type = Double.class),
+                        @ColumnResult(name = "unit")
                 }
         )
 )
@@ -55,7 +56,8 @@ import java.io.Serializable;
                         dc.pue                                                      as pue,
                         dc.location                                                 as country,
                         sum(ep.impact_unitaire)                                     as raw_value,
-                        sum(ep.impact_unitaire/sip.individual_sustainable_package)  as sip_value
+                        sum(ep.impact_unitaire/sip.individual_sustainable_package)  as sip_value,
+                        ep.unite                                                    as unit
                     from
                         ind_indicateur_impact_equipement_physique ep
                     inner join server s
@@ -74,7 +76,8 @@ import java.io.Serializable;
                         s.name,
                         ep.etapeacv,
                         dc.pue,
-                        dc.location
+                        dc.location,
+                        ep.unite
                     union
                     select
                         ev.critere                                                  as criteria,
@@ -88,7 +91,8 @@ import java.io.Serializable;
                         dc.pue                                                      as pue,
                         dc.location                                                 as country,
                         sum(ev.impact_unitaire)                                     as raw_value,
-                        sum(ev.impact_unitaire/sip.individual_sustainable_package)  as sip_value
+                        sum(ev.impact_unitaire/sip.individual_sustainable_package)  as sip_value,
+                        ev.unite                                                    as unit
                     from ind_indicateur_impact_equipement_virtuel ev
                     inner join virtual_equipment_digital_service vm
                         on vm.uid = ev.nom_equipement_virtuel
@@ -108,11 +112,11 @@ import java.io.Serializable;
                         vm.uid,
                         ev.etapeacv,
                         dc.pue,
-                        dc.location
+                        dc.location,
+                        ev.unite
                 ) as servers
                 """
 )
-
 @Entity
 @Data
 @SuperBuilder
@@ -145,4 +149,6 @@ public class DigitalServiceServerIndicatorView implements Serializable {
     private Double rawValue;
 
     private Double sipValue;
+
+    private String unit;
 }

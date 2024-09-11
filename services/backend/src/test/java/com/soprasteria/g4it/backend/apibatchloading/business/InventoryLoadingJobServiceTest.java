@@ -11,8 +11,8 @@ import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryIntegrati
 import com.soprasteria.g4it.backend.apibatchloading.model.InventoryLoadingSession;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
 import com.soprasteria.g4it.backend.config.LoadingBatchConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

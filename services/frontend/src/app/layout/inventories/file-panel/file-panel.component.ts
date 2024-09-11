@@ -19,7 +19,6 @@ import {
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
 import { Subject, firstValueFrom, takeUntil } from "rxjs";
 import {
@@ -75,7 +74,6 @@ export class FilePanelComponent implements OnInit {
         private filesSystemService: FileSystemDataService,
         private loadingService: LoadingDataService,
         private messageService: MessageService,
-        private spinner: NgxSpinnerService,
         private translate: TranslateService,
         private readonly formBuilder: FormBuilder,
         private templateFileService: TemplateFileService,
@@ -233,10 +231,8 @@ export class FilePanelComponent implements OnInit {
     }
 
     submitFormData() {
-        this.spinner.show();
         if (this.name === "") {
             this.className = "ng-invalid ng-dirty";
-            this.spinner.hide();
             return;
         }
         let formData = new FormData();
@@ -276,18 +272,15 @@ export class FilePanelComponent implements OnInit {
                     } else {
                         this.reloadInventoriesAndLoop.emit(response.id);
                         this.close();
-                        this.spinner.hide();
                     }
                 },
                 error: (error) => {
-                    this.spinner.hide();
                 },
             });
         } else {
             if (bodyLoading.length !== 0) {
                 this.uploadAndLaunchLoading(formData, bodyLoading, this.inventoryId);
             } else {
-                this.spinner.hide();
             }
         }
     }
@@ -313,16 +306,13 @@ export class FilePanelComponent implements OnInit {
                             this.sidebarVisibleChange.emit(false);
                             this.reloadInventoriesAndLoop.emit(inventoryId);
                             this.close();
-                            this.spinner.hide();
                         },
                         error: () => {
-                            this.spinner.hide();
                         },
                     });
             },
             error: () => {
                 this.sidebarPurposeChange.emit("upload");
-                this.spinner.hide();
             },
         });
     }

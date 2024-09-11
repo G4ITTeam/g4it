@@ -11,15 +11,14 @@ import { ButtonModule } from "primeng/button";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService, SharedModule } from "primeng/api";
 import { DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
 import { of } from "rxjs";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import SidePanelDatacenterComponent from "./side-panel-datacenter.component";
-import { UserService } from "src/app/core/service/business/user.service";
 
 describe("SidePanelDatacenterComponent", () => {
     let component: SidePanelDatacenterComponent;
@@ -47,7 +46,6 @@ describe("SidePanelDatacenterComponent", () => {
                 MessageService,
                 UserService,
                 DigitalServicesDataService,
-                NgxSpinnerService,
                 FormBuilder,
             ],
         });

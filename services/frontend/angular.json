@@ -11,7 +11,7 @@
                 },
                 "@schematics/angular:component": {
                     "style": "scss"
-                  }
+                }
             },
             "root": "",
             "sourceRoot": "src",
@@ -28,20 +28,17 @@
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": [
                             "src/styles.scss",
-                            "node_modules/ngx-spinner/animations/ball-pulse.css",
                             "node_modules/primeflex/primeflex.css",
                             "node_modules/quill/dist/quill.core.css",
                             "node_modules/quill/dist/quill.snow.css"
                         ],
-                        "scripts": [
-                            "node_modules/quill/dist/quill.js"
-                            ],
+                        "scripts": ["node_modules/quill/dist/quill.js"],
                         "allowedCommonJsDependencies": [
                             "sort-by-property",
                             "js-sha256",
                             "quill-delta",
                             "file-saver"
-                         ]
+                        ]
                     },
                     "configurations": {
                         "production": {

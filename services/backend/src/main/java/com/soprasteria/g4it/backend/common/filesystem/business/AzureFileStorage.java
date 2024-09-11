@@ -20,7 +20,6 @@ import com.azure.storage.blob.sas.BlobSasPermission;
 import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
 import lombok.RequiredArgsConstructor;

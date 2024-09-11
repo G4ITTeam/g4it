@@ -32,6 +32,7 @@ export class CompaniesMenuComponent {
             organization.organization as Organization,
             this.selectedPage,
         );
+        this.isMenuVisible = false;
     }
 
     chooseTextContrast(bgColor: string) {

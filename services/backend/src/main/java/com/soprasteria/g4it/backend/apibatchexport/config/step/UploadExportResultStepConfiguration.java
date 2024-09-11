@@ -9,7 +9,7 @@ package com.soprasteria.g4it.backend.apibatchexport.config.step;
 
 import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apibatchexport.tasklet.UploadExportResultTasklet;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.repository.JobRepository;

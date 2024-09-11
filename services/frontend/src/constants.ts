@@ -63,6 +63,11 @@ export abstract class Constants {
         templateFiles: "template-files",
     };
 
+    static readonly ERRORS: any = {
+        404: "not-found",
+        410: "expired",
+    };
+
     static readonly CSV_FILES_TYPES = [
         "datacenter",
         "physical",
@@ -91,7 +96,16 @@ export abstract class Constants {
         "DATA_EXPOSITION_TO_NUMECOVAL",
         "CALCUL_SUBMISSION_TO_NUMECOVAL",
         "CALCUL_IN_PROGRESS",
+        "AGGREGATION_IN_PROGRESS",
     ];
+
+    static readonly EVALUATION_BATCH_STATUS_MAPPING = {
+        DATA_EXTRACTION: "data_extraction",
+        DATA_EXPOSITION_TO_NUMECOVAL: "data_extraction",
+        CALCUL_SUBMISSION_TO_NUMECOVAL: "calculation_submission",
+        CALCUL_IN_PROGRESS: "calculation_in_progress",
+        AGGREGATION_IN_PROGRESS: "aggregation_in_progress",
+    };
 
     static readonly INVENTORY_TYPE = {
         INFORMATION_SYSTEM: "INFORMATION_SYSTEM",
@@ -125,48 +139,39 @@ export abstract class Constants {
         "CLEANING_WORKING_FOLDERS",
     ];
 
-    static readonly ROLE_VALUES = [
-        {
-            value: "admin",
-            id: 1,
-        },
-        {
-            value: "user",
-            id: 2,
-        },
-    ];
-
-    static readonly IS_MODULE_VALUES = [
-        {
-            value: "Read",
-            id: 1,
-        },
-        {
-            value: "Write",
-            id: 2,
-        },
-        {
-            value: "No access",
-            id: 3,
-        },
-    ];
-
-    static readonly DS_MODULE_VALUES = [
-        {
-            value: "Read",
-            id: 1,
-        },
-        {
-            value: "Write",
-            id: 2,
-        },
-        {
-            value: "No access",
-            id: 3,
-        },
-    ];
     static readonly RECIPIENT_MAIL = "support.g4it@soprasteria.com";
     static readonly SUBJECT_MAIL = "Support Request";
     static readonly SPACE = " ";
     static readonly ADMIN = "admin";
+    static readonly PEOPLEEQ = "Peopleeq";
+
+    static readonly ACV_STEP = "acvStep";
+    static readonly EQUIPMENT_DIMENSIONS = [
+        "acvStep",
+        "country",
+        "entity",
+        "equipment",
+        "status",
+    ];
+    static readonly EQUIPMENT_FILTERS = ["country", "entity", "equipment", "status"];
+    static readonly EQUIPMENT_FILTERS_MAP: any = {
+        country: "countries",
+        entity: "entities",
+        equipment: "equipments",
+        status: "status",
+    };
+    static readonly ALL: string = "All";
+    static readonly EMPTY: string = "!Empty"; // ! character is used for sorting Empty on top
+
+    static readonly MUTLI_CRITERIA: string = "multi-criteria";
+
+    // key order is important for displaying criterias tabs
+    static readonly CRITERIA_ICON: any = {
+        "climate-change": "climate",
+        "resource-use": "hourglass",
+        "ionising-radiation": "ion",
+        acidification: "ph",
+        "particulate-matter": "factory",
+    };
+    static readonly CRITERIAS = Object.keys(this.CRITERIA_ICON);
 }

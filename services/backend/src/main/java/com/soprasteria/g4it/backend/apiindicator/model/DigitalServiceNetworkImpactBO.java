@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.model;
 
 import lombok.AllArgsConstructor;
@@ -23,4 +23,6 @@ public class DigitalServiceNetworkImpactBO {
     private Float sipValue;
 
     private Float rawValue;
+
+    private String unit;
 }

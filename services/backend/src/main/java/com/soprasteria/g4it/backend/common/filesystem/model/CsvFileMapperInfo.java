@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.common.filesystem.model;
 
 import lombok.Setter;
@@ -29,6 +29,13 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> virtualEquipmentIndicator;
     private List<Header> applicationIndicator;
 
+    private List<Header> terminal;
+    private List<Header> datacenterDigitalService;
+    private List<Header> network;
+    private List<Header> server;
+    private List<Header> physicalEquipmentIndicatorDigitalService;
+    private List<Header> virtualMachine;
+
     @Override
     public List<Header> getMapping(final FileType type) {
         return switch (type) {
@@ -41,6 +48,13 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case VIRTUAL_EQUIPMENT_INDICATOR -> new ArrayList<>(virtualEquipmentIndicator);
             case APPLICATION_INDICATOR -> new ArrayList<>(applicationIndicator);
             case INVENTORY -> new ArrayList<>(List.copyOf(inventory));
+            case DATACENTER_DIGITAL_SERVICE -> new ArrayList<>(List.copyOf(datacenterDigitalService));
+            case PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
+                    new ArrayList<>(List.copyOf(physicalEquipmentIndicatorDigitalService));
+            case NETWORK -> new ArrayList<>(List.copyOf(network));
+            case SERVER -> new ArrayList<>(List.copyOf(server));
+            case TERMINAL -> new ArrayList<>(List.copyOf(terminal));
+            case VIRTUAL_MACHINE -> new ArrayList<>(List.copyOf(virtualMachine));
         };
     }
 }

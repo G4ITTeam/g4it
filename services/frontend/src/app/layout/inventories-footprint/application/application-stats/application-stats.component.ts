@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
 import { Subject, combineLatestWith, takeUntil } from "rxjs";
 import { FilterRepository } from "src/app/core/store/filter.repository";
@@ -12,6 +12,7 @@ import {
     ApplicationFootprint,
     FootprintRepository,
 } from "src/app/core/store/footprint.repository";
+import { Constants } from "src/constants";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 
 @Component({
@@ -35,14 +36,14 @@ export class ApplicationStatsComponent {
     constructor(
         private appComponent: InventoriesApplicationFootprintComponent,
         private filterRepo: FilterRepository,
-        private footprintRepo: FootprintRepository
+        private footprintRepo: FootprintRepository,
     ) {}
 
     async ngOnInit(): Promise<void> {
         this.footprintRepo.applicationFootprint$
             .pipe(
                 combineLatestWith(this.filterRepo.selectedApplicationFilters$),
-                takeUntil(this.ngUnsubscribe)
+                takeUntil(this.ngUnsubscribe),
             )
             .subscribe(([applications, selectedFilters]) => {
                 this.selectedEnvironnement = selectedFilters.environments;
@@ -64,7 +65,7 @@ export class ApplicationStatsComponent {
                     this.selectedEquipments,
                     this.selectedLifecycle,
                     this.selectedDomain,
-                    this.selectedSubDomain
+                    this.selectedSubDomain,
                 );
             });
     }
@@ -90,7 +91,7 @@ export class ApplicationStatsComponent {
         selectedEquipments: string[],
         selectedLifecycle: string[],
         selectedDomain: string[],
-        selectedSubDomain: string[]
+        selectedSubDomain: string[],
     ) {
         applications = applications || [];
         let applicationCount = 0;
@@ -105,11 +106,11 @@ export class ApplicationStatsComponent {
                     subDomain,
                     applicationName,
                 } = impact;
-                environment = environment || "Empty";
-                equipmentType = equipmentType || "Empty";
-                lifeCycle = lifeCycle || "Empty";
-                domain = domain || "Empty";
-                subDomain = subDomain || "Empty";
+                environment = environment || Constants.EMPTY;
+                equipmentType = equipmentType || Constants.EMPTY;
+                lifeCycle = lifeCycle || Constants.EMPTY;
+                domain = domain || Constants.EMPTY;
+                subDomain = subDomain || Constants.EMPTY;
                 if (
                     selectedEnvironnement.includes(environment) &&
                     selectedEquipments.includes(equipmentType) &&

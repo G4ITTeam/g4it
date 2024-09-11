@@ -1,0 +1,121 @@
+.login-pf body {
+    background: url('../img/bg.png');
+    background-size: cover;
+    font-family: "Overpass", sans-serif;
+
+}
+
+.pf-c-button.pf-m-primary {
+    background: black;
+    color: white;
+    height: 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.login-pf-page {
+    margin: 0px;
+}
+
+.login-pf-page-header {
+    margin-top: 30px;
+    margin-bottom: 0px !important;
+}
+
+.card-pf {
+  background: #fff;
+  margin: 0 auto;
+  padding: 0 20px;
+  max-width: 500px;
+  border-top: 0;
+  box-shadow: 0 0 0;
+}
+
+#kc-page-title {
+    display: none;
+}
+
+#kc-header {
+    color: black;
+    overflow: visible;
+    white-space: nowrap;
+}
+
+#kc-header-wrapper {
+    font-size: 29px;
+    line-height: 1.2em;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+#try-another-way {
+    display: none;
+}
+
+#kc-registration {
+    background: white;
+    color: black;
+    height: 40px;
+    border: 2px solid;
+    padding-top: 9px;
+    padding-right: 8px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+#kc-registration > span > a {
+    color: black;
+    text-decoration: none;
+}
+
+#kc-info-wrapper {
+    background: white;
+    padding: 15px 40px;
+}
+
+#kc-locale-dropdown {
+    display: inline-block;
+    border: 1.5px solid black;
+    padding: 8px;
+    width: 150px;
+    border-radius: 5px;
+}
+
+button#kc-current-locale-link::after {
+    content: "\2c5";
+    margin-left: var(--pf-global--spacer--xs);
+    color: black;
+    padding-left: 65px;
+    border-radius: 4px;
+}
+
+#kc-locale ul {
+    background-color: var(--pf-global--BackgroundColor--100);
+    display: none;
+    top: 42px;
+    min-width: 150px;
+    border-radius: 2px;
+    padding: 0;
+}
+
+#kc-locale-dropdown a {
+    text-align: left;
+    }
+
+.pf-c-form-control:not(textarea) {
+    height: var(--pf-c-form-control--Height);
+    text-overflow: ellipsis;
+    border: 1.5px solid black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.pf-c-button.pf-m-control {
+    border-color: rgba(230, 230, 230, 0.5);
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    }

@@ -1,66 +1,66 @@
 filesystem.config.headers:
   application:
-    - name : "nomApplication"
+    - name: "nomApplication"
       optional: false
-    - name : "typeEnvironnement"
+    - name: "typeEnvironnement"
       optional: false
-    - name : "nomEquipementVirtuel"
+    - name: "nomEquipementVirtuel"
       optional: false
-    - name : "nomSourceDonneeEquipementVirtuel"
+    - name: "nomSourceDonneeEquipementVirtuel"
       optional: true
-    - name : "domaine"
+    - name: "domaine"
       optional: true
-    - name : "sousDomaine"
+    - name: "sousDomaine"
       optional: true
-    - name : "nomEntite"
+    - name: "nomEntite"
       optional: true
-    - name : "nomSourceDonnee"
+    - name: "nomSourceDonnee"
       optional: true
   datacenter:
-    - name : "nomCourtDatacenter"
+    - name: "nomCourtDatacenter"
       optional: false
-    - name : "nomLongDatacenter"
+    - name: "nomLongDatacenter"
       optional: true
-    - name : "pue"
+    - name: "pue"
       optional: true
-    - name : "localisation"
+    - name: "localisation"
       optional: false
-    - name : "nomEntite"
+    - name: "nomEntite"
       optional: true
-    - name : "nomSourceDonnee"
+    - name: "nomSourceDonnee"
       optional: true
   equipementPhysique:
-    - name : "nomEquipementPhysique"
+    - name: "nomEquipementPhysique"
       optional: false
-    - name : "nomEntite"
+    - name: "nomEntite"
       optional: true
-    - name : "nomSourceDonnee"
+    - name: "nomSourceDonnee"
       optional: true
-    - name : "modele"
+    - name: "modele"
       optional: false
-    - name : "quantite"
+    - name: "quantite"
       optional: false
-    - name : "type"
+    - name: "type"
       optional: false
-    - name : "statut"
+    - name: "statut"
       optional: true
-    - name : "nbJourUtiliseAn"
+    - name: "nbJourUtiliseAn"
       optional: true
-    - name : "paysDUtilisation"
+    - name: "paysDUtilisation"
       optional: false
-    - name : "utilisateur"
+    - name: "utilisateur"
       optional: true
-    - name : "dateAchat"
+    - name: "dateAchat"
       optional: true
-    - name : "dateRetrait"
+    - name: "dateRetrait"
       optional: true
-    - name : "nbCoeur"
+    - name: "nbCoeur"
       optional: true
-    - name : "nomCourtDatacenter"
+    - name: "nomCourtDatacenter"
       optional: true
-    - name : "goTelecharge"
+    - name: "goTelecharge"
       optional: true
-    - name : "consoElecAnnuelle"
+    - name: "consoElecAnnuelle"
       optional: true
     - name: "fabricant"
       optional: true
@@ -71,21 +71,21 @@ filesystem.config.headers:
     - name: "typeDeProcesseur"
       optional: true
   equipementVirtuel:
-    - name : "nomEquipementVirtuel"
+    - name: "nomEquipementVirtuel"
       optional: false
-    - name : "nomEquipementPhysique"
+    - name: "nomEquipementPhysique"
       optional: false
-    - name : "nomSourceDonneeEquipementPhysique"
+    - name: "nomSourceDonneeEquipementPhysique"
       optional: true
-    - name : "vCPU"
+    - name: "vCPU"
       optional: true
-    - name : "nomEntite"
+    - name: "nomEntite"
       optional: true
-    - name : "cluster"
+    - name: "cluster"
       optional: true
-    - name : "consoElecAn"
+    - name: "consoElecAn"
       optional: true
-    - name : "typeEqv"
+    - name: "typeEqv"
       optional: false
     - name: "cleRepartition"
       optional: true
@@ -267,3 +267,147 @@ filesystem.config.headers:
       optional: false
     - name: "sipImpact"
       optional: false
+  terminal:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "type"
+      dbName: "deviceTypeDescription"
+      optional: false
+    - name: "country"
+      optional: false
+    - name: "numberOfUsers"
+      optional: false
+    - name: "averageTimeSpendPerUserPerYears"
+      dbName: "yearlyUsageTimePerUser"
+      optional: false
+    - name: "lifespan"
+      optional: false
+  datacenterDigitalService:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "datacenterName"
+      dbName: "name"
+      optional: false
+    - name: "pue"
+      optional: false
+    - name: "country"
+      dbName": "location"
+      optional: false
+  network:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "networkType"
+      dbName: "networkTypeDescription"
+      optional: false
+    - name: "totalQuantityOfGbExchanged"
+      dbName: "yearlyQuantityOfGbExchanged"
+      optional: false
+  server:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "serverName"
+      dbName: "name"
+      optional: false
+    - name: "type"
+      optional: false
+    - name: "mutualizationType"
+      optional: false
+    - name: "serverHostDescription"
+      optional: false
+    - name: "serverHostExternalReferentialDescription"
+      optional: false
+    - name : "datacenterName"
+      dbName: "datacenterDigitalServiceName"
+      optional: false
+    - name: "quantity"
+      optional: false
+    - name: "totalvCPU"
+      dbName: "serverHostNbOfVcpu"
+      optional: false
+    - name: "totalDisk"
+      dbName: "serverHostTotalDisk"
+      optional: false
+    - name: "lifespan"
+      optional: false
+    - name: "annualElectricityConsumption"
+      optional: false
+    - name: "annualOperatingTime"
+      optional: false
+    - name: "associatedVM"
+      dbName: "serverCharacteristicType"
+      optional: false
+  virtualMachine:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "name"
+      optional: false
+    - name: "serverName"
+      optional: false
+    - name: "totalVMnumber"
+      dbName: "quantity"
+      optional: false
+    - name: "vmType"
+      dbName: "virtualEquipmentCharacteristicType"
+      optional: false
+    - name: "quantity"
+      dbName: "virtualEquipmentCharacteristicCharacteristicValue"
+      optional: false
+    - name: "annualOperatingTime"
+      dbName: "serverAnnualOperatingTime"
+      optional: false
+  physicalEquipmentIndicatorDigitalService:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "batchDate"
+      optional: false
+    - name: "batchName"
+      optional: false
+    - name: "acvStep"
+      optional: false
+    - name: "criteria"
+      dbName: "commonCriteria"
+      optional: false
+    - name: "source"
+      optional: false
+    - name: "indicatorStatus"
+      optional: false
+    - name: "trace"
+      optional: false
+    - name: "calculationVersion"
+      optional: false
+    - name: "averagePowerConsumption"
+      optional: false
+    - name: "unitImpact"
+      dbName: "commonUnitImpact"
+      optional: false
+    - name: "quantity"
+      optional: false
+    - name: "physicalEquipmentStatus"
+      optional: false
+    - name: "equipmentType"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "entityName"
+      optional: false
+    - name: "organizationName"
+      optional: false
+    - name: "dataSourceName"
+      optional: false
+    - name: "equipmentName"
+      optional: false
+    - name: "entityNameDiscriminator"
+      optional: false
+    - name: "batchDateDiscriminator"
+      optional: false
+    - name: "organizationNameDiscriminator"
+      optional: false
+    - name: "dataSourceNameDiscriminator"
+      optional: false
+    - name: "sipImpact"
+      dbName: "commonSipImpact"
+      optional: false
+
+

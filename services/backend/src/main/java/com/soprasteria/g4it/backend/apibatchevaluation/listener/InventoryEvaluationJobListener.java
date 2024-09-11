@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchevaluation.listener;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -43,6 +43,7 @@ public class InventoryEvaluationJobListener implements JobExecutionListener {
                 .createTime(jobExecution.getCreateTime())
                 .batchStatusCode(EvaluationBatchStatus.DATA_EXTRACTION.name())
                 .progressPercentage(STARTED_PROGRESS_PERCENTAGE)
+                .isAggregated(false)
                 .build());
         inventoryRepository.save(processedInventory);
     }

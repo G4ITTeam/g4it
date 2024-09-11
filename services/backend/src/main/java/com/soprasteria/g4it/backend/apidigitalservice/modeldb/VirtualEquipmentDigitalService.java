@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
@@ -67,5 +67,41 @@ public class VirtualEquipmentDigitalService extends AbstractBaseEntity {
      */
     @NotNull
     private Integer annualUsageTime;
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the deviceType description
+     */
+    public String getVirtualEquipmentCharacteristicType() {
+        return virtualEquipmentCharacteristic.getType();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the virtualEquipmentCharacteristic characteristicValue
+     */
+    public Integer getVirtualEquipmentCharacteristicCharacteristicValue() {
+        return virtualEquipmentCharacteristic.getCharacteristicValue();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the server name
+     */
+    public String getServerName() {
+        return server.getName();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the server annualOperatingTime
+     */
+    public Integer getServerAnnualOperatingTime() {
+        return server.getAnnualOperatingTime();
+    }
 
 }

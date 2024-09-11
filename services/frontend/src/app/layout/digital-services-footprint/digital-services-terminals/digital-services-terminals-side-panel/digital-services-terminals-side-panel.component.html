@@ -91,6 +91,7 @@
                 [(ngModel)]="terminal.yearlyUsageTimePerUser"
                 name="yearlyUsageTimePerUser"
                 ngDefaultControl
+                locale="fr-FR"
             />
             <p
                 class="error-text"
@@ -101,8 +102,7 @@
             </p>
         </div>
         <div div class="label-input-div">
-            <label>{{ "digital-services-terminals.lifespan" | translate }}
-            </label>
+            <label>{{ "digital-services-terminals.lifespan" | translate }} </label>
             <p-inputNumber
                 formControlName="lifespan"
                 mode="decimal"
@@ -114,8 +114,8 @@
                 [(ngModel)]="terminal.lifespan"
                 name="lifespan"
                 ngDefaultControl
-            >
-            </p-inputNumber>
+                locale="fr-FR"
+            />
             <p
                 class="error-text"
                 *ngIf="terminalsForm.get('lifespan')?.hasError('required')"

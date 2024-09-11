@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -14,6 +14,7 @@ import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { FilterRepository } from "src/app/core/store/filter.repository";
+import { Constants } from "src/constants";
 import { ApplicationCriteriaFootprintComponent } from "../criteria/application-criteria-footprint.component";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 import { ApplicationMulticriteriaFootprintComponent } from "./application-multicriteria-footprint.component";
@@ -87,11 +88,15 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
     });
 
     it("should init domain filter", () => {
-        component.domainFilter = ["All", "Domain A,subdomain A", "Domain B,subdomain B"];
+        component.domainFilter = [
+            Constants.ALL,
+            "Domain A,subdomain A",
+            "Domain B,subdomain B",
+        ];
 
         component.initDomainFilter();
 
-        expect(component.selectedDomain).toEqual(["All", "Domain A", "Domain B"]);
+        expect(component.selectedDomain).toEqual([Constants.ALL, "Domain A", "Domain B"]);
         expect(component.selectedSubDomain).toEqual(["subdomain A", "subdomain B"]);
     });
 
@@ -184,21 +189,21 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             },
         ];
         component.selectedEnvironnement = [
-            "All",
+            Constants.ALL,
             "Production",
             "Preproduction",
             "Recette",
         ];
-        component.selectedEquipments = ["All", "Laptop"];
+        component.selectedEquipments = [Constants.ALL, "Laptop"];
         component.selectedLifecycle = [
-            "All",
+            Constants.ALL,
             "Distribution",
             "manufacturing",
             "Using",
             "End of life",
         ];
         component.selectedDomain = [
-            "All",
+            Constants.ALL,
             "Domain A",
             "Domain B",
             "Domain C",
@@ -305,21 +310,21 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
             },
         ];
         component.selectedEnvironnement = [
-            "All",
+            Constants.ALL,
             "Production",
             "Preproduction",
             "Recette",
         ];
-        component.selectedEquipments = ["All", "Laptop", "Communication Device"];
+        component.selectedEquipments = [Constants.ALL, "Laptop", "Communication Device"];
         component.selectedLifecycle = [
-            "All",
+            Constants.ALL,
             "Distribution",
             "manufacturing",
             "Using",
             "End of life",
         ];
         component.selectedDomain = [
-            "All",
+            Constants.ALL,
             "Domain A",
             "Domain B",
             "Domain C",
@@ -339,7 +344,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
 
     it("should get uri from criterias lang object", () => {
         const translatedCriteria = {
-            "multi-criteria": {
+            [Constants.MUTLI_CRITERIA]: {
                 title: "Multi-criteria",
             },
             "particulate-matter": {
@@ -351,7 +356,7 @@ describe("ApplicationMulticriteriaFootprintComponent", () => {
 
         const uri = component.getUriFromCriterias(
             translatedCriteria,
-            "Particulate matter"
+            "Particulate matter",
         );
 
         expect(uri).toEqual("particulate-matter");

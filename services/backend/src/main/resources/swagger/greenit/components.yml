@@ -21,7 +21,7 @@ components:
         type: integer
         format: int64
       required: true
-      description: The organization name.
+      description: The organization id.
     inventoryIdPathParam:
       in: path
       name: inventoryId
@@ -45,6 +45,13 @@ components:
         type: string
       required: true
       description: The digital service uid.
+    sharedUidPathParam:
+      in: path
+      name: sharedUid
+      schema:
+        type: string
+      required: true
+      description: The shared digital service uid.
     noteUidPathParam:
       in: path
       name: noteId
@@ -170,6 +177,9 @@ components:
       description: User information
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
         email:
           type: string
         firstName:
@@ -650,6 +660,9 @@ components:
           type: string
         name:
           type: string
+        userId:
+          type: integer
+          format: int64
         creationDate:
           type: string
           format: date-time
@@ -784,6 +797,8 @@ components:
           type: number
         sipValue:
           type: number
+        unit:
+          type: string
 
     DigitalServiceNetworksIndicatorRest:
       type: object
@@ -810,6 +825,8 @@ components:
           type: number
         sipValue:
           type: number
+        unit:
+          type: string
 
     DigitalServiceServersIndicatorRest:
       type: object
@@ -865,6 +882,10 @@ components:
           type: integer
         sipValue:
           type: number
+        rawValue:
+          type: number
+        unit:
+          type: string
     ServerIndicatorImpactStepRest:
       type: object
       properties:
@@ -872,6 +893,10 @@ components:
           type: string
         sipValue:
           type: number
+        rawValue:
+          type: number
+        unit:
+          type: string
 
     ServerDatacenterRest:
       type: object
@@ -1158,3 +1183,4 @@ components:
           description: Organization date retention days
           type: integer
           format: int64
+

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { takeUntil } from "rxjs";
@@ -14,17 +14,18 @@ import {
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
+    DigitalServiceTerminalResponse,
     DigitalServiceTerminalsImpact,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { EchartsRepository } from "src/app/core/store/echarts.repository";
 import { FilterRepository } from "src/app/core/store/filter.repository";
 import { FootprintRepository } from "src/app/core/store/footprint.repository";
+import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
-import * as CriteriaUtils from "src/app/core/utils/criteria";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 @Component({
     selector: "app-digital-services-footprint-dashboard",
@@ -98,16 +99,17 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     initImpacts(): void {
-        this.impacts = CriteriaUtils.getCriteriaShortList().map((criteria) => {
+        this.impacts = Constants.CRITERIAS.map((criteria) => {
             return { name: criteria, title: "", unite: "", raw: null, peopleeq: null };
         });
     }
 
     retrieveFootprintData(uid: string): void {
-        this.digitalServicesDataService
+        this.digitalServicesService
             .getFootprint(uid)
             .subscribe((footprint: DigitalServiceFootprint[]) => {
                 this.globalVisionChartData = footprint;
+
                 this.setCriteriaButtons(footprint);
                 if (footprint.length > 0) {
                     this.noData = false;
@@ -115,22 +117,22 @@ export class DigitalServicesFootprintDashboardComponent
                     this.noData = true;
                 }
             });
-        this.digitalServicesDataService
+        this.digitalServicesService
             .getNetworksIndicators(uid)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((networkFootprint: DigitalServiceNetworksImpact[]) => {
                 this.networkData = networkFootprint;
             });
-        this.digitalServicesDataService
+        this.digitalServicesService
             .getServersIndicators(uid)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((serverFootprint: DigitalServiceServersImpact[]) => {
                 this.serverData = serverFootprint;
             });
-        this.digitalServicesDataService
+        this.digitalServicesService
             .getTerminalsIndicators(uid)
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((terminalFootprint: any) => {
+            .subscribe((terminalFootprint: DigitalServiceTerminalResponse[]) => {
                 this.terminalData =
                     this.digitalServicesService.transformTerminalData(terminalFootprint);
             });

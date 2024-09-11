@@ -17,3 +17,7 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-security-user-after.yml
   - include:
       file: db/changelog/greenitdb.changelog-business-hours.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-digital-service-next.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-shedlock.yml

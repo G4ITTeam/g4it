@@ -7,10 +7,10 @@
  */
 package com.soprasteria.g4it.backend.common.filesystem.integration;
 
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.LocalFileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.external.VaultAccessClient;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

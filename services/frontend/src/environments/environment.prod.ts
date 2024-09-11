@@ -15,6 +15,7 @@ export const environment = {
         realm: "g4it",
         clientId: "g4it",
     },
+    frontEndUrl: "${FRONTEND_URL}",
     matomo: {
         trackerUrl: "${MATOMO_URL}",
         siteId: "${MATOMO_SITE_ID}",

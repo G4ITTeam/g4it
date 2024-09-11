@@ -12,7 +12,8 @@
                 <div class="table-head">
                     {{ "digital-services-networks.networks" | translate }}
                 </div>
-                <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                <p-button
+                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                     (click)="resetNetwork(); sidebarVisible = true"
                     styleClass="inventory-button-small"
                     >{{ "digital-services-networks.add" | translate }}</p-button
@@ -47,9 +48,10 @@
             <tr>
                 <td class="grey-text">{{ rowIndex + 1 }}</td>
                 <td>{{ network.type.value }}</td>
-                <td>{{ network.yearlyQuantityOfGbExchanged  | decimals }}</td>
+                <td>{{ network.yearlyQuantityOfGbExchanged | decimals }}</td>
                 <td style="text-align: right">
-                    <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    <p-button
+                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         (click)="
                             setNetworks(network, rowIndex + 1); sidebarVisible = true
                         "
@@ -62,8 +64,9 @@
                             }} {{ rowIndex + 1 }}"
                         />
                     </p-button>
-                    <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="deleteNetworks(network)"
+                    <p-button
+                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        (click)="actionNetwork('delete', network)"
                         styleClass="p-button-text edit-button"
                     >
                         <img
@@ -81,9 +84,9 @@
 <p-sidebar [(visible)]="sidebarVisible" position="right" styleClass="p-sidebar-lg">
     <app-digital-services-networks-side-panel
         [network]="network"
-        [sidebarVisible]="sidebarVisible"
-        (sidebarVisibleChange)="sidebarVisible = $event"
-        (updateNetworks)="updateNetworks($event)"
-        (deleteNetworks)="deleteNetworks($event)"
+        [networkTypes]="networkTypes"
+        (update)="actionNetwork('update', $event)"
+        (delete)="actionNetwork('delete', $event)"
+        (cancel)="actionNetwork('cancel', $event)"
     ></app-digital-services-networks-side-panel>
 </p-sidebar>

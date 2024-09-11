@@ -25,3 +25,5 @@ databaseChangeLog:
   # use test file for business-hours due to issue on h2 database with day field
   - include:
       file: db/changelog/test-greenitdb.changelog-business-hours.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-digital-service-next.yml

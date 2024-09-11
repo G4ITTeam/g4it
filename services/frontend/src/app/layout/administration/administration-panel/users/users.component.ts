@@ -46,6 +46,7 @@ export class UsersComponent {
 
     sidebarCreateMode = false; // true for create mode, false for update mode
     sidebarVisible = false;
+    errorMessageVisible = false;
 
     constructor(
         private administrationService: AdministrationService,
@@ -58,7 +59,10 @@ export class UsersComponent {
     ngOnInit() {
         this.getUsers();
         this.searchForm = this.formBuilder.group({
-            searchName: ["", Validators.pattern(/^[ A-Za-z0-9_@.-]*$/)],
+            searchName: [
+                "",
+                [Validators.pattern(/^[ A-Za-z0-9_@.-]*$/), Validators.minLength(3)],
+            ],
         });
     }
 
@@ -120,6 +124,7 @@ export class UsersComponent {
     }
 
     searchList() {
+        this.errorMessageVisible = true;
         let searchData = this.searchForm.value.searchName.trim();
         if (searchData.length === 0) {
             this.getUsersDetails();

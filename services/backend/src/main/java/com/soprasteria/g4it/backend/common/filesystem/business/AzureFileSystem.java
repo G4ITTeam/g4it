@@ -14,8 +14,6 @@ import com.azure.storage.blob.models.BlobContainerListDetails;
 import com.azure.storage.blob.models.ListBlobContainersOptions;
 import com.soprasteria.g4it.backend.common.filesystem.exception.FileStorageAccessExcepton;
 import com.soprasteria.g4it.backend.common.filesystem.external.VaultAccessClient;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

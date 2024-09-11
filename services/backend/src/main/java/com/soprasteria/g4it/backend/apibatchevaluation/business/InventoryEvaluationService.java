@@ -20,13 +20,21 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.utils.EvaluationBatchStatus;
 import com.soprasteria.g4it.backend.common.utils.ExportBatchStatus;
+import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobExecutionNotRunningException;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.NoSuchJobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
+
+import java.text.DecimalFormat;
+
+import static com.soprasteria.g4it.backend.common.utils.Constants.COMPLETE_PROGRESS_PERCENTAGE;
 
 /**
  * Inventory Evaluation service.
@@ -34,6 +42,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class InventoryEvaluationService {
+
 
     @Autowired
     InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
@@ -76,6 +85,12 @@ public class InventoryEvaluationService {
     @Autowired
     private OrganizationService organizationService;
 
+    @Autowired
+    private NumEcoEvalRemotingService numEcoEvalRemotingService;
+
+    @Autowired
+    private AggregationService aggregationService;
+
     /**
      * Launch loading batch job.
      *
@@ -88,7 +103,7 @@ public class InventoryEvaluationService {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final String organization = linkedOrganization.getName();
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        // Remove last indicators if present.
+        // Remove last indicators and aggregated indicators if present.
         inventoryService.getLastBatchName(inventory).ifPresent(batchName -> indicatorService.deleteIndicators(batchName));
 
         // Handle Previous Export Files
@@ -151,5 +166,57 @@ public class InventoryEvaluationService {
         InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
         evaluationReport.setBatchStatusCode(batchStatus.name());
         inventoryEvaluationReportRepository.save(evaluationReport);
+    }
+
+    /**
+     * Calculate the progress percentage of NumEcoEval calculation process
+     * If NumEcoEval calculation process is 100%, then modify the batch status to AGGREGATION_IN_PROGRESS
+     * And update the evaluation report
+     */
+    @Transactional
+    public void calculateProgressPercentage() {
+
+        inventoryEvaluationReportRepository.findByBatchStatusCode(EvaluationBatchStatus.CALCUL_IN_PROGRESS.name(), Limit.of(100))
+                .forEach(report -> {
+                    String calculProgressPercentage = numEcoEvalRemotingService.getCalculationsProgress(report.getBatchName(), String.valueOf(report.getInventory().getOrganization().getId()));
+                    if (calculProgressPercentage == null) return;
+
+                    int calculationValue = Integer.parseInt(calculProgressPercentage.split("%")[0]);
+                    report.setProgressPercentage(new DecimalFormat("#").format(calculationValue * 0.8) + "%");
+                    log.info("Updating calculation progress percentage to '{}' for batch : {} ", calculProgressPercentage, report.getBatchName());
+
+                    if (COMPLETE_PROGRESS_PERCENTAGE.equals(calculProgressPercentage)) {
+                        report.setBatchStatusCode(EvaluationBatchStatus.AGGREGATION_IN_PROGRESS.name());
+                        log.info("Updating batch status to 'AGGREGATION_IN_PROGRESS' of batch : '{}' ", report.getBatchName());
+                    }
+                    inventoryEvaluationReportRepository.save(report);
+                });
+
+    }
+
+    /**
+     * Aggregate indicators
+     * For each evaluation report in status AGGREGATION_IN_PROGRESS
+     * - execute aggregation of indicators
+     * - update the status to COMPLETED
+     */
+    public void aggregateIndicatorsData() {
+
+        inventoryEvaluationReportRepository.findByBatchStatusCode(EvaluationBatchStatus.AGGREGATION_IN_PROGRESS.name(), Limit.of(10))
+                .forEach(report -> {
+                    var start = System.currentTimeMillis();
+                    aggregationService.aggregateBatchData(report.getBatchName(), report.getInventory().getId());
+
+                    report.setProgressPercentage(COMPLETE_PROGRESS_PERCENTAGE);
+                    report.setBatchStatusCode(BatchStatus.COMPLETED.name());
+                    report.setIsAggregated(true);
+
+                    log.info("Aggregation time: {}s, updating batch status to 'COMPLETED' of batch : '{}'",
+                            (System.currentTimeMillis() - start) / 1000,
+                            report.getBatchName()
+                    );
+                    inventoryEvaluationReportRepository.save(report);
+                });
+
     }
 }

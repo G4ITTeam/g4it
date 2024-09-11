@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiuser.modeldb;
 
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceShared;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -74,5 +75,9 @@ public class User extends AbstractBaseEntity implements Serializable {
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserSubscriber> userSubscribers;
+
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DigitalServiceShared> digitalServiceShared;
 
 }

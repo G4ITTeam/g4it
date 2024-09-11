@@ -5,10 +5,19 @@
     <form [formGroup]="datacenterForm" (ngSubmit)="submitFormData()">
         <div class="label-input-div-full label-input-div-full-server">
             <label>{{ "digital-services-servers.name" | translate }}</label>
-            <input pInputText type="text" formControlName="name" [required]="true" (keyup)="onInputCheck()"/>
+            <input
+                pInputText
+                type="text"
+                formControlName="name"
+                [required]="true"
+                (keyup)="onInputCheck()"
+            />
             <p
                 class="error-text"
-                *ngIf="datacenterForm.get('name')?.hasError('required') && datacenterForm.get('name')?.touched"
+                *ngIf="
+                    datacenterForm.get('name')?.hasError('required') &&
+                    datacenterForm.get('name')?.touched
+                "
             >
                 {{ "digital-services-servers.datacenter" | translate }}
                 {{ "digital-services-servers.name" | translate }}
@@ -30,6 +39,7 @@
                     (onInput)="verifyPue()"
                     name="pue"
                     ngDefaultControl
+                    locale="fr-FR"
                 />
                 <p
                     class="error-text"
@@ -45,8 +55,14 @@
                     {{ "digital-services-servers.pue" | translate }}
                     {{ "digital-services-servers.pue.rule" | translate }}
                 </p>
-                   <label> {{ "digital-services-servers.pue.label" | translate }} <a href='{{ "digital-services-servers.link" | translate }}' target='_blank'>{{ "digital-services-servers.pue.label.link" | translate }}</a>.
-                   </label>
+                <label>
+                    {{ "digital-services-servers.pue.label" | translate }}
+                    <a
+                        href="{{ 'digital-services-servers.link' | translate }}"
+                        target="_blank"
+                        >{{ "digital-services-servers.pue.label.link" | translate }}</a
+                    >.
+                </label>
             </div>
             <div class="label-input-div-medium">
                 <label>
@@ -77,7 +93,8 @@
             <p-button styleClass="white-button" (click)="close()">{{
                 "common.cancel" | translate
             }}</p-button>
-            <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            <p-button
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 styleClass="yellow-button"
                 [disabled]="datacenterForm.invalid || isToLow || disableButton"
                 type="submit"

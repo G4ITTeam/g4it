@@ -8,8 +8,6 @@
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Profile;

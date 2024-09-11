@@ -12,10 +12,14 @@ import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMappe
 import com.soprasteria.g4it.backend.apidigitalservice.model.*;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DatacenterDigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceLink;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceShared;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DatacenterDigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -30,9 +34,8 @@ import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.exception.UnableToGenerateFileException;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -50,30 +53,29 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
  * Digital-Service service.
  */
 @Service
+@Slf4j
 public class DigitalServiceService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DigitalServiceService.class);
-
     private static final String DEFAULT_NAME_PREFIX = "Digital Service";
-
+    @Autowired
+    DigitalServiceSharedRepository digitalServiceSharedRepository;
     @Autowired
     private DigitalServiceRepository digitalServiceRepository;
-
     @Autowired
     private DatacenterDigitalServiceRepository datacenterDigitalServiceRepository;
-
     @Autowired
     private DigitalServiceReferentialService digitalServiceReferentialService;
-
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Autowired
     private DigitalServiceMapper digitalServiceMapper;
 
@@ -86,9 +88,6 @@ public class DigitalServiceService {
     @Autowired
     private IndicatorService indicatorService;
 
-    /**
-     * The organization service.
-     */
     @Autowired
     private OrganizationService organizationService;
 
@@ -97,7 +96,6 @@ public class DigitalServiceService {
 
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
-
 
     /**
      * Create a new digital service.
@@ -144,20 +142,6 @@ public class DigitalServiceService {
         return digitalServiceMapper.toBusinessObject(digitalServiceSaved);
     }
 
-
-    /**
-     * Get the digital service list linked to a user.
-     *
-     * @param organizationId the organization's id.
-     * @return the digital service list.
-     */
-    public List<DigitalServiceBO> getAllDigitalServicesByOrganization(final Long organizationId) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganization(linkedOrganization);
-        return digitalServiceMapper.toBusinessObject(digitalServices);
-    }
-
-
     /**
      * Get the digital service list linked to a user.
      *
@@ -167,10 +151,21 @@ public class DigitalServiceService {
      */
     public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
-        return digitalServiceMapper.toBusinessObject(digitalServices);
-    }
 
+        // Retrieve digital services creates by the user
+        List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
+
+        // Retrieve shared digital services for the user
+        List<DigitalService> sharedDigitalServices = digitalServiceSharedRepository.findByOrganizationAndUserId(linkedOrganization, userId)
+                .stream()
+                .map(DigitalServiceShared::getDigitalService)
+                .toList();
+
+        final List<DigitalService> combinedDigitalServices = Stream.concat(digitalServices.stream(), sharedDigitalServices.stream())
+                .toList();
+
+        return digitalServiceMapper.toBusinessObject(combinedDigitalServices);
+    }
 
     /**
      * Delete a digital service.
@@ -273,7 +268,7 @@ public class DigitalServiceService {
 
             final boolean isDelete = FileSystemUtils.deleteRecursively(dir);
             if (!isDelete) {
-                LOGGER.error("Unable to delete temp csv folder {}", dir.getAbsolutePath());
+                log.error("Unable to delete temp csv folder {}", dir.getAbsolutePath());
                 throw new UnableToGenerateFileException();
             }
 
@@ -285,7 +280,7 @@ public class DigitalServiceService {
             digitalServiceToUpdate.setLastCalculationDate(LocalDateTime.now());
             digitalServiceRepository.save(digitalServiceToUpdate);
         } else {
-            LOGGER.error("Unable to write in folder {}.", dir.getAbsolutePath());
+            log.error("Unable to write in folder {}.", dir.getAbsolutePath());
             throw new UnableToGenerateFileException();
         }
     }
@@ -302,7 +297,7 @@ public class DigitalServiceService {
             printWriter.print(fileContent);
             printWriter.close();
         } catch (final IOException e) {
-            LOGGER.error("Unable to create temp csv file {}", fileContent, e);
+            log.error("Unable to create temp csv file {}", fileContent, e);
             throw new UnableToGenerateFileException();
         }
         return new FileSystemResource(file);
@@ -439,7 +434,7 @@ public class DigitalServiceService {
             if (annualQuantityOfGo != null && annualQuantityOfGo != 0) {
                 return (yearlyQuantityOfGbExchanged) / ((double) annualQuantityOfGo);
             }
-            LOGGER.error("Annual quantity of Go in referential table is invalid (null or zero).");
+            log.error("Annual quantity of Go in referential table is invalid (null or zero).");
             throw new InvalidReferentialException("network.type.code.annualQuantityOfGo");
         }
     }
@@ -468,6 +463,64 @@ public class DigitalServiceService {
         } else {
             return 1d;
         }
+    }
+
+    /**
+     * Generate the link to share the digital service
+     *
+     * @param subscriber        the client subscriber name.
+     * @param organizationId    the linked organization's id.
+     * @param digitalServiceUid the digital service id.
+     * @return the url.
+     */
+    public String shareDigitalService(final String subscriber, final Long organizationId, final String digitalServiceUid) {
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
+                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, subscriber, organizationId))
+        );
+
+        DigitalServiceLink linkToCreate = DigitalServiceLink.builder()
+                .digitalService(digitalService)
+                .expirationDate(LocalDateTime.now().plusDays(1))
+                .build();
+        String uid = digitalServiceLinkRepository.save(linkToCreate).getUid();
+        return String.format("/subscribers/%s/organizations/%d/digital-services/%s/share/%s",
+                subscriber, organizationId, digitalServiceUid, uid);
+    }
+
+    /**
+     * Associate the digital service to the user accessing the shared link
+     *
+     * @param subscriber        the client subscriber name.
+     * @param organizationId    the linked organization's id.
+     * @param digitalServiceUid the digital service id.
+     * @param sharedUid         the unique id of url shared
+     * @param userId            userId of the user accessing the link
+     */
+    public void linkDigitalServiceToUser(final String subscriber, final Long organizationId, final String digitalServiceUid, final String sharedUid, final long userId) {
+        //check if digital service exists
+        DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
+                new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, subscriber, organizationId))
+        );
+
+        //validate if the shared url is not expired
+        Optional<DigitalServiceLink> sharedLink = digitalServiceLinkRepository.findById(sharedUid);
+        if (sharedLink.isEmpty()) {
+            throw new G4itRestException("410", String.format("The shared url for Digital service %s/%s/%d has expired.", digitalServiceUid, subscriber, organizationId));
+        }
+
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // if the current user owns or has already accessed the digital service then return
+        if (digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, user.getId()) ||
+                digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, user.getId())) {
+            return;
+        }
+
+        DigitalServiceShared newDigitalServiceShared = DigitalServiceShared.builder().digitalService(digitalService)
+                .user(user).organization(organizationService.getOrganizationById(organizationId))
+                .build();
+        digitalServiceSharedRepository.save(newDigitalServiceShared);
+
     }
 
 }

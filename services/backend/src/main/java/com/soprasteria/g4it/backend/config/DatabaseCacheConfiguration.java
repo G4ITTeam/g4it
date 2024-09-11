@@ -9,10 +9,8 @@ package com.soprasteria.g4it.backend.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -20,8 +18,6 @@ import org.springframework.scheduling.annotation.Scheduled;
  */
 @Slf4j
 @Configuration
-@EnableCaching
-@EnableScheduling
 @Profile("!test")
 public class DatabaseCacheConfiguration {
 
@@ -30,7 +26,6 @@ public class DatabaseCacheConfiguration {
      */
     @CacheEvict(value = {
             "Organization",
-            "getFiltersByBatchName",
             "getBusinessHours",
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.database.ttl}")

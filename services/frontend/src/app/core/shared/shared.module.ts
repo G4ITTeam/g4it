@@ -21,15 +21,15 @@ import { SidebarModule } from "primeng/sidebar";
 import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
 import { TooltipModule } from "primeng/tooltip";
-import { InformationCardLongComponent } from "src/app/layout/common/information-card-long/information-card-long.component";
 import { InformationCardComponent } from "src/app/layout/common/information-card/information-card.component";
 import { CompaniesMenuComponent } from "src/app/layout/header/companies-menu/companies-menu.component";
 import { DatavizFilterComponent } from "src/app/layout/inventories-footprint/dataviz-filter/dataviz-filter.component";
 import { InventoriesHeaderFootprintComponent } from "src/app/layout/inventories-footprint/header/inventories-header-footprint.component";
-import { BatchStatusRendererPipe } from "../pipes/batch-status-renderer.pipe";
 import { DecimalsPipe } from "../pipes/decimal.pipe";
 import { MonthYearPipe } from "../pipes/monthyear.pipe";
 
+import { ClipboardModule } from "ngx-clipboard";
+import { AccordionModule } from "primeng/accordion";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { DropdownModule } from "primeng/dropdown";
 import { EditorModule } from "primeng/editor";
@@ -37,20 +37,20 @@ import { InputTextModule } from "primeng/inputtext";
 import { TableModule } from "primeng/table";
 import { TabMenuModule } from "primeng/tabmenu";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
+import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
 import { HeaderComponent } from "src/app/layout/header/header.component";
 import { BusinessHoursRendererPipe } from "../pipes/business-hours-renderer.pipe";
 import { IntegerPipe } from "../pipes/integer.pipe";
 
 @NgModule({
     declarations: [
+        SpinnerComponent,
         MonthYearPipe,
         DecimalsPipe,
         IntegerPipe,
-        BatchStatusRendererPipe,
         InformationCardComponent,
         InventoriesHeaderFootprintComponent,
         DatavizFilterComponent,
-        InformationCardLongComponent,
         CompaniesMenuComponent,
         CommonEditorComponent,
         HeaderComponent,
@@ -77,14 +77,15 @@ import { IntegerPipe } from "../pipes/integer.pipe";
         DropdownModule,
         ConfirmDialogModule,
         TabMenuModule,
+        AccordionModule,
         InputTextModule,
+        ClipboardModule,
     ],
     exports: [
         TooltipModule,
         MonthYearPipe,
         DecimalsPipe,
         IntegerPipe,
-        BatchStatusRendererPipe,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -103,15 +104,17 @@ import { IntegerPipe } from "../pipes/integer.pipe";
         OverlayModule,
         SidebarModule,
         RadioButtonModule,
-        InformationCardLongComponent,
         CommonEditorComponent,
         DropdownModule,
         ConfirmDialogModule,
         TableModule,
         HeaderComponent,
         TabMenuModule,
+        AccordionModule,
         BusinessHoursRendererPipe,
         InputTextModule,
+        SpinnerComponent,
+        ClipboardModule,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })

@@ -55,6 +55,7 @@ public abstract class DigitalServiceMapper {
     @Mapping(target = "terminals", ignore = true)
     @Mapping(target = "networks", ignore = true)
     @Mapping(target = "servers", ignore = true)
+    @Mapping(target = "userId", source = "user.id")
     public abstract DigitalServiceBO toBusinessObject(final DigitalService entity);
 
     /**
@@ -63,6 +64,7 @@ public abstract class DigitalServiceMapper {
      * @param source the source list.
      * @return the business object list.
      */
+    @Mapping(target = "userId", source = "user.id")
     public abstract List<DigitalServiceBO> toBusinessObject(final List<DigitalService> source);
 
     /**
@@ -72,6 +74,7 @@ public abstract class DigitalServiceMapper {
      * @return the DigitalServiceBO.
      */
     @Named("fullMapping")
+    @Mapping(target = "userId", source = "user.id")
     public abstract DigitalServiceBO toFullBusinessObject(final DigitalService entity);
 
     /**

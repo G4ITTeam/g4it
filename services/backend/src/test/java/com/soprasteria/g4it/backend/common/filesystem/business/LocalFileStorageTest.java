@@ -7,8 +7,9 @@
  */
 package com.soprasteria.g4it.backend.common.filesystem.business;
 
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
-import com.soprasteria.g4it.backend.common.filesystem.model.*;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

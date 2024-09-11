@@ -1937,8 +1937,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(0, 0, 0, 0.6);
 }
 .p-button:focus {
-    outline: 0 none;
-    outline-offset: 0;
     box-shadow: none;
 }
 .p-button .p-button-label {
@@ -6050,9 +6048,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link .p-menuitem-icon {
     margin-right: 0.5rem;
 }
-.p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link:not(.p-disabled):focus {
-    outline: 2px solid black;
-}
+
 .p-tabmenu
     .p-tabmenu-nav
     .p-tabmenuitem:not(.p-highlight):not(.p-disabled):hover

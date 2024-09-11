@@ -1,0 +1,47 @@
+<div class="footprint-dashboard-container">
+    <div class="chart-container">
+        <div>
+            <span class="text-xl">
+                {{ "inventories-footprint.global.global-vision" | translate }} <br />
+                ({{ "common.peopleeq" | translate }})
+            </span>
+            <p-card class="rmv-padding-card">
+                <div class="round-button-container">
+                    <button
+                        *ngFor="let dimension of dimensions"
+                        [class.round-button-selected]="dimension === selectedDimension()"
+                        [class.round-button]="dimension !== selectedDimension()"
+                        (click)="selectedDimension.set(dimension)"
+                    >
+                        {{
+                            "inventories-footprint.round-button." + dimension | translate
+                        }}
+                    </button>
+                </div>
+            </p-card>
+        </div>
+        @if (options().series) {
+            <div echarts class="m-0" [options]="options()" style="height: 480px"></div>
+        } @else {
+            <div class="no-data-round">
+                <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+            </div>
+        }
+    </div>
+    <div>
+        <app-information-card
+            [title]="'inventories-footprint.global.info-fis-title' | translate"
+            [content]="'inventories-footprint.global.info-fis-text' | translate"
+        ></app-information-card>
+        <app-stats
+            [stats]="datacenterStats()"
+            icon="datacenter"
+            [title]="'inventories-footprint.global.datacenter' | translate"
+        ></app-stats>
+        <app-stats
+            [stats]="equipmentStats()"
+            icon="computer-desktop"
+            [title]="'inventories-footprint.global.equipment' | translate"
+        ></app-stats>
+    </div>
+</div>

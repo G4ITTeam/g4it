@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
@@ -17,22 +17,19 @@ import { TabMenuModule } from "primeng/tabmenu";
 import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { ImpactAggregateInfosComponent } from "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component";
+import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
-import { DatacenterStatsComponent } from "./datacenter-stats/datacenter-stats.component";
-import { InventoriesGlobalFootprintComponent } from "./global/inventories-global-footprint.component";
-import { ImpactAggregateInfosComponent } from "./impact-aggregate-infos/impact-aggregate-infos.component";
 import { InventoriesFootprintComponent } from "./inventories-footprint.component";
 import { inventoriesFootprintRouter } from "./inventories-footprint.router";
-import { PhysicalequipmentStatsComponent } from "./physicalequipment-stats/physicalequipment-stats.component";
-
+import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inventories-multicriteria-footprint.component";
 
 @NgModule({
     declarations: [
         InventoriesFootprintComponent,
-        InventoriesGlobalFootprintComponent,
+        InventoriesMultiCriteriaFootprintComponent,
         InventoriesCritereFootprintComponent,
-        DatacenterStatsComponent,
-        PhysicalequipmentStatsComponent,
+        StatsComponent,
         ImpactAggregateInfosComponent,
     ],
     imports: [
@@ -58,9 +55,6 @@ import { PhysicalequipmentStatsComponent } from "./physicalequipment-stats/physi
         inventoriesFootprintRouter,
     ],
     exports: [InventoriesFootprintComponent],
-    schemas: [
-        CUSTOM_ELEMENTS_SCHEMA,
-        NO_ERRORS_SCHEMA
-      ]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class InventoriesFootprintModule {}

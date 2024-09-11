@@ -32,4 +32,6 @@ public class EquipmentImpactBO {
 
     private Double sip;
 
+    private Double quantity;
+
 }

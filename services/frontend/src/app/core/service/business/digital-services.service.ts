@@ -4,21 +4,29 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
-import { Injectable } from "@angular/core";
-import { ReplaySubject, lastValueFrom } from "rxjs";
+ */
+import { Injectable, inject } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, ReplaySubject, lastValueFrom, map } from "rxjs";
+import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import {
     DigitalService,
+    DigitalServiceFootprint,
+    DigitalServiceNetworksImpact,
     DigitalServiceServerConfig,
+    DigitalServiceServersImpact,
+    DigitalServiceTerminalResponse,
     DigitalServiceTerminalsImpact,
+    ServerImpact,
+    ServersType,
 } from "../../interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "./../data/digital-services-data.service";
-import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 
 @Injectable({
     providedIn: "root",
 })
 export class DigitalServiceBusinessService {
+    private translate = inject(TranslateService);
     private serverSubject = new ReplaySubject<DigitalServiceServerConfig>(1);
     serverFormSubject$ = this.serverSubject.asObservable();
 
@@ -48,13 +56,13 @@ export class DigitalServiceBusinessService {
 
     async submitServerForm(
         server: DigitalServiceServerConfig,
-        digitalService: DigitalService
+        digitalService: DigitalService,
     ) {
         this.serverSubject.next(server);
 
         // Find the index of the server with the matching uid
         let existingServerIndex = digitalService.servers?.findIndex(
-            (t) => t.uid === server.uid
+            (t) => t.uid === server.uid,
         );
         // If the server with the uid exists, update it; otherwise, add the new server
         if (
@@ -71,9 +79,11 @@ export class DigitalServiceBusinessService {
         await lastValueFrom(this.digitalServiceData.update(digitalService));
     }
 
-    transformTerminalData(terminalFootprint: any): DigitalServiceTerminalsImpact[] {
+    transformTerminalData(
+        terminalFootprint: DigitalServiceTerminalResponse[],
+    ): DigitalServiceTerminalsImpact[] {
         const transformedData: any[] = [];
-        terminalFootprint.forEach((item: any) => {
+        terminalFootprint.forEach((item) => {
             const order = LifeCycleUtils.getLifeCycleList();
 
             const criteria = item.criteria.split(" ").slice(0, 2).join(" ");
@@ -83,7 +93,7 @@ export class DigitalServiceBusinessService {
             item.impacts.forEach((impact: any) => {
                 // Find existing impactCountry or create a new one
                 const existingCountry = impactCountry.find(
-                    (country) => country.name === impact.country
+                    (country) => country.name === impact.country,
                 );
 
                 if (existingCountry) {
@@ -91,18 +101,24 @@ export class DigitalServiceBusinessService {
                     existingCountry.totalNbUsers += impact.numberUsers;
                     existingCountry.avgUsageTime +=
                         impact.numberUsers * impact.yearlyUsageTimePerUser;
+                    existingCountry.rawValue += impact.rawValue;
+                    existingCountry.unit = impact.unit;
 
                     // Find existing ACVStep or create a new one
                     const existingACVStep = existingCountry.impact.find(
-                        (step: any) => step.ACVStep === impact.acvStep
+                        (step: any) => step.ACVStep === impact.acvStep,
                     );
 
                     if (existingACVStep) {
                         existingACVStep.sipValue += impact.sipValue;
+                        existingACVStep.rawValue += impact.rawValue;
+                        existingACVStep.unit = impact.unit;
                     } else {
                         existingCountry.impact.push({
                             ACVStep: impact.acvStep,
                             sipValue: impact.sipValue,
+                            rawValue: impact.rawValue,
+                            unit: impact.unit,
                         });
                     }
                     existingCountry.impact.sort((a: any, b: any) => {
@@ -114,10 +130,14 @@ export class DigitalServiceBusinessService {
                         totalSipValue: impact.sipValue,
                         totalNbUsers: impact.numberUsers,
                         avgUsageTime: impact.numberUsers * impact.yearlyUsageTimePerUser,
+                        rawValue: impact.rawValue,
+                        unit: impact.unit,
                         impact: [
                             {
                                 ACVStep: impact.acvStep,
                                 sipValue: impact.sipValue,
+                                rawValue: impact.rawValue,
+                                unit: impact.unit,
                             },
                         ],
                     };
@@ -126,7 +146,7 @@ export class DigitalServiceBusinessService {
 
                 // Find existing impactType or create a new one
                 const existingType = impactType.find(
-                    (type) => type.name === impact.description
+                    (type) => type.name === impact.description,
                 );
 
                 if (existingType) {
@@ -134,18 +154,23 @@ export class DigitalServiceBusinessService {
                     existingType.totalNbUsers += impact.numberUsers;
                     existingType.avgUsageTime +=
                         impact.numberUsers * impact.yearlyUsageTimePerUser;
-
+                    existingType.rawValue += impact.rawValue;
+                    existingType.unit = impact.unit;
                     // Find existing ACVStep or create a new one
                     const existingACVStep = existingType.impact.find(
-                        (step: any) => step.ACVStep === impact.acvStep
+                        (step: any) => step.ACVStep === impact.acvStep,
                     );
 
                     if (existingACVStep) {
                         existingACVStep.sipValue += impact.sipValue;
+                        existingACVStep.rawValue += impact.rawValue;
+                        existingACVStep.unit = impact.unit;
                     } else {
                         existingType.impact.push({
                             ACVStep: impact.acvStep,
                             sipValue: impact.sipValue,
+                            rawValue: impact.rawValue,
+                            unit: impact.unit,
                         });
                     }
 
@@ -158,10 +183,14 @@ export class DigitalServiceBusinessService {
                         totalSipValue: impact.sipValue,
                         totalNbUsers: impact.numberUsers,
                         avgUsageTime: impact.numberUsers * impact.yearlyUsageTimePerUser,
+                        rawValue: impact.rawValue,
+                        unit: impact.unit,
                         impact: [
                             {
                                 ACVStep: impact.acvStep,
                                 sipValue: impact.sipValue,
+                                rawValue: impact.rawValue,
+                                unit: impact.unit,
                             },
                         ],
                     };
@@ -191,5 +220,100 @@ export class DigitalServiceBusinessService {
             });
         });
         return transformedData;
+    }
+
+    getFootprint(uid: DigitalService["uid"]): Observable<DigitalServiceFootprint[]> {
+        return this.digitalServiceData
+            .getFootprint(uid)
+            .pipe(map((footprint) => this.transformFootprintCriteriaUnit(footprint)));
+    }
+
+    getTerminalsIndicators(
+        uid: DigitalService["uid"],
+    ): Observable<DigitalServiceTerminalResponse[]> {
+        return this.digitalServiceData
+            .getTerminalsIndicators(uid)
+            .pipe(
+                map((networkFootprint) =>
+                    this.transformTerminalNetworkCriteriaUnit(networkFootprint),
+                ),
+            );
+    }
+
+    getNetworksIndicators(
+        uid: DigitalService["uid"],
+    ): Observable<DigitalServiceNetworksImpact[]> {
+        return this.digitalServiceData
+            .getNetworksIndicators(uid)
+            .pipe(
+                map((terminalFootprint) =>
+                    this.transformTerminalNetworkCriteriaUnit(terminalFootprint),
+                ),
+            );
+    }
+
+    getServersIndicators(
+        uid: DigitalService["uid"],
+    ): Observable<DigitalServiceServersImpact[]> {
+        return this.digitalServiceData
+            .getServersIndicators(uid)
+            .pipe(
+                map((serverFootprint) =>
+                    this.transformServerCriteriaUnit(serverFootprint),
+                ),
+            );
+    }
+
+    transformFootprintCriteriaUnit(
+        footprint: DigitalServiceFootprint[],
+    ): DigitalServiceFootprint[] {
+        return footprint.map((f) => ({
+            ...f,
+            impacts: f.impacts.map((fi) => ({
+                ...fi,
+                unit: this.translate.instant(`criteria.${fi.criteria}.unite`),
+            })),
+        }));
+    }
+
+    transformTerminalNetworkCriteriaUnit<
+        T extends DigitalServiceTerminalResponse | DigitalServiceNetworksImpact,
+    >(footprint: T[]): T[] {
+        return footprint.map((f) => ({
+            ...f,
+            impacts: f.impacts.map((fi) => ({
+                ...fi,
+                unit: this.translate.instant(`criteria.${f.criteria}.unite`),
+            })),
+        }));
+    }
+
+    transformServerCriteriaUnit(
+        serverFootprint: DigitalServiceServersImpact[],
+    ): DigitalServiceServersImpact[] {
+        return serverFootprint.map((footprint) => ({
+            ...footprint,
+            impactsServer: footprint.impactsServer.map((impacts) => ({
+                ...impacts,
+                servers: this.transformServers(impacts, footprint),
+            })),
+        }));
+    }
+
+    transformServers(
+        impacts: ServersType,
+        footprint: DigitalServiceServersImpact,
+    ): ServerImpact[] {
+        return impacts.servers.map((server) => ({
+            ...server,
+            impactVmDisk: server.impactVmDisk.map((impact) => ({
+                ...impact,
+                unit: this.translate.instant(`criteria.${footprint.criteria}.unite`),
+            })),
+            impactStep: server.impactStep.map((impact) => ({
+                ...impact,
+                unit: this.translate.instant(`criteria.${footprint.criteria}.unite`),
+            })),
+        }));
     }
 }

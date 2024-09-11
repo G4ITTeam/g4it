@@ -2,7 +2,27 @@
 
 ## main branch
 
-### Patch Changes
+### Major Changes
+
+## 2.7.0
+
+### Minor Changes
+
+- 602 | Compute server reset to default one when editting
+- 586 | Display a message when no user is found
+- 583 | Organization is not deleted after one week
+- 485 | Export data from a digital service
+- 566 | Aggregate indicators data
+- 558 | Frontend filters management refactoring
+- 580 | The note is not visible in the equipment/application view
+- 509 | Share a digital service with another person
+- 549 | Add raw value to the radar graph of digital services impact visualization
+- 519 | display informations about the connected user
+- 565 | Change GUI of Information system module
+- 507 | Create custom login and register page in keycloak
+- 563 | Change the file name on the front end
+
+## 2.6.0
 
 ### Major Changes
 

@@ -7,14 +7,15 @@
  */
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, tap } from "rxjs";
+import { Observable, ReplaySubject, map, tap } from "rxjs";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import {
     DigitalService,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
-    DigitalServiceTerminalsImpact,
+    DigitalServiceTerminalResponse,
     Host,
     NetworkType,
     ServerDC,
@@ -51,7 +52,12 @@ export class DigitalServicesDataService {
             .put<DigitalService>(`${endpoint}/${digitalService.uid}`, digitalService, {
                 headers: this.HEADERS,
             })
-            .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
+            .pipe(
+                tap((res: DigitalService) => {
+                    this.digitalServiceSubject.next(res);
+                    this.get(digitalService.uid);
+                }),
+            );
     }
 
     get(uid: DigitalService["uid"]): Observable<DigitalService> {
@@ -94,8 +100,8 @@ export class DigitalServicesDataService {
 
     getTerminalsIndicators(
         uid: DigitalService["uid"],
-    ): Observable<DigitalServiceTerminalsImpact[]> {
-        return this.http.get<DigitalServiceTerminalsImpact[]>(
+    ): Observable<DigitalServiceTerminalResponse[]> {
+        return this.http.get<DigitalServiceTerminalResponse[]>(
             `${endpoint}/${uid}/terminals/indicators`,
         );
     }
@@ -114,5 +120,26 @@ export class DigitalServicesDataService {
         return this.http.get<DigitalServiceServersImpact[]>(
             `${endpoint}/${uid}/servers/indicators`,
         );
+    }
+
+    copyUrl(uid: DigitalService["uid"]): Observable<string> {
+        return this.http
+            .post<string>(
+                `${endpoint}/${uid}/share`,
+                {},
+                { responseType: "text" as "json" },
+            )
+            .pipe(map((response) => environment.frontEndUrl + response));
+    }
+
+    sharedDS(uid: string, generatedId: string): Observable<string> {
+        return this.http.post<string>(`${endpoint}/${uid}/shared/${generatedId}`, {});
+    }
+
+    downloadFile(uid: DigitalService["uid"]): Observable<any> {
+        return this.http.get(`${endpoint}/${uid}/export`, {
+            responseType: "blob",
+            headers: { Accept: "application/zip" },
+        });
     }
 }

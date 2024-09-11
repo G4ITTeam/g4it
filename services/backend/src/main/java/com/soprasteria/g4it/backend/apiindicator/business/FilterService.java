@@ -10,8 +10,7 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationDomainsFiltersBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationFiltersBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentFiltersBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationFilters;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentFilters;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.Filters;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationFiltersRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.EquipmentFiltersRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
@@ -21,11 +20,8 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Filters service.
@@ -50,21 +46,41 @@ public class FilterService {
     private OrganizationService organizationService;
 
     /**
+     * Extract list of values from filters coming from database
+     *
+     * @param filters the list of filters
+     * @param field   the field to filter on
+     * @return the list of values
+     */
+    private List<String> extractListFromFilters(final List<Filters> filters, final String field) {
+        if (filters == null) return List.of();
+
+        return Arrays.stream(filters.stream()
+                        .filter(filter -> filter.getField().equals(field))
+                        .map(Filters::getValues)
+                        .findFirst()
+                        .orElse(new String[0]))
+                .map(value -> value == null ? "" : value)
+                .toList();
+    }
+
+    /**
      * Retrieve equipment filters.
      *
      * @param subscriber   the subscriber
      * @param organization the organization.
-     * @param inventoryId  the inventory id.
      * @param batchName    the batch name.
      * @return filters.
      */
-    public EquipmentFiltersBO getEquipmentFilters(final String subscriber, final Organization organization, final Long inventoryId, final String batchName) {
-        final List<EquipmentFilters> equipmentFiltersList = equipmentFiltersRepository.getFiltersByInventoryId(inventoryId, batchName);
+    public EquipmentFiltersBO getEquipmentFilters(final String subscriber, final Organization organization, final String batchName) {
+        final List<Filters> equipmentFiltersList = equipmentFiltersRepository.getFiltersByBatchName(batchName);
         return EquipmentFiltersBO.builder()
-                .status(equipmentFiltersList.stream().map(EquipmentFilters::getStatus).distinct().toList())
-                .countries(equipmentFiltersList.stream().map(EquipmentFilters::getCountry).distinct().toList())
-                .equipments(equipmentFiltersList.stream().map(equipmentFilters -> TypeUtils.getShortType(subscriber, organization.getName(), equipmentFilters.getType())).distinct().toList())
-                .entities(equipmentFiltersList.stream().map(EquipmentFilters::getEntity).distinct().toList())
+                .status(extractListFromFilters(equipmentFiltersList, "status"))
+                .countries(extractListFromFilters(equipmentFiltersList, "country"))
+                .equipments(extractListFromFilters(equipmentFiltersList, "type").stream()
+                        .map(value -> TypeUtils.getShortType(subscriber, organization.getName(), value))
+                        .toList())
+                .entities(extractListFromFilters(equipmentFiltersList, "entity"))
                 .build();
     }
 
@@ -74,7 +90,6 @@ public class FilterService {
      *
      * @param subscriber      the subscriber
      * @param organizationId  the organization id
-     * @param inventoryId     the inventory unique identifier.
      * @param batchName       the num-eco-eval batch name.
      * @param domain          the domain
      * @param subDomain       the sub domain
@@ -83,49 +98,57 @@ public class FilterService {
      */
     public ApplicationFiltersBO getApplicationFilters(final String subscriber,
                                                       final Long organizationId,
-                                                      final Long inventoryId, final String batchName,
+                                                      final String batchName,
                                                       final String domain, final String subDomain, final String applicationName) {
-        List<ApplicationFilters> applicationFilters;
+        List<Filters> applicationFilters;
         if (applicationName == null) {
-            applicationFilters = applicationFiltersRepository.getFiltersByBatchName(inventoryId, batchName);
+            applicationFilters = applicationFiltersRepository.getFiltersByBatchName(batchName);
         } else {
-            applicationFilters = applicationFiltersRepository.getFiltersByBatchNameAndApplicationName(inventoryId, batchName, applicationName);
+            applicationFilters = applicationFiltersRepository.getFiltersByBatchNameAndApplicationName(batchName, applicationName);
         }
 
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final Organization organization = organizationService.getOrganizationById(organizationId);
 
-        List<ApplicationFilters> filteredApplicationFilters = applicationFilters.stream()
-                .peek(applicationFilters1 -> applicationFilters1.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), applicationFilters1.getType())))
-                .toList();
+        ApplicationFiltersBO result = ApplicationFiltersBO.builder()
+                .environments(extractListFromFilters(applicationFilters, "environment"))
+                .lifeCycles(extractListFromFilters(applicationFilters, "life_cycle"))
+                .types(extractListFromFilters(applicationFilters, "type").stream()
+                        .map(value -> TypeUtils.getShortType(subscriber, organization.getName(), value))
+                        .toList())
+                .domains(buildDomains(extractListFromFilters(applicationFilters, "domain")))
+                .build();
 
         if (domain != null) {
             final String localDomain = domain.equals(Constants.UNSPECIFIED) ? "" : domain;
-            filteredApplicationFilters = filteredApplicationFilters.stream().filter(filter -> localDomain.equals(filter.getDomain())).toList();
-        }
-        if (subDomain != null) {
-            final String localSubDomain = subDomain.equals(Constants.UNSPECIFIED) ? "" : subDomain;
-            filteredApplicationFilters = filteredApplicationFilters.stream().filter(filter -> localSubDomain.equals(filter.getSubDomain())).toList();
+            result.setDomains(result.getDomains().stream().filter(val -> localDomain.equals(val.getName())).toList());
         }
 
-        return ApplicationFiltersBO.builder()
-                .environments(filteredApplicationFilters.stream().map(ApplicationFilters::getEnvironment).distinct().toList())
-                .lifeCycles(filteredApplicationFilters.stream().map(ApplicationFilters::getLifeCycle).distinct().toList())
-                .domains(buildDomains(filteredApplicationFilters.stream().collect(Collectors.groupingBy(ApplicationFilters::getDomain))))
-                .types(filteredApplicationFilters.stream().map(ApplicationFilters::getType).distinct().toList())
-                .build();
+        if (subDomain != null) {
+            final String localSubDomain = subDomain.equals(Constants.UNSPECIFIED) ? "" : subDomain;
+            result.setDomains(result.getDomains().stream()
+                    .peek(val -> val.setSubDomains(val.getSubDomains().stream().filter(localSubDomain::equals).toList()))
+                    .toList());
+        }
+
+        return result;
     }
 
     /**
      * Build the domain list.
      *
-     * @param filtersByDomain the map containing the domain in key, and the attached filters list.
+     * @param domainsAndSubDomains the list of domain and subdomains : "domain||sub domain1##sub domain2"
      * @return the domains filters list.
      */
-    private List<ApplicationDomainsFiltersBO> buildDomains(final Map<String, List<ApplicationFilters>> filtersByDomain) {
-        return filtersByDomain.entrySet().stream().map(entry -> ApplicationDomainsFiltersBO.builder()
-                .name(entry.getKey())
-                .subDomains(entry.getValue().stream().map(ApplicationFilters::getSubDomain).distinct().toList())
-                .build()).collect(toList());
-    }
+    private List<ApplicationDomainsFiltersBO> buildDomains(List<String> domainsAndSubDomains) {
+        return domainsAndSubDomains.stream().map(domainAndSubDomains -> {
+                    String[] domainSplit = domainAndSubDomains.split("\\|\\|");
+                    ApplicationDomainsFiltersBO applicationDomainsFiltersBO = ApplicationDomainsFiltersBO.builder()
+                            .name(domainSplit[0])
+                            .subDomains(Arrays.stream(domainSplit[1].split("##")).toList())
+                            .build();
+                    return applicationDomainsFiltersBO;
+                })
+                .toList();
 
+    }
 }

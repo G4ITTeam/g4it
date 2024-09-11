@@ -243,6 +243,8 @@ public class DigitalServiceIndicatorViewService {
                 .acvStep(indicator.getKey())
                 // Sum value by acv step.
                 .sipValue(indicator.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum())
+                .rawValue(indicator.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum())
+                .unit(indicator.getValue().get(0).getUnit())
                 .build();
     }
 
@@ -260,7 +262,9 @@ public class DigitalServiceIndicatorViewService {
             return test.entrySet().stream().map(entry -> buildVirtualServerImpactBO(
                     entry.getValue().get(0).getVmName(),
                     entry.getValue().get(0).getQuantity(),
-                    entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum()
+                    entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum(),
+                    entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum(),
+                    entry.getValue().get(0).getUnit()
             )).toList();
 
         } else {
@@ -268,7 +272,9 @@ public class DigitalServiceIndicatorViewService {
             return test.entrySet().stream().map(entry -> buildVirtualServerImpactBO(
                             entry.getValue().get(0).getServerName(),
                             1,
-                            entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum()))
+                            entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum(),
+                            entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum(),
+                            entry.getValue().get(0).getUnit()))
                     .toList();
         }
     }
@@ -282,12 +288,14 @@ public class DigitalServiceIndicatorViewService {
      * @return the virtual server impact.
      */
     private VirtualServerImpactBO buildVirtualServerImpactBO(final String name, final Integer quantity,
-                                                             final Double sipValue) {
+                                                             final Double sipValue, final Double rawValue, final String unit) {
         return VirtualServerImpactBO
                 .builder()
                 .name(name)
                 .quantity(quantity)
                 .sipValue(sipValue)
+                .rawValue(rawValue)
+                .unit(unit)
                 .build();
     }
 

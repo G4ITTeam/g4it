@@ -748,3 +748,141 @@ databaseChangeLog:
                     foreignKeyName: note_id_inventory_fk
                     references: note(id)
                     deleteCascade: true
+
+  - changeSet:
+      id: create-agg_equipment_indicator
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: agg_equipment_indicator
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: agg_equipment_ind_id_pk
+              - column:
+                  name: batch_name
+                  type: varchar(255)
+              - column:
+                  name: criteria
+                  type: varchar(255)
+              - column:
+                  name: acv_step
+                  type: varchar(255)
+              - column:
+                  name: country
+                  type: varchar(255)
+              - column:
+                  name: entity
+                  type: varchar(255)
+              - column:
+                  name: equipment
+                  type: varchar(255)
+              - column:
+                  name: status
+                  type: varchar(255)
+              - column:
+                  name: impact
+                  type: float
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: sip
+                  type: float
+              - column:
+                  name: quantity
+                  type: float
+        - createIndex:
+            tableName: agg_equipment_indicator
+            indexName: idx_agg_equipment_indicator_batch_name
+            unique: false
+            columns:
+              - column:
+                  name: batch_name
+
+  - changeSet:
+      id: create-agg_application_indicator
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: agg_application_indicator
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: agg_application_ind_id_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+              - column:
+                  name: batch_name
+                  type: varchar(255)
+              - column:
+                  name: criteria
+                  type: varchar(255)
+              - column:
+                  name: life_cycle
+                  type: varchar(255)
+              - column:
+                  name: domain
+                  type: varchar(255)
+              - column:
+                  name: sub_domain
+                  type: varchar(255)
+              - column:
+                  name: environment
+                  type: varchar(255)
+              - column:
+                  name: equipment_type
+                  type: varchar(255)
+              - column:
+                  name: application_name
+                  type: varchar(255)
+              - column:
+                  name: impact
+                  type: float
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: sip
+                  type: float
+        - createIndex:
+            tableName: agg_application_indicator
+            indexName: idx_agg_application_indicator_batch_name
+            unique: false
+            columns:
+              - column:
+                  name: batch_name
+  - changeSet:
+      id: add-column-is_aggregated-g4it_evaluation_report
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_evaluation_report
+            columns:
+              - column:
+                  name: is_aggregated
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: add-index-on-idx_g4it_evaluation_report_batch_status_code
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: g4it_evaluation_report
+            indexName: idx_g4it_evaluation_report_batch_status_code
+            tableSpace: pg_default
+            schemaName: public
+            unique: false
+            columns:
+              - column:
+                  name: batch_status_code

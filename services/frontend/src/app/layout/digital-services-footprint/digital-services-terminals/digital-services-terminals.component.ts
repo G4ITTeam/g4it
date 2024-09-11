@@ -6,15 +6,14 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import {
     DigitalService,
     DigitalServiceTerminalConfig,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
-import { lastValueFrom } from "rxjs";
 import { MessageService } from "primeng/api";
+import { lastValueFrom } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 
@@ -43,7 +42,6 @@ export class DigitalServicesTerminalsComponent implements OnInit {
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
-        private spinner: NgxSpinnerService,
         public userService: UserService
     ) {}
 
@@ -66,7 +64,6 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     }
 
     async updateTerminals(terminal: DigitalServiceTerminalConfig) {
-        this.spinner.show();
         // Find the index of the terminal with the matching uid
         let existingTerminalIndex = this.digitalService.terminals?.findIndex(
             (t) => t.uid === terminal.uid
@@ -89,11 +86,9 @@ export class DigitalServicesTerminalsComponent implements OnInit {
         this.digitalService = await lastValueFrom(
             this.digitalServicesData.get(this.digitalService.uid)
         );
-        this.spinner.hide();
     }
 
     async deleteTerminals(terminal: DigitalServiceTerminalConfig) {
-        this.spinner.show();
         let existingTerminalIndex = this.digitalService.terminals?.findIndex(
             (t) => t.uid === terminal.uid
         );
@@ -111,6 +106,5 @@ export class DigitalServicesTerminalsComponent implements OnInit {
         this.digitalService = await lastValueFrom(
             this.digitalServicesData.get(this.digitalService.uid)
         );
-        this.spinner.hide();
     }
 }

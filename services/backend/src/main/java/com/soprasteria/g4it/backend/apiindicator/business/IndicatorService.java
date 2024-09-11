@@ -12,11 +12,11 @@ import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapp
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationVmIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationIndicatorView;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentIndicatorView;
-import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationIndicatorViewRepository;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.AggApplicationIndicator;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.AggEquipmentIndicator;
+import com.soprasteria.g4it.backend.apiindicator.repository.AggApplicationIndicatorRepository;
+import com.soprasteria.g4it.backend.apiindicator.repository.AggEquipmentIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationVmIndicatorViewRepository;
-import com.soprasteria.g4it.backend.apiindicator.repository.EquipmentIndicatorViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -42,12 +42,11 @@ import static com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils.tran
 @Slf4j
 public class IndicatorService {
 
+    @Autowired
+    private AggEquipmentIndicatorRepository aggEquipmentIndicatorRepository;
 
     @Autowired
-    private EquipmentIndicatorViewRepository equipmentIndicatorViewRepository;
-
-    @Autowired
-    private ApplicationIndicatorViewRepository applicationIndicatorViewRepository;
+    private AggApplicationIndicatorRepository aggApplicationIndicatorRepository;
 
     @Autowired
     private ApplicationVmIndicatorViewRepository applicationVmIndicatorViewRepository;
@@ -85,15 +84,16 @@ public class IndicatorService {
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String subscriber, final Long organizationId, final String batchName) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
-        final Map<String, List<EquipmentIndicatorView>> indicatorsMap = equipmentIndicatorViewRepository.findIndicators(batchName).stream()
-                .peek(equipmentIndicatorView -> equipmentIndicatorView.setEquipment(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), equipmentIndicatorView.getEquipment())))
-                .collect(Collectors.groupingBy(EquipmentIndicatorView::getCriteria));
+        final Map<String, List<AggEquipmentIndicator>> aggIndicatorsMap = aggEquipmentIndicatorRepository.findByBatchName(batchName).stream()
+                .peek(aggEquipmentIndicator -> aggEquipmentIndicator.setEquipment(
+                        TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggEquipmentIndicator.getEquipment())
+                ))
+                .collect(Collectors.groupingBy(AggEquipmentIndicator::getCriteria));
 
-        return indicatorsMap.entrySet().stream()
+        return aggIndicatorsMap.entrySet().stream()
                 .collect(Collectors.toMap(
                         map -> transformCriteriaNameToCriteriaKey(map.getKey()),
                         map -> equipmentIndicatorMapper.toDto(map.getValue())));
-
     }
 
     /**
@@ -107,13 +107,14 @@ public class IndicatorService {
     public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final String batchName, Long inventoryId) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
-        final List<ApplicationIndicatorView> applicationIndicatorViews = applicationIndicatorViewRepository.findIndicators(batchName, inventoryId).stream()
-                .peek(applicationIndicatorView ->
-                        applicationIndicatorView.setEquipmentType(
-                                TypeUtils.getShortType(subscriber, linkedOrganization.getName(), applicationIndicatorView.getEquipmentType())
+        final List<AggApplicationIndicator> aggApplicationIndicators = aggApplicationIndicatorRepository.findByBatchNameAndInventoryId(batchName, inventoryId).stream()
+                .peek(aggApplicationIndicator ->
+                        aggApplicationIndicator.setEquipmentType(
+                                TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggApplicationIndicator.getEquipmentType())
                         ))
                 .toList();
-        return applicationIndicatorMapper.toDto(applicationIndicatorViews);
+
+        return applicationIndicatorMapper.toDto(aggApplicationIndicators);
     }
 
     /**
@@ -135,7 +136,9 @@ public class IndicatorService {
 
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final var result = applicationVmIndicatorViewRepository.findIndicators(batchName, inventoryId, applicationName, transformCriteriaKeyToCriteriaName(criteria)).stream()
-                .peek(indicator -> indicator.setEquipmentType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getEquipmentType())))
+                .peek(indicator -> indicator.setEquipmentType(
+                        TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getEquipmentType())
+                ))
                 .toList();
         return applicationVmIndicatorMapper.toDto(result);
 
@@ -147,10 +150,12 @@ public class IndicatorService {
      * @param batchName the batch name.
      */
     public void deleteIndicators(final String batchName) {
-        log.info("Deleting NumEcoEval inputs and indicators for batchName={}", batchName);
+        log.info("Deleting NumEcoEval inputs, indicators and aggregated indicators for batchName={}", batchName);
         NumEcoEvalRepository.EN_TABLES.forEach(table -> numEcoEvalRepository.deleteByBatchName(table, batchName));
         // removing all indicators
         NumEcoEvalRepository.IND_TABLES.forEach(table -> numEcoEvalRepository.deleteByBatchName(table, batchName));
+        aggEquipmentIndicatorRepository.deleteByBatchName(batchName);
+        aggApplicationIndicatorRepository.deleteByBatchName(batchName);
     }
 
     /**

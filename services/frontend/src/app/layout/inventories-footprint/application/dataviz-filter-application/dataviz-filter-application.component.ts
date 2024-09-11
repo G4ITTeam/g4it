@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subject, takeUntil } from "rxjs";
@@ -14,7 +14,6 @@ import {
     FilterRepository,
 } from "src/app/core/store/filter.repository";
 import { Constants } from "src/constants";
-
 
 @Component({
     selector: "dataviz-filter-application",
@@ -53,7 +52,7 @@ export class DatavizFilterApplicationComponent implements OnInit {
 
     constructor(
         private filterRepo: FilterRepository,
-        private translate: TranslateService
+        private translate: TranslateService,
     ) {}
 
     ngOnInit(): void {
@@ -72,9 +71,9 @@ export class DatavizFilterApplicationComponent implements OnInit {
 
     FormatLifecycleFilter() {
         this.selectedlifecycle.forEach((lifecycle, index) => {
-            if (lifecycle !== "All" && lifecycle !== Constants.UNSPECIFIED) {
+            if (lifecycle !== Constants.ALL && lifecycle !== Constants.UNSPECIFIED) {
                 this.selectedlifecycle[index] = this.translate.instant(
-                    "acvStep." + lifecycle
+                    "acvStep." + lifecycle,
                 );
             }
         });
@@ -108,7 +107,7 @@ export class DatavizFilterApplicationComponent implements OnInit {
             this.selectedObjectDomain.push(this.domain2add);
         });
         this.selectedValuesFilterDomain = this.selectedObjectDomain.concat(
-            this.selectedObjectSubDomain
+            this.selectedObjectSubDomain,
         );
         this.fillSelectedDomainAndSubDomain();
         this.saveFilters();
@@ -120,21 +119,21 @@ export class DatavizFilterApplicationComponent implements OnInit {
                 this.selectedEnvironnement = this.updateSelectedValues(
                     this.selectedEnvironnement,
                     this.filters.environments,
-                    value
+                    value,
                 );
                 break;
             case "equipment":
                 this.selectedEquipment = this.updateSelectedValues(
                     this.selectedEquipment,
                     this.filters.types,
-                    value
+                    value,
                 );
                 break;
             case "lifecycle":
                 this.selectedlifecycle = this.updateSelectedValues(
                     this.selectedlifecycle,
                     this.filters.lifeCycles,
-                    value
+                    value,
                 );
                 break;
             default:
@@ -146,29 +145,29 @@ export class DatavizFilterApplicationComponent implements OnInit {
     updateSelectedValues(
         selectedValues: string[],
         allPossibleValues: string[],
-        selection: string
+        selection: string,
     ): string[] {
         // The trick is : selectedValues is already updated
-        // We only have to handle the "All" value manually...
-        // Case 1: user toggles the "All" value
-        if (selection === "All") {
+        // We only have to handle the Constants.ALL value manually...
+        // Case 1: user toggles the Constants.ALL value
+        if (selection === Constants.ALL) {
             // case 1.1 : Select All Countries
-            if (selectedValues.includes("All")) return [...allPossibleValues];
+            if (selectedValues.includes(Constants.ALL)) return [...allPossibleValues];
 
             // case 1.2 : Deselect All Countries
             return [];
         }
-        // Case 2: user toggles a value other than "All"
-        if (selectedValues.includes("All")) {
+        // Case 2: user toggles a value other than Constants.ALL
+        if (selectedValues.includes(Constants.ALL)) {
             // case 2.1 : All Countries were selected, and we deselect one.
-            // we have to deselect "All" as well
+            // we have to deselect Constants.ALL as well
             let result = [...selectedValues];
-            result.splice(result.indexOf("All"), 1);
+            result.splice(result.indexOf(Constants.ALL), 1);
             return result;
         }
         if (selectedValues.length === allPossibleValues.length - 1) {
             // case 2.2 : All Countries but one were selected, and we select missing one.
-            // we have to select "All" as well
+            // we have to select Constants.ALL as well
             return [...allPossibleValues];
         }
         // in all other cases, we just have to let the selectedCountries as is
@@ -180,7 +179,7 @@ export class DatavizFilterApplicationComponent implements OnInit {
     }
 
     nodeSelect(event: any) {
-        if (event.node.label === "All") {
+        if (event.node.label === Constants.ALL) {
             this.selectedValuesFilterDomain = [];
             this.allDomainFiltersSelected();
         } else {
@@ -193,12 +192,12 @@ export class DatavizFilterApplicationComponent implements OnInit {
     }
 
     nodeUnselect(event: any) {
-        if (event.node.label === "All") {
+        if (event.node.label === Constants.ALL) {
             this.selectedValuesFilterDomain = [];
         } else {
             this.selectedDomain = [];
             this.selectedSubdomain = [];
-            if (this.selectedValuesFilterDomain[0].label === "All") {
+            if (this.selectedValuesFilterDomain[0].label === Constants.ALL) {
                 this.selectedValuesFilterDomain.shift();
             }
         }
@@ -229,7 +228,7 @@ export class DatavizFilterApplicationComponent implements OnInit {
             this.selectedSubdomain.length === this.selectedObjectSubDomain.length &&
             this.selectedDomain.length === this.selectedObjectDomain.length - 1
         ) {
-            this.selectedDomain.splice(0, 0, "All");
+            this.selectedDomain.splice(0, 0, Constants.ALL);
             this.selectedValuesFilterDomain.splice(0, 0, this.domains[0]);
         }
     }

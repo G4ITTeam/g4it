@@ -12,7 +12,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
-import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
@@ -21,11 +20,11 @@ import { InplaceModule } from "primeng/inplace";
 import { InputTextModule } from "primeng/inputtext";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard.component";
 import { ImpactButtonComponent } from "./impact-button/impact-button.component";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("DigitalServicesFootprintDashboardComponent", () => {
     let component: DigitalServicesFootprintDashboardComponent;
@@ -168,7 +167,6 @@ describe("DigitalServicesFootprintDashboardComponent", () => {
                     useFactory: () => ({ echarts: () => import("echarts") }),
                 },
                 DigitalServicesDataService,
-                NgxSpinnerService,
                 IntegerPipe,
                 DecimalsPipe
             ],

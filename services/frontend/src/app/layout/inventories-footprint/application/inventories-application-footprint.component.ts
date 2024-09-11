@@ -5,24 +5,21 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MenuItem } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { EchartsRepository } from "src/app/core/store/echarts.repository";
-import {
-    FilterRepository,
-} from "src/app/core/store/filter.repository";
+import { FilterRepository } from "src/app/core/store/filter.repository";
 import {
     ApplicationCriteriaFootprint,
     ApplicationFootprint,
 } from "src/app/core/store/footprint.repository";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
-import * as CriteriaUtils from "src/app/core/utils/criteria";
 import { Constants } from "src/constants";
 
 @Component({
@@ -30,19 +27,21 @@ import { Constants } from "src/constants";
     templateUrl: "./inventories-application-footprint.component.html",
 })
 export class InventoriesApplicationFootprintComponent {
+    private global = inject(GlobalStoreService);
+
     ngUnsubscribe = new Subject<void>();
     selectedCriteria: string = "";
     criteres: MenuItem[] = [
         {
             label: this.translate.instant("criteria.multi-criteria.title"),
-            routerLink: "multi-criteria",
+            routerLink: Constants.MUTLI_CRITERIA,
         },
-        ...CriteriaUtils.getCriteriaShortList().map(criteria => {
+        ...Constants.CRITERIAS.map((criteria) => {
             return {
                 label: this.translate.instant(`criteria.${criteria}.title`),
                 routerLink: criteria,
-            }
-        })
+            };
+        }),
     ];
     inventoryId!: number;
 
@@ -51,26 +50,23 @@ export class InventoriesApplicationFootprintComponent {
         public filterRepo: FilterRepository,
         private router: Router,
         public footprintService: FootprintService,
-        private spinner: NgxSpinnerService,
         private translate: TranslateService,
         public inventoryRepo: InventoryRepository,
-        public echartsRepo: EchartsRepository
+        public echartsRepo: EchartsRepository,
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.spinner.show();
+        this.global.setLoading(true);
         this.echartsRepo.setIsDataInitialized(false);
         this.echartsRepo.isDataInitialized$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((chartInitialized: boolean) => {
                 if (chartInitialized) {
-                    this.spinner.hide();
+                    this.global.setLoading(false);
                 }
             });
         // Set active inventory based on route
-        this.inventoryId =
-            this.activatedRoute.snapshot.paramMap.get("inventoryId") ?
-                parseInt(this.activatedRoute.snapshot.paramMap.get("inventoryId")!) : 0;
+        this.inventoryId = +this.activatedRoute.snapshot.paramMap.get("inventoryId")!;
 
         //Set footprint with associated filters and retrieve datacenter and physical equipement datas
         this.inventoryRepo.updateSelectedInventory(this.inventoryId);
@@ -78,7 +74,7 @@ export class InventoriesApplicationFootprintComponent {
         this.footprintService.retrieveFootprint(
             this.inventoryId,
             this.getCriteriaFromUrl(),
-            "application"
+            "application",
         );
         this.filterRepo.selectedCriteria$
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -114,7 +110,7 @@ export class InventoriesApplicationFootprintComponent {
         return lifeCycles.map((lifeCycle) => {
             lifeCycle = lifeCycle.replace("acvStep.", "");
             if (
-                lifeCycle !== "All" &&
+                lifeCycle !== Constants.ALL &&
                 lifeCycle !== Constants.UNSPECIFIED &&
                 lifecyclesList.includes(lifeCycle)
             ) {
@@ -132,12 +128,12 @@ export class InventoriesApplicationFootprintComponent {
         footprint.forEach((element) => {
             element.impacts.forEach((impact) => {
                 if (
-                    impact.lifeCycle !== "All" &&
+                    impact.lifeCycle !== Constants.ALL &&
                     impact.lifeCycle !== Constants.UNSPECIFIED &&
                     lifecyclesList.includes(impact.lifeCycle)
                 ) {
                     impact.lifeCycle = this.translate.instant(
-                        "acvStep." + lifecycleMap.get(impact.lifeCycle)
+                        "acvStep." + lifecycleMap.get(impact.lifeCycle),
                     );
                 }
             });
@@ -146,7 +142,7 @@ export class InventoriesApplicationFootprintComponent {
     }
 
     formatLifecycleCriteriaImpact(
-        footprint: ApplicationCriteriaFootprint[]
+        footprint: ApplicationCriteriaFootprint[],
     ): ApplicationCriteriaFootprint[] {
         const lifecycleMap = LifeCycleUtils.getLifeCycleMap();
         const lifecyclesList = Array.from(lifecycleMap.keys());
@@ -154,12 +150,12 @@ export class InventoriesApplicationFootprintComponent {
         footprint.forEach((element) => {
             element.impacts.forEach((impact) => {
                 if (
-                    impact.lifeCycle !== "All" &&
+                    impact.lifeCycle !== Constants.ALL &&
                     impact.lifeCycle !== Constants.UNSPECIFIED &&
                     lifecyclesList.includes(impact.lifeCycle)
                 ) {
                     impact.lifeCycle = this.translate.instant(
-                        "acvStep." + lifecycleMap.get(impact.lifeCycle)
+                        "acvStep." + lifecycleMap.get(impact.lifeCycle),
                     );
                 }
             });

@@ -6,7 +6,6 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
 import { KeycloakService } from "keycloak-angular";
 import { Subject, firstValueFrom } from "rxjs";
 import { UserDataService } from "./core/service/data/user-data.service";
@@ -20,7 +19,6 @@ export class AppComponent {
     constructor(
         private userService: UserDataService,
         private keycloak: KeycloakService,
-        private router: Router,
     ) {}
 
     async ngOnInit() {

@@ -9,97 +9,61 @@
         {{ "digital-services.add" | translate }}
     </p-button>
 </div>
-<p-scrollPanel [style]="{ width: '100%', height: '83%' }">
-    <p
-        class="digital-service-emptyList"
-        *ngIf="digitalServices.length === 0; else hasData"
-    >
-        {{ "digital-services.empty-digital-services" | translate }}
-    </p>
-    <ng-template #hasData>
-        <ul>
-            <li *ngFor="let digitalService of digitalServices">
-                <p-card
-                    styleClass="digital-services-card"
-                    tabIndex="0"
-                    role="button"
-                    [attr.aria-label]="digitalService.name"
-                >
-                    <div class="digital-services-card-content">
-                        <span
-                            class="digital-services-card-content-label my-2"
-                            (click)="onDigitalServiceSelection(digitalService.uid)"
-                        >
-                            {{ digitalService.name }}
-                        </span>
-
-                        <span *ngIf="userService.isAllowedDigitalServiceWrite$ | async">
-                            <p-button
-                                (click)="
-                                    selectedDigitalService = digitalService;
-                                    sidebarVisible = true
-                                "
-                                [tabindex]="0"
-                                styleClass="inventory-add-button-small"
-                                *ngIf="!digitalService.note"
-                            >
-                                <img
-                                    class="w-1rem h-2rem uppercase"
-                                    src="assets/images/icons/icon-plus.svg"
-                                    alt="{{ 'common.accessibility.addNote' | translate }}"
-                                />
-                                <p class="font-bold mx-2 text-xs text-center w-full">
-                                    {{ "common.note.add" | translate }}
-                                </p>
-                            </p-button>
-                        </span>
-
-                        <span>
-                            <p-button
-                                (click)="
-                                    selectedDigitalService = digitalService;
-                                    sidebarVisible = true
-                                "
-                                [tabindex]="0"
-                                styleClass="inventory-attached-button-small"
-                                *ngIf="digitalService.note"
-                            >
-                                <img
-                                    class="w-1rem h-2rem uppercase"
-                                    src="assets/images/icons/icon-note.svg"
-                                    alt="{{
-                                        'common.accessibility.attachedNote' | translate
-                                    }}"
-                                />
-                                <p class="font-bold mx-2 text-xs text-center w-full">
-                                    {{ "common.note.attached" | translate }}
-                                </p>
-                            </p-button>
-                        </span>
-
-                        <p-button
-                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                            severity="danger"
-                            styleClass="ml-3"
-                            [rounded]="true"
-                            (click)="confirmDelete($event, digitalService)"
-                            [text]="true"
-                        >
-                            <img
-                                src="assets/images/icons/icon-bin.svg"
-                                alt="{{ 'common.delete' | translate }} {{
-                                    digitalService.name
-                                }}"
-                            />
-                        </p-button>
-
-                        <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>
-                    </div>
-                </p-card>
-            </li>
-        </ul>
-    </ng-template>
+<p-scrollPanel [style]="{ width: '100%', height: '95%' }">
+    <p-accordion class="transparentBackgound" [multiple]="true">
+        <p-accordionTab
+            [header]="
+                'digital-services.headerForCreatedByMe'
+                    | translate
+                        : {
+                              count: myDigitalServices.length,
+                              plural: myDigitalServices.length > 1 ? 'S' : '',
+                          }
+            "
+            headerStyleClass="font-bold bg-transparent"
+            tabStyleClass="shadow-none"
+            [selected]="true"
+        >
+            <ul>
+                <li *ngFor="let digitalService of myDigitalServices">
+                    <app-digital-services-item
+                        [digitalService]="digitalService"
+                        (noteOpened)="itemNoteOpened($event)"
+                        (deleteUid)="itemDelete($event)"
+                    >
+                    </app-digital-services-item>
+                </li>
+            </ul>
+        </p-accordionTab>
+    </p-accordion>
+    <p-accordion class="transparentBackgound" [multiple]="true">
+        <p-accordionTab
+            [header]="
+                'digital-services.headerForSharedWithMe'
+                    | translate
+                        : {
+                              count: sharedDigitalServices.length,
+                              plural: sharedDigitalServices.length > 1 ? 'S' : '',
+                          }
+            "
+            headerStyleClass="font-bold bg-transparent"
+            tabStyleClass="shadow-none"
+            [selected]="true"
+        >
+            <ul>
+                <li *ngFor="let digitalService of sharedDigitalServices">
+                    <app-digital-services-item
+                        [digitalService]="digitalService"
+                        (noteOpened)="itemNoteOpened($event)"
+                        (deleteUid)="itemDelete($event)"
+                    >
+                    </app-digital-services-item>
+                </li>
+            </ul>
+        </p-accordionTab>
+    </p-accordion>
     <p-sidebar
+        *ngIf="sidebarVisible"
         [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-md w-7"

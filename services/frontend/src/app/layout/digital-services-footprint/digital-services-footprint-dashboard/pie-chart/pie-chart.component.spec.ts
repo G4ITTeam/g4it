@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
@@ -63,9 +63,9 @@ describe("PieChartComponent", () => {
                 type: "pie",
                 radius: "70%",
                 data: [
-                    { name: "Terminal", value: 0.7, tier: "Terminal" },
-                    { name: "Network", value: 0.1, tier: "Network" },
-                    { name: "Server", value: 0.58, tier: "Server" },
+                    { name: "Terminal", value: 0.7, tier: "Terminal", unitValue: 40, unit: "mol H+ eq" },
+                    { name: "Network", value: 0.1, tier: "Network", unitValue: 20, unit: "mol H+ eq" },
+                    { name: "Server", value: 0.58, tier: "Server", unitValue: 55, unit: "mol H+ eq" },
                 ],
                 emphasis: {
                     itemStyle: {

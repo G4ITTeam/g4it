@@ -11,7 +11,14 @@ export interface User {
     email: string;
     firstName: string;
     lastName: string;
+    id: number;
     subscribers: Subscriber[];
+}
+
+export interface UserInfo {
+    firstName: string;
+    lastName: string;
+    email: string;
 }
 
 export interface Subscriber {

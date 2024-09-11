@@ -32,9 +32,12 @@
             (keydown.enter)="searchList()"
             ngDefaultControl
         />
-        <p-button (click)="searchList()">{{
+        <p-button [disabled]="!searchForm.valid" (click)="searchList()">{{
             "administration.user.search" | translate
         }}</p-button>
+        <p class="error-text" *ngIf="filteredMembers.length === 0 && errorMessageVisible">
+            {{ "administration.user.no-results" | translate }}
+        </p>
     </form>
 </div>
 

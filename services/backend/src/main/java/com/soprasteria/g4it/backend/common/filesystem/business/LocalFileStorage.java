@@ -9,7 +9,6 @@ package com.soprasteria.g4it.backend.common.filesystem.business;
 
 import com.soprasteria.g4it.backend.common.filesystem.model.FileDescription;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +30,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class LocalFileStorage implements FileStorage {
-
-    /**
-     * File location pattern.
-     */
-    private static final String FILE_LOCATION_PATTERN = "file:%s";
 
     /**
      * The local path.

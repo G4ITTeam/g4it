@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestM
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.ServerDataCenterRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
+import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.ServerDatacenterRest;
@@ -39,6 +40,9 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      */
     @Autowired
     private DigitalServiceService digitalServiceService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * DigitalServiceRest Mapper.
@@ -126,6 +130,22 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
         return ResponseEntity.ok(serverDataCenterRestMapper.toDto(digitalServiceService.getDigitalServiceDataCenter(digitalServiceUid)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<String> shareDigitalService(String subscriber, Long organization, String digitalServiceUid) {
+        return ResponseEntity.ok(digitalServiceService.shareDigitalService(subscriber, organization, digitalServiceUid));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Void> linkDigitalServiceToUser(String subscriber, Long organization, String digitalServiceUid, String sharedUid) {
+        digitalServiceService.linkDigitalServiceToUser(subscriber, organization, digitalServiceUid, sharedUid, authService.getUser().getId());
+        return ResponseEntity.noContent().build();
+    }
 }
 
 

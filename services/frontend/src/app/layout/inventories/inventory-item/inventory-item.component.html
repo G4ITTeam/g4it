@@ -13,107 +13,57 @@
             </div>
             <div class="flex align-items-center"></div>
             <div class="flex align-items-center">
-                <div *ngIf="userService.isAllowedInventoryWrite$ | async">
-                    <p-button
-                        *ngIf="!inventory.note"
-                        (click)="$event.stopPropagation(); openSidebarNote()"
-                        [tabindex]="0"
-                        styleClass="inventory-add-button-small"
-                        class="mx-2"
-                        attr.aria-label="{{ 'common.accessibility.addNote' | translate }}"
-                    >
-                        <img
-                            class="w-1rem h-2rem uppercase"
-                            src="assets/images/icons/icon-plus.svg"
-                            alt="{{ 'common.accessibility.addNote' | translate }}"
-                        />
-                        <p class="font-bold mx-2 text-xs text-center w-full">
-                            {{ "common.note.add" | translate }}
-                        </p>
-                    </p-button>
-                </div>
+                <p-button
+                    *ngIf="
+                        !inventory.note && (userService.isAllowedInventoryWrite$ | async)
+                    "
+                    (click)="$event.stopPropagation(); openSidebarNote()"
+                    styleClass="inventory-add-button-small mx-2"
+                    [attr.aria-label]="'common.accessibility.addNote' | translate"
+                    icon="pi pi-plus-circle"
+                    [label]="'common.note.add' | translate"
+                />
 
                 <p-button
                     *ngIf="inventory.note"
                     (click)="$event.stopPropagation(); openSidebarNote()"
-                    [tabindex]="0"
-                    styleClass="inventory-attached-button-small"
-                    class="mx-2"
-                    attr.aria-label="{{
-                        'common.accessibility.attachedNote' | translate
-                    }}"
-                >
-                    <img
-                        class="w-1rem h-2rem uppercase"
-                        src="assets/images/icons/icon-note.svg"
-                        alt="{{ 'common.accessibility.attachedNote' | translate }}"
-                    />
-                    <p class="font-bold mx-2 text-xs text-center w-full">
-                        {{ "common.note.attached" | translate }}
-                    </p>
-                </p-button>
+                    styleClass="inventory-attached-button-small mx-2"
+                    [attr.aria-label]="'common.accessibility.attachedNote' | translate"
+                    icon="pi pi-clipboard"
+                    [label]="'common.note.attached' | translate"
+                />
 
                 <p-button
                     *ngIf="isRunning()"
                     [disabled]="true"
-                    styleClass="inventory-button-small"
-                    class="ml-5 mr-6 disabled-text-black"
-                >
-                    <img
-                        class="w-1rem h-2rem uppercase"
-                        src="assets/images/icons/icon-refresh.svg"
-                        alt="{{ 'common.accessibility.updateInProgress' | translate }}"
-                    />
-                    <p class="font-bold mx-2 text-xs">
-                        {{ "common.updateInProgress" | translate }}
-                    </p>
-                </p-button>
+                    styleClass="inventory-button-small ml-5 mr-6 disabled-text-black"
+                    icon="pi pi-refresh"
+                    [label]="'common.updateInProgress' | translate"
+                />
 
                 <p-button
                     *ngIf="!isRunning()"
                     [disabled]="!showEquipment()"
-                    tabindex="0"
-                    styleClass="inventory-button-small"
-                    class="mx-2 py-2"
+                    styleClass="inventory-button-small mx-2"
                     (click)="$event.stopPropagation(); redirectFootprint('equipment')"
                     (keydown.enter)="
                         $event.stopPropagation(); redirectFootprint('equipment')
                     "
-                >
-                    <img
-                        class="w-10px mr-2"
-                        src="assets/images/icons/icon-arrow-right.svg"
-                        alt="{{ 'common.accessibility.eq' | translate }} {{
-                            inventory.name
-                        }}"
-                    />
-                    <p class="font-bold text-xs">
-                        {{ "inventories.details.equipment" | translate }}
-                    </p>
-                </p-button>
+                    icon="pi pi-arrow-right"
+                    [label]="'inventories.details.equipment' | translate"
+                />
 
                 <p-button
-                    tabindex="0"
                     *ngIf="!isRunning()"
                     [disabled]="!showApplication()"
-                    styleClass="inventory-button-small"
-                    class="mx-2 py-2"
+                    styleClass="inventory-button-small ml-2 mr-3"
                     (click)="$event.stopPropagation(); redirectFootprint('application')"
                     (keydown.enter)="
                         $event.stopPropagation(); redirectFootprint('application')
                     "
-                >
-                    <img
-                        class="w-10px mr-2"
-                        src="assets/images/icons/icon-arrow-right.svg"
-                        alt="{{ 'common.accessibility.app' | translate }} {{
-                            inventory.name
-                        }}"
-                    />
-                    <p class="font-bold text-xs">
-                        {{ "inventories.details.application" | translate }}
-                    </p>
-                </p-button>
+                    icon="pi pi-arrow-right"
+                    [label]="'inventories.details.application' | translate"
+                />
             </div>
         </div>
     </ng-template>
@@ -221,14 +171,16 @@
                             'common.accessibility.updateInProgress'
                                 | translate
                                     : {
-                                          value: inventory.lastEvaluationReport.progress
+                                          value: inventory.lastEvaluationReport.progress,
                                       }
                         "
                     >
                         <div class="font-bold mt-2">
                             {{
-                                inventory.lastEvaluationReport.batchStatusCode
-                                    | batchStatusRenderer
+                                "inventories.evaluation_batch_status." +
+                                    batchStatusMapping[
+                                        inventory.lastEvaluationReport.batchStatusCode
+                                    ] | translate
                             }}
                             {{ inventory.lastEvaluationReport.progress }}%
                         </div>

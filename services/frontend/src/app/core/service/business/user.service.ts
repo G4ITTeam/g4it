@@ -76,22 +76,12 @@ export class UserService {
                             organizationId,
                             page,
                         ] = this.router.url.split("/");
-
                         if (subscribers === "something-went-wrong") {
                             return;
                         }
 
                         if (currentUser.subscribers.length === 0) {
-                            this.messageService.add({
-                                severity: "warn",
-                                summary: this.translate.instant(
-                                    "toast-errors.subscriber-or-organization-not-found.title",
-                                ),
-                                detail: this.translate.instant(
-                                    "toast-errors.subscriber-or-organization-not-found.text",
-                                ),
-                                sticky: true,
-                            });
+                            this.errorMessage("subscriber-or-organization-not-found");
                             this.router.navigateByUrl(`something-went-wrong/403`);
                         }
 
@@ -107,8 +97,14 @@ export class UserService {
                                 (org: any) => org.id === Number(organizationId),
                             );
 
-                            if (subscriber === undefined || organization === undefined) {
-                                this.router.navigateByUrl(`something-went-wrong/404`);
+                            if (subscriber === undefined) {
+                                this.errorMessage("insuffisant-right-subscriber");
+                                this.router.navigateByUrl("/");
+                                return;
+                            }
+                            if (organization === undefined) {
+                                this.errorMessage("insuffisant-right-organization");
+                                this.router.navigateByUrl("/");
                                 return;
                             }
 
@@ -135,9 +131,11 @@ export class UserService {
                             const tmpSubs = currentUser.subscribers.filter(
                                 (s) => s.name === subscriberNameLS,
                             );
-                            if (tmpSubs.length === 0)
-                                this.router.navigateByUrl(`something-went-wrong/403`);
-                            subscriber = tmpSubs[0];
+                            if (tmpSubs.length === 0) {
+                                subscriber = currentUser.subscribers[0];
+                            } else {
+                                subscriber = tmpSubs[0];
+                            }
                         } else {
                             subscriber = currentUser.subscribers[0];
                         }
@@ -190,6 +188,14 @@ export class UserService {
                     });
                 });
         }
+    }
+
+    errorMessage(key: string) {
+        this.messageService.add({
+            severity: "warn",
+            summary: this.translate.instant(`toast-errors.${key}.title`),
+            detail: this.translate.instant(`toast-errors.${key}.text`),
+        });
     }
 
     hasAnyAdminRole(user: User) {

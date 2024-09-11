@@ -12,9 +12,9 @@ import {
 import { TestBed } from "@angular/core/testing";
 
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { Filter } from "src/app/core/store/filter.repository";
 import {
     ApplicationFootprint,
+    Criterias,
     Datacenter,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
@@ -64,7 +64,7 @@ describe("FootprintService", () => {
                 dataCenterName: "Datacenter 9",
                 physicalEquipmentCount: 11,
                 country: "France",
-                entity: "Empty",
+                entity: Constants.EMPTY,
                 equipment: "Smartphone",
                 status: "Missing",
                 pue: 1.2,
@@ -172,53 +172,6 @@ describe("FootprintService", () => {
         const req = httpMock.expectOne("inventories/" + inventoryDate + "/export");
         expect(req.request.method).toEqual("POST");
         req.flush(inventoryDate);
-
-        httpMock.verify();
-    });
-
-    it("initFilters should retrieve filters", () => {
-        const filters: Filter = {
-            countries: ["France", "China", "Spain", "Germany", "Russia"],
-            entities: ["ACME FRANCE", "ACME SERVICES"],
-            equipments: [
-                "Mobility Device",
-                "Monitor",
-                "Network Gear",
-                "Personal Computer",
-                "Printer",
-                "Smartphone",
-                "Tracer",
-                "Communication Device",
-                "Consumable",
-                "IP Router",
-                "IP Switch",
-                "Server",
-            ],
-            status: [
-                "In use",
-                "Retired",
-                "Missing",
-                "On order",
-                "In maintenance",
-                "In stock",
-                "In transit",
-                "Consumed",
-            ],
-        };
-
-        service.initFilters(inventoryDate).subscribe((res) => {
-            filters.countries.sort().splice(0, 0, "All");
-            filters.entities.sort().splice(0, 0, "All");
-            filters.equipments.sort().splice(0, 0, "All");
-            filters.status.sort().splice(0, 0, "All");
-            expect(res).toEqual(filters);
-        });
-
-        const req = httpMock.expectOne(
-            `inventories/${inventoryDate}/indicators/equipments/filters`,
-        );
-        expect(req.request.method).toEqual("GET");
-        req.flush(filters);
 
         httpMock.verify();
     });
@@ -791,5 +744,121 @@ describe("FootprintService", () => {
         let res = service.setUnspecifiedData(footprint);
 
         expect(res).toEqual(expectedfootprint);
+    });
+
+    it("should calculate an empty footprint depending on incoming footprint, filters and selectedView", () => {
+        expect(service.calculate({}, {}, "view", [])).toEqual([]);
+    });
+
+    it("should calculate a footprint depending on incoming footprint, filters and selectedView", () => {
+        const footprint: Criterias = {
+            "climate-change": {
+                label: "unknown",
+                unit: "kg CO²",
+                impacts: [
+                    {
+                        country: "France",
+                        impact: 2,
+                        sip: 1,
+                        acvStep: "FABRICATION",
+                        entity: "",
+                        equipment: "",
+                        status: "",
+                    },
+                    {
+                        country: "Germany",
+                        impact: 8,
+                        sip: 4,
+                        acvStep: "DISTRIBUTION",
+                        entity: "",
+                        equipment: "",
+                        status: "",
+                    },
+                ],
+            },
+        };
+
+        const expected = [
+            {
+                data: "France",
+                impacts: [
+                    {
+                        criteria: "climate-change",
+                        sumSip: 1,
+                        sumImpact: 2,
+                    },
+                ],
+                total: {
+                    sip: 1,
+                    impact: 2,
+                },
+            },
+            {
+                data: "Germany",
+                impacts: [
+                    {
+                        criteria: "climate-change",
+                        sumSip: 4,
+                        sumImpact: 8,
+                    },
+                ],
+                total: {
+                    sip: 4,
+                    impact: 8,
+                },
+            },
+        ];
+
+        // no filter
+        expect(
+            service.calculate(footprint, { country: [Constants.ALL] }, "country", [
+                "country",
+            ]),
+        ).toEqual(expected);
+
+        // filter on France should return the first element in an array
+        expect(
+            service.calculate(footprint, { country: ["France"] }, "country", ["country"]),
+        ).toEqual([expected[0]]);
+    });
+
+    it("should calculate the total of empty footprint depending on unit", () => {
+        expect(service.calculateTotal([], Constants.PEOPLEEQ)).toEqual(0);
+    });
+
+    it("should calculate the total of footprint depending on unit peopleeq", () => {
+        expect(
+            service.calculateTotal(
+                [
+                    {
+                        data: "",
+                        impacts: [],
+                        total: {
+                            impact: 1,
+                            sip: 2,
+                        },
+                    },
+                ],
+                Constants.PEOPLEEQ,
+            ),
+        ).toEqual(2);
+    });
+
+    it("should calculate the total of footprint depending on unit impact", () => {
+        expect(
+            service.calculateTotal(
+                [
+                    {
+                        data: "",
+                        impacts: [],
+                        total: {
+                            impact: 1,
+                            sip: 2,
+                        },
+                    },
+                ],
+                "impact",
+            ),
+        ).toEqual(1);
     });
 });

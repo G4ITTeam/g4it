@@ -44,5 +44,5 @@ public class DigitalServiceIndicatorService {
     public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String uid) {
         return digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(uid);
     }
-
+    
 }

@@ -1,4 +1,4 @@
-<div class="side-panel-content">
+<div class="px-4">
     <div
         class="side-panel-title"
         *ngIf="purpose === 'new'"
@@ -94,17 +94,19 @@
             <div class="input-loading-files">
                 <ng-container #uploaderContainer> </ng-container>
             </div>
-            <button class="round-button-add" (click)="addComponent()">
-                + {{ "common.add" | translate }}
-            </button>
-            <hr class="p-my-2" />
+            <p-button
+                (click)="addComponent()"
+                label="+ {{ 'common.add' | translate }}"
+                styleClass="round-button-add p-0"
+            />
+            <hr class="mb-2" />
             <div>
                 <div id="openTitle" class="text-xl">
                     {{ "inventories.templates.starter-pack" | translate }}
                 </div>
                 <div>
                     <ul aria-labelledby="openTitle" tabindex="0">
-                        <li class="my-2" *ngFor="let data of templateFiles">
+                        <li class="my-1" *ngFor="let data of templateFiles">
                             <span
                                 [class.font-semibold]="
                                     ['zip', 'xlsx'].includes(data.type)
@@ -125,7 +127,6 @@
                                 />
                             </button>
                         </li>
-                        <br />
                     </ul>
                 </div>
             </div>

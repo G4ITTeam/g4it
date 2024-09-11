@@ -15,7 +15,6 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { Router, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
@@ -55,7 +54,6 @@ describe("DigitalServicesServersComponent", () => {
     let serviceData: DigitalServicesDataService;
     let fixture: ComponentFixture<DigitalServicesServersComponent>;
     let router: Router;
-    let spinner: NgxSpinnerService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -67,7 +65,6 @@ describe("DigitalServicesServersComponent", () => {
                 UserService,
                 DigitalServicesDataService,
                 FormBuilder,
-                NgxSpinnerService,
             ],
             imports: [
                 TableModule,
@@ -82,7 +79,6 @@ describe("DigitalServicesServersComponent", () => {
                 RouterTestingModule.withRoutes(routes),
             ],
         });
-        spinner = TestBed.inject(NgxSpinnerService);
         serviceBusiness = TestBed.inject(DigitalServiceBusinessService);
         serviceData = TestBed.inject(DigitalServicesDataService);
         httpMock = TestBed.inject(HttpTestingController);
@@ -186,8 +182,6 @@ describe("DigitalServicesServersComponent", () => {
                 networks: [],
             }),
         );
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const server = {
             uid: "randomUID",
             name: "Server A",
@@ -242,8 +236,6 @@ describe("DigitalServicesServersComponent", () => {
         tick();
         expect(component.digitalService.servers).toHaveSize(0);
         expect(update).toHaveBeenCalledWith(digitalService);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
     }));
 
     it("should not delete server", fakeAsync(() => {
@@ -285,8 +277,6 @@ describe("DigitalServicesServersComponent", () => {
                 networks: [],
             }),
         );
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const server = {
             uid: "randomUID2",
             name: "Server A",
@@ -344,7 +334,5 @@ describe("DigitalServicesServersComponent", () => {
         tick();
         expect(component.digitalService.servers).toHaveSize(1);
         expect(update).toHaveBeenCalledWith(digitalService);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
     }));
 });

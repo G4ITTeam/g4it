@@ -13,7 +13,6 @@ import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { Router, Routes } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService, SharedModule } from "primeng/api";
 import { ButtonModule } from "primeng/button";
 import { DropdownModule } from "primeng/dropdown";
@@ -21,13 +20,13 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { SidebarModule } from "primeng/sidebar";
 import { of } from "rxjs";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { DigitalServicesServersComponent } from "../digital-services-servers.component";
 import SidePanelDatacenterComponent from "../side-panel-add-datacenter/side-panel-datacenter.component";
 import { SidePanelCreateServerComponent } from "../side-panel-create-server/side-panel-create-server.component";
 import { SidePanelListVmComponent } from "../side-panel-list-vm/side-panel-list-vm.component";
 import { SidePanelServerParametersComponent } from "./side-panel-server-parameters.component";
-import { UserService } from "src/app/core/service/business/user.service";
 
 const routes: Routes = [
     {
@@ -51,7 +50,6 @@ describe("SidePanelServerParametersComponent", () => {
     let fixture: ComponentFixture<SidePanelServerParametersComponent>;
     let serviceBusiness: DigitalServiceBusinessService;
     let serviceData: DigitalServicesDataService;
-    let spinner: NgxSpinnerService;
     let router: Router;
 
     beforeEach(async () => {
@@ -78,14 +76,12 @@ describe("SidePanelServerParametersComponent", () => {
                 MessageService,
                 DigitalServiceBusinessService,
                 DigitalServicesDataService,
-                NgxSpinnerService,
                 FormBuilder,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });
         serviceBusiness = TestBed.inject(DigitalServiceBusinessService);
         serviceData = TestBed.inject(DigitalServicesDataService);
-        spinner = TestBed.inject(NgxSpinnerService);
         fixture = TestBed.createComponent(SidePanelServerParametersComponent);
         router = TestBed.inject(Router);
         component = fixture.componentInstance;
@@ -144,11 +140,11 @@ describe("SidePanelServerParametersComponent", () => {
                         },
                     ],
                 },
-            ])
+            ]),
         );
         const datacenter = spyOn(
             serviceData,
-            "getDatacenterServerReferential"
+            "getDatacenterServerReferential",
         ).and.returnValue(
             of([
                 {
@@ -156,9 +152,9 @@ describe("SidePanelServerParametersComponent", () => {
                     name: "Default DC",
                     location: "France",
                     pue: 1.5,
-                    displayLabel: 'Default DC (France - PUE = 1.5)',
+                    displayLabel: "Default DC (France - PUE = 1.5)",
                 },
-            ])
+            ]),
         );
         const initializeDefaultValue = spyOn(component, "initializeDefaultValue");
         var server = component.server;
@@ -178,7 +174,7 @@ describe("SidePanelServerParametersComponent", () => {
         const hostOptions = component.hostOptions;
         const datacenterOptions = component.datacenterOptions;
         const indexHostCompute = component.hostOptions.findIndex(
-            (x) => x.value === "Server Compute M"
+            (x) => x.value === "Server Compute M",
         );
         server.host = component.hostOptions[indexHostCompute];
 
@@ -234,7 +230,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
-                displayLabel: 'Default DC (France - PUE = 1.5)',
+                displayLabel: "Default DC (France - PUE = 1.5)",
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -288,11 +284,11 @@ describe("SidePanelServerParametersComponent", () => {
                         },
                     ],
                 },
-            ])
+            ]),
         );
         const datacenter = spyOn(
             serviceData,
-            "getDatacenterServerReferential"
+            "getDatacenterServerReferential",
         ).and.returnValue(
             of([
                 {
@@ -300,9 +296,9 @@ describe("SidePanelServerParametersComponent", () => {
                     name: "Default DC",
                     location: "France",
                     pue: 1.5,
-                    displayLabel: 'Default DC (France - PUE = 1.5)',
+                    displayLabel: "Default DC (France - PUE = 1.5)",
                 },
-            ])
+            ]),
         );
         const initializeDefaultValue = spyOn(component, "initializeDefaultValue");
         var server = component.server;
@@ -321,7 +317,7 @@ describe("SidePanelServerParametersComponent", () => {
         const hostOptions = component.hostOptions;
         const datacenterOptions = component.datacenterOptions;
         const indexHostCompute = component.hostOptions.findIndex(
-            (x) => x.value === "Server Storage M"
+            (x) => x.value === "Server Storage M",
         );
         server.host = component.hostOptions[indexHostCompute];
 
@@ -363,7 +359,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
-                displayLabel: 'Default DC (France - PUE = 1.5)',
+                displayLabel: "Default DC (France - PUE = 1.5)",
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -417,11 +413,11 @@ describe("SidePanelServerParametersComponent", () => {
                         },
                     ],
                 },
-            ])
+            ]),
         );
         const datacenter = spyOn(
             serviceData,
-            "getDatacenterServerReferential"
+            "getDatacenterServerReferential",
         ).and.returnValue(
             of([
                 {
@@ -430,7 +426,7 @@ describe("SidePanelServerParametersComponent", () => {
                     location: "France",
                     pue: 1.5,
                 },
-            ])
+            ]),
         );
         var server = component.server;
         server.type = "Compute";
@@ -486,7 +482,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
-                displayLabel: 'Default DC (France - PUE = 1.5)',
+                displayLabel: "Default DC (France - PUE = 1.5)",
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -524,11 +520,11 @@ describe("SidePanelServerParametersComponent", () => {
                         },
                     ],
                 },
-            ])
+            ]),
         );
         const datacenter = spyOn(
             serviceData,
-            "getDatacenterServerReferential"
+            "getDatacenterServerReferential",
         ).and.returnValue(
             of([
                 {
@@ -536,9 +532,9 @@ describe("SidePanelServerParametersComponent", () => {
                     name: "Default DC",
                     location: "France",
                     pue: 1.5,
-                    displayLabel: 'Default DC (France - PUE = 1.5)',
+                    displayLabel: "Default DC (France - PUE = 1.5)",
                 },
-            ])
+            ]),
         );
         var server = component.server;
         server.type = "Storage";
@@ -594,7 +590,7 @@ describe("SidePanelServerParametersComponent", () => {
                 name: "Default DC",
                 location: "France",
                 pue: 1.5,
-                displayLabel: 'Default DC (France - PUE = 1.5)',
+                displayLabel: "Default DC (France - PUE = 1.5)",
             },
         ]);
         expect(datacenterOptions).toHaveSize(1);
@@ -612,7 +608,7 @@ describe("SidePanelServerParametersComponent", () => {
             name: "Default DC",
             location: "France",
             pue: 1.5,
-            displayLabel: 'Default DC (France - PUE = 1.5)'
+            displayLabel: "Default DC (France - PUE = 1.5)",
         });
 
         //call
@@ -662,13 +658,13 @@ describe("SidePanelServerParametersComponent", () => {
         //expectation
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["vcpu"].setValue(
-            hostOptions[0].characteristic[2].value
+            hostOptions[0].characteristic[2].value,
         );
         component.serverForm.controls["lifespan"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         server = component.server;
         expect(component.serverForm.value.electricityConsumption).toEqual(56);
@@ -710,11 +706,11 @@ describe("SidePanelServerParametersComponent", () => {
         //expectation
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["vcpu"].setValue(null);
         component.serverForm.controls["lifespan"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         server = component.server;
         expect(component.serverForm.value.electricityConsumption).toEqual(56);
@@ -756,10 +752,10 @@ describe("SidePanelServerParametersComponent", () => {
         //expectation
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["vcpu"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         component.serverForm.controls["lifespan"].setValue(null);
         server = component.server;
@@ -803,10 +799,10 @@ describe("SidePanelServerParametersComponent", () => {
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(null);
         component.serverForm.controls["vcpu"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["lifespan"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         server = component.server;
         expect(component.serverForm.value.vcpu).toEqual(56);
@@ -885,13 +881,13 @@ describe("SidePanelServerParametersComponent", () => {
         //expectation
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["disk"].setValue(
-            hostOptions[0].characteristic[2].value
+            hostOptions[0].characteristic[2].value,
         );
         component.serverForm.controls["lifespan"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         server = component.server;
         expect(component.serverForm.value.electricityConsumption).toEqual(56);
@@ -933,11 +929,11 @@ describe("SidePanelServerParametersComponent", () => {
         //expectation
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["disk"].setValue(null);
         component.serverForm.controls["lifespan"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         server = component.server;
         expect(component.serverForm.value.electricityConsumption).toEqual(56);
@@ -979,10 +975,10 @@ describe("SidePanelServerParametersComponent", () => {
         //expectation
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["disk"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         component.serverForm.controls["lifespan"].setValue(null);
         server = component.server;
@@ -1026,10 +1022,10 @@ describe("SidePanelServerParametersComponent", () => {
         fixture.detectChanges();
         component.serverForm.controls["electricityConsumption"].setValue(null);
         component.serverForm.controls["disk"].setValue(
-            hostOptions[0].characteristic[1].value
+            hostOptions[0].characteristic[1].value,
         );
         component.serverForm.controls["lifespan"].setValue(
-            hostOptions[0].characteristic[0].value
+            hostOptions[0].characteristic[0].value,
         );
         server = component.server;
         expect(component.serverForm.value.disk).toEqual(56);
@@ -1074,16 +1070,13 @@ describe("SidePanelServerParametersComponent", () => {
     });
 
     it("should add a datacenter to the datacenter options", () => {
-        //spy
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         //Mock
         const newDc = {
             uid: "tsc2e0c-157c-4eb2-bb38-d81cer720e1c2",
             name: "Default DC",
             location: "France",
             pue: 1.5,
-            displayLabel: 'Default DC (France - PUE = 1.5)'
+            displayLabel: "Default DC (France - PUE = 1.5)",
         };
 
         //call function
@@ -1091,10 +1084,8 @@ describe("SidePanelServerParametersComponent", () => {
 
         //expectation
         fixture.detectChanges();
-        expect(show).toHaveBeenCalled();
         expect(component.datacenterOptions).toHaveSize(1);
         expect(component.server.datacenter).toEqual(newDc);
-        expect(hide).toHaveBeenCalled();
     });
 
     it("should navigate to step create when click on previous", () => {
@@ -1140,11 +1131,9 @@ describe("SidePanelServerParametersComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
-            })
+            }),
         );
         const setServerSpy = spyOn(serviceBusiness, "setServerForm");
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const close = spyOn(component, "close");
         var server = component.server;
         server.mutualizationType = "Dedicated";
@@ -1158,8 +1147,6 @@ describe("SidePanelServerParametersComponent", () => {
 
         //expectation
         expect(setServerSpy).toHaveBeenCalledWith(server);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
         expect(close).toHaveBeenCalled();
         expect(update).toHaveBeenCalledWith(digitalService);
         expect(digitalService.servers).toHaveSize(1);
@@ -1177,11 +1164,9 @@ describe("SidePanelServerParametersComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
-            })
+            }),
         );
         const setServerSpy = spyOn(serviceBusiness, "setServerForm");
-        const show = spyOn(spinner, "show");
-        const hide = spyOn(spinner, "hide");
         const close = spyOn(component, "close");
         var server = component.server;
         server.mutualizationType = "Dedicated";
@@ -1195,8 +1180,6 @@ describe("SidePanelServerParametersComponent", () => {
 
         //expectation
         expect(setServerSpy).toHaveBeenCalledWith(server);
-        expect(show).toHaveBeenCalled();
-        expect(hide).toHaveBeenCalled();
         expect(close).toHaveBeenCalled();
         expect(update).toHaveBeenCalledWith(digitalService);
         expect(digitalService.servers).toHaveSize(1);

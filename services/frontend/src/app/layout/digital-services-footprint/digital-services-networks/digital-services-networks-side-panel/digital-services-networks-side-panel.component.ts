@@ -7,15 +7,12 @@
  */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
-import { lastValueFrom } from "rxjs";
 import {
     DigitalServiceNetworkConfig,
     NetworkType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
-import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 
 @Component({
     selector: "app-digital-services-networks-side-panel",
@@ -23,25 +20,12 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     providers: [MessageService],
 })
 export class DigitalServicesNetworksSidePanelComponent {
-    @Input() sidebarVisible: boolean = true;
+    @Input() network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
+    @Input() networkTypes: NetworkType[] = [];
 
-    @Input() network: DigitalServiceNetworkConfig = {
-        uid: undefined,
-        type: {
-            code: "",
-            value: "",
-        },
-        yearlyQuantityOfGbExchanged: 0,
-    };
-
-    @Output() sidebarVisibleChange: EventEmitter<boolean> = new EventEmitter();
-
-    @Output() updateNetworks: EventEmitter<DigitalServiceNetworkConfig> =
-        new EventEmitter();
-    @Output() deleteNetworks: EventEmitter<DigitalServiceNetworkConfig> =
-        new EventEmitter();
-
-    networkTypes: NetworkType[] = [];
+    @Output() update: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
+    @Output() delete: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
+    @Output() cancel: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
 
     networksForm = this._formBuilder.group({
         type: [{ code: "", value: "" }, Validators.required],
@@ -49,41 +33,20 @@ export class DigitalServicesNetworksSidePanelComponent {
     });
 
     constructor(
-        private digitalDataService: DigitalServicesDataService,
         private _formBuilder: FormBuilder,
-        private spinner: NgxSpinnerService,
         public userService: UserService,
     ) {}
 
-    ngOnInit() {
-        this.getNetworksRefrentials();
+    deleteNetwork() {
+        this.delete.emit(this.network);
     }
 
-    async getNetworksRefrentials() {
-        const referentials = await lastValueFrom(
-            this.digitalDataService.getNetworkReferential(),
-        );
-        this.networkTypes = referentials;
-        this.network.type = { code: "fixed-line-network-1", value: "Fixed FR" };
+    submitFormData() {
+        this.network.type = { ...this.networksForm.get("type")!.value! };
+        this.update.emit(this.network);
     }
 
-    async deleteNetwork() {
-        this.spinner.show();
-        this.deleteNetworks.emit(this.network);
-        this.close();
-    }
-
-    async submitFormData() {
-        this.spinner.show();
-
-        let network = this.networksForm.get("type")!.value || "";
-        this.network.type.code = JSON.parse(JSON.stringify(network)).code;
-        this.network.type.value = JSON.parse(JSON.stringify(network)).value;
-        this.updateNetworks.emit(this.network);
-        this.close();
-    }
-
-    close() {
-        this.sidebarVisibleChange.emit(false);
+    cancelNetwork() {
+        this.cancel.emit(this.network);
     }
 }

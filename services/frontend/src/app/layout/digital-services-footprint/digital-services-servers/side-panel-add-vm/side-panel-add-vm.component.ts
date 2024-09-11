@@ -7,7 +7,6 @@
  */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
 import { first } from "rxjs";
 import {
@@ -72,7 +71,6 @@ export class SidePanelAddVmComponent {
     constructor(
         private _formBuilder: FormBuilder,
         private digitalServiceBusiness: DigitalServiceBusinessService,
-        private spinner: NgxSpinnerService,
         public userService: UserService,
     ) {}
 
@@ -144,7 +142,6 @@ export class SidePanelAddVmComponent {
     }
 
     async updateVM() {
-        this.spinner.show();
         // If the vm with the uid exists, update it; otherwise, add the new vm
         if (this.index !== undefined && this.server.vm) {
             this.server.vm[this.index] = this.vm;
@@ -153,7 +150,6 @@ export class SidePanelAddVmComponent {
         }
         this.digitalServiceBusiness.setServerForm(this.server);
         this.close();
-        this.spinner.hide();
     }
 
     close() {

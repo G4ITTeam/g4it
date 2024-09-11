@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
@@ -54,5 +54,15 @@ public class Network extends AbstractBaseEntity {
      * Yearly quantity of GigaByte exchanged.
      */
     private Double yearlyQuantityOfGbExchanged;
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the networkType type
+     */
+    public String getNetworkTypeDescription() {
+        return networkType.getDescription();
+    }
+
 
 }

@@ -9,7 +9,8 @@ package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
-import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
+import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -35,37 +36,34 @@ import static org.mockito.Mockito.*;
 class OrganizationDeletionServiceTest {
     @InjectMocks
     OrganizationDeletionService organizationDeletionService;
-
     @Mock
     OrganizationRepository organizationRepository;
-
     @Mock
     FileDeletionService fileDeletionService;
-
     @Mock
     InventoryDeleteService inventoryDeleteService;
-
     @Mock
     DigitalServiceService digitalServiceService;
-
     @Mock
     private InventoryRepository inventoryRepo;
-
-    final static Long ORGANIZATION_ID = 1L;
+    @Mock
+    private DigitalServiceRepository digitalServiceRepo;
 
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithPastDate() {
-        final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(LocalDateTime.now()).build());
-        final DigitalServiceBO digitalServiceBO = TestUtils.createDigitalServiceBO();
-        final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), LocalDateTime.now());
+        var now = LocalDateTime.now();
+        final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(now).build());
+        final Optional<DigitalService> digitalServiceEntity = Optional.ofNullable(DigitalService.builder().uid("1234").name("name").lastUpdateDate(now).build());
+        final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), now);
 
         when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(inventoryEntity1.get()));
-        when(digitalServiceService.getAllDigitalServicesByOrganization(ORGANIZATION_ID)).thenReturn(List.of(digitalServiceBO));
+        when(digitalServiceRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(digitalServiceEntity.get()));
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
         when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
         organizationDeletionService.executeDeletion();
+
         verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.EXPORT), eq(0));
         verify(fileDeletionService, times(1)).deleteFiles(any(), any(), eq(FileFolder.OUTPUT), eq(0));
     }
@@ -73,7 +71,6 @@ class OrganizationDeletionServiceTest {
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithFutureDate() {
         final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), LocalDateTime.now().plusDays(1));
-
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
 
         // EXECUTE
@@ -96,4 +93,16 @@ class OrganizationDeletionServiceTest {
 
     }
 
+    @Test
+    void testStorageDeletionService_deletionDateNull() {
+        final Organization linkedOrganization = TestUtils.createOrganizationWithStatus(OrganizationStatus.INACTIVE.name());
+        linkedOrganization.setDeletionDate(null);
+
+        when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
+        // EXECUTE
+        organizationDeletionService.executeDeletion();
+        verify(inventoryDeleteService, times(0)).deleteInventory(any(), any(), anyLong());
+        verify(digitalServiceService, times(0)).deleteDigitalService(any());
+
+    }
 }

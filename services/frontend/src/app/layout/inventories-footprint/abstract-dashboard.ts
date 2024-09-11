@@ -19,7 +19,6 @@ import { FootprintRepository } from "src/app/core/store/footprint.repository";
 })
 export class AbstractDashboard implements OnDestroy {
     ngUnsubscribe = new Subject<void>();
-    dimensions = ["acvStep", "country", "entity", "equipment", "status"];
 
     constructor(
         public filterRepo: FilterRepository,

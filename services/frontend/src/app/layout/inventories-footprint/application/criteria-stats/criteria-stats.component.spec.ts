@@ -4,16 +4,17 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import {
     HttpClientTestingModule,
     HttpTestingController,
 } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { CriteriaStatsComponent } from "./criteria-stats.component";
 import { CardModule } from "primeng/card";
 import { TooltipModule } from "primeng/tooltip";
+import { Constants } from "src/constants";
+import { CriteriaStatsComponent } from "./criteria-stats.component";
 
 describe("CriteriaStatsComponent", () => {
     let component: CriteriaStatsComponent;
@@ -69,9 +70,9 @@ describe("CriteriaStatsComponent", () => {
                 ],
             },
         ];
-        component.selectedEnvironnementFilter = ["All", "Test", "Preproduction"];
-        component.selectedEquipmentsFilter = ["All", "Personal Computer"];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
+        component.selectedEnvironnementFilter = [Constants.ALL, "Test", "Preproduction"];
+        component.selectedEquipmentsFilter = [Constants.ALL, "Personal Computer"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedCriteriaUri = "climate-change";
         component.computeApplicationStatsAppGraph();
 
@@ -107,9 +108,9 @@ describe("CriteriaStatsComponent", () => {
                 ],
             },
         ];
-        component.selectedEnvironnementFilter = ["All", "Test", "Preproduction"];
-        component.selectedEquipmentsFilter = ["All", "Personal Computer"];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
+        component.selectedEnvironnementFilter = [Constants.ALL, "Test", "Preproduction"];
+        component.selectedEquipmentsFilter = [Constants.ALL, "Personal Computer"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedCriteriaUri = "climate-change";
 
         component.computeApplicationStatsAppGraph();
@@ -166,13 +167,13 @@ describe("CriteriaStatsComponent", () => {
             },
         ];
         component.selectedEnvironnementFilter = [
-            "All",
+            Constants.ALL,
             "Test",
             "Production",
             "Preproduction",
         ];
         component.selectedDomainFilter = [
-            "All",
+            Constants.ALL,
             "Domain A",
             "Domain B",
             "Domain C",
@@ -185,12 +186,12 @@ describe("CriteriaStatsComponent", () => {
             "subdomain 2c",
         ];
         component.selectedEquipmentsFilter = [
-            "All",
+            Constants.ALL,
             "Personal Computer",
             "Laptop",
             "Communication Device",
         ];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedCriteriaUri = "acidification";
         component.selectedGraph = "global";
 
@@ -248,13 +249,13 @@ describe("CriteriaStatsComponent", () => {
             },
         ];
         component.selectedEnvironnementFilter = [
-            "All",
+            Constants.ALL,
             "Test",
             "Production",
             "Preproduction",
         ];
         component.selectedDomainFilter = [
-            "All",
+            Constants.ALL,
             "Domain A",
             "Domain B",
             "Domain C",
@@ -268,12 +269,12 @@ describe("CriteriaStatsComponent", () => {
             "subdomain 2c",
         ];
         component.selectedEquipmentsFilter = [
-            "All",
+            Constants.ALL,
             "Personal Computer",
             "Laptop",
             "Communication Device",
         ];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedCriteriaUri = "acidification";
         component.selectedGraph = "domain";
 
@@ -331,13 +332,13 @@ describe("CriteriaStatsComponent", () => {
             },
         ];
         component.selectedEnvironnementFilter = [
-            "All",
+            Constants.ALL,
             "Test",
             "Production",
             "Preproduction",
         ];
         component.selectedDomainFilter = [
-            "All",
+            Constants.ALL,
             "Domain A",
             "Domain B",
             "Domain C",
@@ -352,12 +353,12 @@ describe("CriteriaStatsComponent", () => {
             "subdomain 2c",
         ];
         component.selectedEquipmentsFilter = [
-            "All",
+            Constants.ALL,
             "Personal Computer",
             "Laptop",
             "Communication Device",
         ];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedCriteriaUri = "acidification";
         component.selectedGraph = "subdomain";
 
@@ -420,7 +421,7 @@ describe("CriteriaStatsComponent", () => {
         component.selectedSubdomain = "subdomain 1b";
         component.selectedSubDomainFilter = [];
         component.selectedEquipmentsFilter = [];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedCriteriaUri = "acidification";
         component.selectedGraph = "subdomain";
 

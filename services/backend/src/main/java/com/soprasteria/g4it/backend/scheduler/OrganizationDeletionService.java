@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.scheduler;
 
 import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
+import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -36,6 +37,8 @@ public class OrganizationDeletionService {
     @Autowired
     private InventoryRepository inventoryRepository;
     @Autowired
+    private DigitalServiceRepository digitalServiceRepository;
+    @Autowired
     private InventoryDeleteService inventoryDeleteService;
     @Autowired
     private DigitalServiceService digitalServiceService;
@@ -61,6 +64,11 @@ public class OrganizationDeletionService {
             final String subscriber = organizationEntity.getSubscriber().getName();
             final Long organizationId = organizationEntity.getId();
 
+            if (organizationEntity.getDeletionDate() == null) {
+                log.error("Organization {} has {} status and deletion date NULL", organizationId, OrganizationStatus.TO_BE_DELETED);
+                continue;
+            }
+
             final int dataRetentionDay = now.isAfter(organizationEntity.getDeletionDate()) ? 0 : -1;
             if (dataRetentionDay == 0) {
                 log.info("Deleting data of {}/{}", subscriber, organizationEntity.getName());
@@ -73,7 +81,7 @@ public class OrganizationDeletionService {
                         .sum();
 
                 // Delete Digital services
-                nbDigitalServicesDeleted += digitalServiceService.getAllDigitalServicesByOrganization(organizationId).stream()
+                nbDigitalServicesDeleted += digitalServiceRepository.findByOrganization(organizationEntity).stream()
                         .mapToInt(digitalServiceBO -> {
                             digitalServiceService.deleteDigitalService(digitalServiceBO.getUid());
                             return 1;

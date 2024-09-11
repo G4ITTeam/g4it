@@ -7,7 +7,6 @@
  */
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import {
@@ -40,7 +39,6 @@ export class DigitalServicesTerminalsSidePanelComponent {
     constructor(
         private digitalDataService: DigitalServicesDataService,
         private _formBuilder: FormBuilder,
-        private spinner: NgxSpinnerService,
         public userService: UserService,
     ) { }
 
@@ -110,13 +108,11 @@ export class DigitalServicesTerminalsSidePanelComponent {
     }
 
     async submitFormData() {
-        this.spinner.show();
         this.updateTerminals.emit(this.terminal);
         this.close();
     }
 
     async deleteTerminal() {
-        this.spinner.show();
         this.deleteTerminals.emit(this.terminal);
         this.close();
     }

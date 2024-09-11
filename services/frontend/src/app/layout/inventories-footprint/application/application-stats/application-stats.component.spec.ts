@@ -4,25 +4,24 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG } from "ngx-echarts";
-import { NgxSpinnerService } from "ngx-spinner";
 import { TooltipModule } from "primeng/tooltip";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FilterRepository } from "src/app/core/store/filter.repository";
 import { InventoryRepository } from "src/app/core/store/inventory.repository";
+import { Constants } from "src/constants";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 import { ApplicationStatsComponent } from "./application-stats.component";
 
 describe("ApplicationStatsComponent", () => {
     let component: ApplicationStatsComponent;
     let fixture: ComponentFixture<ApplicationStatsComponent>;
-    let spinner: NgxSpinnerService;
     let inventoryRepo: InventoryRepository;
     let dataServiceFootprint: FootprintDataService;
     let filterRepo: FilterRepository;
@@ -35,7 +34,6 @@ describe("ApplicationStatsComponent", () => {
             providers: [
                 TranslatePipe,
                 TranslateService,
-                NgxSpinnerService,
                 InventoryRepository,
                 FootprintDataService,
                 InventoriesApplicationFootprintComponent,
@@ -59,7 +57,6 @@ describe("ApplicationStatsComponent", () => {
         });
         fixture = TestBed.createComponent(ApplicationStatsComponent);
         component = fixture.componentInstance;
-        spinner = TestBed.inject(NgxSpinnerService);
         inventoryRepo = TestBed.inject(InventoryRepository);
         dataServiceFootprint = TestBed.inject(FootprintDataService);
         filterRepo = TestBed.inject(FilterRepository);
@@ -73,7 +70,7 @@ describe("ApplicationStatsComponent", () => {
     it("should return the right domain and subdomain filter", () => {
         //GIVEN
         component.domainFilter = [
-            "All",
+            Constants.ALL,
             "Domain A,subdomain 1a,subdomain 2a",
             "Domain B,subdomain 1b,subdomain 2b",
             "Domain C,subdomain 1c,subdomain 2c",
@@ -85,7 +82,7 @@ describe("ApplicationStatsComponent", () => {
 
         //THEN
         expect(component.selectedDomain).toEqual([
-            "All",
+            Constants.ALL,
             "Domain A",
             "Domain B",
             "Domain C",
@@ -105,10 +102,10 @@ describe("ApplicationStatsComponent", () => {
 
     it("should return the right number of application when selected in filters", () => {
         //GIVEN
-        component.selectedEnvironnement = ["All", "Production", "Preproduction"];
-        component.selectedEquipments = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycle = ["All", "Using", "Manufacturing"];
-        component.selectedDomain = ["All", "Domain A", "Domain B"];
+        component.selectedEnvironnement = [Constants.ALL, "Production", "Preproduction"];
+        component.selectedEquipments = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycle = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomain = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomain = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.footprint = [
             {
@@ -164,7 +161,7 @@ describe("ApplicationStatsComponent", () => {
             component.selectedEquipments,
             component.selectedLifecycle,
             component.selectedDomain,
-            component.selectedSubDomain
+            component.selectedSubDomain,
         );
 
         //THEN
@@ -174,9 +171,9 @@ describe("ApplicationStatsComponent", () => {
     it("should return 0 application if no environnement filter selected", () => {
         //GIVEN
         component.selectedEnvironnement = [];
-        component.selectedEquipments = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycle = ["All", "Using", "Manufacturing"];
-        component.selectedDomain = ["All", "Domain A", "Domain B"];
+        component.selectedEquipments = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycle = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomain = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomain = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.footprint = [
             {
@@ -232,7 +229,7 @@ describe("ApplicationStatsComponent", () => {
             component.selectedEquipments,
             component.selectedLifecycle,
             component.selectedDomain,
-            component.selectedSubDomain
+            component.selectedSubDomain,
         );
 
         //THEN
@@ -241,10 +238,10 @@ describe("ApplicationStatsComponent", () => {
 
     it("should return 0 application if no equipment filter selected", () => {
         //GIVEN
-        component.selectedEnvironnement = ["All", "Production", "Preproduction"];
+        component.selectedEnvironnement = [Constants.ALL, "Production", "Preproduction"];
         component.selectedEquipments = [];
-        component.selectedLifecycle = ["All", "Using", "Manufacturing"];
-        component.selectedDomain = ["All", "Domain A", "Domain B"];
+        component.selectedLifecycle = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomain = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomain = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.footprint = [
             {
@@ -300,7 +297,7 @@ describe("ApplicationStatsComponent", () => {
             component.selectedEquipments,
             component.selectedLifecycle,
             component.selectedDomain,
-            component.selectedSubDomain
+            component.selectedSubDomain,
         );
 
         //THEN
@@ -309,10 +306,10 @@ describe("ApplicationStatsComponent", () => {
 
     it("should return 0 application if no lifecycle filter selected", () => {
         //GIVEN
-        component.selectedEnvironnement = ["All", "Production", "Preproduction"];
-        component.selectedEquipments = ["All", "Laptop", "Smartphone"];
+        component.selectedEnvironnement = [Constants.ALL, "Production", "Preproduction"];
+        component.selectedEquipments = [Constants.ALL, "Laptop", "Smartphone"];
         component.selectedLifecycle = [];
-        component.selectedDomain = ["All", "Domain A", "Domain B"];
+        component.selectedDomain = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomain = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.footprint = [
             {
@@ -368,7 +365,7 @@ describe("ApplicationStatsComponent", () => {
             component.selectedEquipments,
             component.selectedLifecycle,
             component.selectedDomain,
-            component.selectedSubDomain
+            component.selectedSubDomain,
         );
 
         //THEN
@@ -377,9 +374,9 @@ describe("ApplicationStatsComponent", () => {
 
     it("should return 0 application if no domain filter selected", () => {
         //GIVEN
-        component.selectedEnvironnement = ["All", "Production", "Preproduction"];
-        component.selectedEquipments = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycle = ["All", "Using", "Manufacturing"];
+        component.selectedEnvironnement = [Constants.ALL, "Production", "Preproduction"];
+        component.selectedEquipments = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycle = [Constants.ALL, "Using", "Manufacturing"];
         component.selectedDomain = [];
         component.selectedSubDomain = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.footprint = [
@@ -436,7 +433,7 @@ describe("ApplicationStatsComponent", () => {
             component.selectedEquipments,
             component.selectedLifecycle,
             component.selectedDomain,
-            component.selectedSubDomain
+            component.selectedSubDomain,
         );
 
         //THEN
@@ -445,10 +442,10 @@ describe("ApplicationStatsComponent", () => {
 
     it("should return 0 application if no subdomain filter selected", () => {
         //GIVEN
-        component.selectedEnvironnement = ["All", "Production", "Preproduction"];
-        component.selectedEquipments = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycle = ["All", "Using", "Manufacturing"];
-        component.selectedDomain = ["All", "Domain A", "Domain B"];
+        component.selectedEnvironnement = [Constants.ALL, "Production", "Preproduction"];
+        component.selectedEquipments = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycle = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomain = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomain = [];
         component.footprint = [
             {
@@ -504,7 +501,7 @@ describe("ApplicationStatsComponent", () => {
             component.selectedEquipments,
             component.selectedLifecycle,
             component.selectedDomain,
-            component.selectedSubDomain
+            component.selectedSubDomain,
         );
 
         //THEN

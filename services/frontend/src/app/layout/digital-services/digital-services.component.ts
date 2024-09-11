@@ -5,15 +5,15 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, inject } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { lastValueFrom } from "rxjs";
+import { firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-digital-services",
@@ -21,42 +21,56 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     providers: [MessageService, ConfirmationService],
 })
 export class DigitalServicesComponent {
+    private global = inject(GlobalStoreService);
+
     digitalServices: DigitalService[] = [];
     selectedDigitalService: DigitalService = {} as DigitalService;
     sidebarVisible = false;
-    digitalServiceId: any;
+
+    myDigitalServices: DigitalService[] = [];
+    sharedDigitalServices: DigitalService[] = [];
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
-        private router: Router,
-        private spinner: NgxSpinnerService,
-        private confirmationService: ConfirmationService,
-        private translate: TranslateService,
         private route: ActivatedRoute,
+        private router: Router,
+        private translate: TranslateService,
         private messageService: MessageService,
         public userService: UserService,
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.spinner.show();
+        this.global.setLoading(true);
         await this.retrieveDigitalServices();
-        this.spinner.hide();
+        this.global.setLoading(false);
+
+        this.router.events.subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+                this.retrieveDigitalServices();
+            }
+        });
     }
 
     async retrieveDigitalServices() {
+        const userId = (await firstValueFrom(this.userService.user$)).id;
+
+        this.myDigitalServices = [];
+        this.sharedDigitalServices = [];
+
         const apiResult = await lastValueFrom(this.digitalServicesData.list());
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
-        this.digitalServices = [...apiResult];
+
+        apiResult.forEach((digitalService) => {
+            if (digitalService.userId === userId) {
+                this.myDigitalServices.push(digitalService);
+            } else {
+                this.sharedDigitalServices.push(digitalService);
+            }
+        });
     }
 
     async createNewDigitalService() {
-        this.spinner.show();
         const { uid } = await lastValueFrom(this.digitalServicesData.create());
-        this.spinner.hide();
-        this.goToDigitalServiceFootprint(uid);
-    }
-
-    onDigitalServiceSelection(uid: string) {
         this.goToDigitalServiceFootprint(uid);
     }
 
@@ -66,25 +80,16 @@ export class DigitalServicesComponent {
         });
     }
 
-    confirmDelete(event: Event, digitalService: DigitalService) {
-        const { name, uid } = digitalService;
-        this.confirmationService.confirm({
-            closeOnEscape: true,
-            target: event.target as EventTarget,
-            acceptLabel: this.translate.instant("common.yes"),
-            rejectLabel: this.translate.instant("common.no"),
-            message: `${this.translate.instant(
-                "digital-services.popup.delete-question",
-            )} ${name} ?
-            ${this.translate.instant("digital-services.popup.delete-text")}`,
-            icon: "pi pi-exclamation-triangle",
-            accept: async () => {
-                this.spinner.show();
-                await lastValueFrom(this.digitalServicesData.delete(uid));
-                await this.retrieveDigitalServices();
-                this.spinner.hide();
-            },
-        });
+    itemNoteOpened(digitalService: DigitalService) {
+        this.sidebarVisible = true;
+        this.selectedDigitalService = digitalService;
+    }
+
+    async itemDelete(uid: string) {
+        this.global.setLoading(true);
+        await lastValueFrom(this.digitalServicesData.delete(uid));
+        await this.retrieveDigitalServices();
+        this.global.setLoading(false);
     }
 
     noteSaveValue(event: any) {

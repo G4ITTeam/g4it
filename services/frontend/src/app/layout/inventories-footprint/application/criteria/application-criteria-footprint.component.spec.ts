@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -13,12 +13,13 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { SharedModule } from "primeng/api";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintRepository } from "src/app/core/store/footprint.repository";
+import { Constants } from "src/constants";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 import { ApplicationCriteriaFootprintComponent } from "./application-criteria-footprint.component";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 describe("ApplicationCriteriaFootprintComponent", () => {
     let component: ApplicationCriteriaFootprintComponent;
@@ -45,7 +46,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                     useFactory: () => ({ echarts: () => import("echarts") }),
                 },
                 IntegerPipe,
-                DecimalsPipe
+                DecimalsPipe,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });
@@ -64,11 +65,11 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         component.selectedDomainFilter = ["Domain 1", "Domain 2"];
         component.selectedSubDomainFilter = ["subDomain 1", "subDomain 2"];
         component.domainFilter = [
-            "All",
+            Constants.ALL,
             "Domain A,subdomain 1a,subdomain 2a",
             "Domain B,subdomain 1b,subdomain 2b",
         ];
-        let expectedSelectedDomain = ["All", "Domain A", "Domain B"];
+        let expectedSelectedDomain = [Constants.ALL, "Domain A", "Domain B"];
         let expectedSelectedSubDomain = [
             "subdomain 1a",
             "subdomain 2a",
@@ -269,10 +270,14 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     });
 
     it("should check if data available", () => {
-        component.selectedEnvironnementFilter = ["All", "Production", "Preproduction"];
-        component.selectedEquipmentsFilter = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
-        component.selectedDomainFilter = ["All", "Domain A", "Domain B"];
+        component.selectedEnvironnementFilter = [
+            Constants.ALL,
+            "Production",
+            "Preproduction",
+        ];
+        component.selectedEquipmentsFilter = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomainFilter = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomainFilter = [];
         component.footprint = [
             {
@@ -327,10 +332,14 @@ describe("ApplicationCriteriaFootprintComponent", () => {
     });
 
     it("should check that data is not available", () => {
-        component.selectedEnvironnementFilter = ["All", "Production", "Preproduction"];
-        component.selectedEquipmentsFilter = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
-        component.selectedDomainFilter = ["All", "Domain A", "Domain B"];
+        component.selectedEnvironnementFilter = [
+            Constants.ALL,
+            "Production",
+            "Preproduction",
+        ];
+        component.selectedEquipmentsFilter = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomainFilter = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomainFilter = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.footprint = [
             {
@@ -509,7 +518,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         expect(component.selectedGraph).toEqual("subdomain");
         expect(component.loadBarChartOption).toHaveBeenCalledTimes(1);
         expect(footprintRepo.setSelectedSubdomain).toHaveBeenCalledOnceWith(
-            "subdomain 1"
+            "subdomain 1",
         );
         expect(footprintRepo.setSelectedGraph).toHaveBeenCalledOnceWith("subdomain");
     });
@@ -636,12 +645,16 @@ describe("ApplicationCriteriaFootprintComponent", () => {
                 ],
             },
         ];
-        component.selectedEnvironnementFilter = ["All", "Production", "Preproduction"];
+        component.selectedEnvironnementFilter = [
+            Constants.ALL,
+            "Production",
+            "Preproduction",
+        ];
         component.selectedGraph = "global";
         component.selectedCriteriaUri = "climate-change";
-        component.selectedEquipmentsFilter = ["All", "Laptop", "Smartphone"];
-        component.selectedLifecycleFilter = ["All", "Using", "Manufacturing"];
-        component.selectedDomainFilter = ["All", "Domain A", "Domain B"];
+        component.selectedEquipmentsFilter = [Constants.ALL, "Laptop", "Smartphone"];
+        component.selectedLifecycleFilter = [Constants.ALL, "Using", "Manufacturing"];
+        component.selectedDomainFilter = [Constants.ALL, "Domain A", "Domain B"];
         component.selectedSubDomainFilter = ["subdomain 1", "subdomain 2", "subdomain 3"];
         component.impactOrder = [
             {
@@ -684,7 +697,7 @@ describe("ApplicationCriteriaFootprintComponent", () => {
         expect(result).toEqual(expectedResult);
         expect(component.computeImpactOrder).toHaveBeenCalledOnceWith(
             callParameters4ComputeImpactOrder,
-            callParameters4ComputeImpactOrder.domain
+            callParameters4ComputeImpactOrder.domain,
         );
         expect(component.initGraphData).toHaveBeenCalledOnceWith(component.impactOrder);
     });

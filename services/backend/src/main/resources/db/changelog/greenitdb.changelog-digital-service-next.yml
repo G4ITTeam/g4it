@@ -1,0 +1,79 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-digital_service_link-table
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - tableExists:
+                tableName: digital_service_link
+      changes:
+        - createTable:
+            tableName: digital_service_link
+            columns:
+              - column:
+                  name: uid
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: digital_service_link_pk
+                    valueComputed: UUID()
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: digitalservicelink-digitalservice-fk
+                    references: digital_service(uid)
+                    deleteCascade: true
+              - column:
+                  name: expiration_date
+                  type: timestamp
+
+  - changeSet:
+      id: create-digital_service_shared-table
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - tableExists:
+                tableName: digital_service_shared
+      changes:
+        - createTable:
+            tableName: digital_service_shared
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: digital_service_shared_pk
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: digitalserviceshared-user-fk
+                    references: g4it_user(id)
+                    onDelete: cascade
+              - column:
+                  name: organization_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: digitalserviceshared-organization-fk
+                    references: g4it_organization(id)
+                    onDelete: cascade
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: digitalserviceshared-digitalservice-fk
+                    references: digital_service(uid)
+                    deleteCascade: true
+        - addUniqueConstraint:
+            columnNames: user_id, digital_service_uid
+            constraintName: userdigitalserviceshared_unique
+            tableName: digital_service_shared
+

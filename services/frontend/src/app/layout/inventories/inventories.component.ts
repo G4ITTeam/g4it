@@ -5,17 +5,18 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, inject, OnInit } from "@angular/core";
+import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
+import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 
 @Component({
@@ -24,6 +25,8 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoriesComponent implements OnInit {
+    private global = inject(GlobalStoreService);
+
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
     sidebarType = "FILE"; // or NOTE
@@ -42,17 +45,22 @@ export class InventoriesComponent implements OnInit {
     enableSearchField = true;
     searchFieldTouched = true;
     selectedInventory: Inventory = {} as Inventory;
+    selectedOrganization!: string;
 
     constructor(
         private inventoryService: InventoryService,
         public router: Router,
-        private spinner: NgxSpinnerService,
         private messageService: MessageService,
         private translate: TranslateService,
         public userService: UserService,
     ) {}
 
     async ngOnInit() {
+        this.userService.currentOrganization$
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((organization: Organization) => {
+                this.selectedOrganization = organization.name;
+            });
         this.inventoriesOpen = localStorage.getItem("inventoriesOpen")
             ? new Set(
                   localStorage
@@ -79,7 +87,23 @@ export class InventoriesComponent implements OnInit {
         if (this.doLoop) {
             this.loopLoadInventories();
         }
+
+        this.router.events.subscribe((event: Event) => {
+            if (event instanceof NavigationEnd) {
+                clearInterval(this.inventoryInterval);
+                if (event.url.includes("/footprint")) {
+                    return;
+                }
+
+                this.reloadInventories().then(() => {
+                    if (this.doLoop) {
+                        this.loopLoadInventories();
+                    }
+                });
+            }
+        });
     }
+
     loopLoadInventories() {
         this.inventoryInterval = setInterval(async () => {
             if (this.inventoriesToReload.size === 0) {
@@ -125,7 +149,7 @@ export class InventoriesComponent implements OnInit {
     }
 
     async reloadInventories() {
-        this.spinner.show();
+        this.global.setLoading(true);
 
         const allInventories = await this.inventoryService.getInventories();
 
@@ -154,7 +178,7 @@ export class InventoriesComponent implements OnInit {
             ...this.inventoriesForSimulationsAll,
         ]);
 
-        this.spinner.hide();
+        this.global.setLoading(false);
     }
 
     setInventoryToReload(inventory: Inventory) {

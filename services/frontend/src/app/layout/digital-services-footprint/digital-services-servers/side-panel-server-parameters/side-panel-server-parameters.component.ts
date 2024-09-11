@@ -8,9 +8,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
-import { Subject, first, lastValueFrom, takeUntil } from "rxjs";
+import { Subject, lastValueFrom, takeUntil } from "rxjs";
 import {
     DigitalService,
     DigitalServiceServerConfig,
@@ -78,44 +77,39 @@ export class SidePanelServerParametersComponent implements OnInit {
         private digitalDataService: DigitalServicesDataService,
         private digitalServiceBusiness: DigitalServiceBusinessService,
         private _formBuilder: FormBuilder,
-        private spinner: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute,
         public userService: UserService,
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.digitalDataService.digitalService$
-            .pipe(first())
-            .subscribe((digitalServiceResponse) => {
-                this.digitalService = digitalServiceResponse;
-                this.digitalServiceBusiness.serverFormSubject$
-                    .pipe(takeUntil(this.ngUnsubscribe))
-                    .subscribe(async (res: DigitalServiceServerConfig) => {
-                        this.spinner.show();
-                        this.server = { ...res };
-                        await this.setHostReferential(res.type);
-                        this.server = { ...res };
-                        await this.setDatacenterReferential(res.datacenter);
-                        this.spinner.hide();
-                        const serverSaved = digitalServiceResponse.servers.find(
-                            (r) => r.uid === res.uid,
+        this.digitalDataService.digitalService$.subscribe((digitalServiceResponse) => {
+            this.digitalService = digitalServiceResponse;
+            this.digitalServiceBusiness.serverFormSubject$
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe(async (res: DigitalServiceServerConfig) => {
+                    this.server = { ...res };
+                    await this.setHostReferential(res.type);
+                    this.server = { ...res };
+                    await this.setDatacenterReferential(res.datacenter);
+                    const serverSaved = digitalServiceResponse.servers.find(
+                        (r) => r.uid === res.uid,
+                    );
+                    const typeValueChanged = serverSaved?.type !== res.type;
+                    if (
+                        (this.server.uid === "" && !this.dataInitialized) ||
+                        typeValueChanged
+                    ) {
+                        this.initializeDefaultValue();
+                    }
+                    if (!typeValueChanged) {
+                        this.indexHostStorage = this.hostOptions.findIndex(
+                            (x) => x.value === serverSaved?.host?.value,
                         );
-                        const typeValueChanged = serverSaved?.type !== res.type;
-                        if (
-                            (this.server.uid === "" && !this.dataInitialized) ||
-                            typeValueChanged
-                        ) {
-                            this.initializeDefaultValue();
-                        }
-                        if (!typeValueChanged) {
-                            this.indexHostStorage = this.hostOptions.findIndex(
-                                (x) => x.value === serverSaved?.host?.value,
-                            );
-                            this.server.host = this.hostOptions[this.indexHostStorage];
-                        }
-                    });
-            });
+                        this.server.host = this.hostOptions[this.indexHostStorage];
+                    }
+                });
+        });
 
         this.digitalServiceBusiness.dataInitializedSubject$
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -255,7 +249,6 @@ export class SidePanelServerParametersComponent implements OnInit {
     }
 
     async addDatacenter(datacenter: ServerDC) {
-        this.spinner.show();
         this.datacenterOptions.push(datacenter);
         this.datacenterOptions = this.datacenterOptions.map(
             this.formatDatacenterDisplayLabel,
@@ -263,7 +256,6 @@ export class SidePanelServerParametersComponent implements OnInit {
         this.server.datacenter = this.datacenterOptions.find(
             (res) => res.name === datacenter.name,
         );
-        this.spinner.hide();
     }
 
     previousStep() {
@@ -275,12 +267,10 @@ export class SidePanelServerParametersComponent implements OnInit {
     async nextStep() {
         this.digitalServiceBusiness.setServerForm(this.server);
         if (this.server.mutualizationType === "Dedicated") {
-            this.spinner.show();
             this.digitalServiceBusiness.submitServerForm(
                 this.server,
                 this.digitalService,
             );
-            this.spinner.hide();
             this.close();
         } else if (this.server.mutualizationType === "Shared") {
             this.digitalServiceBusiness.setDataInitialized(true);

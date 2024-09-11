@@ -66,7 +66,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             log.error("Not found error: {}", ex.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
+        // to check url expiry for shared digital service
+        if (ex.getCode().equals("410")) {
+            return new ResponseEntity<>(
+                    RestError.builder()
+                            .code("410")
+                            .message(ex.getMessage())
+                            .timestamp(OffsetDateTime.now())
+                            .status(410)
+                            .build(),
+                    HttpStatus.GONE);
+        }
         log.error("Exception de validation survenue lors de la requête {}", request.getContextPath(), ex);
         return new ResponseEntity<>(
                 RestError.builder()

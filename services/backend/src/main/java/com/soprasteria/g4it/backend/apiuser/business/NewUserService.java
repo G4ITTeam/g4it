@@ -105,7 +105,6 @@ public class NewUserService {
      * @param accessRoles the access Roles
      * @return the user.
      */
-
     private User createNewUser(final UserBO userInfo, final Subscriber subscriber, final Organization demoOrg, final List<Role> accessRoles) {
         User userToCreate = User.builder()
                 .email(userInfo.getEmail())

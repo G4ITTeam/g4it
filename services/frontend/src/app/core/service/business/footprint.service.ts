@@ -4,15 +4,14 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, forkJoin, lastValueFrom, map, of, tap } from "rxjs";
+import { Observable, forkJoin, lastValueFrom, map, tap } from "rxjs";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
 import { EchartsRepository } from "src/app/core/store/echarts.repository";
 import {
-    Filter,
     FilterApplication,
     FilterApplicationReceived,
     FilterRepository,
@@ -20,11 +19,15 @@ import {
 import {
     ApplicationCriteriaFootprint,
     ApplicationFootprint,
+    Criterias,
     FootprintRepository,
+    Impact,
 } from "src/app/core/store/footprint.repository";
 import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { Filter } from "../../interfaces/filter.interface";
+import { FootprintCalculated, SumImpact } from "../../interfaces/footprint.interface";
 
 @Injectable({
     providedIn: "root",
@@ -37,21 +40,21 @@ export class FootprintService {
         private footprintRepo: FootprintRepository,
         private echartsRepo: EchartsRepository,
         private inventoryRepo: InventoryRepository,
-        private translate: TranslateService
+        private translate: TranslateService,
     ) {}
 
     async retrieveFootprint(
         selectedInventoryId: number,
         selectedCriteria: string,
-        selectedView: string
+        selectedView: string,
     ): Promise<void> {
         const inventories = await lastValueFrom(
-            this.inventoryDataService.getInventories(selectedInventoryId)
+            this.inventoryDataService.getInventories(selectedInventoryId),
         );
         let inventory;
         if (inventories.length > 1) {
             inventory = inventories.map(
-                (inventory) => inventory.id === selectedInventoryId
+                (inventory) => inventory.id === selectedInventoryId,
             );
         } else {
             inventory = inventories;
@@ -63,28 +66,13 @@ export class FootprintService {
         }
         // Otherwise, we proceed with fetching data from API
         this.inventoryRepo.updateSelectedInventory(selectedInventoryId);
-        if (selectedView === "equipment") {
-            // Fetch all data from api and initialize stores
-            forkJoin([
-                this.initFilters(selectedInventoryId),
-                this.initFootprint(selectedInventoryId),
-                this.initDatacenters(selectedInventoryId),
-                this.initPhysicalEquipments(selectedInventoryId),
-            ]).subscribe(([filters]) => {
-                // Refresh active impacts
-                this.refreshActiveImpacts(filters);
-                // Init selected criteria from url
-                this.updateSelectedCriteria(selectedCriteria);
-                // We can signal that all data has been initialized
-                this.echartsRepo.setIsDataInitialized(true);
-            });
-        } else if (selectedView === "application") {
+        if (selectedView === "application") {
             // Fetch all data from api and initialize stores
             const actualAppFootprint = this.footprintRepo.getValueApplicationFootprint();
 
             let currentInventoryId = null;
             for (const key in actualAppFootprint) {
-                currentInventoryId = actualAppFootprint[key].id || 'undefined';
+                currentInventoryId = actualAppFootprint[key].id || "undefined";
                 break;
             }
 
@@ -109,16 +97,6 @@ export class FootprintService {
             .pipe(tap(this.footprintRepo.initStores));
     }
 
-    initFilters(inventoryId: number): Observable<Filter> {
-        return this.footprintDataService
-            .getFilters(inventoryId)
-            .pipe(
-                map(this.cleanFilters),
-                tap(this.filterRepo.setAllFilters),
-                tap(this.filterRepo.updateSelectedFilters)
-            );
-    }
-
     initFiltersApplication(inventoryId: number): Observable<FilterApplication> {
         const appGraph = this.footprintRepo.getValueAppGraphPositionStore();
 
@@ -127,12 +105,12 @@ export class FootprintService {
                 inventoryId,
                 appGraph.domain,
                 appGraph.subdomain,
-                appGraph.app
+                appGraph.app,
             )
             .pipe(
                 map(this.cleanApplicationFilters),
                 tap(this.filterRepo.setAllFiltersApp),
-                tap(this.filterRepo.updateSelectedFiltersApp)
+                tap(this.filterRepo.updateSelectedFiltersApp),
             );
     }
 
@@ -147,8 +125,8 @@ export class FootprintService {
             .getPhysicalEquipments(inventoryId)
             .pipe(
                 tap(([averageAges, lowImpact]) =>
-                    this.footprintRepo.setPhysicalEquipmentStats(averageAges, lowImpact)
-                )
+                    this.footprintRepo.setPhysicalEquipmentStats(averageAges, lowImpact),
+                ),
             );
     }
 
@@ -175,20 +153,16 @@ export class FootprintService {
                 footprint = this.setUnspecifiedData(footprint);
                 footprint.forEach((indicateur) => {
                     indicateur.criteriaTitle = this.translate.instant(
-                        `criteria.${indicateur.criteria}.title`
+                        `criteria.${indicateur.criteria}.title`,
                     );
                     indicateur.id = inventoryId;
                 });
                 this.footprintRepo.setApplicationFootprint(footprint);
-            })
+            }),
         );
     }
 
-    initApplicationCriteriaFootprint(
-        inventoryId: number,
-        app: string,
-        criteria: string
-    ) {
+    initApplicationCriteriaFootprint(inventoryId: number, app: string, criteria: string) {
         return this.mapApplicationCriteria(inventoryId, app, criteria);
     }
 
@@ -200,11 +174,11 @@ export class FootprintService {
                     footprint = this.setUnspecifiedDataApp(footprint);
                     footprint.forEach((indicateur) => {
                         indicateur.criteriaTitle = this.translate.instant(
-                            `criteria.${indicateur.criteria}.title`
+                            `criteria.${indicateur.criteria}.title`,
                         );
                     });
                     this.footprintRepo.setApplicationCriteriaFootprint(footprint);
-                })
+                }),
             );
     }
 
@@ -237,27 +211,12 @@ export class FootprintService {
         return footprint;
     }
 
-    refreshActiveImpacts(filters: Filter): void {
-        this.footprintRepo.updateActiveImpacts(filters);
-    }
-
     private getUnitFromCriteria(criteria: string): string {
         return this.translate.instant(`criteria.${criteria}.unite`);
     }
 
-    private cleanFilters(rawFilters: Filter) {
-        // Replace null values by "Empty" and add "All" value
-        return Object.keys(rawFilters).reduce((acc, key) => {
-            acc[key as keyof Filter] = [
-                "All",
-                ...rawFilters[key as keyof Filter].map((item) => item || "Empty").sort(),
-            ];
-            return acc;
-        }, {} as Filter);
-    }
-
     private cleanApplicationFilters(
-        rawFilters: FilterApplicationReceived
+        rawFilters: FilterApplicationReceived,
     ): FilterApplication {
         const transformedFilters: FilterApplication = {
             environments: [...rawFilters.environments],
@@ -269,7 +228,7 @@ export class FootprintService {
         const lifecyleMap = LifeCycleUtils.getLifeCycleMap();
 
         transformedFilters.lifeCycles = rawFilters.lifeCycles.map(
-            (lifeCycle) => lifecyleMap.get(lifeCycle) || lifeCycle
+            (lifeCycle) => lifecyleMap.get(lifeCycle) || lifeCycle,
         );
 
         transformedFilters.domains = rawFilters.domains.map((domain) => {
@@ -279,7 +238,9 @@ export class FootprintService {
 
             let domainString = domain.name;
             const subDomains = domain.subDomains
-                .map((subdomain) => (subdomain === "" ? Constants.UNSPECIFIED : subdomain))
+                .map((subdomain) =>
+                    subdomain === "" ? Constants.UNSPECIFIED : subdomain,
+                )
                 .join(",");
 
             if (subDomains.length > 0) {
@@ -289,15 +250,143 @@ export class FootprintService {
             return domainString;
         });
 
-        // Replace null values by "Empty" and add "All" value
+        // Replace null values by "Empty" and add Constants.ALL value
         return Object.keys(transformedFilters).reduce((acc, key) => {
             acc[key as keyof FilterApplicationReceived] = [
-                "All",
+                Constants.ALL,
                 ...transformedFilters[key as keyof FilterApplicationReceived]
                     .map((item: any) => item || Constants.UNSPECIFIED)
                     .sort(),
             ];
             return acc;
         }, {} as FilterApplication);
+    }
+
+    addImpact(i1: SumImpact, i2: SumImpact) {
+        return {
+            impact: i1.impact + i2.impact,
+            sip: i1.sip + i2.sip,
+        };
+    }
+
+    calculate(
+        footprint: Criterias,
+        filters: Filter,
+        selectedView: string,
+        filterFields: string[],
+    ): FootprintCalculated[] {
+        if (footprint === undefined) return [];
+
+        const footprintCalculated: FootprintCalculated[] = [];
+
+        const order = LifeCycleUtils.getLifeCycleList();
+        const lifeCycleMap = LifeCycleUtils.getLifeCycleMap();
+
+        const filtersSet: any = {};
+        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
+
+        const hasAllFilters = Object.keys(filtersSet).every((item) =>
+            filtersSet[item].has(Constants.ALL),
+        );
+
+        for (let criteria in footprint) {
+            if (!footprint[criteria].impacts) continue;
+
+            const filteredImpacts = hasAllFilters
+                ? footprint[criteria].impacts
+                : footprint[criteria].impacts.filter((impact: Impact) => {
+                      let isPresent = true;
+                      for (const field in filtersSet) {
+                          let value = this.valueImpact(impact, field)!;
+                          if (value == null) value = Constants.EMPTY;
+
+                          if (!filtersSet[field].has(value)) {
+                              isPresent = false;
+                              break;
+                          }
+                      }
+                      return isPresent;
+                  });
+
+            const groupedSumImpacts = new Map<string, SumImpact>();
+
+            for (const impact of filteredImpacts) {
+                let key = this.valueImpact(impact, selectedView)!;
+                if (key == null) key = Constants.EMPTY;
+                groupedSumImpacts.set(
+                    key,
+                    this.addImpact(
+                        groupedSumImpacts.get(key) || { impact: 0, sip: 0 },
+                        impact,
+                    ),
+                );
+            }
+
+            for (let [dimension, sumImpact] of groupedSumImpacts) {
+                const impact = {
+                    criteria,
+                    sumSip: sumImpact.sip,
+                    sumImpact: sumImpact.impact,
+                };
+
+                const translated = lifeCycleMap.get(dimension);
+
+                const view: FootprintCalculated = {
+                    data: translated ? translated : dimension,
+                    impacts: [impact],
+                    total: {
+                        impact: impact.sumImpact,
+                        sip: impact.sumSip,
+                    },
+                };
+
+                const viewExist = footprintCalculated.find(
+                    (data: any) => data.data === view.data,
+                );
+                if (viewExist) {
+                    viewExist.impacts.push(impact);
+                    viewExist.total = this.addImpact(viewExist.total, view.total);
+                } else {
+                    footprintCalculated.push(view);
+                }
+            }
+        }
+
+        if (selectedView === Constants.ACV_STEP) {
+            footprintCalculated.sort((a: any, b: any) => {
+                return order.indexOf(a.data) - order.indexOf(b.data);
+            });
+        } else {
+            // Sort by alphabetical order
+            footprintCalculated.sort((a: any, b: any) => a.data.localeCompare(b.data));
+        }
+
+        return footprintCalculated;
+    }
+
+    valueImpact(v: Impact, dimension: string) {
+        switch (dimension) {
+            case Constants.ACV_STEP:
+                return v.acvStep;
+            case "country":
+                return v.country;
+            case "entity":
+                return v.entity;
+            case "equipment":
+                return v.equipment;
+            case "status":
+                return v.status;
+            default:
+                return null;
+        }
+    }
+
+    calculateTotal(footprintCalculated: FootprintCalculated[], unit: string) {
+        return footprintCalculated.reduce(
+            (sum, current) =>
+                sum +
+                (unit === Constants.PEOPLEEQ ? current.total.sip : current.total.impact),
+            0,
+        );
     }
 }

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb.numecoeval;
 
 import jakarta.persistence.*;
@@ -98,5 +98,32 @@ public class PhysicalEquipmentIndicator extends CommonIndicatorExport {
 
     @Column(name = "nom_source_donnee")
     private String dataSourceName;
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the common criteria
+     */
+    public String getCommonCriteria() {
+        return this.getCriteria();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the common unitImpact
+     */
+    public Double getCommonUnitImpact() {
+        return this.getUnitImpact();
+    }
+
+    /**
+     * Used by csv-headers.yml
+     *
+     * @return the common sipImpact
+     */
+    public Double getCommonSipImpact() {
+        return this.getSipImpact();
+    }
 
 }

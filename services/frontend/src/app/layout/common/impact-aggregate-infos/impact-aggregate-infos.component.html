@@ -1,0 +1,40 @@
+<div class="impact-critere-div">
+    <div class="grey-round">
+        <img src="assets/images/icons/icon-{{ icon }}.svg" alt="" />
+    </div>
+    <div class="critere-text" [ngClass]="{ 'grey-text': displayValue === 0 }">
+        {{ criteria }}
+    </div>
+    <div class="critere-number">
+        <div>
+            <div *ngIf="(displayValue ?? 0) === 0; else valueNotNull">
+                <p class="text-no-data-critere">--</p>
+            </div>
+            <ng-template #valueNotNull>
+                <div *ngIf="unit === 'Peopleeq'; else elseBlock">
+                    {{ displayValue | integer }}
+                </div>
+                <ng-template #elseBlock>
+                    <div>
+                        {{ displayValue | decimals }}
+                    </div>
+                </ng-template>
+            </ng-template>
+        </div>
+    </div>
+    <p-card class="rmv-padding-card">
+        <div class="round-button-container">
+            <button
+                [class]="unit === 'impact' ? 'round-button-selected' : 'round-button'"
+                (click)="setUnit('impact')"
+                [innerHTML]="unitOfCriteria"
+            ></button>
+            <button
+                [class]="unit === 'Peopleeq' ? 'round-button-selected' : 'round-button'"
+                (click)="setUnit('Peopleeq')"
+            >
+                {{ "common.peopleeq" | translate }}
+            </button>
+        </div>
+    </p-card>
+</div>

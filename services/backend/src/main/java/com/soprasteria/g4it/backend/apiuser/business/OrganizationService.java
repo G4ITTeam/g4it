@@ -15,7 +15,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserOrganizationRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRoleOrganizationRepository;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileSystem;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -85,7 +85,8 @@ public class OrganizationService {
      */
     @Cacheable("Organization")
     public Organization getOrganizationById(final Long organizationId) {
-        return organizationRepository.findByIdAndStatusIn(organizationId, List.of(OrganizationStatus.ACTIVE.name())).orElseThrow(() -> new G4itRestException("404", String.format("organization %d not found", organizationId)));
+        return organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new G4itRestException("404", String.format("organization %d not found", organizationId)));
     }
 
     /**

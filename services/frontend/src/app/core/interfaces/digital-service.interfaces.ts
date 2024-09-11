@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 
 import { Note } from "./note.interface";
 
@@ -18,6 +18,7 @@ export interface DigitalService {
     servers: DigitalServiceServerConfig[];
     networks: DigitalServiceNetworkConfig[];
     note?: Note;
+    userId?: number;
 }
 
 export interface DigitalServiceServerConfig {
@@ -80,6 +81,22 @@ export interface NetworkType {
     value: string;
 }
 
+export interface DigitalServiceTerminalResponse {
+    criteria: string;
+    impacts: TerminalImpact[];
+}
+
+export interface TerminalImpact {
+    acvStep: string;
+    country: string;
+    description: string;
+    numberUsers: number;
+    rawValue: number;
+    sipValue: number;
+    unit: string;
+    yearlyUsageTimePerUser: number;
+}
+
 export interface DigitalServiceTerminalsImpact {
     criteria: string;
     impactCountry: TerminalsImpact[];
@@ -87,6 +104,8 @@ export interface DigitalServiceTerminalsImpact {
 }
 
 export interface TerminalsImpact {
+    rawValue?: any;
+    unit?: any;
     name: string;
     totalSipValue: number;
     totalNbUsers: number;
@@ -118,6 +137,8 @@ export interface ServerImpact {
 }
 
 export interface ImpactACVStep {
+    rawValue?: number;
+    unit?: string;
     acvStep: string;
     sipValue: number;
 }
@@ -128,12 +149,15 @@ export interface ImpactTerminalsACVStep {
 }
 
 export interface ImpactNetworkSipValue {
+    unit?: string;
     networkType: string;
     sipValue: number;
     rawValue: number;
 }
 
 export interface ImpactSipValue {
+    rawValue?: number;
+    unit?: string;
     name: string;
     sipValue: number;
     quantity: number;

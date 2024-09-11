@@ -36,7 +36,6 @@ public class InventoryIndicatorService {
     @Autowired
     private FilterService filterService;
 
-
     @Autowired
     private OrganizationService organizationService;
 
@@ -63,7 +62,7 @@ public class InventoryIndicatorService {
     public EquipmentFiltersBO getEquipmentFilters(final String subscriber, final Long organizationId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        return filterService.getEquipmentFilters(subscriber, linkedOrganization, inventory.getId(), getLastBatchName(inventory));
+        return filterService.getEquipmentFilters(subscriber, linkedOrganization, getLastBatchName(inventory));
     }
 
     /**
@@ -79,7 +78,7 @@ public class InventoryIndicatorService {
                                                       final String domain, final String subDomain, final String applicationName) {
 
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        return filterService.getApplicationFilters(subscriber, organizationId, inventory.getId(), getLastBatchName(inventory), domain, subDomain, applicationName);
+        return filterService.getApplicationFilters(subscriber, organizationId, getLastBatchName(inventory), domain, subDomain, applicationName);
     }
 
     /**
@@ -136,8 +135,8 @@ public class InventoryIndicatorService {
      * @param inventoryId    the inventory id.
      */
     public void deleteIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
-        inventoryService.getInventory(subscriber, organizationId, inventoryId).getEvaluationReports().forEach(report ->
-                indicatorService.deleteIndicators(report.getBatchName()));
+        inventoryService.getInventory(subscriber, organizationId, inventoryId).getEvaluationReports()
+                .forEach(report -> indicatorService.deleteIndicators(report.getBatchName()));
     }
 
     /**

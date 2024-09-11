@@ -7,8 +7,8 @@
  */
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-import { ErrorComponent } from "./layout/common/error/error.component";
 import { AuthGuard } from "./guard/auth.gard";
+import { ErrorComponent } from "./layout/common/error/error.component";
 
 const routes: Routes = [
     {
@@ -16,9 +16,11 @@ const routes: Routes = [
         component: ErrorComponent,
     },
     {
-        path:"administration",
+        path: "administration",
         loadChildren: () =>
-            import("./layout/administration/administration.module").then((modules) => modules.AdministrationModule),
+            import("./layout/administration/administration.module").then(
+                (modules) => modules.AdministrationModule,
+            ),
         canActivate: [AuthGuard],
     },
     {

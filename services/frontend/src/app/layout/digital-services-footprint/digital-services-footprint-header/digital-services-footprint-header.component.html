@@ -1,40 +1,50 @@
 <p-toast #toast position="bottom-center"></p-toast>
+<p-sidebar
+    [(visible)]="sidebarVisible"
+    position="right"
+    styleClass="p-sidebar-md w-7"
+    [showCloseIcon]="true"
+>
+    <app-common-editor
+        [content]="digitalService.note?.content"
+        [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
+        (saveValue)="noteSaveValue($event)"
+        (close)="sidebarVisible = $event"
+        (delete)="noteDelete(); sidebarVisible = $event"
+        styleClass="mx-7"
+    >
+    </app-common-editor>
+</p-sidebar>
+<p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
 <div class="flex justify-content-between align-items-center flex-wrap mb-2">
     <div>
-        <div
-            class="green-dashboard-title"
+        <p-button
+            styleClass="color-tertiary text-2xl font-semibold p-2"
             [routerLink]="changePageToDigitalServices()"
-            tabindex="0"
-            role="button"
+            [text]="true"
             [attr.aria-label]="'digital-services.return' | translate"
-        >
-            <img
-                src="assets/images/icons/icon-green-arrow-left.svg"
-                alt=""
-                class="button-icon"
-            />
-            {{ "digital-services.title" | translate }}
-        </div>
+            icon="pi pi-arrow-left"
+            [label]="'digital-services.title' | translate"
+        />
+
         <div class="input-title">
-            <span
-                *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)"
-                class="h2-title"
-                >{{ digitalService.name }}</span
-            >
+            <h2 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)" class="px-2">
+                {{ digitalService.name }}
+            </h2>
             <p-inplace
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 [closable]="true"
                 [preventClick]="digitalService.name === ''"
                 (onDeactivate)="onNameUpdate(digitalService.name)"
+                styleClass="w-30rem"
             >
                 <ng-template pTemplate="display">
-                    <span class="h2-title">{{ digitalService.name }}</span>
+                    <h2 class="px-2">{{ digitalService.name }}</h2>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input
                         type="text"
-                        class="h2-title"
-                        style="margin-right: 10px"
+                        class="text-5xl font-semibold px-2 mr-2 w-11"
                         pInputText
                         [(ngModel)]="digitalService.name"
                         [required]="true"
@@ -46,77 +56,76 @@
             </p-inplace>
         </div>
     </div>
-    <div class="mr-4">
-        <p-sidebar
-            [(visible)]="sidebarVisible"
-            position="right"
-            styleClass="p-sidebar-md w-7"
-            [showCloseIcon]="true"
-        >
-            <app-common-editor
-                [content]="digitalService.note?.content"
-                [showButtons]="userService.isAllowedDigitalServiceWrite$ | async"
-                (saveValue)="noteSaveValue($event)"
-                (close)="sidebarVisible = $event"
-                (delete)="noteDelete(); sidebarVisible = $event"
-                styleClass="mx-7"
-            >
-            </app-common-editor>
-        </p-sidebar>
-
-        <span *ngIf="userService.isAllowedDigitalServiceWrite$ | async">
-            <p-button
-                (click)="sidebarVisible = true"
-                [tabindex]="0"
-                styleClass="white-button"
-                attr.aria-label="{{ 'common.accessibility.addNote' | translate }}"
-                *ngIf="!digitalService.note"
-            >
-                <img
-                    class="w-1rem h-1rem uppercase mr-2"
-                    src="assets/images/icons/icon-plus.svg"
-                    alt="{{ 'common.accessibility.addNote' | translate }}"
-                />
-                {{ "common.note.add" | translate }}
-            </p-button>
-        </span>
+    <div class="mr-3">
         <p-button
             (click)="sidebarVisible = true"
-            [tabindex]="0"
-            styleClass="white-button"
-            attr.aria-label="{{ 'common.accessibility.attachedNote' | translate }}"
+            styleClass="text-gray-900 header-button"
+            [attr.aria-label]="'common.accessibility.addNote' | translate"
+            *ngIf="
+                !digitalService.note &&
+                (userService.isAllowedDigitalServiceWrite$ | async)
+            "
+            [text]="true"
+            [plain]="true"
+            icon="pi pi-plus-circle"
+            [label]="'common.note.add' | translate"
+        />
+
+        <p-button
+            (click)="sidebarVisible = true"
+            styleClass="text-gray-900 header-button"
+            [attr.aria-label]="'common.accessibility.attachedNote' | translate"
             *ngIf="digitalService.note"
-        >
-            <img
-                class="w-1rem h-1rem uppercase mr-2"
-                src="assets/images/icons/icon-note.svg"
-                alt="{{ 'common.accessibility.attachedNote' | translate }}"
-            />
-            {{ "common.note.attached" | translate }}
-        </p-button>
+            [text]="true"
+            [plain]="true"
+            icon="pi pi-clipboard"
+            [label]="'common.note.attached' | translate"
+        />
+
+        <p-button
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
+            styleClass="bg-black text-white header-button"
+            (click)="copyUrl()"
+            attr.aria-label="{{ 'digital-services.copyLink' | translate }}"
+            icon="pi pi-link"
+            [label]="'digital-services.copyLink' | translate"
+        />
+
+        <p-button
+            *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && isLinkCopied"
+            styleClass="bg-black text-white header-button"
+            [disabled]="true"
+            class="disabled-text-black"
+            attr.aria-label="{{ 'digital-services.copyLink' | translate }}"
+            [label]="'digital-services.linkCopied' | translate"
+        />
+
+        <p-button
+            attr.aria-label="{{ 'common.accessibility.download' | translate }}"
+            styleClass="bg-black text-white header-button"
+            (click)="exportData()"
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            icon="pi pi-download"
+            [label]="'inventories-footprint.header.export' | translate"
+        />
+
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            styleClass="black-button"
-            class="disabled-text-black"
+            styleClass="bg-black text-white header-button"
             [disabled]="disableCalcul"
             (onClick)="launchCalcul()"
-        >
-            {{ "common.calculate" | translate }}
-        </p-button>
+            [label]="'common.calculate' | translate"
+        />
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-            severity="danger"
-            styleClass="ml-3"
+            styleClass="ml-2"
             [rounded]="true"
             [text]="true"
             [raised]="true"
+            [plain]="true"
             (click)="confirmDelete($event)"
-        >
-            <img
-                src="assets/images/icons/icon-trash-digital.svg"
-                alt="{{ 'common.delete' | translate }} {{ digitalService.name }}"
-            />
-        </p-button>
-        <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
+            icon="pi pi-trash"
+            size="large"
+        />
     </div>
 </div>

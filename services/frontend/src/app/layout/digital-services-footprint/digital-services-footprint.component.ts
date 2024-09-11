@@ -5,20 +5,22 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MenuItem } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
     selector: "app-digital-services-footprint",
     templateUrl: "./digital-services-footprint.component.html",
 })
 export class DigitalServicesFootprintComponent implements OnInit {
+    private global = inject(GlobalStoreService);
+
     digitalService: DigitalService = {
         name: "...",
         uid: "",
@@ -34,18 +36,17 @@ export class DigitalServicesFootprintComponent implements OnInit {
     constructor(
         private digitalServicesData: DigitalServicesDataService,
         private route: ActivatedRoute,
-        private spinner: NgxSpinnerService,
         private translate: TranslateService,
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.spinner.show();
+        this.global.setLoading(true);
         const uid = this.route.snapshot.paramMap.get("digitalServiceId") ?? "";
         const digitalService = await lastValueFrom(this.digitalServicesData.get(uid));
         // If the digital service is not found, 404 is catched by the interceptor.
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
-        this.spinner.hide();
+        this.global.setLoading(false);
         this.updateTabItems();
     }
 

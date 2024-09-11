@@ -8,8 +8,8 @@
 package com.soprasteria.g4it.backend.apibatchloading.steps.upload.tasklet;
 
 import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryIntegrationRuntimeException;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;

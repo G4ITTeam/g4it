@@ -4,12 +4,12 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.steps.common.tasklet;
 
 import com.soprasteria.g4it.backend.apibatchloading.exception.InventoryLoadingException;
+import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
 import com.soprasteria.g4it.backend.exception.InvalidHeaderException;

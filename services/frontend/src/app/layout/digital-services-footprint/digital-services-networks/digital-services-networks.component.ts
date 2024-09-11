@@ -4,14 +4,14 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component } from "@angular/core";
-import { NgxSpinnerService } from "ngx-spinner";
 import { MessageService } from "primeng/api";
-import { lastValueFrom } from "rxjs";
+import { firstValueFrom } from "rxjs";
 import {
     DigitalService,
     DigitalServiceNetworkConfig,
+    NetworkType,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -19,98 +19,67 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 @Component({
     selector: "app-digital-services-networks",
     templateUrl: "./digital-services-networks.component.html",
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class DigitalServicesNetworksComponent {
-    digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-    };
-    network: DigitalServiceNetworkConfig = {
-        uid: undefined,
-        type: {
-            code: "fixed-line-network-1",
-            value: "Fixed FR",
-        },
-        yearlyQuantityOfGbExchanged: 0,
-    };
+    digitalService: DigitalService = {} as DigitalService;
+    networkTypes: NetworkType[] = [];
+    network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
+
     sidebarVisible = false;
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
-        private spinner: NgxSpinnerService,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
-    ngOnInit() {
-        this.digitalServicesData.digitalService$.subscribe((res) => {
-            this.digitalService = res;
-        });
+    async ngOnInit() {
+        this.digitalService = await firstValueFrom(
+            this.digitalServicesData.digitalService$,
+        );
+
+        const referentials = await firstValueFrom(
+            this.digitalServicesData.getNetworkReferential(),
+        );
+
+        this.networkTypes = [...referentials];
+        this.resetNetwork();
     }
 
     resetNetwork() {
-        this.network = {
-            uid: undefined,
-            type: {
-                code: "fixed-line-network-1",
-                value: "Fixed FR",
-            },
-            yearlyQuantityOfGbExchanged: 0,
-        };
+        if (this.networkTypes.length > 0) {
+            this.network = {
+                uid: undefined,
+                type: this.networkTypes[0],
+                yearlyQuantityOfGbExchanged: 0,
+            };
+        }
     }
 
     setNetworks(network: DigitalServiceNetworkConfig, index: number) {
-        this.network.uid = network.uid;
-        this.network.creationDate = network.creationDate;
-        this.network.type = network.type;
-        this.network.yearlyQuantityOfGbExchanged = network.yearlyQuantityOfGbExchanged;
+        this.network = { ...network };
         this.network.idFront = index;
     }
 
-    async deleteNetworks(network: DigitalServiceNetworkConfig) {
-        this.spinner.show();
-        let existingNetworkIndex = this.digitalService.networks?.findIndex(
-            (t) => t.uid === network.uid
-        );
-        if (
-            existingNetworkIndex !== -1 &&
-            existingNetworkIndex !== undefined &&
-            this.digitalService.networks
-        ) {
-            this.digitalService.networks.splice(existingNetworkIndex, 1);
-        }
-        this.digitalService = await lastValueFrom(
-            this.digitalServicesData.update(this.digitalService)
-        );
-        this.spinner.hide();
-    }
+    async actionNetwork(action: string, network: DigitalServiceNetworkConfig) {
+        this.sidebarVisible = false;
+        if ("cancel" === action) return;
+        if (!this.digitalService.networks) return;
 
-    async updateNetworks(network: DigitalServiceNetworkConfig) {
-        this.spinner.show();
-        let existingNetworkIndex = this.digitalService.networks?.findIndex(
-            (t) => t.uid === network.uid
-        );
-
-        if (
-            existingNetworkIndex !== -1 &&
-            existingNetworkIndex !== undefined &&
-            this.digitalService.networks &&
-            network.uid !== undefined
-        ) {
-            this.digitalService.networks[existingNetworkIndex] = network;
-        } else {
-            this.digitalService.networks?.push(network);
+        let index = this.digitalService.networks.findIndex((t) => t.uid === network.uid);
+        if (action === "delete") {
+            if (index === -1) return;
+            this.digitalService.networks.splice(index, 1);
+        } else if (action === "update") {
+            if (index === -1) {
+                this.digitalService.networks.push(network);
+            } else {
+                this.digitalService.networks[index] = network;
+            }
         }
 
-        this.digitalService = await lastValueFrom(
-            this.digitalServicesData.update(this.digitalService)
+        this.digitalService = await firstValueFrom(
+            this.digitalServicesData.update(this.digitalService),
         );
-        this.spinner.hide();
     }
 }

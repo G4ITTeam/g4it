@@ -8,6 +8,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
+import { KeycloakService } from "keycloak-angular";
 import { Subject, takeUntil } from "rxjs";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
 import {
@@ -15,6 +16,7 @@ import {
     OrganizationData,
     Subscriber,
     User,
+    UserInfo,
 } from "src/app/core/interfaces/user.interfaces";
 import { Version } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -55,6 +57,8 @@ export class HeaderComponent implements OnInit {
     weekendDays = ["saturday", "sunday"];
 
     isAdminOnSubscriberOrOrganization = false;
+    userDetails!: UserInfo;
+    initials = "";
 
     constructor(
         private router: Router,
@@ -62,23 +66,28 @@ export class HeaderComponent implements OnInit {
         private versionDataService: VersionDataService,
         private translate: TranslateService,
         private businessHoursService: BusinessHoursService,
-    ) {
-        this.router.routeReuseStrategy.shouldReuseRoute = () => {
-            return false;
-        };
-    }
+        private keycloak: KeycloakService,
+    ) {}
 
     ngOnInit() {
         this.selectedLanguage = this.translate.currentLang;
-        this.getPageFromUrl();
-        this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe((event) => {
+
+        this.setSelectedPage();
+
+        this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
-                this.getPageFromUrl();
+                this.setSelectedPage();
             }
         });
+
         this.userService.user$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((user: User) => {
+                this.userDetails = {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                };
                 this.organizations = [];
                 user.subscribers.forEach((subscriber) => {
                     subscriber.organizations.forEach((organization) => {
@@ -93,6 +102,10 @@ export class HeaderComponent implements OnInit {
                 });
                 this.isAdminOnSubscriberOrOrganization =
                     this.userService.hasAnyAdminRole(user);
+
+                this.initials =
+                    this.getCapitaleLetter(this.userDetails?.firstName) +
+                    this.getCapitaleLetter(this.userDetails?.lastName);
             });
 
         this.userService.currentSubscriber$.subscribe(
@@ -128,15 +141,14 @@ export class HeaderComponent implements OnInit {
             });
     }
 
-    getPageFromUrl() {
-        let [_, subscribers, subscriber, organizations, organization, page] =
-            this.router.url.split("/");
+    setSelectedPage() {
+        let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
+        this.selectedPage = subscribers === "administration" ? "administration" : page;
+    }
 
-        if (subscribers === "administration") {
-            this.selectedPage = "administration";
-        } else {
-            this.selectedPage = page;
-        }
+    getCapitaleLetter(str: string) {
+        if (str === undefined) return "";
+        return str.charAt(0).toLocaleUpperCase();
     }
 
     changeLanguage(lang: string): void {
@@ -150,24 +162,20 @@ export class HeaderComponent implements OnInit {
         window.location.reload();
     }
 
-    changePageToDigitalServices() {
-        return `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}/digital-services`;
-    }
-
-    changePageToInventories() {
-        return `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}/inventories`;
-    }
-
-    changePageToAdministraion() {
-        let adminAccess = `/administration/users`;
-        return adminAccess;
-    }
-
     composeEmail() {
         let subject = `[${this.currentSubscriber.name}/${this.selectedOrganization?.id}] ${Constants.SUBJECT_MAIL}`;
         let email = `mailto:${Constants.RECIPIENT_MAIL}?subject=${subject}`;
         window.location.href = email;
     }
+
+    async logout() {
+        localStorage.removeItem("username");
+        localStorage.removeItem("currentOrganization");
+        localStorage.removeItem("currentSubscriber");
+        await this.keycloak.logout();
+    }
+
+    originalOrder = () => 0;
 
     ngOnDestroy() {
         this.ngUnsubscribe.next();

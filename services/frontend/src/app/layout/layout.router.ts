@@ -17,7 +17,7 @@ const routes: Routes = [
                 path: "digital-services",
                 loadChildren: () =>
                     import("./digital-services/digital-services.module").then(
-                        (modules) => modules.DigitalServicesModule
+                        (modules) => modules.DigitalServicesModule,
                     ),
             },
             {
@@ -31,7 +31,7 @@ const routes: Routes = [
                 path: "inventories",
                 loadChildren: () =>
                     import("./inventories/inventories.module").then(
-                        (modules) => modules.InventoriesModule
+                        (modules) => modules.InventoriesModule,
                     ),
             },
             {
@@ -45,7 +45,7 @@ const routes: Routes = [
                 path: "inventories/:inventoryId/footprint",
                 loadChildren: () =>
                     import("./inventories-footprint/inventories-footprint.module").then(
-                        (modules) => modules.InventoriesFootprintModule
+                        (modules) => modules.InventoriesFootprintModule,
                     ),
             },
             {

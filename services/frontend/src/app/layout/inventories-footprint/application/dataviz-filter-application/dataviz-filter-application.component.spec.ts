@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { CommonModule } from "@angular/common";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -14,10 +14,11 @@ import { CheckboxModule } from "primeng/checkbox";
 import { OverlayModule } from "primeng/overlay";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { TabViewModule } from "primeng/tabview";
+import { TreeSelectModule } from "primeng/treeselect";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FilterRepository } from "src/app/core/store/filter.repository";
+import { Constants } from "src/constants";
 import { DatavizFilterApplicationComponent } from "./dataviz-filter-application.component";
-import { TreeSelectModule } from "primeng/treeselect";
 
 describe("DatavizApplicationFilterComponent", () => {
     let component: DatavizFilterApplicationComponent;
@@ -69,10 +70,10 @@ describe("DatavizApplicationFilterComponent", () => {
         spyOn(component, "fillSelectedDomainAndSubDomain");
         spyOn(component, "saveFilters");
         component.filters = {
-            domains: ["All", "Domain A,subdomain 1a", "Domain B,subdomain 1b"],
-            environments: ["All", "Empty", "Preproduction"],
-            types: ["All", "Communication Device"],
-            lifeCycles: ["All", "Distribution"],
+            domains: [Constants.ALL, "Domain A,subdomain 1a", "Domain B,subdomain 1b"],
+            environments: [Constants.ALL, Constants.EMPTY, "Preproduction"],
+            types: [Constants.ALL, "Communication Device"],
+            lifeCycles: [Constants.ALL, "Distribution"],
         };
 
         component.allDomainFiltersSelected();
@@ -80,7 +81,7 @@ describe("DatavizApplicationFilterComponent", () => {
         //Expected selectedObjectDomain
         let expectedSelectedObjectDomain = [
             {
-                label: "All",
+                label: Constants.ALL,
                 children: [],
             },
             {
@@ -116,7 +117,7 @@ describe("DatavizApplicationFilterComponent", () => {
 
         let expectedSelectedValuesFilterDomain = [
             {
-                label: "All",
+                label: Constants.ALL,
                 children: [],
             },
             {
@@ -149,18 +150,26 @@ describe("DatavizApplicationFilterComponent", () => {
 
         expect(component.selectedObjectDomain).toEqual(expectedSelectedObjectDomain);
         expect(component.selectedObjectSubDomain).toEqual(
-            expectedSelectedObjectSubDomain
+            expectedSelectedObjectSubDomain,
         );
         expect(component.selectedValuesFilterDomain).toEqual(
-            expectedSelectedValuesFilterDomain
+            expectedSelectedValuesFilterDomain,
         );
     });
 
     it("should choose the right filter and call updateSelectedValue for environnement", () => {
         spyOn(component, "updateSelectedValues");
         spyOn(component, "saveFilters");
-        component.selectedEnvironnement = ["All", "Empty", "Preproduction"];
-        component.filters.environments = ["All", "Empty", "Preproduction"];
+        component.selectedEnvironnement = [
+            Constants.ALL,
+            Constants.EMPTY,
+            "Preproduction",
+        ];
+        component.filters.environments = [
+            Constants.ALL,
+            Constants.EMPTY,
+            "Preproduction",
+        ];
 
         component.onFilterUpdate("environnement", "Preproduction");
 
@@ -171,8 +180,8 @@ describe("DatavizApplicationFilterComponent", () => {
     it("should choose the right filter and call updateSelectedValue for equipment", () => {
         spyOn(component, "updateSelectedValues");
         spyOn(component, "saveFilters");
-        component.selectedEquipment = ["All", "Communication Device"];
-        component.filters.types = ["All", "Communication Device"];
+        component.selectedEquipment = [Constants.ALL, "Communication Device"];
+        component.filters.types = [Constants.ALL, "Communication Device"];
 
         component.onFilterUpdate("equipment", "Communication Device");
         expect(component.updateSelectedValues).toHaveBeenCalled();
@@ -182,8 +191,8 @@ describe("DatavizApplicationFilterComponent", () => {
     it("should choose the right filter and call updateSelectedValue for lifecycle", () => {
         spyOn(component, "updateSelectedValues");
         spyOn(component, "saveFilters");
-        component.selectedlifecycle = ["All", "Distribution"];
-        component.filters.lifeCycles = ["All", "Distribution"];
+        component.selectedlifecycle = [Constants.ALL, "Distribution"];
+        component.filters.lifeCycles = [Constants.ALL, "Distribution"];
 
         component.onFilterUpdate("lifecycle", "Distribution");
 
@@ -198,7 +207,7 @@ describe("DatavizApplicationFilterComponent", () => {
     it("should fill selectedDomain and selectedSubdomain", () => {
         component.selectedValuesFilterDomain = [
             {
-                label: "All",
+                label: Constants.ALL,
                 children: [],
             },
             {
@@ -231,7 +240,7 @@ describe("DatavizApplicationFilterComponent", () => {
 
         component.fillSelectedDomainAndSubDomain();
 
-        expect(component.selectedDomain).toEqual(["All", "Domain A", "Domain B"]);
+        expect(component.selectedDomain).toEqual([Constants.ALL, "Domain A", "Domain B"]);
         expect(component.selectedSubdomain).toEqual(["subdomain 1a", "subdomain 1b"]);
     });
 
@@ -261,7 +270,7 @@ describe("DatavizApplicationFilterComponent", () => {
         ];
         component.domains = [
             {
-                label: "All",
+                label: Constants.ALL,
                 children: [],
             },
         ];
@@ -272,10 +281,10 @@ describe("DatavizApplicationFilterComponent", () => {
         component.addAllFilterValue();
 
         expect(component.selectedDomain.length).toEqual(3);
-        expect(component.selectedDomain).toEqual(["All", "Domain A", "Domain B"]);
+        expect(component.selectedDomain).toEqual([Constants.ALL, "Domain A", "Domain B"]);
         expect(component.selectedValuesFilterDomain).toEqual([
             {
-                label: "All",
+                label: Constants.ALL,
                 children: [],
             },
             {
@@ -303,10 +312,14 @@ describe("DatavizApplicationFilterComponent", () => {
     });
 
     it("should save filter and call updateSelectedFiltersApp", () => {
-        component.selectedEnvironnement = ["All", "Empty", "Preproduction"];
-        component.selectedEquipment = ["All", "Communication Device"];
-        component.selectedlifecycle = ["All", "Distribution"];
-        component.selectedDomain = ["All", "Domain 1", "Domain 2"];
+        component.selectedEnvironnement = [
+            Constants.ALL,
+            Constants.EMPTY,
+            "Preproduction",
+        ];
+        component.selectedEquipment = [Constants.ALL, "Communication Device"];
+        component.selectedlifecycle = [Constants.ALL, "Distribution"];
+        component.selectedDomain = [Constants.ALL, "Domain 1", "Domain 2"];
         component.selectedSubdomain = ["subdomain1", "subdomain2", "subdomain3"];
         spyOn(filterRepo, "updateSelectedFiltersApp");
 

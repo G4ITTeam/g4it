@@ -4,12 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { SidebarModule } from "primeng/sidebar";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
@@ -17,11 +18,10 @@ import {
     DigitalService,
     DigitalServiceNetworkConfig,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks.component";
-import { UserService } from "src/app/core/service/business/user.service";
-import { MessageService } from "primeng/api";
 
 describe("DigitalServicesNetworksComponent", () => {
     let component: DigitalServicesNetworksComponent;
@@ -74,14 +74,12 @@ describe("DigitalServicesNetworksComponent", () => {
 
     it("should reset network", () => {
         //mock data
-        component.network = {
-            uid: "randomUID",
-            type: {
-                code: "mobile-fix",
-                value: "Mobile",
+        component.networkTypes = [
+            {
+                code: "fixed-line-network-1",
+                value: "Fixed FR",
             },
-            yearlyQuantityOfGbExchanged: 17,
-        };
+        ];
 
         //expected terminal after call
         var expectedNetwork = {

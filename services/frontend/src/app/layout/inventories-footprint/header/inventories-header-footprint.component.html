@@ -1,119 +1,101 @@
 <p-toast #toast position="bottom-center"></p-toast>
 <div class="flex justify-content-between align-items-center flex-wrap">
     <div>
-        <div
-            class="green-dashboard-title"
+        <p-button
+            styleClass="color-tertiary text-2xl font-semibold p-2"
             [routerLink]="changePageToInventories()"
-            tabindex="0"
-            role="button"
+            [text]="true"
             [attr.aria-label]="'inventories.return' | translate"
-        >
-            <img
-                src="assets/images/icons/icon-green-arrow-left.svg"
-                alt=""
-                class="button-icon"
-            />
-            {{ "inventories.title" | translate }}
-        </div>
-        <span
-            *ngIf="inventory.type === types.INFORMATION_SYSTEM"
-            class="h2-title"
-            tabIndex="0"
-            >{{ inventory.name | monthYear }}</span
-        >
-        <span *ngIf="inventory.type === types.SIMULATION" class="h2-title" tabIndex="0">{{
-            inventory.name
-        }}</span>
+            icon="pi pi-arrow-left"
+            [label]="
+                'inventories.title'
+                    | translate: { OrganizationName: selectedOrganization }
+            "
+        />
+
+        <h2 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2" tabIndex="0">
+            {{ inventory.name | monthYear }}
+        </h2>
+        <h2 *ngIf="inventory.type === types.SIMULATION" class="px-2" tabIndex="0">
+            {{ inventory.name }}
+        </h2>
     </div>
-    <div class="mr-4">
-        <p-sidebar
-            [(visible)]="sidebarVisible"
-            position="right"
-            styleClass="p-sidebar-md w-7"
-        >
-            <app-common-editor
-                [content]="inventory.note?.content"
-                [title]="'Note - ' + inventory.name"
-                [showButtons]="userService.isAllowedInventoryWrite$ | async"
-                (saveValue)="noteSaveValue($event)"
-                (close)="sidebarVisible = $event"
-                (delete)="noteDelete($event); sidebarVisible = $event"
-                styleClass="mx-7"
-            >
-            </app-common-editor>
-        </p-sidebar>
+    <div>
         <p-button
             *ngIf="!inventory.note && (userService.isAllowedInventoryWrite$ | async)"
             (click)="sidebarVisible = true"
-            [tabindex]="0"
-            styleClass="white-button"
-            class="mx-2"
+            styleClass="text-gray-900 header-button"
+            [text]="true"
+            [plain]="true"
             attr.aria-label="{{ 'common.accessibility.addNote' | translate }}"
-        >
-            <img
-                class="w-1rem h-1rem uppercase mr-2"
-                src="assets/images/icons/icon-plus.svg"
-                alt="{{ 'common.accessibility.addNote' | translate }}"
-            />
-            {{ "common.note.add" | translate }}
-        </p-button>
+            [label]="'common.note.add' | translate"
+            icon="pi pi-plus-circle"
+        />
+
         <p-button
             *ngIf="inventory.note"
             (click)="sidebarVisible = true"
-            [tabindex]="0"
-            styleClass="white-button"
-            class="mx-2"
+            styleClass="text-gray-900 header-button"
+            [text]="true"
+            [plain]="true"
             attr.aria-label="{{ 'common.accessibility.attachedNote' | translate }}"
-        >
-            <img
-                class="w-1rem h-1rem uppercase mr-2"
-                src="assets/images/icons/icon-note.svg"
-                alt="{{ 'common.accessibility.attachedNote' | translate }}"
-            />
-            {{ "common.note.attached" | translate }}
-        </p-button>
+            [label]="'common.note.attached' | translate"
+            icon="pi pi-clipboard"
+        />
+
         <p-button
-            styleClass="black-button"
+            styleClass="bg-black text-white header-button"
             (click)="confirmExport($event)"
             *ngIf="
-                (batchStatusCode === undefined ||                
-                failedStatusCodeList.includes(batchStatusCode)) && 
+                (batchStatusCode === undefined ||
+                    failedStatusCodeList.includes(batchStatusCode)) &&
                 (userService.isAllowedInventoryWrite$ | async)
             "
-        >
-            <img src="assets/images/icons/icon-export.svg" alt="" class="button-icon" />
-            {{ "inventories-footprint.header.export" | translate }}
-        </p-button>
+            icon="pi pi-download"
+            [label]="'inventories-footprint.header.export' | translate"
+        />
+
         <p-button
             attr.aria-label="{{ 'common.accessibility.download' | translate }}"
-            styleClass="black-button"
+            styleClass="bg-black text-white header-button"
             (click)="download($event)"
             [disabled]="downloadInProgress"
             *ngIf="
                 batchStatusCode === isGenerated() &&
                 (userService.isAllowedInventoryWrite$ | async)
             "
-        >
-            <img src="assets/images/icons/icon-export.svg" alt="" class="button-icon" />
-            {{ "inventories-footprint.header.download" | translate }}
-        </p-button>
+            icon="pi pi-download"
+            [label]="'inventories-footprint.header.download' | translate"
+        />
+
         <p-button
             attr.aria-label="{{ 'common.accessibility.download' | translate }}"
-            styleClass="grey-button"
+            styleClass="bg-gray-400 text-gray-900  header-button"
             *ngIf="
                 batchStatusCode &&
                 inProgressStatusCodeList.includes(batchStatusCode) &&
                 (userService.isAllowedInventoryWrite$ | async)
             "
-        >
-            <img
-                class="w-1rem uppercase"
-                src="assets/images/icons/icon-refresh.svg"
-                alt="{{ 'common.accessibility.preparingResults' | translate }}"
-            />
-            &nbsp;
-            {{ "common.preparingResults" | translate }}
-        </p-button>
+            [label]="'common.preparingResults' | translate"
+            icon="pi pi-refresh"
+        />
     </div>
+    <p-sidebar
+        *ngIf="sidebarVisible"
+        [(visible)]="sidebarVisible"
+        position="right"
+        styleClass="p-sidebar-md w-7"
+    >
+        <app-common-editor
+            [content]="inventory.note?.content"
+            [title]="'Note - ' + inventory.name"
+            [showButtons]="userService.isAllowedInventoryWrite$ | async"
+            (saveValue)="noteSaveValue($event)"
+            (close)="sidebarVisible = $event"
+            (delete)="noteDelete($event); sidebarVisible = $event"
+            styleClass="mx-7"
+        >
+        </app-common-editor>
+    </p-sidebar>
 </div>
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>

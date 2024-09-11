@@ -10,10 +10,11 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { KeycloakService } from "keycloak-angular";
+import { MessageService } from "primeng/api";
 import { SidebarModule } from "primeng/sidebar";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { HeaderComponent } from "./header.component";
-import { MessageService } from "primeng/api";
 
 describe("HeaderComponent", () => {
     let component: HeaderComponent;
@@ -29,7 +30,7 @@ describe("HeaderComponent", () => {
                 SharedModule,
                 TranslateModule.forRoot(),
             ],
-            providers: [TranslatePipe, TranslateService, MessageService],
+            providers: [TranslatePipe, TranslateService, MessageService, KeycloakService],
             declarations: [HeaderComponent],
         }).compileComponents();
         fixture = TestBed.createComponent(HeaderComponent);

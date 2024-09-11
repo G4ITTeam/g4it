@@ -18,24 +18,18 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
-import com.soprasteria.g4it.backend.common.utils.EvaluationBatchStatus;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.BatchStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
-import static com.soprasteria.g4it.backend.common.utils.Constants.COMPLETE_PROGRESS_PERCENTAGE;
 
 /**
  * Inventory Service.
@@ -50,22 +44,16 @@ public class InventoryService {
      */
     @Autowired
     private InventoryRepository inventoryRepository;
-
     /**
      * The organization service.
      */
     @Autowired
     private OrganizationService organizationService;
-
     /**
      * Mapper for inventory data.
      */
     @Autowired
     private InventoryMapper inventoryMapper;
-
-    @Autowired
-    private NumEcoEvalRemotingService numEcoEvalRemotingService;
-
 
     /**
      * Retrieve the last batch name in inventory.
@@ -97,29 +85,6 @@ public class InventoryService {
         var inventories = inventoryId == null ?
                 inventoryRepository.findByOrganization(linkedOrganization) :
                 inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).stream().toList();
-
-        /* Update calculation progress percentage */
-        List<Inventory> inventoriesToBeUpdated = new ArrayList<>();
-        inventories.forEach(inventory -> Optional.ofNullable(inventory.getEvaluationReports()).orElse(new ArrayList<>())
-                .stream()
-                .filter(report -> EvaluationBatchStatus.CALCUL_IN_PROGRESS.name().equals(report.getBatchStatusCode()))
-                .forEach(report -> {
-                    String calculProgressPercentage = numEcoEvalRemotingService.getCalculationsProgress(report.getBatchName(), String.valueOf(organizationId));
-                    if (calculProgressPercentage == null) return;
-
-                    report.setProgressPercentage(calculProgressPercentage);
-                    log.info("Updating calculation progress percentage to '{}' for inventory : {} ", calculProgressPercentage, inventory);
-                    if (COMPLETE_PROGRESS_PERCENTAGE.equals(calculProgressPercentage)) {
-                        report.setBatchStatusCode(BatchStatus.COMPLETED.name());
-                        log.info("Updating batch status to 'COMPLETED' of batch : '{}' ", report.getBatchName());
-                    }
-                    inventoriesToBeUpdated.add(inventory);
-                }));
-
-
-        if (!inventoriesToBeUpdated.isEmpty()) {
-            inventoryRepository.saveAll(inventoriesToBeUpdated);
-        }
 
         return inventoryMapper.toBusinessObject(inventories);
     }
@@ -208,7 +173,4 @@ public class InventoryService {
         return inventoryMapper.toBusinessObject(inventoryToSave);
     }
 
-
 }
-
-

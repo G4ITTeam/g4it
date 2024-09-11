@@ -14,25 +14,35 @@
                             {
                                 "name": "Vm A",
                                 "sipValue": 0.4575874576059412,
-                                "quantity": 2
+                                "quantity": 2,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.025624750113832598
+                                "sipValue": 0.025624750113832598,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.000046630168269869046
+                                "sipValue": 0.000046630168269869046,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.4312009703699233
+                                "sipValue": 0.4312009703699233,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.0007151069539154748
+                                "sipValue": 0.0007151069539154748,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     },
@@ -44,25 +54,35 @@
                             {
                                 "name": "Vm C",
                                 "sipValue": 0.4575874576059412,
-                                "quantity": 1
+                                "quantity": 1,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.025624750113832598
+                                "sipValue": 0.025624750113832598,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.000046630168269869046
+                                "sipValue": 0.000046630168269869046,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.4312009703699233
+                                "sipValue": 0.4312009703699233,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.0007151069539154748
+                                "sipValue": 0.0007151069539154748,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -80,25 +100,35 @@
                             {
                                 "name": "Vm B",
                                 "sipValue": 23.256241056807266,
-                                "quantity": 4
+                                "quantity": 4,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 13.177731379147136
+                                "sipValue": 13.177731379147136,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.12233114830804742
+                                "sipValue": 0.12233114830804742,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 9.933561781393198
+                                "sipValue": 9.933561781393198,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.022616747958883996
+                                "sipValue": 0.022616747958883996,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -121,25 +151,35 @@
                             {
                                 "name": "Vm A",
                                 "sipValue": 0.1909372362617649,
-                                "quantity": 2
+                                "quantity": 2,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.01756060858046512
+                                "sipValue": 0.01756060858046512,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.00003162522474956639
+                                "sipValue": 0.00003162522474956639,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.172874525503522
+                                "sipValue": 0.172874525503522,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.00047047695302821147
+                                "sipValue": 0.00047047695302821147,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     },
@@ -151,25 +191,35 @@
                             {
                                 "name": "Vm C",
                                 "sipValue": 0.1909372362617649,
-                                "quantity": 1
+                                "quantity": 1,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.01756060858046512
+                                "sipValue": 0.01756060858046512,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.00003162522474956639
+                                "sipValue": 0.00003162522474956639,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.172874525503522
+                                "sipValue": 0.172874525503522,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.00047047695302821147
+                                "sipValue": 0.00047047695302821147,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -187,25 +237,35 @@
                             {
                                 "name": "Vm B",
                                 "sipValue": 13.153659755845645,
-                                "quantity": 4
+                                "quantity": 4,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 9.030682512013955
+                                "sipValue": 9.030682512013955,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.04345720678294664
+                                "sipValue": 0.04345720678294664,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 4.063506134012957
+                                "sipValue": 4.063506134012957,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.016013903035786346
+                                "sipValue": 0.016013903035786346,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -228,25 +288,35 @@
                             {
                                 "name": "Vm A",
                                 "sipValue": 0.013483736872699496,
-                                "quantity": 2
+                                "quantity": 2,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.013373527220948768
+                                "sipValue": 0.013373527220948768,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 1.47054410439032e-9
+                                "sipValue": 1.47054410439032e-9,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.00010944745337180386
+                                "sipValue": 0.00010944745337180386,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 7.60727834819301e-7
+                                "sipValue": 7.60727834819301e-7,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     },
@@ -258,25 +328,35 @@
                             {
                                 "name": "Vm C",
                                 "sipValue": 0.013483736872699496,
-                                "quantity": 1
+                                "quantity": 1,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.013373527220948768
+                                "sipValue": 0.013373527220948768,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 1.47054410439032e-9
+                                "sipValue": 1.47054410439032e-9,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.00010944745337180386
+                                "sipValue": 0.00010944745337180386,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 7.60727834819301e-7
+                                "sipValue": 7.60727834819301e-7,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -294,25 +374,35 @@
                             {
                                 "name": "Vm B",
                                 "sipValue": 6.924902544097157,
-                                "quantity": 4
+                                "quantity": 4,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 6.877442649255029
+                                "sipValue": 6.877442649255029,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.000028146418987481284
+                                "sipValue": 0.000028146418987481284,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.04740754174125965
+                                "sipValue": 0.04740754174125965,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.000024206681880897302
+                                "sipValue": 0.000024206681880897302,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -335,25 +425,35 @@
                             {
                                 "name": "Vm A",
                                 "sipValue": 0.016719065246038937,
-                                "quantity": 2
+                                "quantity": 2,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.00045717548947199997
+                                "sipValue": 0.00045717548947199997,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.0000020098990326940638
+                                "sipValue": 0.0000020098990326940638,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.016226248584474884
+                                "sipValue": 0.016226248584474884,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.00003363127305936074
+                                "sipValue": 0.00003363127305936074,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     },
@@ -365,25 +465,35 @@
                             {
                                 "name": "Vm C",
                                 "sipValue": 0.016719065246038937,
-                                "quantity": 1
+                                "quantity": 1,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.00045717548947199997
+                                "sipValue": 0.00045717548947199997,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.0000020098990326940638
+                                "sipValue": 0.0000020098990326940638,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.016226248584474884
+                                "sipValue": 0.016226248584474884,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.00003363127305936074
+                                "sipValue": 0.00003363127305936074,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -401,25 +511,35 @@
                             {
                                 "name": "Vm B",
                                 "sipValue": 0.6209409557758594,
-                                "quantity": 4
+                                "quantity": 4,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.23510612851362
+                                "sipValue": 0.23510612851362,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.0036639668990612407
+                                "sipValue": 0.0036639668990612407,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.37939472556712334
+                                "sipValue": 0.37939472556712334,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.002776134796054795
+                                "sipValue": 0.002776134796054795,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -442,25 +562,35 @@
                             {
                                 "name": "Vm A",
                                 "sipValue": 0.023130272237362786,
-                                "quantity": 2
+                                "quantity": 2,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.0004833596933260274
+                                "sipValue": 0.0004833596933260274,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 5.696454509288797e-8
+                                "sipValue": 5.696454509288797e-8,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.02256993597297804
+                                "sipValue": 0.02256993597297804,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.00007691960651362566
+                                "sipValue": 0.00007691960651362566,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     },
@@ -472,25 +602,35 @@
                             {
                                 "name": "Vm C",
                                 "sipValue": 0.023130272237362786,
-                                "quantity": 1
+                                "quantity": 1,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.0004833596933260274
+                                "sipValue": 0.0004833596933260274,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 5.696454509288797e-8
+                                "sipValue": 5.696454509288797e-8,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 0.02256993597297804
+                                "sipValue": 0.02256993597297804,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.00007691960651362566
+                                "sipValue": 0.00007691960651362566,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }
@@ -508,25 +648,35 @@
                             {
                                 "name": "Vm B",
                                 "sipValue": 3.616698896749799,
-                                "quantity": 4
+                                "quantity": 4,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ],
                         "impactStep": [
                             {
                                 "acvStep": "UTILISATION",
-                                "sipValue": 0.24857156342449313
+                                "sipValue": 0.24857156342449313,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "DISTRIBUTION",
-                                "sipValue": 0.0001444131885444701
+                                "sipValue": 0.0001444131885444701,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FABRICATION",
-                                "sipValue": 3.3669324251954715
+                                "sipValue": 3.3669324251954715,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             },
                             {
                                 "acvStep": "FIN_DE_VIE",
-                                "sipValue": 0.001050494941289798
+                                "sipValue": 0.001050494941289798,
+                                "rawValue": 3211.715221903284,
+                                "unit": "mol H+ eq"
                             }
                         ]
                     }

@@ -9,17 +9,14 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 
 
 import com.soprasteria.g4it.backend.TestUtils;
-import com.soprasteria.g4it.backend.apiindicator.model.ApplicationDomainsFiltersBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationFiltersBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentFiltersBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.ApplicationFilters;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.EquipmentFilters;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.Filters;
 import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationFiltersRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.EquipmentFiltersRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,108 +54,66 @@ class FilterServiceTest {
 
     @Test
     void shouldReturnEquipmentFilters() {
-        final Long inventoryId = 1L;
         final String batchName = "batchName";
 
-        final EquipmentFilters filter = EquipmentFilters.builder()
-                .country("France")
-                .entity("SSG")
-                .type("Serveur")
-                .status("InUse").build();
-        List<EquipmentFilters> equipmentFiltersList = new ArrayList<>();
-        equipmentFiltersList.add(filter);
+        when(this.equipmentFiltersRepository.getFiltersByBatchName(batchName)).thenReturn(List.of(
+                Filters.builder().field("country").values(new String[]{"France", "Germany"}).build(),
+                Filters.builder().field("type").values(new String[]{"Server", "SUBSCRIBER_SubType", "KO_SubType"}).build()
+        ));
 
-        when(this.equipmentFiltersRepository.getFiltersByInventoryId(inventoryId, batchName)).thenReturn(equipmentFiltersList);
-
-        this.filterService.getEquipmentFilters(subscriber, organization, inventoryId, batchName);
-
-        verify(this.equipmentFiltersRepository, times(1)).getFiltersByInventoryId(inventoryId, batchName);
+        EquipmentFiltersBO actual = this.filterService.getEquipmentFilters(subscriber, organization, batchName);
+        Assertions.assertThat(actual.getCountries()).contains("France", "Germany");
+        Assertions.assertThat(actual.getEquipments()).contains("Server", "SubType", "KO_SubType");
     }
 
     @Test
     void getEquipmentFilters_whenDataNotExists() {
-        final Long inventoryId = 1L;
         final String batchName = "batchName";
 
-        when(equipmentFiltersRepository.getFiltersByInventoryId(inventoryId, batchName)).thenReturn(new ArrayList<>());
+        when(equipmentFiltersRepository.getFiltersByBatchName(batchName)).thenReturn(List.of());
 
-        final EquipmentFiltersBO filters = filterService.getEquipmentFilters(subscriber, organization, inventoryId, batchName);
+        final EquipmentFiltersBO filters = filterService.getEquipmentFilters(subscriber, organization, batchName);
 
         Assertions.assertThat(filters.getCountries()).isEmpty();
         Assertions.assertThat(filters.getEntities()).isEmpty();
         Assertions.assertThat(filters.getStatus()).isEmpty();
         Assertions.assertThat(filters.getEquipments()).isEmpty();
-
-        verify(equipmentFiltersRepository, times(1)).getFiltersByInventoryId(inventoryId, batchName);
     }
 
     @Test
     void shouldReturnApplicationFilters() {
-        final Long inventoryId = 1L;
         final String batchName = "batchName";
 
-        final List<ApplicationFilters> filters = List.of(
-                ApplicationFilters.builder()
-                        .id(1)
-                        .type("type1")
-                        .domain("domain1")
-                        .subDomain("domain1subdomain1")
-                        .lifeCycle("lifeCycle1")
-                        .environment("env1")
-                        .build(),
-                ApplicationFilters.builder()
-                        .id(2)
-                        .type("type1")
-                        .domain("domain1")
-                        .subDomain("domain1subdomain2")
-                        .lifeCycle("lifeCycle2")
-                        .environment("env1")
-                        .build(),
-                ApplicationFilters.builder()
-                        .id(3)
-                        .type("type2")
-                        .domain("domain2")
-                        .subDomain("domain2subdomain1")
-                        .lifeCycle("lifeCycle3")
-                        .environment("env2")
-                        .build(),
-                ApplicationFilters.builder()
-                        .id(4)
-                        .type("type3")
-                        .domain("domain2")
-                        .subDomain("domain2subdomain2")
-                        .lifeCycle("lifeCycle4")
-                        .environment("env3")
-                        .build()
-        );
 
-        when(this.applicationFiltersRepository.getFiltersByBatchName(inventoryId, batchName)).thenReturn(filters);
+        when(this.applicationFiltersRepository.getFiltersByBatchName(batchName)).thenReturn(List.of(
+                Filters.builder().field("environment").values(new String[]{"env1"}).build(),
+                Filters.builder().field("life_cycle").values(new String[]{"lifeCycle1"}).build(),
+                Filters.builder().field("type").values(new String[]{"type1", "SUBSCRIBER_SubType"}).build(),
+                Filters.builder().field("domain").values(new String[]{"domain1||subD1##subD2", "domain2||subD10##subD20"}).build()
+        ));
 
-        final ApplicationFiltersBO actualFilters = this.filterService.getApplicationFilters(subscriber, organization.getId(), inventoryId, batchName, null, null, null);
-        Assertions.assertThat(actualFilters.getLifeCycles()).hasSize(4).contains("lifeCycle1", "lifeCycle2", "lifeCycle3", "lifeCycle4");
-        Assertions.assertThat(actualFilters.getEnvironments()).hasSize(3).contains("env1", "env2", "env3");
-        Assertions.assertThat(actualFilters.getTypes()).hasSize(3).contains("type1", "type2", "type3");
-        Assertions.assertThat(actualFilters.getDomains()).hasSize(2).extracting(ApplicationDomainsFiltersBO::getName, ApplicationDomainsFiltersBO::getSubDomains)
-                .contains(Tuple.tuple("domain1", List.of("domain1subdomain1", "domain1subdomain2")),
-                        Tuple.tuple("domain2", List.of("domain2subdomain1", "domain2subdomain2")));
+        final ApplicationFiltersBO actual = this.filterService.getApplicationFilters(subscriber, organization.getId(), batchName, null, null, null);
 
-        verify(this.applicationFiltersRepository, times(1)).getFiltersByBatchName(inventoryId, batchName);
+        Assertions.assertThat(actual.getEnvironments()).contains("env1");
+        Assertions.assertThat(actual.getLifeCycles()).contains("lifeCycle1");
+        Assertions.assertThat(actual.getTypes()).contains("type1", "SubType");
+        Assertions.assertThat(actual.getDomains().get(0).getName()).isEqualTo("domain1");
+        Assertions.assertThat(actual.getDomains().get(1).getName()).isEqualTo("domain2");
+        Assertions.assertThat(actual.getDomains().get(0).getSubDomains()).contains("subD1", "subD2");
+        Assertions.assertThat(actual.getDomains().get(1).getSubDomains()).contains("subD10", "subD20");
     }
 
     @Test
     void getApplicationFilters_whenDataNotExists() {
-        final Long inventoryId = 1L;
         final String batchName = "batchName";
 
-        when(applicationFiltersRepository.getFiltersByBatchName(inventoryId, batchName)).thenReturn(new ArrayList<>());
+        when(applicationFiltersRepository.getFiltersByBatchName(batchName)).thenReturn(new ArrayList<>());
 
-        final ApplicationFiltersBO filters = filterService.getApplicationFilters(subscriber, organization.getId(), inventoryId, batchName, null, null, null);
+        final ApplicationFiltersBO filters = filterService.getApplicationFilters(subscriber, organization.getId(), batchName, null, null, null);
 
         Assertions.assertThat(filters.getDomains()).isEmpty();
         Assertions.assertThat(filters.getEnvironments()).isEmpty();
         Assertions.assertThat(filters.getTypes()).isEmpty();
         Assertions.assertThat(filters.getLifeCycles()).isEmpty();
-
-        verify(applicationFiltersRepository, times(1)).getFiltersByBatchName(inventoryId, batchName);
     }
 }

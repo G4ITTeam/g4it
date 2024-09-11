@@ -9,7 +9,8 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin } from "rxjs";
 import { Constants } from "src/constants";
-import { Filter, FilterApplicationReceived } from "../../store/filter.repository";
+import { Filter } from "../../interfaces/filter.interface";
+import { FilterApplicationReceived } from "../../store/filter.repository";
 import {
     ApplicationCriteriaFootprint,
     ApplicationFootprint,
