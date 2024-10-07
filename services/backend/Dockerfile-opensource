@@ -1,6 +1,15 @@
-FROM eclipse-temurin:21-jre
+# Use an official Maven image as the base image
+FROM maven:eclipse-temurin-21-alpine AS build
 WORKDIR /app
-COPY target/*.jar application.jar
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn -P SKIP-ALL-TEST clean package
+
+FROM eclipse-temurin:21-jre
+ARG JAR_FILE=/app/target/*.jar
+WORKDIR /app
+COPY --from=build $JAR_FILE application.jar
 COPY storage/--INTERNAL-G4IT-- storage/--INTERNAL-G4IT--
 RUN chown -R 1001:1001 /app/storage
 
