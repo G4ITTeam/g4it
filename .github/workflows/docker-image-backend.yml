@@ -1,10 +1,14 @@
-name: Docker Image CI
+name: Build and Publish Backend Docker Image
 
 on:
   push:
     branches: ["test_actions"]
+    paths:
+      - services/backend/**
   pull_request:
     branches: ["test_actions"]
+    paths:
+      - services/backend/**
 
 jobs:
   build:
