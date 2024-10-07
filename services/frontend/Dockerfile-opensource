@@ -11,11 +11,10 @@ FROM nginx:latest
 
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-# js resources to inject env variables
-ENV JSFOLDER=/usr/share/nginx/html
 # script to replace env variable before start
-COPY ./nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
 COPY --from=build /usr/src/app/dist/ /usr/share/nginx/html
+COPY --from=build /usr/src/app/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /usr/src/app/nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
 
 USER root
 
