@@ -1,44 +1,41 @@
-name: SonarCloud
+name: Dependency Check Backend
 on:
   push:
     branches:
       - main
-  pull_request:
-    paths:
-      - "services/backend/**"
-      - ".github/workflows/**"
-    types: [opened, synchronize, reopened]
 
 jobs:
   build:
-    name: Build and analyze
+    name: Build and analyze dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: 21
-          distribution: "zulu" # Alternative distribution options are available.
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: "https://sonarcloud.io"
+          distribution: "temurin"
+      - name: Build project with Maven
         run: |
           cd services/backend
-          mvn sonar:sonar -Dsonar.projectKey=G4ITTeam_g4it
+          mvn clean install -P SKIP-ALL-TEST
+          rm -rf storage
+          rm -rf storagetmp
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@1.1.0
+        env:
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
+        with:
+          project: "backend"
+          path: "services/backend"
+          format: "HTML"
+          args: >
+            --failOnCVSS 7
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+          name: Depcheck report
+          path: ${{github.workspace}}/reports

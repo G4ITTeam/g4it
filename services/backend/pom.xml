@@ -52,6 +52,7 @@
             **/utils/Constants.java,
             **/BackendApplication.java
         </sonar.coverage.exclusions>
+        <sonar.projectName>G4IT backend</sonar.projectName>
         <sonar.organization>g4itteam</sonar.organization>
         <sonar.java.binaries>**/*</sonar.java.binaries>
     </properties>

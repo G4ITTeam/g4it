@@ -11,7 +11,8 @@ ARG JAR_FILE=/app/target/*.jar
 WORKDIR /app
 COPY --from=build $JAR_FILE application.jar
 COPY storage/--INTERNAL-G4IT-- storage/--INTERNAL-G4IT--
-RUN chown -R 1001:1001 /app/storage
+RUN mkdir /app/storagetmp && \
+    chown -R 1001:1001 /app/*
 
 USER 1001
 EXPOSE 8080

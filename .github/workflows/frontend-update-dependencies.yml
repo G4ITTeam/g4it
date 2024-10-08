@@ -1,0 +1,25 @@
+name: Frontend update dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *" # Runs every day at midnight
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Dependencies
+        run: |
+          cd services/frontend
+          npm install -g npm-check-updates
+          ncu -u -x keycloak-js -x typescript -x zone.js
+          npm install
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Update dependencies
+          title: "[DEPENDENCY] Update Dependencies"
+          body: |
+            Updates dependencies in `package.json`.
+          branch: update-dependencies
