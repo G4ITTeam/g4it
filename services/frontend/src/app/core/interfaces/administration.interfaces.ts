@@ -6,6 +6,7 @@ export interface Subscriber {
     id?: number;
     organizations?: Organization[];
     roles?: Role[];
+    criteria?: string[];
 }
 
 export interface Organization {
@@ -17,6 +18,8 @@ export interface Organization {
     defaultFlag: boolean;
     roles: Role[];
     uiStatus?: string;
+    criteriaIs?: string[];
+    criteriaDs?: string[];
 }
 
 export interface OrganizationUpsertRest {
@@ -31,6 +34,22 @@ export interface OrganizationWithSubscriber {
     subscriberId: number;
     organizationName: string;
     organizationId: number;
-    roles: Role[];
+    status: string;
+    dataRetentionDays: number;
     displayLabel: string;
+    criteriaDs: string[];
+    criteriaIs: string[];
+}
+
+export interface SubscriberCriteriaRest {
+    criteria: string[];
+}
+
+export interface OrganizationCriteriaRest {
+    subscriberId: number;
+    name: string;
+    status: string;
+    dataRetentionDays: number;
+    criteriaIs: string[];
+    criteriaDs: string[];
 }

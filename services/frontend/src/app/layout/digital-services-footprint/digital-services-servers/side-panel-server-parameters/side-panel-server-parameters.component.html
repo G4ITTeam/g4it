@@ -124,6 +124,7 @@
                         [min]="0"
                         styleClass="inputnumber-small"
                         [(ngModel)]="server.totalVCpu"
+                        (onInput)="verifyValue()"
                         name="vcpu"
                         ngDefaultControl
                         locale="fr-FR"
@@ -135,6 +136,20 @@
                         {{ "digital-services-servers.total.vcpu" | translate }}
                         {{ "common.mandatory" | translate }}
                     </p>
+                    @if (serverForm.get("vcpu")?.hasError("isValueTooHigh")) {
+                        <p class="error-text">
+                            {{
+                                "digital-services-servers.error.totalvcpu"
+                                    | translate
+                                        : {
+                                              totalVmvCpu: totalVmvCpu,
+                                              totalVmvCpuUnit:
+                                                  "digital-services-servers.vcpu"
+                                                  | translate,
+                                          }
+                            }}
+                        </p>
+                    }
                 </div>
                 <div
                     *ngIf="server.type === 'Storage'"

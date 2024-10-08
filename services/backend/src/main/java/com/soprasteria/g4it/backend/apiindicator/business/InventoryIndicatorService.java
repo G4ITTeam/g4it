@@ -11,7 +11,6 @@ import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
-import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +33,7 @@ public class InventoryIndicatorService {
     private IndicatorService indicatorService;
 
     @Autowired
-    private FilterService filterService;
-
-    @Autowired
     private OrganizationService organizationService;
-
 
     /**
      * Get last batch name in the inventory business object.
@@ -49,36 +44,6 @@ public class InventoryIndicatorService {
     private String getLastBatchName(final InventoryBO inventory) {
         return inventoryService.getLastBatchName(inventory)
                 .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
-    }
-
-    /**
-     * Get equipment indicator filters.
-     *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organization's id.
-     * @param inventoryId    the inventory id.
-     * @return filters.
-     */
-    public EquipmentFiltersBO getEquipmentFilters(final String subscriber, final Long organizationId, final Long inventoryId) {
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        return filterService.getEquipmentFilters(subscriber, linkedOrganization, getLastBatchName(inventory));
-    }
-
-    /**
-     * @param subscriber      The subscriber
-     * @param organizationId  The organizationId
-     * @param inventoryId     The inventoryId
-     * @param domain          The domain
-     * @param subDomain       The subDomain
-     * @param applicationName The applicationName
-     * @return ApplicationFiltersBO
-     */
-    public ApplicationFiltersBO getApplicationFilters(final String subscriber, final Long organizationId, final Long inventoryId,
-                                                      final String domain, final String subDomain, final String applicationName) {
-
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        return filterService.getApplicationFilters(subscriber, organizationId, getLastBatchName(inventory), domain, subDomain, applicationName);
     }
 
     /**
@@ -105,26 +70,7 @@ public class InventoryIndicatorService {
 
     public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        return indicatorService.getApplicationIndicators(subscriber, organizationId, getLastBatchName(inventory), inventory.getId());
-    }
-
-    /**
-     * Get inventory application VM indicators.
-     *
-     * @param subscriber      the subscriber.
-     * @param organizationId  the organizationId.
-     * @param inventoryId     the inventory id.
-     * @param applicationName the application name.
-     * @param criteria        the criteria.
-     * @return indicators.
-     */
-
-    public List<ApplicationIndicatorBO<ApplicationVmImpactBO>> getApplicationVmIndicators(final String subscriber, final Long organizationId,
-                                                                                          final Long inventoryId,
-                                                                                          final String applicationName,
-                                                                                          final String criteria) {
-        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        return indicatorService.getApplicationVmIndicators(subscriber, organizationId, getLastBatchName(inventory), inventory.getId(), applicationName, criteria);
+        return indicatorService.getApplicationIndicators(subscriber, organizationId, getLastBatchName(inventory));
     }
 
     /**
@@ -169,9 +115,24 @@ public class InventoryIndicatorService {
      * @param subscriber     the subscriber.
      * @param organizationId the organizationId.
      * @param inventoryId    the inventory id.
-     * @return datacenter indicators
+     * @return indicators
      */
     public List<PhysicalEquipmentLowImpactBO> getPhysicalEquipmentsLowImpact(final String subscriber, final Long organizationId, final Long inventoryId) {
         return indicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+    }
+
+    /**
+     * Get electric consumption of physical equipments
+     *
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
+     * @param inventoryId    the inventory id
+     * @return electric consumption indicators
+     */
+    public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String subscriber, final Long organizationId, final Long inventoryId) {
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+        String batchName = getLastBatchName(inventory);
+        final Long criteriaNumber = inventoryService.getCriteriaNumber(batchName);
+        return indicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, batchName, criteriaNumber);
     }
 }

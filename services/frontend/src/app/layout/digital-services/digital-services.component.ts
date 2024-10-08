@@ -5,11 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject } from "@angular/core";
+import { Component, DestroyRef, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { firstValueFrom, lastValueFrom } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -29,6 +30,8 @@ export class DigitalServicesComponent {
 
     myDigitalServices: DigitalService[] = [];
     sharedDigitalServices: DigitalService[] = [];
+
+    private destroyRef = inject(DestroyRef);
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -61,7 +64,7 @@ export class DigitalServicesComponent {
         apiResult.sort((x, y) => x.name.localeCompare(y.name));
 
         apiResult.forEach((digitalService) => {
-            if (digitalService.userId === userId) {
+            if (digitalService.creator?.id === userId) {
                 this.myDigitalServices.push(digitalService);
             } else {
                 this.sharedDigitalServices.push(digitalService);
@@ -85,11 +88,30 @@ export class DigitalServicesComponent {
         this.selectedDigitalService = digitalService;
     }
 
-    async itemDelete(uid: string) {
+    itemDelete(uid: string) {
         this.global.setLoading(true);
-        await lastValueFrom(this.digitalServicesData.delete(uid));
-        await this.retrieveDigitalServices();
-        this.global.setLoading(false);
+        this.digitalServicesData
+            .delete(uid)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => {
+                    this.global.setLoading(false);
+                }),
+            )
+            .subscribe(() => this.retrieveDigitalServices());
+    }
+
+    itemUnlink(uid: string) {
+        this.global.setLoading(true);
+        this.digitalServicesData
+            .unlink(uid)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => {
+                    this.global.setLoading(false);
+                }),
+            )
+            .subscribe(() => this.retrieveDigitalServices());
     }
 
     noteSaveValue(event: any) {
@@ -100,6 +122,7 @@ export class DigitalServicesComponent {
                 content: event,
             };
             this.digitalServicesData.update(res).subscribe(() => {
+                this.sidebarVisible = false;
                 this.messageService.add({
                     severity: "success",
                     summary: this.translate.instant("common.note.save"),

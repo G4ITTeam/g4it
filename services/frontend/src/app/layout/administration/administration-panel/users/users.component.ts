@@ -5,19 +5,22 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, DestroyRef, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
-import { Role, RoleRightMap } from "src/app/core/interfaces/roles.interfaces";
+import { take } from "rxjs";
 import {
-    Organization,
-    Subscriber,
-    UserDetails,
-} from "src/app/core/interfaces/user.interfaces";
+    OrganizationCriteriaRest,
+    OrganizationWithSubscriber,
+} from "src/app/core/interfaces/administration.interfaces";
+import { Role, RoleRightMap } from "src/app/core/interfaces/roles.interfaces";
+import { Subscriber, UserDetails } from "src/app/core/interfaces/user.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserService } from "src/app/core/service/business/user.service";
+import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 
 @Component({
@@ -26,6 +29,8 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class UsersComponent {
+    private destroyRef = inject(DestroyRef);
+
     userDetails!: UserDetails[];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     organizationlist: OrganizationWithSubscriber[] = [];
@@ -48,12 +53,20 @@ export class UsersComponent {
     sidebarVisible = false;
     errorMessageVisible = false;
 
+    displayPopup = false;
+    selectedCriteriaIS: string[] = [];
+    selectedCriteriaDS: string[] = [];
+    defaultCriteria: string[] = [];
+    subscriber!: Subscriber;
+
     constructor(
         private administrationService: AdministrationService,
         private formBuilder: FormBuilder,
         private confirmationService: ConfirmationService,
         private translate: TranslateService,
         private userService: UserService,
+        private userDataService: UserDataService,
+        private globalStore: GlobalStoreService,
     ) {}
 
     ngOnInit() {
@@ -64,17 +77,19 @@ export class UsersComponent {
                 [Validators.pattern(/^[ A-Za-z0-9_@.-]*$/), Validators.minLength(3)],
             ],
         });
+        this.userService.currentSubscriber$.subscribe((res) => {
+            this.subscriber = res;
+        });
     }
 
-    getUsers() {
+    getUsers(updateOrganization: boolean = false) {
         this.administrationService.getUsers().subscribe((res) => {
             this.subscribersDetails = res;
 
             const list: OrganizationWithSubscriber[] = [];
             this.subscribersDetails.forEach((subscriber: Subscriber) => {
-                subscriber.organizations.forEach((org: Organization) => {
+                subscriber.organizations.forEach((org: any) => {
                     const roles = this.userService.getRoles(subscriber, org);
-
                     if (
                         org.status === Constants.ORGANIZATION_STATUSES.ACTIVE &&
                         (roles.includes(Role.SubscriberAdmin) ||
@@ -85,14 +100,25 @@ export class UsersComponent {
                             subscriberId: subscriber.id,
                             organizationName: org.name,
                             organizationId: org.id,
-                            roles,
+                            status: org.status,
+                            dataRetentionDays: org.dataRetentionDays,
                             displayLabel: `${org.name} - (${subscriber.name})`,
+                            criteriaDs: org.criteriaDs,
+                            criteriaIs: org.criteriaIs,
                         });
                     }
                 });
             });
 
             this.organizationlist = list;
+            if (updateOrganization && this.organization.organizationId) {
+                const currentOrganization = this.organizationlist.find(
+                    (o) => o.organizationId === this.organization.organizationId,
+                );
+                if (currentOrganization) {
+                    this.organization = currentOrganization;
+                }
+            }
         });
     }
 
@@ -217,5 +243,30 @@ export class UsersComponent {
         this.sidebarVisible = true;
         this.sidebarCreateMode = user.roles.length === 0;
         this.userDetail = user;
+    }
+
+    displayPopupFct() {
+        const slicedCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
+        this.selectedCriteriaDS =
+            this.organization.criteriaDs ?? this.subscriber?.criteria ?? slicedCriteria;
+        this.selectedCriteriaIS =
+            this.organization.criteriaIs ?? this.subscriber?.criteria ?? slicedCriteria;
+        this.displayPopup = true;
+    }
+
+    handleSaveOrganization(organizationCriteria: OrganizationCriteriaRest) {
+        this.administrationService
+            .updateOrganizationCriteria(
+                this.organization.organizationId,
+                organizationCriteria,
+            )
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res) => {
+                this.selectedCriteriaDS = res.criteriaDs;
+                this.selectedCriteriaIS = res.criteriaIs;
+                this.displayPopup = false;
+                this.getUsers(true);
+                this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+            });
     }
 }

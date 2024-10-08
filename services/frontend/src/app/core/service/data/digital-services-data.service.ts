@@ -7,7 +7,7 @@
  */
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, map, tap } from "rxjs";
+import { map, Observable, ReplaySubject, tap } from "rxjs";
 import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import {
@@ -16,6 +16,7 @@ import {
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalResponse,
+    DSCriteriaRest,
     Host,
     NetworkType,
     ServerDC,
@@ -55,7 +56,6 @@ export class DigitalServicesDataService {
             .pipe(
                 tap((res: DigitalService) => {
                     this.digitalServiceSubject.next(res);
-                    this.get(digitalService.uid);
                 }),
             );
     }
@@ -72,6 +72,10 @@ export class DigitalServicesDataService {
 
     delete(uid: DigitalService["uid"]): Observable<string> {
         return this.http.delete<string>(`${endpoint}/${uid}`);
+    }
+
+    unlink(uid: DigitalService["uid"]): Observable<string> {
+        return this.http.delete<string>(`${endpoint}/${uid}/share`);
     }
 
     getDeviceReferential(): Observable<TerminalsType[]> {
@@ -141,5 +145,15 @@ export class DigitalServicesDataService {
             responseType: "blob",
             headers: { Accept: "application/zip" },
         });
+    }
+
+    updateDsCriteria(
+        digitalServiceUid: string,
+        DSCriteria: DSCriteriaRest,
+    ): Observable<DSCriteriaRest> {
+        return this.http.put<DSCriteriaRest>(
+            `${endpoint}/${digitalServiceUid}`,
+            DSCriteria,
+        );
     }
 }

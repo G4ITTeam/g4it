@@ -27,6 +27,7 @@ export interface Subscriber {
     defaultFlag: boolean;
     organizations: Organization[];
     roles: Role[];
+    criteria?: string[];
 }
 
 export interface Organization {
@@ -35,6 +36,10 @@ export interface Organization {
     defaultFlag: boolean;
     status: string;
     roles: Role[];
+    criteriaIs?: string[];
+    criteriaDs?: string[];
+    dataRetentionDays?: number | null;
+    subscriberId?: number;
 }
 
 export interface OrganizationData {

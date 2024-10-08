@@ -42,16 +42,12 @@ public class AdministratorRestController implements AdministratorApiDelegate {
 
     @Autowired
     AdministratorRoleService administratorRoleService;
-
-    @Autowired
-    private SubscriberRestMapper subscriberRestMapper;
-
     @Autowired
     AuthService authService;
-
     @Autowired
     UserRestMapper userRestMapper;
-
+    @Autowired
+    private SubscriberRestMapper subscriberRestMapper;
     @Autowired
     private OrganizationRestMapper organizationRestMapper;
 
@@ -65,6 +61,15 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     public ResponseEntity<List<SubscriberRest>> getSubscribers() {
         return ResponseEntity.ok(
                 subscriberRestMapper.toDto(this.administratorService.getSubscribers(authService.getAdminUser())));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<SubscriberRest> updateSubscriber(final Long subscriberId, final CriteriaRest criteriaRest) {
+        return ResponseEntity.ok(subscriberRestMapper.toDto(this.administratorService.updateSubscriberCriteria(subscriberId, criteriaRest, authService.getUser()))
+        );
     }
 
     /**

@@ -57,12 +57,14 @@ export class SidePanelAddVmComponent {
         quantity: 0,
         annualOperatingTime: 0,
     };
-
+    vcpuControl = this._formBuilder.control(0, [Validators.required]);
+    diskControl = this._formBuilder.control(0, [Validators.required]);
+    quantityControl = this._formBuilder.control(0, [Validators.required]);
     addVmForm = this._formBuilder.group({
         name: ["", Validators.required],
-        vcpu: [0, [Validators.required]],
-        disk: [0, [Validators.required]],
-        quantity: [0, [Validators.required]],
+        vcpu: this.vcpuControl,
+        disk: this.diskControl,
+        quantity: this.quantityControl,
         opratingTime: [0, [Validators.required]],
     });
 
@@ -97,22 +99,43 @@ export class SidePanelAddVmComponent {
 
     verifyValue() {
         const sum = this.sum();
+
         if (this.server.type === "Compute") {
-            const newVM = this.addVmForm.value.vcpu || 0;
+            const newVM =
+                (this.addVmForm.value.vcpu || 0) * (this.addVmForm.value.quantity || 1);
             const value2Compare = (this.server.totalVCpu || 0) - sum;
             if (newVM > value2Compare) {
-                this.isValueTooHigh = true;
+                this.vcpuControl.setErrors({
+                    ...this.vcpuControl?.errors,
+                    isValueTooHigh: true,
+                });
             } else {
-                this.isValueTooHigh = false;
+                delete this.vcpuControl.errors?.["isValueTooHigh"];
+                this.vcpuControl.updateValueAndValidity();
             }
         } else if (this.server.type === "Storage") {
-            const newVM = this.addVmForm.value.disk || 0;
+            const newVM =
+                (this.addVmForm.value.disk || 0) * (this.addVmForm.value.quantity || 1);
             const value2Compare = (this.server.totalDisk || 0) - sum;
             if (newVM > value2Compare) {
-                this.isValueTooHigh = true;
+                this.diskControl.setErrors({
+                    ...this.diskControl?.errors,
+                    isValueTooHigh: true,
+                });
             } else {
-                this.isValueTooHigh = false;
+                delete this.diskControl.errors?.["isValueTooHigh"];
+                this.diskControl.updateValueAndValidity();
             }
+        }
+        const quant = this.addVmForm.value.quantity;
+        if (quant == 0) {
+            this.quantityControl.setErrors({
+                ...this.quantityControl?.errors,
+                isQuantityTooLow: true,
+            });
+        } else {
+            delete this.quantityControl.errors?.["isQuantityTooLow"];
+            this.quantityControl.updateValueAndValidity();
         }
     }
 
@@ -120,12 +143,16 @@ export class SidePanelAddVmComponent {
         let sum: number = 0;
         if (this.server.type === "Compute") {
             this.server.vm?.forEach((vm) => {
-                sum += vm.vCpu;
+                if (this.vm.name !== vm.name) {
+                    sum += vm.vCpu * vm.quantity;
+                }
             });
             return sum;
         } else if (this.server.type === "Storage") {
             this.server.vm?.forEach((vm) => {
-                sum += vm.disk;
+                if (this.vm.name !== vm.name) {
+                    sum += vm.disk * vm.quantity;
+                }
             });
             return sum;
         }

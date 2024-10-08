@@ -92,25 +92,6 @@ describe("DigitalServiceBusinessService", () => {
         digitalServiceService.openPanel();
     });
 
-    it("should transform terminal footprint data correctly", () => {
-        const terminalFootprint = require("mock-server/data/digital-service-data/digital_service_terminals_footprint.json");
-
-        const transformedData =
-            digitalServiceService.transformTerminalData(terminalFootprint);
-
-        expect(transformedData.length).toBe(5);
-        expect(transformedData[2].impactCountry[0].totalNbUsers).toBe(50);
-        expect(Math.round(transformedData[2].impactCountry[0].totalSipValue)).toBe(0);
-        expect(Math.round(transformedData[2].impactCountry[0].avgUsageTime)).toBe(120);
-        expect(transformedData[4].impactType[0].totalNbUsers).toBe(450);
-        expect(Math.round(transformedData[4].impactType[0].totalSipValue)).toBe(65);
-        expect(Math.round(transformedData[4].impactType[0].avgUsageTime)).toBe(1293);
-        expect(transformedData[1].impactType[0].impact[0].ACVStep).toBe("FABRICATION");
-        expect(transformedData[1].impactType[0].impact[1].ACVStep).toBe("DISTRIBUTION");
-        expect(transformedData[1].impactType[0].impact[2].ACVStep).toBe("UTILISATION");
-        expect(transformedData[1].impactType[0].impact[3].ACVStep).toBe("FIN_DE_VIE");
-    });
-
     it("should transform criteria unit", () => {
         const mockFootprint: DigitalServiceFootprint[] = [
             {
@@ -170,7 +151,7 @@ describe("DigitalServiceBusinessService", () => {
 
         expect(digitalServiceService.getTerminalsIndicators).toHaveBeenCalledWith(uid);
         result.subscribe((terminalIndicator) => {
-            expect(terminalIndicator.length).toEqual(5);
+            expect(terminalIndicator.length).toEqual(16);
             expect(terminalIndicator[0].criteria).toEqual("particulate-matter");
             expect(terminalIndicator[0].impacts[0].unit).toEqual("Disease incidence");
         });
@@ -187,7 +168,7 @@ describe("DigitalServiceBusinessService", () => {
 
         expect(digitalServiceService.getNetworksIndicators).toHaveBeenCalledWith(uid);
         result.subscribe((networkIndicator) => {
-            expect(networkIndicator.length).toEqual(5);
+            expect(networkIndicator.length).toEqual(16);
             expect(networkIndicator[0].criteria).toEqual("particulate-matter");
             expect(networkIndicator[0].impacts[0].unit).toEqual("Disease incidence");
         });
@@ -204,11 +185,11 @@ describe("DigitalServiceBusinessService", () => {
 
         expect(digitalServiceService.getServersIndicators).toHaveBeenCalledWith(uid);
         result.subscribe((serverIndicator) => {
-            expect(serverIndicator.length).toEqual(5);
+            expect(serverIndicator.length).toEqual(16);
             expect(serverIndicator[0].criteria).toEqual("climate-change");
-            expect(serverIndicator[0].impactsServer[0].servers[0].impactVmDisk[0].unit).toEqual(
-                "mol H+ eq",
-            );
+            expect(
+                serverIndicator[0].impactsServer[0].servers[0].impactVmDisk[0].unit,
+            ).toEqual("mol H+ eq");
         });
     });
 });

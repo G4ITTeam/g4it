@@ -11,6 +11,7 @@ package com.soprasteria.g4it.backend.schedulerlocked;
 import com.soprasteria.g4it.backend.apibatchevaluation.business.InventoryEvaluationService;
 import com.soprasteria.g4it.backend.apibatchevaluation.repository.InventoryEvaluationReportRepository;
 import com.soprasteria.g4it.backend.common.utils.EvaluationBatchStatus;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.batch.core.BatchStatus;
@@ -41,30 +42,31 @@ public class InventoryEvaluationScheduler {
      * - verify if there is old evaluations to aggregate
      * - optimization with obsolete evaluations is done by skipping their aggregation
      */
+    @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void aggregateOldData() {
-        var evaluationsSortedByCreateTimeDesc = inventoryEvaluationReportRepository.findByBatchStatusCodeAndIsAggregated(
+        var evaluationsSortedByCreateTimeDesc = inventoryEvaluationReportRepository.findByBatchStatusCodeAndIsApplicationAggregated(
                 BatchStatus.COMPLETED.name(), false, Sort.by(Sort.Direction.DESC, "inventoryId", "createTime")
         );
 
         if (evaluationsSortedByCreateTimeDesc.isEmpty()) return;
 
-        // optimize by skipping old evaulations for not being aggregated
-        long currentInventoryId = -1;
-        List<Long> obsoleteReportIds = new ArrayList<>();
+        // optimize by skipping evaluations that has no application item
+        List<Long> reportIdsWithoutApplication = new ArrayList<>();
 
         for (var evaluation : evaluationsSortedByCreateTimeDesc) {
-            var inventoryId = evaluation.getInventory().getId();
-            if (inventoryId == currentInventoryId) {
-                obsoleteReportIds.add(evaluation.getId());
+            var inventory = evaluation.getInventory();
+
+            if (inventory.getApplicationCount() == null || inventory.getApplicationCount() == 0) {
+                reportIdsWithoutApplication.add(evaluation.getId());
             }
-            currentInventoryId = inventoryId;
         }
 
-        int nbToSkipAggregation = inventoryEvaluationReportRepository.updateIsAggregated(obsoleteReportIds);
+        int nbToSkipAggregation = inventoryEvaluationReportRepository.updateIsApplicationAggregated(reportIdsWithoutApplication);
         int nbToAggregated = inventoryEvaluationReportRepository.resetReportsIfNotAggregated(EvaluationBatchStatus.AGGREGATION_IN_PROGRESS.name());
 
-        log.info("Found {} obsolete evaluations to skip aggregation, and {} evaluations to aggregate", nbToSkipAggregation, nbToAggregated);
+        log.info("Found {} evaluations to skip aggregation, and {} evaluations to aggregate", nbToSkipAggregation, nbToAggregated);
+
     }
 
     @Scheduled(fixedDelay = 10_000)

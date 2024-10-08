@@ -20,7 +20,7 @@ public class PhysicalEquipmentLowImpactBO {
 
     private String inventoryName;
 
-    private String paysUtilisation;
+    private String country;
 
     private String type;
 

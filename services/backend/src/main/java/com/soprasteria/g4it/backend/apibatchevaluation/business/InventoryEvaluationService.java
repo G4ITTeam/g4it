@@ -11,12 +11,15 @@ import com.soprasteria.g4it.backend.apibatchevaluation.repository.InventoryEvalu
 import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
+import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryExportReportBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.InventoryEvaluationReport;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
+import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.utils.EvaluationBatchStatus;
 import com.soprasteria.g4it.backend.common.utils.ExportBatchStatus;
@@ -33,6 +36,8 @@ import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.common.utils.Constants.COMPLETE_PROGRESS_PERCENTAGE;
 
@@ -46,6 +51,9 @@ public class InventoryEvaluationService {
 
     @Autowired
     InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
+
+    @Autowired
+    SubscriberRepository subscriberRepository;
     /**
      * Inventory Export Job Service.
      */
@@ -91,6 +99,9 @@ public class InventoryEvaluationService {
     @Autowired
     private AggregationService aggregationService;
 
+    @Autowired
+    private CriteriaService criteriaService;
+
     /**
      * Launch loading batch job.
      *
@@ -103,6 +114,9 @@ public class InventoryEvaluationService {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
         final String organization = linkedOrganization.getName();
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+
+        List<String> criteriaKeyList = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, inventory.getCriteria()).active();
+
         // Remove last indicators and aggregated indicators if present.
         inventoryService.getLastBatchName(inventory).ifPresent(batchName -> indicatorService.deleteIndicators(batchName));
 
@@ -110,7 +124,7 @@ public class InventoryEvaluationService {
         InventoryExportReportBO exportReport = inventory.getExportReport();
         if (exportReport == null) {
             // Launch evaluation.
-            return inventoryEvaluationJobService.launchInventoryEvaluation(organization, inventory.getName(), inventoryId, organizationId);
+            return inventoryEvaluationJobService.launchInventoryEvaluation(organization, inventory.getName(), inventoryId, organizationId, criteriaKeyList);
         }
 
         // force stopping export job if one is running
@@ -142,9 +156,8 @@ public class InventoryEvaluationService {
         inventoryExportService.updateBatchStatusCode(exportReport.getBatchName(), ExportBatchStatus.REMOVED.name());
 
         // Launch evaluation.
-        return inventoryEvaluationJobService.launchInventoryEvaluation(organization, inventory.getName(), inventoryId, organizationId);
+        return inventoryEvaluationJobService.launchInventoryEvaluation(organization, inventory.getName(), inventoryId, organizationId, criteriaKeyList);
     }
-
 
     /**
      * Delete evaluation batch job.
@@ -165,6 +178,20 @@ public class InventoryEvaluationService {
     public void updateBatchStatus(String batchName, EvaluationBatchStatus batchStatus) {
         InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
         evaluationReport.setBatchStatusCode(batchStatus.name());
+        inventoryEvaluationReportRepository.save(evaluationReport);
+    }
+
+    /**
+     * @param batchName    batch name
+     * @param criteriaList list of criteria to evaluate impacts on
+     */
+
+    public void setCriteriaList(String batchName, List<String> criteriaList) {
+        InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
+
+        List<String> criteriaToSet = Optional.ofNullable(criteriaList).orElse(Constants.CRITERIA_LIST);
+        evaluationReport.setCriteria(criteriaToSet);
+
         inventoryEvaluationReportRepository.save(evaluationReport);
     }
 
@@ -205,11 +232,11 @@ public class InventoryEvaluationService {
         inventoryEvaluationReportRepository.findByBatchStatusCode(EvaluationBatchStatus.AGGREGATION_IN_PROGRESS.name(), Limit.of(10))
                 .forEach(report -> {
                     var start = System.currentTimeMillis();
-                    aggregationService.aggregateBatchData(report.getBatchName(), report.getInventory().getId());
+                    aggregationService.aggregateBatchData(report.getBatchName());
 
                     report.setProgressPercentage(COMPLETE_PROGRESS_PERCENTAGE);
                     report.setBatchStatusCode(BatchStatus.COMPLETED.name());
-                    report.setIsAggregated(true);
+                    report.setIsApplicationAggregated(true);
 
                     log.info("Aggregation time: {}s, updating batch status to 'COMPLETED' of batch : '{}'",
                             (System.currentTimeMillis() - start) / 1000,

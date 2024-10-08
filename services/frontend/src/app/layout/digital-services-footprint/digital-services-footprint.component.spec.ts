@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -44,7 +44,8 @@ describe("DigitalServicesFootprintComponent", () => {
                 networks: [],
                 servers: [],
                 terminals: [],
-            })
+                members: [],
+            }),
         );
         digitalServiceDataStub.update.and.returnValue(
             of<DigitalService>({
@@ -56,7 +57,8 @@ describe("DigitalServicesFootprintComponent", () => {
                 networks: [],
                 servers: [],
                 terminals: [],
-            })
+                members: [],
+            }),
         );
         digitalServiceDataStub.digitalService$.and.returnValue(
             of({
@@ -68,7 +70,8 @@ describe("DigitalServicesFootprintComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
-            } as DigitalService)
+                members: [],
+            } as DigitalService),
         );
 
         TestBed.configureTestingModule({

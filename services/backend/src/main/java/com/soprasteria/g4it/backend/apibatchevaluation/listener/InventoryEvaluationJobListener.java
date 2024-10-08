@@ -43,7 +43,7 @@ public class InventoryEvaluationJobListener implements JobExecutionListener {
                 .createTime(jobExecution.getCreateTime())
                 .batchStatusCode(EvaluationBatchStatus.DATA_EXTRACTION.name())
                 .progressPercentage(STARTED_PROGRESS_PERCENTAGE)
-                .isAggregated(false)
+                .isApplicationAggregated(false)
                 .build());
         inventoryRepository.save(processedInventory);
     }

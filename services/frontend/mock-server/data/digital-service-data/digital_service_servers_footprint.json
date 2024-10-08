@@ -683,5 +683,324 @@
                 ]
             }
         ]
+    },
+    {
+        "criteria": "water-use",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "ozone-depletion",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-cancer",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-non-cancer",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "photochemical-ozone-formation",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-terrestrial",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-freshwater",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "ozone-marine",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "ecotoxicity-freshwater",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "land-use",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "criteria": "resource-use-fossils",
+        "impactsServer": [
+            {
+                "serverType": "Storage",
+                "mutualizationType": "Dedicated",
+                "servers": [
+                    {
+                        "name": "Server A",
+                        "totalSipValue": 0.4575874576059412,
+                        "hostingEfficiency": "Good",
+                        "impactVmDisk": [
+                            {
+                                "name": "Vm A",
+                                "sipValue": 0.4575874576059412,
+                                "quantity": 2
+                            }
+                        ],
+                        "impactStep": [
+                            {
+                                "acvStep": "UTILISATION",
+                                "sipValue": 0.025624750113832598
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ]

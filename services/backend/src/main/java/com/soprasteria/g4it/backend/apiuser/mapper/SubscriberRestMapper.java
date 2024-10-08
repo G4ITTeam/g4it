@@ -4,10 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiuser.mapper;
 
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
+import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
 import com.soprasteria.g4it.backend.server.gen.api.dto.SubscriberRest;
 import org.mapstruct.Mapper;
 
@@ -34,4 +35,13 @@ public interface SubscriberRestMapper {
      * @return the SubscriberRest list.
      */
     List<SubscriberRest> toDto(final List<SubscriberBO> businessObject);
+
+    /**
+     * Map an entity to business object.
+     *
+     * @param subscriber the SubscriberBO
+     * @return the SubscriberBO.
+     */
+    SubscriberBO toBusinessObject(final Subscriber subscriber);
+
 }

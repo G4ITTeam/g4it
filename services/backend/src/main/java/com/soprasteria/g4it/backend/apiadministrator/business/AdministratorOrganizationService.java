@@ -25,12 +25,14 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -40,25 +42,25 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Slf4j
 public class AdministratorOrganizationService {
-
+    @Autowired
     AdministratorRoleService administratorRoleService;
-
+    @Autowired
     OrganizationService organizationService;
-
+    @Autowired
     OrganizationRepository organizationRepository;
-
+    @Autowired
     RoleService roleService;
-
+    @Autowired
     UserOrganizationRepository userOrganizationRepository;
-
+    @Autowired
     UserSubscriberRepository userSubscriberRepository;
-
+    @Autowired
     UserRoleOrganizationRepository userRoleOrganizationRepository;
-
+    @Autowired
     UserRepository userRepository;
-
+    @Autowired
     UserRestMapper userRestMapper;
-
+    @Autowired
     UserService userService;
 
     /**
@@ -87,6 +89,7 @@ public class AdministratorOrganizationService {
                     subscriberBO.setOrganizations(organizations);
                 })
                 .toList();
+
     }
 
     /**
@@ -145,7 +148,7 @@ public class AdministratorOrganizationService {
                     }
 
                     User u = userSubscriber.getUser();
-                    UserInfoBO userInfoBO = UserInfoBO.builder()
+                    return UserInfoBO.builder()
                             .id(u.getId())
                             .firstName(u.getFirstName())
                             .lastName(u.getLastName())
@@ -155,10 +158,9 @@ public class AdministratorOrganizationService {
                                     .filter(name -> name.equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
                                     .toList())
                             .build();
-                    return userInfoBO;
                 })
                 .filter(Objects::nonNull)
-                .toList();
+                .collect(Collectors.toList());
 
         List<Long> adminIds = users.stream()
                 .map(UserInfoBO::getId)
@@ -168,16 +170,15 @@ public class AdministratorOrganizationService {
                 .filter(userOrganization -> !adminIds.contains(userOrganization.getUser().getId()))
                 .map(userOrganization -> {
                     User u = userOrganization.getUser();
-                    UserInfoBO userInfoBO = UserInfoBO.builder()
+                    return UserInfoBO.builder()
                             .id(u.getId())
                             .firstName(u.getFirstName())
                             .lastName(u.getLastName())
                             .email(u.getEmail())
                             .roles(userOrganization.getRoles().stream().map(Role::getName).toList())
                             .build();
-                    return userInfoBO;
                 })
-                .toList();
+                .collect(Collectors.toList());
 
         return Stream.concat(users.stream(), usersByOrganization.stream()).toList();
     }
@@ -232,13 +233,12 @@ public class AdministratorOrganizationService {
 
             List<UserRoleOrganization> userRoleOrganizations = userRolesToAdd.stream()
                     .map(role -> {
-                        UserRoleOrganization userRoleOrganization = UserRoleOrganization.builder()
+                        return UserRoleOrganization.builder()
                                 .userOrganizations(userOrganization)
                                 .roles(role)
                                 .build();
-                        return userRoleOrganization;
                     })
-                    .toList();
+                    .collect(Collectors.toList());
 
             userRoleOrganizationRepository.saveAll(userRoleOrganizations);
 

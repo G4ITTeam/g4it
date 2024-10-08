@@ -14,7 +14,6 @@ import {
     SimpleChanges,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Constants } from "src/constants";
 
 @Component({
     selector: "app-impact-aggregate-infos",
@@ -31,12 +30,12 @@ export class ImpactAggregateInfosComponent {
 
     icon = "";
     unitOfCriteria = "";
+    criteriaLabel = "";
 
     ngOnChanges(changes: SimpleChanges) {
-        this.icon = Constants.CRITERIA_ICON[this.criteria];
-        this.unitOfCriteria = this.translate.instant(
-            `inventories-footprint.critere.${this.criteria}.unite`,
-        );
+        this.icon = this.translate.instant(`criteria.${this.criteria}.icon`);
+        this.unitOfCriteria = this.translate.instant(`criteria.${this.criteria}.unite`);
+        this.criteriaLabel = this.translate.instant(`criteria.${this.criteria}.title`);
     }
 
     setUnit(unit: string) {

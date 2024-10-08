@@ -19,8 +19,11 @@ export class DigitalServicesItemComponent {
 
     @Output() noteOpened: EventEmitter<DigitalService> = new EventEmitter();
     @Output() deleteUid: EventEmitter<string> = new EventEmitter();
+    @Output() unlinkUid: EventEmitter<string> = new EventEmitter();
 
     isLinkCopied = false;
+    sidebarVisible = false;
+    isShared = false;
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -31,6 +34,13 @@ export class DigitalServicesItemComponent {
         public userService: UserService,
         private clipboardService: ClipboardService,
     ) {}
+
+    async ngOnInit(): Promise<void> {
+        const userId = (await firstValueFrom(this.userService.user$)).id;
+        if (this.digitalService.creator?.id !== userId) {
+            this.isShared = true;
+        }
+    }
 
     async copyUrl() {
         this.isLinkCopied = true;
@@ -68,6 +78,22 @@ export class DigitalServicesItemComponent {
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
                 this.deleteUid.emit(uid);
+            },
+        });
+    }
+    confirmUnlink(event: Event, digitalService: DigitalService) {
+        const { name, uid } = digitalService;
+        this.confirmationService.confirm({
+            closeOnEscape: true,
+            target: event.target as EventTarget,
+            acceptLabel: this.translate.instant("common.yes"),
+            rejectLabel: this.translate.instant("common.no"),
+            message: `${this.translate.instant(
+                "digital-services.popup.delete-question-shared",
+            )}`,
+            icon: "pi pi-exclamation-triangle",
+            accept: async () => {
+                this.unlinkUid.emit(uid);
             },
         });
     }

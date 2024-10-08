@@ -374,7 +374,8 @@ main {
 .black-button,
 .white-button,
 .grey-button,
-.yellow-button {
+.yellow-button,
+.reset-button {
     border: none;
     font-weight: 500;
     letter-spacing: 2px;
@@ -386,6 +387,15 @@ main {
     text-transform: uppercase;
 }
 
+.reset-button {
+    color: black;
+    border: 1px solid #e5e5e5;
+    background: transparent;
+    font-weight: 700;
+    outline: none;
+    box-shadow: none;
+}
+
 .black-button,
 .black-button-sidebar {
     background: var(--black-color);
@@ -395,6 +405,12 @@ main {
 .white-button {
     background: white;
     color: var(--black-color);
+}
+
+.white-button .pi.icon {
+    margin-right: 8px;
+    font-size: 16px;
+    color: #2b2b2b;
 }
 
 .grey-button,
@@ -1360,6 +1376,8 @@ div.label-input-div-medium {
 .inventory-add-button-small {
     background: #f9f9f9;
     color: var(--black-color);
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .inventory-attached-button-small {
@@ -1392,4 +1410,84 @@ div.label-input-div-medium {
     left: 0px;
     position: fixed;
     z-index: 90;
+}
+
+/*Administration panel*/
+
+.left-aligned-button {
+    display: flex;
+    justify-content: flex-start;
+    margin-right: auto;
+}
+
+.right-aligned-button {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.footprint-tabmenu {
+    .p-tabmenu-nav-prev,
+    .p-tabmenu-nav-next {
+        background-color: #e8e8e8;
+    }
+
+    .p-tabmenu-nav-container {
+        width: calc(100vw - 170px);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .p-tabmenu-nav-content {
+        width: calc(100vw - 210px);
+    }
+
+    .p-tabmenu-nav-content ul {
+        border: none;
+    }
+    .p-tabmenu-nav-content ul li {
+        border: solid rgba(0, 0, 0, 0.12);
+        border-width: 0 0 1px 0;
+    }
+}
+
+.impact-button-criteria {
+    width: 360px;
+}
+
+.impacts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.left-critere-menu-dashboard {
+    .p-scrollpanel-bar.p-scrollpanel-bar-y {
+        display: none !important;
+    }
+}
+
+.p-scrollpanel-bar {
+    width: 10px;
+}
+
+.p-scrollpanel-content {
+    scrollbar-width: thin;
+}
+
+.header-share-count .p-button span.pi-users {
+    font-size: 2rem;
+}
+
+.popup-field-checkbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

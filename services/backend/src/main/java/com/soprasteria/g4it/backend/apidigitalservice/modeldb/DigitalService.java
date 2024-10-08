@@ -47,6 +47,11 @@ public class DigitalService {
     private String name;
 
     /**
+     * The Criterias key.
+     */
+    private List<String> criteria;
+
+    /**
      * Linked organization.
      */
     @ToString.Exclude

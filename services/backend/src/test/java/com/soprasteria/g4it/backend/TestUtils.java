@@ -31,6 +31,7 @@ public class TestUtils {
     public static String EMAIL = "user.test@unitaire";
     public static String ROLE = "ROLE";
 
+
     public static UserBO createUserBO(final List<String> userRoles) {
         return UserBO.builder()
                 .id(1)
@@ -171,6 +172,20 @@ public class TestUtils {
                 .dataRetentionDays(dataRetentionDays).build();
     }
 
+    public static OrganizationUpsertRest createOrganizationUpsert(Long subscriberId, String orgName
+            , String orgStatus, String criteriaDs, String criteriaIs) {
+
+        com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus status = null;
+        if (orgStatus != null)
+            status = com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationStatus.valueOf(orgStatus);
+
+        return OrganizationUpsertRest.builder().subscriberId(subscriberId)
+                .name(orgName)
+                .criteriaDs(List.of(criteriaDs))
+                .criteriaIs(List.of(criteriaIs)).status(status)
+                .build();
+    }
+
     public static UserRoleSubscriber createUserRoleSubscriber(Role role) {
         return UserRoleSubscriber.builder().roles(role).build();
     }
@@ -208,6 +223,5 @@ public class TestUtils {
                 .defaultFlag(true)
                 .build();
     }
-
 
 }

@@ -180,6 +180,7 @@ describe("DigitalServicesServersComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
+                members: [],
             }),
         );
         const server = {
@@ -275,6 +276,7 @@ describe("DigitalServicesServersComponent", () => {
                     },
                 ],
                 networks: [],
+                members: [],
             }),
         );
         const server = {

@@ -1,6 +1,6 @@
-nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
-;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;300;FR;;2017-02-22;;15;Datacenter 9;1500;500;dell;100;250;i9
-Serveur 2;Sopra Steria Group;mockData;;3;ServeurCalcul;actif;300;FR;;2017-02-22;;15;Datacenter 9;1500;500;dell;100;250;i9
-Serveur 3;Sopra Steria Group;mockData;rack-server-with-hdd;;ServeurCalcul;inactif;300;FR;;2014-03-05;2023-03-05;10;Datacenter 9;200;400;dell;1000;500;i9
-Serveur 4;Sopra Steria Group;mockData;rack-server-with-hdd;3;;actif;300;FR;;2017-02-22;;15;Datacenter 9;1500;500;dell;100;250;i9
-Serveur Without Country;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7
+nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
+;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2017-02-22;;15;Datacenter 9;500;dell;100;250;i9
+Serveur 2;Sopra Steria Group;mockData;;3;ServeurCalcul;actif;FR;;2017-02-22;;15;Datacenter 9;500;dell;100;250;i9
+Serveur 3;Sopra Steria Group;mockData;rack-server-with-hdd;;ServeurCalcul;inactif;FR;;2014-03-05;2023-03-05;10;Datacenter 9;400;dell;1000;500;i9
+Serveur 4;Sopra Steria Group;mockData;rack-server-with-hdd;3;;actif;FR;;2017-02-22;;15;Datacenter 9;500;dell;100;250;i9
+Serveur Without Country;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7

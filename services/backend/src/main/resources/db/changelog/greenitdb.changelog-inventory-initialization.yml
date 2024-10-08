@@ -659,7 +659,6 @@ databaseChangeLog:
       changes:
         - sql: update inventory i set application_count = (select count(distinct a.nom_application) from application a where a.inventory_id = i.id);
 
-
   - changeSet:
       id: add-column-progress-percentage-g4it_evaluation_report
       author: G4IT Dev Team
@@ -670,8 +669,7 @@ databaseChangeLog:
               - column:
                   name: progress_percentage
                   type: varchar(4)
-        - sql:
-            update g4it_evaluation_report er
+        - sql: update g4it_evaluation_report er
             set progress_percentage = '100%' where batch_status_code='COMPLETED';
           comment: Update g4it_evaluation_report with batch calculation progress percentage
 
@@ -688,8 +686,7 @@ databaseChangeLog:
               - column:
                   name: name
                   type: varchar(255)
-        - sql:
-            update inventory set type = 'INFORMATION_SYSTEM';
+        - sql: update inventory set type = 'INFORMATION_SYSTEM';
             update inventory set name = inventory_date;
           comment: Update inventory type to 'INFORMATION_SYSTEM'
 
@@ -886,3 +883,65 @@ databaseChangeLog:
             columns:
               - column:
                   name: batch_status_code
+
+  - changeSet:
+      id: delete-columns-nb_jour_utilise_an-and-go_telecharge-equipement_physique
+      author: G4IT Dev Team
+      changes:
+        - dropColumn:
+            tableName: equipement_physique
+            columns:
+              - column:
+                  name: nb_jour_utilise_an
+              - column:
+                  name: go_telecharge
+
+  - changeSet:
+      id: add-column-criteria-inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: criteria
+                  type: varchar(255) array
+  - changeSet:
+      id: add-columns-agg_application_indicator
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: agg_application_indicator
+            columns:
+              - column:
+                  name: virtual_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: cluster
+                  type: varchar(255)
+
+  - changeSet:
+      id: add-column-is_application_aggregated-g4it_evaluation_report
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_evaluation_report
+            columns:
+              - column:
+                  name: is_application_aggregated
+                  type: boolean
+                  defaultValue: false
+
+  - changeSet:
+      id: add-column-criteria-g4it_evaluation_report
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: g4it_evaluation_report
+            columns:
+              - column:
+                  name: criteria
+                  type: varchar(255) array
+        - sql:
+            UPDATE g4it_evaluation_report  SET criteria = '{climate-change,ionising-radiation,acidification,particulate-matter,resource-use}'
+            WHERE criteria is null;

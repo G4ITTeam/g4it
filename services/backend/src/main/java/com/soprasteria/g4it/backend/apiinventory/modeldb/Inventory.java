@@ -48,6 +48,11 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private String type;
 
     /**
+     * The Criterias key.
+     */
+    private List<String> criteria;
+
+    /**
      * Attached note.
      */
     @OnDelete(action = OnDeleteAction.CASCADE)

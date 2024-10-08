@@ -44,8 +44,6 @@ filesystem.config.headers:
       optional: false
     - name: "statut"
       optional: true
-    - name: "nbJourUtiliseAn"
-      optional: true
     - name: "paysDUtilisation"
       optional: false
     - name: "utilisateur"
@@ -57,8 +55,6 @@ filesystem.config.headers:
     - name: "nbCoeur"
       optional: true
     - name: "nomCourtDatacenter"
-      optional: true
-    - name: "goTelecharge"
       optional: true
     - name: "consoElecAnnuelle"
       optional: true
@@ -316,7 +312,7 @@ filesystem.config.headers:
       optional: false
     - name: "serverHostExternalReferentialDescription"
       optional: false
-    - name : "datacenterName"
+    - name: "datacenterName"
       dbName: "datacenterDigitalServiceName"
       optional: false
     - name: "quantity"

@@ -47,6 +47,16 @@ public class OrganizationBO {
     private LocalDateTime deletionDate;
 
     /**
+     * The inventory criteria
+     */
+    private List<String> criteriaIs;
+
+    /**
+     * The digital service criteria
+     */
+    private List<String> criteriaDs;
+
+    /**
      * User roles on organization.
      */
     private List<String> roles;

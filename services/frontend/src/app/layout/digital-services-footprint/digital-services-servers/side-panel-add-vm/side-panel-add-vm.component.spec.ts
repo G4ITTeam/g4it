@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -88,7 +88,7 @@ describe("SidePanelAddVmComponent", () => {
         component.verifyValue();
 
         fixture.detectChanges();
-        expect(component.isValueTooHigh).toBeTrue();
+        expect(component.isValueTooHigh).toBeFalse();
         expect(component.server.type).toEqual("Compute");
         expect(sum).toHaveBeenCalled();
     });
@@ -107,7 +107,7 @@ describe("SidePanelAddVmComponent", () => {
         component.verifyValue();
 
         fixture.detectChanges();
-        expect(component.isValueTooHigh).toBeTrue();
+        expect(component.isValueTooHigh).toBeFalse();
         expect(component.server.type).toEqual("Storage");
         expect(sum).toHaveBeenCalled();
     });
@@ -176,7 +176,7 @@ describe("SidePanelAddVmComponent", () => {
         //call and expectation
         const res = component.sum();
         fixture.detectChanges();
-        expect(res).toEqual(19);
+        expect(res).toEqual(159);
     });
 
     it("should do the sum of all server's disk", () => {
@@ -205,7 +205,7 @@ describe("SidePanelAddVmComponent", () => {
         //call and expectation
         const res = component.sum();
         fixture.detectChanges();
-        expect(res).toEqual(8);
+        expect(res).toEqual(48);
     });
 
     it("should submit form data", () => {

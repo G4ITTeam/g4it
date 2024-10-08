@@ -31,6 +31,72 @@
                 "sipValue": 0.44,
                 "unitValue": 44,
                 "unit": "kg CO2 eq"
+            },
+            {
+                "criteria": "water-use",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "m3 eq"
+            },
+            {
+                "criteria": "ozone-depletion",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "kg CFC-11 eq"
+            },
+            {
+                "criteria": "human-toxicity-cancer",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "CTUh"
+            },
+            {
+                "criteria": "human-toxicity-non-cancer",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "CTUh"
+            },
+            {
+                "criteria": "photochemical-ozone-formation",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "kg N M VO C eq"
+            },
+            {
+                "criteria": "eutrophication-terrestrial",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "mol N eq"
+            },
+            {
+                "criteria": "eutrophication-freshwater",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "kg P eq"
+            },
+            {
+                "criteria": "eutrophication-marine",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "kg N eq"
+            },
+            {
+                "criteria": "ecotoxicity-freshwater",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "CTUe"
+            },
+            {
+                "criteria": "land-use",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "Pt"
+            },
+            {
+                "criteria": "resource-use-fossils",
+                "sipValue": 3,
+                "unitValue": 3,
+                "unit": "MJ"
             }
         ]
     },

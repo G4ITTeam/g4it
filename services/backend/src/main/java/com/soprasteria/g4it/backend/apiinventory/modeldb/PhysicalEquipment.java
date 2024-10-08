@@ -57,9 +57,6 @@ public class PhysicalEquipment extends AbstractValidationBaseEntity implements S
     @Size(max = 255, message = "{statut.size}")
     private String statut;
 
-    @Pattern(regexp = "^(?:\\s*|36[0-5]|3[0-5]\\d|[12]\\d{2}|[1-9]\\d?)$", message = "{nbjourutilisean.pattern}")
-    private String nbJourUtiliseAn;
-
     @Size(max = 255, message = "{paysdutilisation.size}")
     @NotBlank(message = "{paysdutilisation.not.blank}")
     @Column(name = "pays_utilisation")
@@ -76,9 +73,6 @@ public class PhysicalEquipment extends AbstractValidationBaseEntity implements S
 
     @Pattern(regexp = "\\d*", message = "{nbcoeur.pattern}")
     private String nbCoeur;
-
-    @Pattern(regexp = "\\d*", message = "{gotelecharge.pattern}")
-    private String goTelecharge;
 
     @Pattern(regexp = "\\d*", message = "{consoelecannuelle.pattern}")
     private String consoElecAnnuelle;

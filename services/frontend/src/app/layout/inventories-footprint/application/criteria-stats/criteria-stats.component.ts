@@ -4,70 +4,48 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
-import { Component, Input, SimpleChanges } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+ */
+import { Component, computed, inject, input, Signal } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import {
-    ApplicationCriteriaFootprint,
-    ApplicationCriteriaImpact,
     ApplicationFootprint,
     ApplicationImpact,
-    FootprintRepository,
-} from "src/app/core/store/footprint.repository";
+} from "src/app/core/interfaces/footprint.interface";
+import { FilterService } from "src/app/core/service/business/filter.service";
+import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
+
+interface CriteriaData {
+    appCount: number;
+    averageImpactSip: number;
+    averageImpactUnit: number;
+}
 
 @Component({
     selector: "app-criteria-stats",
     templateUrl: "./criteria-stats.component.html",
 })
 export class CriteriaStatsComponent {
-    @Input() selectedGraph: string = "global";
-    isSip: boolean = true;
-    @Input() selectedCriteria = {
-        name: "",
-        unite: "",
-    };
-    @Input() selectedCriteriaUri: string = "";
-    @Input() footprint: ApplicationFootprint[] = [];
-    criteriaFootprint: ApplicationCriteriaFootprint[] = [];
+    protected footprintStore = inject(FootprintStoreService);
+    private filterService = inject(FilterService);
+    private translate = inject(TranslateService);
+
+    selectedCriteria = computed(() => {
+        return this.translate.instant(
+            `criteria.${this.footprintStore.applicationCriteria()}`,
+        );
+    });
+
+    footprint = input<ApplicationFootprint[]>([]);
     noData: boolean = false;
-    @Input() selectedEnvironnementFilter: string[] = [];
-    @Input() selectedLifecycleFilter: string[] = [];
-    @Input() selectedEquipmentsFilter: string[] = [];
-    @Input() selectedDomainFilter: string[] = [];
-    @Input() selectedSubDomainFilter: string[] = [];
-    @Input() selectedApp: string = "";
-    @Input() selectedSubdomain: string = "";
-    @Input() selectedDomain: string = "";
-    appCount: number = 0;
-    averageImpactSip: number = 0;
-    averageImpactUnit: number = 0;
+    isSip: boolean = true;
 
-    ngUnsubscribe = new Subject<void>();
+    criteriaSignal: Signal<CriteriaData> = computed(() => {
+        return this.computeApplicationStats();
+    });
 
-    constructor(private footprintRepo: FootprintRepository) {}
-
-    ngOnInit() {
-        this.footprintRepo.applicationCriteriaFootprint$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((criteriaFootprint) => {
-                this.criteriaFootprint = criteriaFootprint;
-                if (this.selectedGraph === "application") {
-                    this.computeApplicationStatsAppGraph();
-                } else {
-                    this.computeApplicationStats();
-                }
-            });
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes) {
-            if (this.selectedGraph === "application") {
-                this.computeApplicationStatsAppGraph();
-            } else {
-                this.computeApplicationStats();
-            }
-        }
-    }
+    constructor(private appComponent: InventoriesApplicationFootprintComponent) {}
 
     updateSelectedUnite(typeOfUnit: string) {
         switch (typeOfUnit) {
@@ -80,25 +58,28 @@ export class CriteriaStatsComponent {
         }
     }
 
-    computeApplicationStats() {
+    computeApplicationStats(): CriteriaData {
         let sipAvgImpact = 0;
         let unitAvgImpact = 0;
         let count = 0;
         let appNameList: Set<string> = new Set();
-        this.appCount = 0;
-        this.averageImpactSip = 0;
-        this.averageImpactUnit = 0;
-        this.footprint.forEach((application) => {
-            if (application.criteria === this.selectedCriteriaUri) {
+        let appCount = 0;
+        let averageImpactSip = 0;
+        let averageImpactUnit = 0;
+        this.footprint().forEach((application) => {
+            if (application.criteria === this.footprintStore.applicationCriteria()) {
                 application.impacts.forEach((impact: ApplicationImpact) => {
+                    const domain = (
+                        this.footprintStore.applicationSelectedFilters() as Filter<TransformedDomain>
+                    )["domain"].find((d) => d?.label === impact.domain);
+
                     if (
-                        this.selectedEnvironnementFilter.includes(impact.environment) &&
-                        this.selectedEquipmentsFilter.includes(impact.equipmentType) &&
-                        this.selectedLifecycleFilter.includes(impact.lifeCycle) &&
-                        this.selectedDomainFilter.includes(impact.domain) &&
-                        this.selectedSubDomainFilter.includes(impact.subDomain)
+                        this.filterService.getFilterincludes(
+                            this.footprintStore.applicationSelectedFilters(),
+                            impact,
+                        )
                     ) {
-                        switch (this.selectedGraph) {
+                        switch (this.footprintStore.appGraphType()) {
                             case "global":
                                 appNameList.add(impact.applicationName);
                                 count++;
@@ -106,7 +87,7 @@ export class CriteriaStatsComponent {
                                 unitAvgImpact += impact.impact;
                                 break;
                             case "domain":
-                                if (this.selectedDomain.includes(impact.domain)) {
+                                if (domain?.checked) {
                                     appNameList.add(impact.applicationName);
                                     count++;
                                     sipAvgImpact += impact.sip;
@@ -115,8 +96,22 @@ export class CriteriaStatsComponent {
                                 break;
                             case "subdomain":
                                 if (
-                                    this.selectedDomain.includes(impact.domain) &&
-                                    this.selectedSubdomain.includes(impact.subDomain)
+                                    domain?.children?.some(
+                                        (child) =>
+                                            child.label === impact.subDomain &&
+                                            child.checked,
+                                    )
+                                ) {
+                                    appNameList.add(impact.applicationName);
+                                    count++;
+                                    sipAvgImpact += impact.sip;
+                                    unitAvgImpact += impact.impact;
+                                }
+                                break;
+                            case "application":
+                                if (
+                                    this.footprintStore.appApplication() ===
+                                    impact.applicationName
                                 ) {
                                     appNameList.add(impact.applicationName);
                                     count++;
@@ -129,42 +124,20 @@ export class CriteriaStatsComponent {
                 });
             }
         });
-        this.appCount = appNameList.size;
-        if (this.appCount !== 0) {
-            this.averageImpactSip = sipAvgImpact / this.appCount;
-            this.averageImpactUnit = unitAvgImpact / this.appCount;
+
+        appCount = appNameList.size;
+        if (appCount !== 0) {
+            averageImpactSip = sipAvgImpact / appCount;
+            averageImpactUnit = unitAvgImpact / appCount;
         } else {
-            this.averageImpactSip = 0;
-            this.averageImpactUnit = 0;
+            averageImpactSip = 0;
+            averageImpactUnit = 0;
         }
-    }
 
-    computeApplicationStatsAppGraph() {
-        let sipAvgImpact = 0;
-        let unitAvgImpact = 0;
-        this.averageImpactSip = 0;
-        this.averageImpactUnit = 0;
-        this.criteriaFootprint.forEach((application) => {
-            if (application.criteria === this.selectedCriteriaUri) {
-                application.impacts.forEach((impact: ApplicationCriteriaImpact) => {
-                    if (
-                        this.selectedEnvironnementFilter.includes(impact.environment) &&
-                        this.selectedEquipmentsFilter.includes(impact.equipmentType) &&
-                        this.selectedLifecycleFilter.includes(impact.lifeCycle)
-                    ) {
-                        sipAvgImpact += impact.sip;
-                        unitAvgImpact += impact.impact;
-                    }
-                });
-            }
-        });
-
-        this.averageImpactSip = sipAvgImpact;
-        this.averageImpactUnit = unitAvgImpact;
-    }
-
-    ngOnDestroy() {
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
+        return {
+            appCount: appCount,
+            averageImpactSip: averageImpactSip,
+            averageImpactUnit: averageImpactUnit,
+        };
     }
 }

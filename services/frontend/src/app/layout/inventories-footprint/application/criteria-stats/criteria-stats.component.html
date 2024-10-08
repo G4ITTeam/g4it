@@ -1,14 +1,21 @@
 <div>
     <p-card>
         <div class="footprint-data-application">
-            <div *ngIf="selectedGraph !== 'application'">
-                <p tabindex="0" class="p-bold" *ngIf="appCount !== 0; else zeroTitle">
+            <div>
+                <p
+                    tabindex="0"
+                    class="p-bold"
+                    *ngIf="criteriaSignal().appCount !== 0; else zeroTitle"
+                >
                     {{
                         "inventories-footprint.application.applications.title" | translate
                     }}
                 </p>
                 <ng-template #zeroTitle>
-                    <p tabindex="0" [ngClass]="{ 'grey-text': appCount == 0 }">
+                    <p
+                        tabindex="0"
+                        [ngClass]="{ 'grey-text': criteriaSignal().appCount == 0 }"
+                    >
                         {{
                             "inventories-footprint.application.applications.title"
                                 | translate
@@ -16,9 +23,11 @@
                     </p>
                 </ng-template>
                 <div class="flex flex-row justify-content-center text-2xl mt-2">
-                    <span tabindex="0" *ngIf="appCount !== 0; else zeroApp">{{
-                        appCount.toFixed(0)
-                    }}</span>
+                    <span
+                        tabindex="0"
+                        *ngIf="criteriaSignal().appCount !== 0; else zeroApp"
+                        >{{ criteriaSignal().appCount.toFixed(0) }}</span
+                    >
                     <ng-template #zeroApp>
                         <span
                             tabindex="0"
@@ -46,11 +55,16 @@
             </div>
             <div>
                 <div *ngIf="isSip; else unitAvg">
-                    <div *ngIf="selectedGraph !== 'application'; else app">
+                    <div
+                        *ngIf="footprintStore.appGraphType() !== 'application'; else app"
+                    >
                         <p
                             tabindex="0"
                             class="p-bold"
-                            *ngIf="averageImpactSip !== 0; else zeroTitle"
+                            *ngIf="
+                                criteriaSignal().averageImpactSip !== 0;
+                                else zeroTitle
+                            "
                         >
                             {{
                                 "inventories-footprint.application.application.avg"
@@ -58,7 +72,12 @@
                             }}
                         </p>
                         <ng-template #zeroTitle>
-                            <p tabindex="0" [ngClass]="{ 'grey-text': appCount == 0 }">
+                            <p
+                                tabindex="0"
+                                [ngClass]="{
+                                    'grey-text': criteriaSignal().appCount == 0,
+                                }"
+                            >
                                 {{
                                     "inventories-footprint.application.application.avg"
                                         | translate
@@ -70,7 +89,10 @@
                         <p
                             tabindex="0"
                             class="p-bold"
-                            *ngIf="averageImpactSip !== 0; else zeroTitle"
+                            *ngIf="
+                                criteriaSignal().averageImpactSip !== 0;
+                                else zeroTitle
+                            "
                         >
                             {{
                                 "inventories-footprint.application.app.impact" | translate
@@ -79,7 +101,9 @@
                         <ng-template #zeroTitle>
                             <p
                                 tabindex="0"
-                                [ngClass]="{ 'grey-text': averageImpactSip == 0 }"
+                                [ngClass]="{
+                                    'grey-text': criteriaSignal().averageImpactSip == 0,
+                                }"
                             >
                                 {{
                                     "inventories-footprint.application.app.impact"
@@ -90,11 +114,16 @@
                     </ng-template>
                 </div>
                 <ng-template #unitAvg>
-                    <div *ngIf="selectedGraph !== 'application'; else app">
+                    <div
+                        *ngIf="footprintStore.appGraphType() !== 'application'; else app"
+                    >
                         <p
                             tabindex="0"
                             class="p-bold"
-                            *ngIf="averageImpactUnit !== 0; else zeroTitle"
+                            *ngIf="
+                                criteriaSignal().averageImpactUnit !== 0;
+                                else zeroTitle
+                            "
                         >
                             {{
                                 "inventories-footprint.application.application.avg"
@@ -104,7 +133,9 @@
                         <ng-template #zeroTitle>
                             <p
                                 tabindex="0"
-                                [ngClass]="{ 'grey-text': averageImpactUnit == 0 }"
+                                [ngClass]="{
+                                    'grey-text': criteriaSignal().averageImpactUnit == 0,
+                                }"
                             >
                                 {{
                                     "inventories-footprint.application.application.avg"
@@ -117,7 +148,10 @@
                         <p
                             tabindex="0"
                             class="p-bold"
-                            *ngIf="averageImpactUnit !== 0; else zeroTitle"
+                            *ngIf="
+                                criteriaSignal().averageImpactUnit !== 0;
+                                else zeroTitle
+                            "
                         >
                             {{
                                 "inventories-footprint.application.app.impact" | translate
@@ -126,7 +160,9 @@
                         <ng-template #zeroTitle>
                             <p
                                 tabindex="0"
-                                [ngClass]="{ 'grey-text': averageImpactUnit == 0 }"
+                                [ngClass]="{
+                                    'grey-text': criteriaSignal().averageImpactUnit == 0,
+                                }"
                             >
                                 {{
                                     "inventories-footprint.application.app.impact"
@@ -143,7 +179,10 @@
                             tabindex="0"
                             role="application"
                             attr.aria-label="{{ 'common.no-data' | translate }}"
-                            *ngIf="averageImpactSip === 0; else notZeroAvg"
+                            *ngIf="
+                                criteriaSignal().averageImpactSip === 0;
+                                else notZeroAvg
+                            "
                             class="text-no-data-global"
                             >--</span
                         >
@@ -151,7 +190,8 @@
                             <span
                                 tabindex="0"
                                 *ngIf="
-                                    averageImpactSip !== 0 && averageImpactSip < 1;
+                                    criteriaSignal().averageImpactSip !== 0 &&
+                                        criteriaSignal().averageImpactSip < 1;
                                     else sup
                                 "
                             >
@@ -159,7 +199,7 @@
                             </span>
                             <ng-template #sup>
                                 <span tabindex="0">{{
-                                    averageImpactSip.toFixed(0)
+                                    criteriaSignal().averageImpactSip.toFixed(0)
                                 }}</span>
                             </ng-template>
                         </ng-template>
@@ -169,7 +209,10 @@
                             tabindex="0"
                             role="application"
                             attr.aria-label="{{ 'common.no-data' | translate }}"
-                            *ngIf="averageImpactUnit === 0; else notZeroAvgUnit"
+                            *ngIf="
+                                criteriaSignal().averageImpactUnit === 0;
+                                else notZeroAvgUnit
+                            "
                             class="text-no-data-global"
                             >--</span
                         >
@@ -177,7 +220,8 @@
                             <span
                                 tabindex="0"
                                 *ngIf="
-                                    averageImpactUnit !== 0 && averageImpactUnit < 1;
+                                    criteriaSignal().averageImpactUnit !== 0 &&
+                                        criteriaSignal().averageImpactUnit < 1;
                                     else supUnit
                                 "
                             >
@@ -185,13 +229,16 @@
                             </span>
                             <ng-template #supUnit>
                                 <span tabindex="0">{{
-                                    averageImpactUnit.toFixed(0)
+                                    criteriaSignal().averageImpactUnit.toFixed(0)
                                 }}</span>
                             </ng-template>
                         </ng-template>
                     </ng-template>
                     <img
-                        *ngIf="selectedGraph !== 'application'; else appTooltip"
+                        *ngIf="
+                            footprintStore.appGraphType() !== 'application';
+                            else appTooltip
+                        "
                         class="small-info"
                         src="assets/images/icons/icon-information.svg"
                         alt="{{
@@ -230,7 +277,7 @@
                     <button
                         [class]="!isSip ? 'round-button-selected' : 'round-button'"
                         (click)="updateSelectedUnite('impact')"
-                        [innerHTML]="selectedCriteria.unite"
+                        [innerHTML]="selectedCriteria().unite"
                     ></button>
                     <button
                         [class]="isSip ? 'round-button-selected' : 'round-button'"

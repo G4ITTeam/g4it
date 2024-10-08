@@ -18,7 +18,6 @@ import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { ImpactAggregateInfosComponent } from "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component";
-import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
 import { InventoriesFootprintComponent } from "./inventories-footprint.component";
 import { inventoriesFootprintRouter } from "./inventories-footprint.router";
@@ -29,7 +28,6 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         InventoriesFootprintComponent,
         InventoriesMultiCriteriaFootprintComponent,
         InventoriesCritereFootprintComponent,
-        StatsComponent,
         ImpactAggregateInfosComponent,
     ],
     imports: [

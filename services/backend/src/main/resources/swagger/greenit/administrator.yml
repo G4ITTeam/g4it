@@ -30,7 +30,34 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '404':
           $ref: '#/components/responses/NotFoundError'
-
+    put:
+      summary: Update criteria for a subscriber
+      operationId: updateSubscriber
+      parameters:
+        - $ref: '#/components/parameters/reqSubscriberIdQueryParam'
+      requestBody:
+        description: Mandatory criteria details to update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriteriaRest"
+      tags:
+        - administrator
+      responses:
+        '200':
+          description: Criteria have been updated for subscriber
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriberRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  
   /administrator/organizations:
     get:
       tags:
@@ -172,7 +199,7 @@ paths:
       summary: Edit multiple users' rights
       operationId: updateRoleAccess
       requestBody:
-        description:  Mandatory user and role details to update.
+        description: Mandatory user and role details to update.
         required: true
         content:
           application/json:
@@ -200,7 +227,7 @@ paths:
       summary: Delete user-organization link
       operationId: deleteUserOrgLink
       requestBody:
-        description:  Mandatory user and organization details to unlink.
+        description: Mandatory user and organization details to unlink.
         required: true
         content:
           application/json:

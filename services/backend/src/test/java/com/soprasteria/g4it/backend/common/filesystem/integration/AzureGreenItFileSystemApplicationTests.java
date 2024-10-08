@@ -200,7 +200,7 @@ class AzureGreenItFileSystemApplicationTests {
             assertFalse(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));
             //then we upload the file
             MultipartFile fileInput = new MockMultipartFile("DATACENTER", UPLOAD_MULTIPART_FILE_TEST_NAME, String.valueOf(MediaType.TEXT_PLAIN), FILE_CONTENT.getBytes());
-            fs.upload(FileFolder.INPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getBytes());
+            fs.upload(FileFolder.INPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getInputStream());
             //now there should be a file
             inputFiles = fs.listFiles(FileFolder.INPUT);
             assertTrue(inputFiles.stream().anyMatch(file -> file.getName().contains(UPLOAD_MULTIPART_FILE_TEST_NAME)));

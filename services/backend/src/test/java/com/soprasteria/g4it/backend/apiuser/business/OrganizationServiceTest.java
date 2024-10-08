@@ -30,7 +30,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -44,6 +47,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrganizationServiceTest {
+
+    @InjectMocks
+    private OrganizationService organizationService;
 
     public final static List<String> ORGANIZATION_ACTIVE_STATUS = List.of(
             OrganizationStatus.ACTIVE.name(),
@@ -64,14 +70,15 @@ class OrganizationServiceTest {
     UserRoleOrganizationRepository userRoleOrganizationRepository;
     @Mock
     RoleService roleService;
-    @InjectMocks
-    private OrganizationService organizationService;
     @Mock
-    private SubscriberService subscriberService;
+    SubscriberService subscriberService;
+    @Mock
+    CacheManager cacheManager;
 
     @BeforeEach
     void init() {
         ReflectionTestUtils.setField(organizationService, "organizationMapper", new OrganizationMapperImpl());
+        Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
     }
 
 
@@ -87,7 +94,7 @@ class OrganizationServiceTest {
         List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
 
         User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
-        Optional<Organization> organizationEntity = Optional.of(Organization.builder().id(organizationId).status(currentStatus)
+        Optional<Organization> organizationEntity = Optional.of(Organization.builder().id(organizationId).name(organizationName).status(currentStatus)
                 .deletionDate(now.plusDays(dataRetentionDay))
                 .subscriber(Subscriber.builder().id(SUBSCRIBER_ID).build())
                 .build());
@@ -161,6 +168,32 @@ class OrganizationServiceTest {
                 .isInstanceOf(G4itRestException.class)
                 .hasMessageContaining("organization 'ORGANIZATION_UPDATED' already exists in subscriber '1'");
 
+
+    }
+
+    @Test
+    void updateOrganization_updateCriteria() {
+        Long subscriberId = 1L;
+        long organizationId = 1L;
+        String organizationName = "ORGANIZATION";
+        List<Role> subscriberAdminRole = List.of(Role.builder().name(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR).build());
+        User user = TestUtils.createUserWithRoleOnSub(subscriberId, subscriberAdminRole);
+
+        OrganizationUpsertRest organizationUpsertRest = TestUtils.createOrganizationUpsert(SUBSCRIBER_ID, organizationName
+                , OrganizationStatus.ACTIVE.name(), "criteriaDs", "criteriaIs");
+
+        Optional<Organization> organizationEntity = Optional.of(Organization.builder().name(organizationName).id(organizationId).status(OrganizationStatus.ACTIVE.name())
+                .subscriber(Subscriber.builder().id(SUBSCRIBER_ID).build())
+                .build());
+
+        when(organizationRepository.findByIdAndSubscriberIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, Constants.ORGANIZATION_ACTIVE_OR_DELETED_STATUS)).thenReturn(organizationEntity);
+
+        OrganizationBO orgBO = organizationService.updateOrganization(ORGANIZATION_ID, organizationUpsertRest, user.getId());
+
+        verify(organizationRepository, times(1)).findByIdAndSubscriberIdAndStatusIn(ORGANIZATION_ID, SUBSCRIBER_ID, ORGANIZATION_ACTIVE_STATUS);
+        verify(organizationRepository, times(1)).save(any());
+        assertEquals(List.of("criteriaDs"), orgBO.getCriteriaDs());
+        assertEquals(List.of("criteriaIs"), orgBO.getCriteriaIs());
 
     }
 

@@ -158,7 +158,7 @@ class LocalFileStorageTest {
     @Test
     void uploadShouldCopyMultipartFile() throws IOException {
         MultipartFile fileInput = new MockMultipartFile("DATACENTER", "file1_upload.txt", String.valueOf(MediaType.TEXT_PLAIN), "Hello world".getBytes());
-        storage.upload(FileFolder.OUTPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getBytes());
+        storage.upload(FileFolder.OUTPUT, fileInput.getOriginalFilename(), fileInput.getName(), fileInput.getInputStream());
         File output = new File(LOCAL_FILESYSTEM_PATH + Path.of(SUBSCRIBER, ORGANIZATION, FileFolder.OUTPUT.getFolderName(), "/file1_upload.txt"));
         assertTrue(output.exists());
     }

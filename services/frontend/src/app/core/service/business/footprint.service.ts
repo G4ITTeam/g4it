@@ -7,26 +7,20 @@
  */
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, forkJoin, lastValueFrom, map, tap } from "rxjs";
-import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
-import { InventoryDataService } from "src/app/core/service/data/inventory-data.service";
-import { EchartsRepository } from "src/app/core/store/echarts.repository";
+import { Observable, tap } from "rxjs";
 import {
-    FilterApplication,
-    FilterApplicationReceived,
-    FilterRepository,
-} from "src/app/core/store/filter.repository";
-import {
-    ApplicationCriteriaFootprint,
     ApplicationFootprint,
     Criterias,
-    FootprintRepository,
     Impact,
-} from "src/app/core/store/footprint.repository";
-import { InventoryRepository } from "src/app/core/store/inventory.repository";
+} from "src/app/core/interfaces/footprint.interface";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
-import { Filter } from "../../interfaces/filter.interface";
+import {
+    ConstantApplicationFilter,
+    Filter,
+    TransformedDomain,
+} from "../../interfaces/filter.interface";
 import { FootprintCalculated, SumImpact } from "../../interfaces/footprint.interface";
 
 @Injectable({
@@ -35,100 +29,8 @@ import { FootprintCalculated, SumImpact } from "../../interfaces/footprint.inter
 export class FootprintService {
     constructor(
         private footprintDataService: FootprintDataService,
-        private inventoryDataService: InventoryDataService,
-        private filterRepo: FilterRepository,
-        private footprintRepo: FootprintRepository,
-        private echartsRepo: EchartsRepository,
-        private inventoryRepo: InventoryRepository,
         private translate: TranslateService,
     ) {}
-
-    async retrieveFootprint(
-        selectedInventoryId: number,
-        selectedCriteria: string,
-        selectedView: string,
-    ): Promise<void> {
-        const inventories = await lastValueFrom(
-            this.inventoryDataService.getInventories(selectedInventoryId),
-        );
-        let inventory;
-        if (inventories.length > 1) {
-            inventory = inventories.map(
-                (inventory) => inventory.id === selectedInventoryId,
-            );
-        } else {
-            inventory = inventories;
-        }
-
-        // Early exit if we are on an unknown inventory
-        if (!inventory) {
-            return;
-        }
-        // Otherwise, we proceed with fetching data from API
-        this.inventoryRepo.updateSelectedInventory(selectedInventoryId);
-        if (selectedView === "application") {
-            // Fetch all data from api and initialize stores
-            const actualAppFootprint = this.footprintRepo.getValueApplicationFootprint();
-
-            let currentInventoryId = null;
-            for (const key in actualAppFootprint) {
-                currentInventoryId = actualAppFootprint[key].id || "undefined";
-                break;
-            }
-
-            if (currentInventoryId === selectedInventoryId) {
-                this.initFiltersApplication(selectedInventoryId).subscribe(() => {
-                    this.echartsRepo.setIsDataInitialized(true);
-                });
-            } else {
-                forkJoin([
-                    this.initFiltersApplication(selectedInventoryId),
-                    this.initApplicationFootprint(selectedInventoryId),
-                ]).subscribe(() => {
-                    this.echartsRepo.setIsDataInitialized(true);
-                });
-            }
-        }
-    }
-
-    initFootprint(inventoryId: number) {
-        return this.footprintDataService
-            .getFootprint(inventoryId)
-            .pipe(tap(this.footprintRepo.initStores));
-    }
-
-    initFiltersApplication(inventoryId: number): Observable<FilterApplication> {
-        const appGraph = this.footprintRepo.getValueAppGraphPositionStore();
-
-        return this.footprintDataService
-            .getApplicationFilters(
-                inventoryId,
-                appGraph.domain,
-                appGraph.subdomain,
-                appGraph.app,
-            )
-            .pipe(
-                map(this.cleanApplicationFilters),
-                tap(this.filterRepo.setAllFiltersApp),
-                tap(this.filterRepo.updateSelectedFiltersApp),
-            );
-    }
-
-    initDatacenters(inventoryId: number) {
-        return this.footprintDataService
-            .getDatacenters(inventoryId)
-            .pipe(tap(this.footprintRepo.setDatacenters));
-    }
-
-    initPhysicalEquipments(inventoryId: number) {
-        return this.footprintDataService
-            .getPhysicalEquipments(inventoryId)
-            .pipe(
-                tap(([averageAges, lowImpact]) =>
-                    this.footprintRepo.setPhysicalEquipmentStats(averageAges, lowImpact),
-                ),
-            );
-    }
 
     sendExportRequest(inventoryId: number): Observable<number> {
         return this.footprintDataService.sendExportRequest(inventoryId);
@@ -136,15 +38,6 @@ export class FootprintService {
 
     deleteIndicators(inventoryId: number) {
         return this.footprintDataService.deleteIndicators(inventoryId);
-    }
-
-    updateSelectedCriteria(criteria: string, unite: string = "") {
-        this.filterRepo.updateSelectedCriteria(criteria);
-        if (unite === "") {
-            this.echartsRepo.setUnitOfCriteria(this.getUnitFromCriteria(criteria));
-        } else {
-            this.echartsRepo.setUnitOfCriteria(unite);
-        }
     }
 
     initApplicationFootprint(inventoryId: number) {
@@ -157,48 +50,11 @@ export class FootprintService {
                     );
                     indicateur.id = inventoryId;
                 });
-                this.footprintRepo.setApplicationFootprint(footprint);
             }),
         );
     }
 
-    initApplicationCriteriaFootprint(inventoryId: number, app: string, criteria: string) {
-        return this.mapApplicationCriteria(inventoryId, app, criteria);
-    }
-
-    mapApplicationCriteria(inventoryId: number, app: string, criteria: string) {
-        return this.footprintDataService
-            .getApplicationCriteriaFootprint(inventoryId, app, criteria)
-            .pipe(
-                tap((footprint) => {
-                    footprint = this.setUnspecifiedDataApp(footprint);
-                    footprint.forEach((indicateur) => {
-                        indicateur.criteriaTitle = this.translate.instant(
-                            `criteria.${indicateur.criteria}.title`,
-                        );
-                    });
-                    this.footprintRepo.setApplicationCriteriaFootprint(footprint);
-                }),
-            );
-    }
-
-    setUnspecifiedDataApp(footprint: ApplicationCriteriaFootprint[]) {
-        const excludeFields = ["sip", "impact"];
-        footprint.forEach((element) => {
-            element.impacts.forEach((impact: any) => {
-                for (const key in impact) {
-                    if (impact[key] === "") {
-                        impact[key] = Constants.UNSPECIFIED;
-                    }
-                }
-            });
-        });
-        return footprint;
-    }
-
     setUnspecifiedData(footprint: ApplicationFootprint[]) {
-        const excludeFields = ["sip", "cluster"];
-
         footprint.forEach((element) => {
             element.impacts.forEach((impact: any) => {
                 for (const key in impact) {
@@ -209,57 +65,6 @@ export class FootprintService {
             });
         });
         return footprint;
-    }
-
-    private getUnitFromCriteria(criteria: string): string {
-        return this.translate.instant(`criteria.${criteria}.unite`);
-    }
-
-    private cleanApplicationFilters(
-        rawFilters: FilterApplicationReceived,
-    ): FilterApplication {
-        const transformedFilters: FilterApplication = {
-            environments: [...rawFilters.environments],
-            types: [...rawFilters.types],
-            lifeCycles: [],
-            domains: [],
-        };
-
-        const lifecyleMap = LifeCycleUtils.getLifeCycleMap();
-
-        transformedFilters.lifeCycles = rawFilters.lifeCycles.map(
-            (lifeCycle) => lifecyleMap.get(lifeCycle) || lifeCycle,
-        );
-
-        transformedFilters.domains = rawFilters.domains.map((domain) => {
-            if (domain.name === "") {
-                domain.name = Constants.UNSPECIFIED;
-            }
-
-            let domainString = domain.name;
-            const subDomains = domain.subDomains
-                .map((subdomain) =>
-                    subdomain === "" ? Constants.UNSPECIFIED : subdomain,
-                )
-                .join(",");
-
-            if (subDomains.length > 0) {
-                domainString += "," + subDomains;
-            }
-
-            return domainString;
-        });
-
-        // Replace null values by "Empty" and add Constants.ALL value
-        return Object.keys(transformedFilters).reduce((acc, key) => {
-            acc[key as keyof FilterApplicationReceived] = [
-                Constants.ALL,
-                ...transformedFilters[key as keyof FilterApplicationReceived]
-                    .map((item: any) => item || Constants.UNSPECIFIED)
-                    .sort(),
-            ];
-            return acc;
-        }, {} as FilterApplication);
     }
 
     addImpact(i1: SumImpact, i2: SumImpact) {
@@ -290,7 +95,7 @@ export class FootprintService {
         );
 
         for (let criteria in footprint) {
-            if (!footprint[criteria].impacts) continue;
+            if (!footprint[criteria] || !footprint[criteria].impacts) continue;
 
             const filteredImpacts = hasAllFilters
                 ? footprint[criteria].impacts
@@ -327,7 +132,7 @@ export class FootprintService {
                     criteria,
                     sumSip: sumImpact.sip,
                     sumImpact: sumImpact.impact,
-                };
+                } as Impact;
 
                 const translated = lifeCycleMap.get(dimension);
 
@@ -388,5 +193,106 @@ export class FootprintService {
                 (unit === Constants.PEOPLEEQ ? current.total.sip : current.total.impact),
             0,
         );
+    }
+
+    getUniqueValues(
+        footprint: ApplicationFootprint[] | Criterias,
+        appConstant: ConstantApplicationFilter[] | string[],
+        isEquipment: boolean,
+    ) {
+        const uniqueValues: { [key: string]: Set<string> } = {};
+        let equipmentFootprint: any = [];
+
+        // Initialize sets for each field
+        if (!isEquipment) {
+            (appConstant as ConstantApplicationFilter[]).forEach((fieldObj) => {
+                uniqueValues[fieldObj.field] = new Set<string>();
+            });
+        } else {
+            (appConstant as string[]).forEach((fieldObj) => {
+                uniqueValues[fieldObj] = new Set<string>();
+            });
+        }
+        if (isEquipment) {
+            equipmentFootprint = Object.keys(footprint as Criterias).map((key) => ({
+                criteria: key,
+                ...(footprint as Criterias)[key],
+            }));
+        }
+        // Populate sets with unique values
+        (
+            (!isEquipment ? footprint : equipmentFootprint) as ApplicationFootprint[]
+        ).forEach((criteria) => {
+            criteria.impacts.forEach((impact) => {
+                const criteriaImpact = impact as any;
+                if (!isEquipment) {
+                    (appConstant as ConstantApplicationFilter[]).forEach((fieldObj) => {
+                        const fieldSet = uniqueValues[fieldObj.field] as any;
+
+                        let domainSet = fieldSet[criteriaImpact[fieldObj.field]];
+                        if (!domainSet) {
+                            fieldSet[criteriaImpact[fieldObj.field]] = new Set<string>();
+                        }
+
+                        if (fieldObj.children) {
+                            fieldObj.children.forEach((child) => {
+                                fieldSet[criteriaImpact[fieldObj.field]].add(
+                                    criteriaImpact[child.field],
+                                );
+                            });
+                        } else {
+                            fieldSet.add(criteriaImpact[fieldObj.field]);
+                        }
+                    });
+                } else {
+                    (appConstant as string[]).forEach((fieldObj) => {
+                        uniqueValues[fieldObj].add(criteriaImpact[fieldObj]);
+                    });
+                }
+            });
+        });
+        // Convert sets to arrays
+        const result: { [key: string]: string[] | TransformedDomain[] } = {};
+        for (const key in uniqueValues) {
+            if (key === "domain") {
+                result[key] = this.convertToDesiredFormat(uniqueValues[key] as any);
+            } else {
+                result[key] = Array.from(uniqueValues[key]);
+            }
+        }
+
+        return result;
+    }
+
+    convertToDesiredFormat(domainObject: {
+        [key: string]: Set<string>;
+    }): TransformedDomain[] {
+        const result: TransformedDomain[] = [];
+
+        for (const domain in domainObject) {
+            const domainEntry: TransformedDomain = {
+                field: "domain",
+                label: domain,
+                key: domain.toLowerCase(),
+                checked: true,
+                visible: true,
+                children: [],
+                collapsed: true,
+            };
+
+            domainObject[domain].forEach((subDomain) => {
+                domainEntry.children.push({
+                    field: "subDomain",
+                    label: subDomain,
+                    key: subDomain.toLowerCase(),
+                    checked: true,
+                    visible: true,
+                });
+            });
+
+            result.push(domainEntry);
+        }
+
+        return result;
     }
 }

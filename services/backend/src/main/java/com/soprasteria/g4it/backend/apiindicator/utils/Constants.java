@@ -7,6 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.utils;
 
+import java.util.List;
+
 /**
  * Constants Class.
  */
@@ -61,6 +63,20 @@ public final class Constants {
      * The Unspecified constant
      */
     public static final String UNSPECIFIED = "(Unspecified)";
+
+    /**
+     * The Criteria number
+     * Must be changed after dynamic criteria list
+     */
+    public static final Long CRITERIA_NUMBER = 11L;
+
+    /**
+     * The 11 criteria list
+     */
+    public static final List<String> CRITERIA_LIST = List.of(
+            "climate-change", "ionising-radiation", "acidification",
+            "particulate-matter", "resource-use", "ozone-depletion", "photochemical-ozone-formation",
+            "eutrophication-terrestrial", "eutrophication-freshwater", "eutrophication-marine", "resource-use-fossils");
 
     private Constants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

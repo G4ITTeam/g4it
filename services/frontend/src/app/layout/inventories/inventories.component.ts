@@ -5,13 +5,17 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { Subject, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
-import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
+import {
+    Inventory,
+    InventoryCriteriaRest,
+} from "src/app/core/interfaces/inventory.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
@@ -25,6 +29,7 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class InventoriesComponent implements OnInit {
+    private destroyRef = inject(DestroyRef);
     private global = inject(GlobalStoreService);
 
     sidebarVisible: boolean = false;
@@ -244,6 +249,7 @@ export class InventoriesComponent implements OnInit {
             .updateInventory(this.selectedInventory)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
+                this.sidebarVisible = false;
                 this.messageService.add({
                     severity: "success",
                     summary: this.translate.instant("common.note.save"),
@@ -326,5 +332,27 @@ export class InventoriesComponent implements OnInit {
             "inventoryBlocksOpen",
             [...this.inventoryBlocksOpen].join(","),
         );
+    }
+
+    handleSaveInventory(inventoryCriteria: InventoryCriteriaRest, type: string) {
+        this.inventoryService
+            .updateInventoryCriteria(inventoryCriteria)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((res: Inventory) => {
+                let inventoryArray = this.inventories.get(type);
+                if (inventoryArray) {
+                    let findCriteriaIndex = inventoryArray.findIndex(
+                        (inv) => inv.id === inventoryCriteria.id,
+                    );
+                    // -1 means no criteria satisfy the condition
+                    if (findCriteriaIndex !== -1) {
+                        inventoryArray[findCriteriaIndex] = {
+                            ...inventoryArray[findCriteriaIndex],
+                            ...res,
+                        };
+                        this.inventories.set(type, inventoryArray);
+                    }
+                }
+            });
     }
 }

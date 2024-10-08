@@ -76,6 +76,9 @@
                             openSidebarForUploadInventory($event)
                         "
                         (openSidebarForNote)="openSidebarForNote($event)"
+                        (saveInventory)="
+                            handleSaveInventory($event, 'INFORMATION_SYSTEM')
+                        "
                         (openTab)="childOpenTab($event)"
                         (closeTab)="childCloseTab($event)"
                         [open]="inventoriesOpen.has(inventory.id)"
@@ -141,6 +144,7 @@
                             openSidebarForUploadInventory($event)
                         "
                         (openSidebarForNote)="openSidebarForNote($event)"
+                        (saveInventory)="handleSaveInventory($event, 'SIMULATION')"
                         (openTab)="childOpenTab($event)"
                         (closeTab)="childCloseTab($event)"
                         [open]="inventoriesOpen.has(inventory.id)"

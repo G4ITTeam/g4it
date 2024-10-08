@@ -9,9 +9,8 @@ import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { firstValueFrom } from "rxjs";
+import { finalize, firstValueFrom } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
-import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import {
     ChartData,
     ComputedSelection,
@@ -20,7 +19,10 @@ import {
     Datacenter,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
-} from "src/app/core/store/footprint.repository";
+    PhysicalEquipmentsElecConsumption,
+} from "src/app/core/interfaces/footprint.interface";
+import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
@@ -40,22 +42,20 @@ export class InventoriesFootprintComponent implements OnInit {
 
     chartData: ChartData<ComputedSelection> = {};
 
-    criterias = [Constants.MUTLI_CRITERIA, ...Constants.CRITERIAS];
+    selectedLang: string = this.translate.currentLang;
 
-    criteres: MenuItem[] = this.criterias.map((criteria) => {
-        return {
-            label: this.translate.instant(`criteria.${criteria}.title`),
-            routerLink: `../${criteria}`,
-        };
-    });
+    criterias = [Constants.MUTLI_CRITERIA, ...Object.keys(this.global.criteriaList())];
+
+    criteres: MenuItem[] = [{ label: "Multi-criteria", routerLink: "../multi-criteria" }];
 
     allUnmodifiedFootprint: Criterias = {} as Criterias;
-    allUnmodifiedFilters: Filter = {} as Filter;
+    allUnmodifiedFilters: Filter<string> = {};
     allUnmodifiedDatacenters: Datacenter[] = [] as Datacenter[];
-    allUnmodifiedEquipments: [PhysicalEquipmentAvgAge[], PhysicalEquipmentLowImpact[]] = [
-        [],
-        [],
-    ];
+    allUnmodifiedEquipments: [
+        PhysicalEquipmentAvgAge[],
+        PhysicalEquipmentLowImpact[],
+        PhysicalEquipmentsElecConsumption[],
+    ] = [[], [], []];
     allUnmodifiedCriteriaFootprint: Criteria = {} as Criteria;
 
     order = LifeCycleUtils.getLifeCycleList();
@@ -64,10 +64,11 @@ export class InventoriesFootprintComponent implements OnInit {
     filterFields = Constants.EQUIPMENT_FILTERS;
     multiCriteria = Constants.MUTLI_CRITERIA;
     inventoryId = 0;
-
+    showTabMenu = false;
     constructor(
         private activatedRoute: ActivatedRoute,
         private footprintDataService: FootprintDataService,
+        private footprintService: FootprintService,
         private translate: TranslateService,
     ) {}
 
@@ -78,26 +79,52 @@ export class InventoriesFootprintComponent implements OnInit {
         this.inventoryId =
             +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
 
+        this.footprintDataService
+            .getFootprint(this.inventoryId)
+            .pipe(finalize(() => (this.showTabMenu = true)))
+            .subscribe((criterias: Criterias) => {
+                this.criteres = Object.entries(criterias).map(
+                    ([key, criteria]: [string, Criteria]) => {
+                        return {
+                            label: this.translate.instant(`criteria.${key}.title`),
+                            routerLink: `../${key}`,
+                        };
+                    },
+                );
+                if (this.criteres.length > 1) {
+                    this.criteres.unshift({
+                        label: "Multi-criteria",
+                        routerLink: "../multi-criteria",
+                    });
+                }
+            });
+
         this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
 
-        const [footprint, filters, datacenters, physicalEquipments] = await Promise.all([
+        const [footprint, datacenters, physicalEquipments] = await Promise.all([
             firstValueFrom(this.footprintDataService.getFootprint(this.inventoryId)),
-            firstValueFrom(this.footprintDataService.getFilters(this.inventoryId)),
             firstValueFrom(this.footprintDataService.getDatacenters(this.inventoryId)),
             firstValueFrom(
                 this.footprintDataService.getPhysicalEquipments(this.inventoryId),
             ),
         ]);
 
-        this.allUnmodifiedFootprint = footprint;
+        this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
         this.allUnmodifiedDatacenters = datacenters;
         this.allUnmodifiedEquipments = physicalEquipments;
         this.allUnmodifiedFilters = {};
+
+        const uniqueFilterSet = this.footprintService.getUniqueValues(
+            this.allUnmodifiedFootprint,
+            Constants.EQUIPMENT_FILTERS,
+            true,
+        );
+
         Constants.EQUIPMENT_FILTERS.forEach((field) => {
             this.allUnmodifiedFilters[field] = [
                 Constants.ALL,
-                ...filters[Constants.EQUIPMENT_FILTERS_MAP[field]!]
-                    .map((item) => (item !== "" ? item : Constants.EMPTY))
+                ...uniqueFilterSet[field]
+                    .map((item: any) => (item !== "" ? item : Constants.EMPTY))
                     .sort(),
             ];
         });

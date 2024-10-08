@@ -9,8 +9,10 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import {
+    OrganizationCriteriaRest,
     OrganizationUpsertRest,
     Subscriber,
+    SubscriberCriteriaRest,
 } from "../../interfaces/administration.interfaces";
 import { AdministrationDataService } from "../data/administration-data-service";
 
@@ -33,6 +35,26 @@ export class AdministrationService {
         body: OrganizationUpsertRest,
     ): Observable<any> {
         return this.administrationDataService.updateOrganization(organizationId, body);
+    }
+
+    updateOrganizationCriteria(
+        organizationId: number,
+        body: OrganizationCriteriaRest,
+    ): Observable<OrganizationCriteriaRest> {
+        return this.administrationDataService.updateOrganizationCriteria(
+            organizationId,
+            body,
+        );
+    }
+
+    updateSubscriberCriteria(
+        subscriberId: number,
+        criteria: SubscriberCriteriaRest,
+    ): Observable<SubscriberCriteriaRest> {
+        return this.administrationDataService.updateSubscriberCriteria(
+            subscriberId,
+            criteria,
+        );
     }
 
     getUserDetails(organizationId: number): Observable<any> {

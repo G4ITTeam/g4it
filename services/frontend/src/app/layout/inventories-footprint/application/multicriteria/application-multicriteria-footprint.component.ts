@@ -5,108 +5,63 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, computed, inject, Input, Signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { combineLatest, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
-import { EchartsRepository } from "src/app/core/store/echarts.repository";
-import { FilterRepository } from "src/app/core/store/filter.repository";
 import {
-    ApplicationFootprint,
-    FootprintRepository,
-} from "src/app/core/store/footprint.repository";
+    ConstantApplicationFilter,
+    Filter,
+} from "src/app/core/interfaces/filter.interface";
+import { ApplicationFootprint, Stat } from "src/app/core/interfaces/footprint.interface";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { FilterService } from "src/app/core/service/business/filter.service";
+import { FootprintStoreService } from "src/app/core/store/footprint.store";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 
 @Component({
-    selector: "app-application-multicriteria-footprint.component",
+    selector: "app-application-multicriteria-footprint",
     templateUrl: "./application-multicriteria-footprint.component.html",
 })
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
+    @Input() footprint: ApplicationFootprint[] = [];
+    @Input() filterFields: ConstantApplicationFilter[] = [];
+    protected footprintStore = inject(FootprintStoreService);
+    private filterService = inject(FilterService);
+
     selectedInventoryDate: string = "";
-    footprint: ApplicationFootprint[] = [];
-    noData: boolean = false;
-    selectedEnvironnement: string[] = [];
-    selectedLifecycle: string[] = [];
-    selectedEquipments: string[] = [];
-    selectedDomain: string[] = [];
-    selectedSubDomain: string[] = [];
     domainFilter: string[] = [];
+    appCount: number = 0;
 
-    options: EChartsOption = {};
+    applicationStats = computed<Stat[]>(() => {
+        const localFootprint = this.appComponent.formatLifecycleImpact(this.footprint);
+        return this.computeApplicationStats(
+            localFootprint,
+            this.footprintStore.applicationSelectedFilters(),
+        );
+    });
 
+    options: Signal<EChartsOption> = computed(() => {
+        return this.loadBarChartOption(
+            this.footprint,
+            this.footprintStore.applicationSelectedFilters(),
+        );
+    });
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private appComponent: InventoriesApplicationFootprintComponent,
-        override filterRepo: FilterRepository,
-        override footprintRepo: FootprintRepository,
-        override echartsRepo: EchartsRepository,
         override translate: TranslateService,
+        override globalStore: GlobalStoreService,
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
     ) {
-        super(
-            filterRepo,
-            footprintRepo,
-            echartsRepo,
-            translate,
-            integerPipe,
-            decimalsPipe,
-        );
-    }
-
-    ngOnInit(): void {
-        combineLatest([
-            this.filterRepo.selectedApplicationFilters$,
-            this.footprintRepo.applicationFootprint$,
-        ])
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe(([selectedFilters, applications]) => {
-                this.footprintRepo.setSelectedApp("");
-                this.footprintRepo.setSelectedDomain("");
-                this.footprintRepo.setSelectedSubdomain("");
-                this.footprintRepo.setSelectedGraph("global");
-                this.footprint = this.appComponent.formatLifecycleImpact(applications);
-                this.selectedEnvironnement = selectedFilters.environments;
-                this.selectedEquipments = selectedFilters.types;
-                this.selectedLifecycle = selectedFilters.lifeCycles;
-                if (selectedFilters.subdomains === undefined) {
-                    this.domainFilter = selectedFilters.domains;
-                    this.initDomainFilter();
-                } else {
-                    this.selectedDomain = [];
-                    this.selectedSubDomain = [];
-                    this.selectedDomain = selectedFilters.domains;
-                    this.selectedSubDomain = selectedFilters.subdomains;
-                }
-                if (this.checkIfNoData()) {
-                    this.noData = true;
-                } else {
-                    this.noData = false;
-                }
-                this.options = this.loadBarChartOption(this.footprint);
-            });
-    }
-
-    initDomainFilter() {
-        this.selectedDomain = [];
-        this.selectedSubDomain = [];
-        this.domainFilter.forEach((domain) => {
-            const splitDomain = domain.split(",");
-            this.selectedDomain.push(splitDomain[0]);
-            splitDomain.shift();
-            if (splitDomain !== undefined) {
-                splitDomain.forEach((subDomain) => {
-                    this.selectedSubDomain.push(subDomain);
-                });
-            }
-        });
+        super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
     onChartClick(event: any) {
@@ -132,25 +87,10 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         return uri;
     }
 
-    checkIfNoData() {
-        let hasNoData = true;
-        this.footprint.forEach((criteria) => {
-            criteria.impacts.forEach((impact) => {
-                if (
-                    this.selectedEnvironnement.includes(impact.environment) &&
-                    this.selectedEquipments.includes(impact.equipmentType) &&
-                    this.selectedLifecycle.includes(impact.lifeCycle) &&
-                    this.selectedDomain.includes(impact.domain) &&
-                    this.selectedSubDomain.includes(impact.subDomain)
-                ) {
-                    hasNoData = false;
-                }
-            });
-        });
-        return hasNoData;
-    }
-
-    loadBarChartOption(barChartData: ApplicationFootprint[]): EChartsOption {
+    loadBarChartOption(
+        barChartData: ApplicationFootprint[],
+        selectedFilters: Filter,
+    ): EChartsOption {
         const xAxis: any[] = [];
         const yAxis: any[] = [];
         const unitImpact: any[] = [];
@@ -160,13 +100,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             let sumSip = 0;
             let sumUnit = 0;
             data.impacts.forEach((impact) => {
-                if (
-                    this.selectedEnvironnement.includes(impact.environment) &&
-                    this.selectedEquipments.includes(impact.equipmentType) &&
-                    this.selectedLifecycle.includes(impact.lifeCycle) &&
-                    this.selectedDomain.includes(impact.domain) &&
-                    this.selectedSubDomain.includes(impact.subDomain)
-                ) {
+                if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     sumSip += impact.sip;
                     sumUnit += impact.impact;
                 }
@@ -196,6 +130,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             },
             tooltip: {
                 show: true,
+                renderMode: "html",
                 formatter: (params: any) => {
                     return `
                         <div style="display: flex; align-items: center; height: 30px;">
@@ -207,7 +142,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                                 unitImpact[params.dataIndex] < 1
                                     ? "< 1"
                                     : unitImpact[params.dataIndex].toFixed(0)
-                            } 
+                            }
                             ${unit[params.dataIndex]} </div>
                         </div>
                     `;
@@ -241,5 +176,52 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             ],
             color: Constants.BLUE_COLOR,
         };
+    }
+
+    private computeApplicationStats(
+        applications: ApplicationFootprint[],
+        filters: Filter,
+    ): Stat[] {
+        applications = applications || [];
+        let applicationCount = 0;
+        let appNameList: string[] = [];
+        applications.forEach((application) => {
+            application.impacts.forEach((impact) => {
+                let {
+                    environment,
+                    equipmentType,
+                    lifeCycle,
+                    domain,
+                    subDomain,
+                    applicationName,
+                } = impact;
+                environment = environment || Constants.EMPTY;
+                equipmentType = equipmentType || Constants.EMPTY;
+                lifeCycle = lifeCycle || Constants.EMPTY;
+                domain = domain || Constants.EMPTY;
+                subDomain = subDomain || Constants.EMPTY;
+                if (
+                    this.filterService.getFilterincludes(filters, impact) &&
+                    !appNameList.includes(applicationName)
+                ) {
+                    appNameList.push(applicationName);
+                    applicationCount += 1;
+                }
+            });
+        });
+
+        this.appCount = applicationCount;
+        return [
+            {
+                label: this.decimalsPipe.transform(this.appCount),
+                value: isNaN(this.appCount) ? undefined : this.appCount,
+                description: this.translate.instant(
+                    "inventories-footprint.application.tooltip.nb-app",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.application.applications",
+                ),
+            },
+        ];
     }
 }

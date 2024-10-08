@@ -33,7 +33,7 @@
                     <ul>
                         <li *ngFor="let item of allFilters[tab]">
                             <p-checkbox
-                                [ariaLabel]="item"
+                                [ariaLabel]="item?.toString()"
                                 name="groupname"
                                 [value]="item"
                                 label="{{
@@ -44,7 +44,9 @@
                                           : item
                                 }}"
                                 [(ngModel)]="footprintStore.filters()[tab]"
-                                (ngModelChange)="onFilterSelected($event, tab, item)"
+                                (ngModelChange)="
+                                    onFilterSelected($event, tab, item.toString())
+                                "
                             ></p-checkbox>
                         </li>
                     </ul>

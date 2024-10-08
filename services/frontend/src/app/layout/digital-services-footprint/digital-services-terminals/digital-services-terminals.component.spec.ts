@@ -9,16 +9,16 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { MessageService } from "primeng/api";
 import { SidebarModule } from "primeng/sidebar";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { SharedModule } from "./../../../core/shared/shared.module";
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 import { DigitalServicesTerminalsComponent } from "./digital-services-terminals.component";
-import { MessageService } from "primeng/api";
-import { UserService } from "src/app/core/service/business/user.service";
 
 describe("DigitalServicesTerminalsComponent", () => {
     let component: DigitalServicesTerminalsComponent;
@@ -35,6 +35,7 @@ describe("DigitalServicesTerminalsComponent", () => {
             networks: [],
             servers: [],
             terminals: [],
+            members: [],
         } as DigitalService),
     };
 
@@ -80,7 +81,7 @@ describe("DigitalServicesTerminalsComponent", () => {
             type: {
                 code: "mobile-fix",
                 value: "Mobile",
-                lifespan: 5
+                lifespan: 5,
             },
             lifespan: 0,
             country: "France",

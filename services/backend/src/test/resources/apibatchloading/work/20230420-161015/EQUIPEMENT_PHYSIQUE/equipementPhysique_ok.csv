@@ -1,18 +1,18 @@
-nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
-Serveur;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7
-Serveur 5;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;300;FR;;2017-02-22;;15;Datacenter 5;1500;500;dell;100;250;i9
-Serveur 6;Sopra Steria Group;mockData;rack-server-with-hdd;2;ComputeServer;actif;300;FR;;2018-07-06;;5;Datacenter 9;200;400;dell;2000;500;i9
-Serveur 7;Sopra Steria Group%;mockData;rack-server-with-hdd;1;ServeurCalcul;inactif;300;FR;;2014-03-05;2023-03-05;10;Datacenter 5;200;400;dell;1000;500;i9
-Serveur 8;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 9;200;400;dell;2000;500;i7
-Serveur 9;Sopra Steria Group;mockData%;rack-server-with-hdd;2;ServeurCalcul;actif;300;FR;;2018-07-06;;5;Datacenter 5;200;400;dell;2000;500;i9
-Desktop 13;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Serveur 10;Sopra Steria Group;mockData;rack-server-with-hdd&;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7
-Desktop 14;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;215;FR;Kylian Mbappé;2015-04-01;;;;0;0;HP;;;
-Laptop 3;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Raymond Domenech;2015-04-01;;;;10;350;HP;;;
-Laptop 4;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;2015-04-01;;;;120;100;HP;;;
-Laptop 5;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Didier Deschamp;2017-06-26;2019-09-30;;;260;10;HP;;;
-Ecran 2;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;20;HP;;;
-Serveur 11;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 9;300;400;dell;2000;500;i7
-Ecran 1;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;20;HP;;;
-Serveur 12;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;Datacenter 9;300;400;dell;2000;500;i7
-Serveur 13;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;300;400;dell;2000;500;i7
+nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
+Serveur;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7
+Serveur 5;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2017-02-22;;15;Datacenter 5;500;dell;100;250;i9
+Serveur 6;Sopra Steria Group;mockData;rack-server-with-hdd;2;ComputeServer;actif;FR;;2018-07-06;;5;Datacenter 9;400;dell;2000;500;i9
+Serveur 7;Sopra Steria Group%;mockData;rack-server-with-hdd;1;ServeurCalcul;inactif;FR;;2014-03-05;2023-03-05;10;Datacenter 5;400;dell;1000;500;i9
+Serveur 8;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 9;400;dell;2000;500;i7
+Serveur 9;Sopra Steria Group;mockData%;rack-server-with-hdd;2;ServeurCalcul;actif;FR;;2018-07-06;;5;Datacenter 5;400;dell;2000;500;i9
+Desktop 13;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;
+Serveur 10;Sopra Steria Group;mockData;rack-server-with-hdd&;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7
+Desktop 14;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;FR;Kylian Mbappé;2015-04-01;;;;0;HP;;;
+Laptop 3;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Raymond Domenech;2015-04-01;;;;350;HP;;;
+Laptop 4;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Hugo Lloris;2015-04-01;;;;100;HP;;;
+Laptop 5;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Didier Deschamp;2017-06-26;2019-09-30;;;10;HP;;;
+Ecran 2;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;FR;Hugo Lloris;2019-09-30;;;;20;HP;;;
+Serveur 11;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 9;400;dell;2000;500;i7
+Ecran 1;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;FR;Hugo Lloris;2019-09-30;;;;20;HP;;;
+Serveur 12;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 9;400;dell;2000;500;i7
+Serveur 13;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7

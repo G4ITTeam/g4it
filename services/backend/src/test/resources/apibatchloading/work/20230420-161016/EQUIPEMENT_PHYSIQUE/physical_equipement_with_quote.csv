@@ -1,2 +1,2 @@
-idInventaire;nomEquipementPhysique;nomOrganisation;nomEntite;sourceDonnee;fabricant;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;tailleDuDisque;tailleMemoire;typeDeProcesseur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle
-Inventaire_1;Serveur "100;SSG;Sopra Steria Group;mock"Data;dell;rack-server-with-hdd;2;Serveur 2;actif;300;FR;;2018-07-06;;5;2000;500;i9;Datacenter 9;200;400
+idInventaire;nomEquipementPhysique;nomOrganisation;nomEntite;sourceDonnee;fabricant;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;tailleDuDisque;tailleMemoire;typeDeProcesseur;nomCourtDatacenter;consoElecAnnuelle
+Inventaire_1;Serveur "100;SSG;Sopra Steria Group;mock"Data;dell;rack-server-with-hdd;2;Serveur 2;actif;FR;;2018-07-06;;5;2000;500;i9;Datacenter 9;400

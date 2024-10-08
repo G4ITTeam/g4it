@@ -15,9 +15,13 @@ import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReport
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.NoteUpsertRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -155,6 +159,64 @@ class InventoryServiceTest {
         verify(inventoryRepo, times(1)).save(any());
 
         assertThat(actual.getName()).isEqualTo("03-2023");
+    }
+
+    @Test
+    void shouldUpdateInventory_UpdateCriteria() {
+        Long organizationId = 1L;
+        final Organization linkedOrganization = TestUtils.createOrganization();
+        UserBO userBo = TestUtils.createUserBONoRole();
+        final String inventoryName = "03-2023";
+        String subscriberName = "SUBSCRIBER";
+
+        final InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name(inventoryName)
+                .criteria(List.of("criteria"))
+                .build();
+        final Inventory inventory = Inventory
+                .builder()
+                .id(1L)
+                .organization(linkedOrganization).build();
+
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
+        when(inventoryRepo.findByOrganizationAndId(linkedOrganization, 1L)).thenReturn(Optional.of(inventory));
+
+        InventoryBO result = inventoryService.updateInventory(subscriberName, organizationId, inventoryUpdateRest, userBo);
+
+        verify(inventoryRepo, times(1)).save(any());
+
+        assertThat(result.getCriteria()).isEqualTo(List.of("criteria"));
+    }
+
+    @Test
+    void shouldUpdateInventory_UpdateNote() {
+        Long organizationId = 1L;
+        final Organization linkedOrganization = TestUtils.createOrganization();
+        UserBO userBo = TestUtils.createUserBONoRole();
+        final String inventoryName = "03-2023";
+        String subscriberName = "SUBSCRIBER";
+
+        final InventoryUpdateRest inventoryUpdateRest = InventoryUpdateRest.builder()
+                .id(1L)
+                .name(inventoryName)
+                .note(NoteUpsertRest.builder().content("newNote").build())
+                .build();
+        final Inventory inventory = Inventory
+                .builder()
+                .id(1L)
+                .note(Note.builder().content("note").build())
+                .organization(linkedOrganization).build();
+
+
+        when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
+        when(inventoryRepo.findByOrganizationAndId(linkedOrganization, 1L)).thenReturn(Optional.of(inventory));
+
+        InventoryBO result = inventoryService.updateInventory(subscriberName, organizationId, inventoryUpdateRest, userBo);
+
+        verify(inventoryRepo, times(1)).save(any());
+        assertThat(result.getNote().getContent()).isEqualTo("newNote");
+
     }
 
     @Test

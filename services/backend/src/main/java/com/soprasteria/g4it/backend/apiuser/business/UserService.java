@@ -229,12 +229,15 @@ public class UserService {
                                     .id(organization.getId())
                                     .status(organization.getStatus())
                                     .deletionDate(organization.getDeletionDate())
+                                    .criteriaIs(organization.getCriteriaIs())
+                                    .criteriaDs(organization.getCriteriaDs())
                                     .build();
                             return organizationBO;
                         })
                         .sorted(Comparator.comparing(OrganizationBO::getName))
                         .toList())
                 .roles(roles.stream().map(Role::getName).toList())
+                .criteria(userSubscriber.getSubscriber().getCriteria())
                 .id(userSubscriber.getSubscriber().getId())
                 .build();
     }
@@ -265,6 +268,7 @@ public class UserService {
                 .organizations(organizations)
                 .roles(List.of())
                 .id(subscriber.getId())
+                .criteria(subscriber.getCriteria())
                 .build();
     }
 
@@ -284,6 +288,8 @@ public class UserService {
                 .id(userOrganization.getOrganization().getId())
                 .status(userOrganization.getOrganization().getStatus())
                 .deletionDate(userOrganization.getOrganization().getDeletionDate())
+                .criteriaIs(userOrganization.getOrganization().getCriteriaIs())
+                .criteriaDs(userOrganization.getOrganization().getCriteriaDs())
                 .build();
     }
 

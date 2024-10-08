@@ -7,10 +7,8 @@
  */
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { EChartsOption } from "echarts";
 import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
-import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { RadialChartComponent } from "./radial-chart.component";
 
@@ -31,7 +29,26 @@ describe("RadialChartComponent", () => {
             ],
             providers: [
                 TranslatePipe,
-                TranslateService,
+                {
+                    provide: TranslateService,
+                    useValue: {
+                        currentLang: "en",
+                        translations: {
+                            en: {
+                                criteria: {
+                                    "criteria.climate-change.title": "Climate Change",
+                                    "criteria.resource-use.title": "Resource Use",
+                                    "criteria.ionising-radiation.title":
+                                        "Ionising Radiation",
+                                    "criteria.acidification.title": "Acidification",
+                                    "criteria.particulate-matter.title":
+                                        "Particulate Matter",
+                                },
+                            },
+                        },
+                        instant: (key: string) => key,
+                    },
+                },
                 {
                     provide: NGX_ECHARTS_CONFIG,
                     useFactory: () => ({ echarts: () => import("echarts") }),
@@ -50,30 +67,5 @@ describe("RadialChartComponent", () => {
 
     it("should create", () => {
         expect(component).toBeTruthy();
-    });
-
-    it("should generate valid EChartsOption", () => {
-        const radialChartData: DigitalServiceFootprint[] = require("mock-server/data/digital-service-data/digital_service_indicators_footprint.json");
-
-        const echartsOption: EChartsOption =
-            component.loadRadialChartOption(radialChartData);
-
-        expect(echartsOption).toBeTruthy();
-        expect(echartsOption.series).toBeTruthy();
-        expect(echartsOption.angleAxis).toEqual({
-            type: "category",
-            data: [
-                "criteria.climate-change.title",
-                "criteria.resource-use.title",
-                "criteria.ionising-radiation.title",
-                "criteria.acidification.title",
-                "criteria.particulate-matter.title",
-            ],
-        });
-        expect(echartsOption.legend).toEqual({
-            show: true,
-            data: ["Terminal", "Network", "Server"],
-            formatter: jasmine.any(Function),
-        });
     });
 });

@@ -5,9 +5,17 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    inject,
+    Input,
+    Output,
+    SimpleChanges,
+} from "@angular/core";
 import { EChartsOption } from "echarts";
 import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
 
@@ -20,6 +28,7 @@ export class RadialChartComponent extends AbstractDashboard {
     @Output() selectedCriteriaChange: EventEmitter<any> = new EventEmitter();
 
     options: EChartsOption = {};
+    private global = inject(GlobalStoreService);
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes) {
@@ -32,7 +41,8 @@ export class RadialChartComponent extends AbstractDashboard {
 
     loadRadialChartOption(radialChartData: DigitalServiceFootprint[]): EChartsOption {
         const order = ["Terminal", "Network", "Server"];
-        const criteriaOrder = Constants.CRITERIAS;
+        this.selectedLang = this.translate.currentLang;
+        const criteriaOrder = Object.keys(this.global.criteriaList());
         radialChartData.sort((a: any, b: any) => {
             return order.indexOf(a.tier) - order.indexOf(b.tier);
         });
@@ -80,6 +90,13 @@ export class RadialChartComponent extends AbstractDashboard {
                         .join(" ");
                     return this.getCriteriaTranslation(twoWordsImpact);
                 }),
+                axisLabel: {
+                    formatter: (value: string) => {
+                        const truncateValue =
+                            value.length > 18 ? value.slice(0, 18) + "..." : value;
+                        return truncateValue;
+                    },
+                },
             },
             radiusAxis: {
                 name: this.translate.instant("common.peopleeq"),

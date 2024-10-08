@@ -31,13 +31,16 @@ import { MonthYearPipe } from "../pipes/monthyear.pipe";
 import { ClipboardModule } from "ngx-clipboard";
 import { AccordionModule } from "primeng/accordion";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { DialogModule } from "primeng/dialog";
 import { DropdownModule } from "primeng/dropdown";
 import { EditorModule } from "primeng/editor";
 import { InputTextModule } from "primeng/inputtext";
 import { TableModule } from "primeng/table";
 import { TabMenuModule } from "primeng/tabmenu";
 import { CommonEditorComponent } from "src/app/layout/common/common-editor/common-editor.component";
+import { CriteriaPopupComponent } from "src/app/layout/common/criteria-popup/criteria-popup.component";
 import { SpinnerComponent } from "src/app/layout/common/spinner/spinner.component";
+import { StatsComponent } from "src/app/layout/common/stats/stats.component";
 import { HeaderComponent } from "src/app/layout/header/header.component";
 import { BusinessHoursRendererPipe } from "../pipes/business-hours-renderer.pipe";
 import { IntegerPipe } from "../pipes/integer.pipe";
@@ -55,6 +58,8 @@ import { IntegerPipe } from "../pipes/integer.pipe";
         CommonEditorComponent,
         HeaderComponent,
         BusinessHoursRendererPipe,
+        StatsComponent,
+        CriteriaPopupComponent,
     ],
     imports: [
         CommonModule,
@@ -80,6 +85,7 @@ import { IntegerPipe } from "../pipes/integer.pipe";
         AccordionModule,
         InputTextModule,
         ClipboardModule,
+        DialogModule,
     ],
     exports: [
         TooltipModule,
@@ -105,6 +111,7 @@ import { IntegerPipe } from "../pipes/integer.pipe";
         SidebarModule,
         RadioButtonModule,
         CommonEditorComponent,
+        StatsComponent,
         DropdownModule,
         ConfirmDialogModule,
         TableModule,
@@ -115,6 +122,7 @@ import { IntegerPipe } from "../pipes/integer.pipe";
         InputTextModule,
         SpinnerComponent,
         ClipboardModule,
+        CriteriaPopupComponent,
     ],
     providers: [DecimalsPipe, IntegerPipe],
 })

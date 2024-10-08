@@ -8,51 +8,64 @@
 package com.soprasteria.g4it.backend.apiadministrator.business;
 
 import com.soprasteria.g4it.backend.TestUtils;
+import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
+import com.soprasteria.g4it.backend.apiuser.business.UserService;
+import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
+import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
 import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
+import com.soprasteria.g4it.backend.server.gen.api.dto.CriteriaRest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.soprasteria.g4it.backend.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdministratorServiceTest {
 
+    private final Organization organization = TestUtils.createOrganization();
+    @Mock
+    CacheManager cacheManager;
     private long organizationId;
     private long subscriberId;
-
     // Given global
     @InjectMocks
     private AdministratorService administratorService;
-
     @Mock
     private UserRepository userRepository;
     @Mock
     private AdministratorRoleService administratorRoleService;
-
     @Mock
     private SubscriberRepository subscriberRepository;
-
-    private final Organization organization = TestUtils.createOrganization();
+    @Mock
+    private SubscriberService subscriberService;
+    @Mock
+    private SubscriberRestMapper subscriberRestMapper;
+    @Mock
+    private UserService userService;
 
     @BeforeEach
     void init() {
         subscriberId = organization.getSubscriber().getId();
         organizationId = organization.getId();
-        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
+        Mockito.lenient().when(cacheManager.getCache(any())).thenReturn(Mockito.mock(Cache.class));
     }
 
 
@@ -64,6 +77,7 @@ class AdministratorServiceTest {
         String authorizedDomains = "soprasteria.com,test.com";
         Subscriber subscriber = TestUtils.createSubscriber(subscriberId);
         subscriber.setAuthorizedDomains(authorizedDomains);
+        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
 
         when(subscriberRepository.findById(any())).thenReturn(Optional.of(subscriber));
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(
@@ -81,6 +95,7 @@ class AdministratorServiceTest {
         String authorizedDomains = "soprasteria.com,test.com";
         Subscriber subscriber = TestUtils.createSubscriber(subscriberId);
         subscriber.setAuthorizedDomains(authorizedDomains);
+        doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
 
         when(subscriberRepository.findById(any())).thenReturn(Optional.of(subscriber));
         when(userRepository.findBySearchedName(eq(searchedUser), any())).thenReturn(Collections.singletonList(User
@@ -100,5 +115,32 @@ class AdministratorServiceTest {
         assertEquals(1, searchedUsers.size());
     }
 
+    @Test
+    void updateSubscriberCriteria() {
+        // Arrange
+        Long subscriberId = 1L;
+        CriteriaRest criteriaRest = CriteriaRest.builder().criteria(List.of("New Criteria")).build();
+        Subscriber subscriber = TestUtils.createSubscriber(subscriberId);
+        subscriber.setCriteria(List.of("Old Criteria"));
+
+        Subscriber updatedSubscriber = TestUtils.createSubscriber(subscriberId);
+        updatedSubscriber.setCriteria(List.of("New Criteria"));
+        SubscriberBO subscriberBO = SubscriberBO.builder().id(subscriberId)
+                .name("SUBSCRIBER")
+                .criteria(List.of("New Criteria")).build();
+        doNothing().when(administratorRoleService).hasAdminRightsOnAnySubscriber(any());
+
+        when(subscriberService.getSubscriptionById(subscriberId)).thenReturn(subscriber);
+        when(subscriberRepository.save(any())).thenReturn(updatedSubscriber);
+        when(subscriberRestMapper.toBusinessObject(updatedSubscriber)).thenReturn(subscriberBO);
+
+        SubscriberBO result = administratorService.updateSubscriberCriteria(subscriberId, criteriaRest, createUserBOAdminSub());
+
+        assertThat(result.getCriteria()).isEqualTo(List.of("New Criteria"));
+
+        verify(subscriberRepository).save(updatedSubscriber);
+        verify(subscriberRestMapper, times(1)).toBusinessObject(updatedSubscriber);
+        verify(userService).clearUserAllCache();
+    }
 
 }

@@ -116,7 +116,7 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
     public ResponseEntity<Void> runCalculations(final String subscriber,
                                                 final Long organization,
                                                 final String digitalServiceUid) {
-        digitalServiceService.runCalculations(organization, digitalServiceUid);
+        digitalServiceService.runCalculations(subscriber, organization, digitalServiceUid);
         return ResponseEntity.accepted().build();
     }
 
@@ -146,6 +146,16 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
         digitalServiceService.linkDigitalServiceToUser(subscriber, organization, digitalServiceUid, sharedUid, authService.getUser().getId());
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Void> unlinkSharedDigitalService(String subscriber, Long organization, String digitalServiceUid) {
+        digitalServiceService.unlinkSharedDigitalService(digitalServiceUid, authService.getUser().getId());
+        return ResponseEntity.noContent().build();
+    }
+
 }
 
 

@@ -11,8 +11,10 @@ import { Observable } from "rxjs";
 
 import { Constants } from "src/constants";
 import {
+    OrganizationCriteriaRest,
     OrganizationUpsertRest,
     Subscriber,
+    SubscriberCriteriaRest,
 } from "../../interfaces/administration.interfaces";
 
 const endpoint = Constants.ENDPOINTS.subscribers;
@@ -44,6 +46,26 @@ export class AdministrationDataService {
         return this.http.put<OrganizationUpsertRest>(
             `${endpointForOrg}?organizationId=${organizationId}`,
             body,
+        );
+    }
+
+    updateOrganizationCriteria(
+        organizationId: number,
+        body: OrganizationCriteriaRest,
+    ): Observable<OrganizationCriteriaRest> {
+        return this.http.put<OrganizationCriteriaRest>(
+            `${endpointForOrg}?organizationId=${organizationId}`,
+            body,
+        );
+    }
+
+    updateSubscriberCriteria(
+        subscriberId: number,
+        criteria: SubscriberCriteriaRest,
+    ): Observable<SubscriberCriteriaRest> {
+        return this.http.put<SubscriberCriteriaRest>(
+            `${endpoint}?subscriberId=${subscriberId}`,
+            criteria,
         );
     }
 

@@ -1480,5 +1480,170 @@
                 "sip": 0.00010328198575342466
             }
         ]
+    },
+    {
+        "criteria": "water-use",
+        "unit": "m3 eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "ozone-depletion",
+        "unit": "kg CFC-11 eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-cancer",
+        "unit": "CTUh",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-non-cancer",
+        "unit": "CTUh",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "photochemical-ozone-formation",
+        "unit": "kg N M VO C eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-terrestrial",
+        "unit": "mol N eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-freshwater",
+        "unit": "kg P eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-marine",
+        "unit": "kg N eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "ecotoxicity-freshwater",
+        "unit": "CTUe",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "land-use",
+        "unit": "Pt",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    {
+        "criteria": "resource-use-fossils",
+        "unit": "MJ",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
     }
 ]

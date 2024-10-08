@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "primeng/api";
@@ -20,7 +20,7 @@ import { DigitalServiceBusinessService } from "./../../../../core/service/busine
 @Component({
     selector: "app-side-panel-list-vm",
     templateUrl: "./side-panel-list-vm.component.html",
-    providers:[MessageService]
+    providers: [MessageService],
 })
 export class SidePanelListVmComponent implements OnInit {
     addVMPanelVisible: boolean = false;
@@ -66,6 +66,7 @@ export class SidePanelListVmComponent implements OnInit {
         terminals: [],
         servers: [],
         networks: [],
+        members: [],
     };
 
     constructor(
@@ -73,7 +74,7 @@ export class SidePanelListVmComponent implements OnInit {
         private digitalDataService: DigitalServicesDataService,
         private router: Router,
         private route: ActivatedRoute,
-        public userService:UserService
+        public userService: UserService,
     ) {}
 
     async ngOnInit(): Promise<void> {

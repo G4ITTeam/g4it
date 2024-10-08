@@ -5,246 +5,109 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { Subject, takeUntil } from "rxjs";
+import { Component, inject, Input, SimpleChanges } from "@angular/core";
+import { CheckboxChangeEvent } from "primeng/checkbox";
+import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
+import { FilterService } from "src/app/core/service/business/filter.service";
 
-import {
-    FilterApplication,
-    FilterRepository,
-} from "src/app/core/store/filter.repository";
+import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { Constants } from "src/constants";
 
 @Component({
     selector: "dataviz-filter-application",
     templateUrl: "./dataviz-filter-application.component.html",
 })
-export class DatavizFilterApplicationComponent implements OnInit {
+export class DatavizFilterApplicationComponent {
+    @Input() allFilters: Filter<string | TransformedDomain> = {};
+    allUnusedFilters: Filter<TransformedDomain> = {};
+    private filterService = inject(FilterService);
+
+    protected footprintStore = inject(FootprintStoreService);
+
     overlayVisible: boolean = false;
-    selectedEnvironnement: string[] = [];
-    selectedEquipment: string[] = [];
-    selectedlifecycle: string[] = [];
-    selectedDomain: string[] = [];
-    selectedSubdomain: string[] = [];
+    tabs = Constants.APPLICATION_FILTERS;
+    all = Constants.ALL;
+    empty = Constants.EMPTY;
 
-    filters: FilterApplication = {
-        environments: [],
-        types: [],
-        lifeCycles: [],
-        domains: [],
-        subdomains: [],
-    };
+    constructor() {}
 
-    domain2add: any = {
-        label: "",
-        children: [
-            {
-                label: "",
-            },
-        ],
-    };
-    domains: any[] = [];
-    selectedValuesFilterDomain: any;
-    selectedObjectDomain: any[] = [];
-    selectedObjectSubDomain: any[] = [];
-
-    ngUnsubscribe = new Subject<void>();
-
-    constructor(
-        private filterRepo: FilterRepository,
-        private translate: TranslateService,
-    ) {}
-
-    ngOnInit(): void {
-        this.filterRepo.allApplicationFilters$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((filters) => {
-                this.filters = filters;
-                this.selectedEnvironnement = filters.environments;
-                this.selectedEquipment = filters.types;
-                this.selectedlifecycle = filters.lifeCycles;
-                this.filters.domains = filters.domains;
-                this.FormatLifecycleFilter();
-                this.allDomainFiltersSelected();
-            });
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes["allFilters"]) {
+            this.selectedFilters();
+        }
     }
 
-    FormatLifecycleFilter() {
-        this.selectedlifecycle.forEach((lifecycle, index) => {
-            if (lifecycle !== Constants.ALL && lifecycle !== Constants.UNSPECIFIED) {
-                this.selectedlifecycle[index] = this.translate.instant(
-                    "acvStep." + lifecycle,
-                );
-            }
-        });
+    selectedFilters() {
+        this.allUnusedFilters = JSON.parse(JSON.stringify(this.allFilters));
+        //const selectedValues = JSON.parse(JSON.stringify(this.allUnusedFilters));
+        this.footprintStore.setApplicationSelectedFilters(this.allUnusedFilters);
     }
 
-    allDomainFiltersSelected() {
-        this.domains = [];
-        this.selectedObjectDomain = [];
-        this.selectedObjectSubDomain = [];
-        this.filters.domains.forEach((domain) => {
-            this.domain2add = {
-                label: "",
-                children: [],
-            };
-            const splitDomain = domain.split(",");
-            this.domain2add.label = splitDomain[0];
-            splitDomain.shift();
-            if (splitDomain !== undefined) {
-                splitDomain.forEach((subDomain) => {
-                    const sub2add = {
-                        label: "",
-                        domain: "",
-                    };
-                    sub2add.label = subDomain;
-                    sub2add.domain = this.domain2add.label;
-                    this.domain2add.children.push(sub2add);
-                    this.selectedObjectSubDomain.push(sub2add);
-                });
-            }
-            this.domains.push(this.domain2add);
-            this.selectedObjectDomain.push(this.domain2add);
-        });
-        this.selectedValuesFilterDomain = this.selectedObjectDomain.concat(
-            this.selectedObjectSubDomain,
+    onFilterSelected(selectedValues: string[], tab: string, selection: string) {
+        const f = this.footprintStore.applicationSelectedFilters();
+        f[tab] = this.filterService.getUpdateSelectedValues(
+            selectedValues,
+            this.allFilters[tab] as string[],
+            selection,
         );
-        this.fillSelectedDomainAndSubDomain();
-        this.saveFilters();
+        this.footprintStore.setApplicationSelectedFilters(f);
     }
 
-    onFilterUpdate(data: string, value: string) {
-        switch (data) {
-            case "environnement":
-                this.selectedEnvironnement = this.updateSelectedValues(
-                    this.selectedEnvironnement,
-                    this.filters.environments,
-                    value,
+    onTreeChange(event: CheckboxChangeEvent, item: TransformedDomain) {
+        if (item.label === Constants.ALL) {
+            this.allUnusedFilters["domain"].forEach((domain) => {
+                (domain as TransformedDomain).checked = event.checked;
+                (domain as TransformedDomain)["children"]?.forEach(
+                    (child) => (child.checked = event.checked),
                 );
-                break;
-            case "equipment":
-                this.selectedEquipment = this.updateSelectedValues(
-                    this.selectedEquipment,
-                    this.filters.types,
-                    value,
-                );
-                break;
-            case "lifecycle":
-                this.selectedlifecycle = this.updateSelectedValues(
-                    this.selectedlifecycle,
-                    this.filters.lifeCycles,
-                    value,
-                );
-                break;
-            default:
-                return;
-        }
-        this.saveFilters();
-    }
-
-    updateSelectedValues(
-        selectedValues: string[],
-        allPossibleValues: string[],
-        selection: string,
-    ): string[] {
-        // The trick is : selectedValues is already updated
-        // We only have to handle the Constants.ALL value manually...
-        // Case 1: user toggles the Constants.ALL value
-        if (selection === Constants.ALL) {
-            // case 1.1 : Select All Countries
-            if (selectedValues.includes(Constants.ALL)) return [...allPossibleValues];
-
-            // case 1.2 : Deselect All Countries
-            return [];
-        }
-        // Case 2: user toggles a value other than Constants.ALL
-        if (selectedValues.includes(Constants.ALL)) {
-            // case 2.1 : All Countries were selected, and we deselect one.
-            // we have to deselect Constants.ALL as well
-            let result = [...selectedValues];
-            result.splice(result.indexOf(Constants.ALL), 1);
-            return result;
-        }
-        if (selectedValues.length === allPossibleValues.length - 1) {
-            // case 2.2 : All Countries but one were selected, and we select missing one.
-            // we have to select Constants.ALL as well
-            return [...allPossibleValues];
-        }
-        // in all other cases, we just have to let the selectedCountries as is
-        return selectedValues;
-    }
-
-    toggle() {
-        this.overlayVisible = !this.overlayVisible;
-    }
-
-    nodeSelect(event: any) {
-        if (event.node.label === Constants.ALL) {
-            this.selectedValuesFilterDomain = [];
-            this.allDomainFiltersSelected();
+            });
         } else {
-            this.selectedDomain = [];
-            this.selectedSubdomain = [];
-            this.fillSelectedDomainAndSubDomain();
-            this.addAllFilterValue();
-            this.saveFilters();
+            item["children"]?.forEach((child) => (child.checked = event.checked));
         }
+        this.setAllCheckBox();
+        const f = this.footprintStore.applicationSelectedFilters();
+        f["domain"] = this.allUnusedFilters["domain"];
+        this.footprintStore.setApplicationSelectedFilters(f);
     }
 
-    nodeUnselect(event: any) {
-        if (event.node.label === Constants.ALL) {
-            this.selectedValuesFilterDomain = [];
+    onTreeChildChanged(event: CheckboxChangeEvent, item: TransformedDomain) {
+        if (!item.children?.some((child) => child.checked)) {
+            item.checked = false;
         } else {
-            this.selectedDomain = [];
-            this.selectedSubdomain = [];
-            if (this.selectedValuesFilterDomain[0].label === Constants.ALL) {
-                this.selectedValuesFilterDomain.shift();
-            }
+            item.checked = true;
         }
-        this.fillSelectedDomainAndSubDomain();
-        this.saveFilters();
+        this.setAllCheckBox();
+        const f = this.footprintStore.applicationSelectedFilters();
+        f["domain"] = this.allUnusedFilters["domain"];
+        this.footprintStore.setApplicationSelectedFilters(f);
     }
 
-    fillSelectedDomainAndSubDomain() {
-        this.selectedSubdomain = [];
-        this.selectedDomain = [];
-        this.selectedValuesFilterDomain.forEach((value: any) => {
-            if (
-                value.children !== undefined &&
-                !this.selectedDomain.includes(value.label)
-            ) {
-                this.selectedDomain.push(value.label);
-            } else if (value.domain !== undefined) {
-                this.selectedSubdomain.push(value.label);
-                if (!this.selectedDomain.includes(value.domain)) {
-                    this.selectedDomain.push(value.domain);
+    setAllCheckBox(): void {
+        if (!this.checkIfAllNotCheck()) {
+            this.setAllCheckBoxValue(true);
+        } else {
+            this.setAllCheckBoxValue(false);
+        }
+    }
+
+    setAllCheckBoxValue(checked: boolean): void {
+        this.allUnusedFilters["domain"] = this.allUnusedFilters["domain"].map(
+            (domain) => {
+                if (domain.label === Constants.ALL) {
+                    return { ...domain, checked };
+                } else {
+                    return domain;
                 }
-            }
-        });
+            },
+        );
     }
 
-    addAllFilterValue() {
-        if (
-            this.selectedSubdomain.length === this.selectedObjectSubDomain.length &&
-            this.selectedDomain.length === this.selectedObjectDomain.length - 1
-        ) {
-            this.selectedDomain.splice(0, 0, Constants.ALL);
-            this.selectedValuesFilterDomain.splice(0, 0, this.domains[0]);
-        }
-    }
-
-    saveFilters() {
-        this.filterRepo.updateSelectedFiltersApp({
-            environments: this.selectedEnvironnement,
-            types: this.selectedEquipment,
-            lifeCycles: this.selectedlifecycle,
-            domains: this.selectedDomain,
-            subdomains: this.selectedSubdomain,
-        });
-    }
-
-    ngOnDestroy() {
-        this.ngUnsubscribe.next();
-        this.ngUnsubscribe.complete();
+    checkIfAllNotCheck(): boolean {
+        return this.allUnusedFilters["domain"]
+            .filter((domain) => domain.label !== Constants.ALL)
+            .some(
+                (domain) =>
+                    !domain.checked || domain.children.some((child) => !child.checked),
+            );
     }
 }

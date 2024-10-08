@@ -38,19 +38,19 @@ paths:
         "500":
           description: Erreur interne du service
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "400":
           description: Contenu de la soumission incorrecte
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "200":
           description: Rapport d'import des données d'entrées
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/StatutCalculRest"
   /entrees/calculs/soumission:
@@ -58,10 +58,24 @@ paths:
       summary: Endpoint de soumission de données d'entrées pour lancer les calculs dans NumEcoEval.
       description: |
         Endpoint de soumission de données d'entrées pour lancer les calculs dans NumEcoEval.
+        Vous pouvez choisir la méthode de calcul de la durée de vie des équipements qui sera utilisée pour le calcul grâce au paramètre dureeUsage qui peut prendre 2 valeurs : 
+        <ul>
+        <li>FIXE : La méthode de calcul de la durée de vie se base sur l'attribut 'dureeUsageInterne' de l'équipement physique (méthode utilisée par défaut si le paramètre dureeUsage n'est pas renseigné). </li>
+        <li>REEL : La méthode de calcul de la durée de vie se base sur l'âge réel de l'équipement physique (dateRetrait-dateAchat). </li>
+        </ul>
+        Vous pouvez également lancer le calcul sur uniquement quelques critères et/ou étapes spécifiques en renseignant leurs noms dans les listes "etapes" et "criteres" dans le body de la requête. 
+        /!\ Il faut que les noms soient présents dans les tables ref_etapeacv et ref_critere (case sensitive).
+        Par défaut, si rien n'est renseigné, le calcul sera lancé sur toutes les étapes et tous les critères présents dans les tables ref_etapeacv et ref_critere.
       tags:
         - Calculs
       operationId: soumissionPourCalcul
       parameters:
+        - in: query
+          name: dureeUsage
+          schema:
+            $ref: "#/components/schemas/DureeUsage"
+          required: false
+          description: "Choix de la méthode de calcul de la durée d'usage : FIXE ou REEL"
         - in: query
           name: mode
           schema:
@@ -71,26 +85,26 @@ paths:
       requestBody:
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
               $ref: "#/components/schemas/DemandeCalculRest"
       responses:
         "500":
           description: Erreur interne du service
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "400":
           description: Contenu de la soumission incorrecte
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "200":
           description: Rapport d'import des données d'entrées
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/RapportDemandeCalculRest"
   /entrees/calculs/rejeu:
@@ -104,26 +118,26 @@ paths:
       requestBody:
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
               $ref: "#/components/schemas/DemandeCalculRest"
       responses:
         "500":
           description: Erreur interne du service
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "400":
           description: Contenu de la soumission incorrecte
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "200":
           description: Rapport d'import des données d'entrées
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/RapportDemandeCalculRest"
   /entrees/json:
@@ -138,26 +152,26 @@ paths:
       requestBody:
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
               $ref: "#/components/schemas/DonneesEntreeRest"
       responses:
         "500":
           description: Erreur interne du service
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "400":
           description: Contenu de la soumission incorrecte
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "200":
           description: Rapport d'import des données d'entrées
           content:
-            'application/json':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -168,15 +182,27 @@ paths:
         - Imports
       summary: Soumission de données d'entrées au format CSV pour calcul d'indicateurs
       description: |
-        Endpoint de soumission des données d'entrées au format CSV pour le calcul d'indicateurs. \
-        La taille totale de tous les fichiers ne doit pas dépasser 10 Mo. \
-        Le séparateur des fichiers CSV est le point-virgule (;). \
-        Le Header du CSV des data centers est : nomCourtDatacenter;nomLongDatacenter;pue;localisation;nomSourceDonnee \
-        Le Header du CSV des équipements physiques est : modele;quantite;nomEquipementPhysique;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;nbJourUtiliseAn;consoElecAnnuelle;nomSourceDonnee \
-        Le Header du CSV des équipements virtuels est : nomEquipementVirtuel;nomEquipementPhysique;vCPU;cluster;nomSourceDonnee;nomSourceEquipementPhysique;consoElecAnnuelle;typeEqv;capaciteStockage;cleRepartition \
-        Le Header du CSV des application est : nomApplication;typeEnvironnement;nomEquipementVirtuel;nomEquipementPhysique;domaine;sousDomaine;nomSourceDonnee;typeEqv;nomSourceEquipementVirtuel;capaciteStockage;cleRepartition \
-        Le Header du CSV de la messagerie est : nombreMailEmis;nombreMailEmisXDestinataires;volumeTotalMailEmis;MoisAnnee;nomSourceDonnee \
-        Le Header du CSV des entités est : nomEntite;nbCollaborateurs;responsableEntite;responsableNumeriqueResponsable;nomSourceDonnee
+        Endpoint de soumission des données d'entrées au format CSV pour le calcul d'indicateurs.  
+
+        La taille totale de tous les fichiers ne doit pas dépasser 10 Mo. <br/>
+
+        Le séparateur des fichiers CSV est le point-virgule (;).  <br/>
+
+        Les colonnes facultatives sont notées entre parenthèses, toutes les autres sont obligatoires !  <br/>
+
+        Le Header du CSV des data centers est : nomCourtDatacenter;nomLongDatacenter;pue;localisation;(nomEntite);(qualite).  <br/> 
+
+        Le Header du CSV des équipements physiques est : nomEquipementPhysique,modele;quantite;nomCourtDatacenter;(dateAchat);(dateRetrait);(dureeUsageInterne);(dureeUsageAmont);(dureeUsageAval);type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;(nomSourceDonnee);(nomEntite);nbCoeur;(modeUtilisation);(tauxUtilisation);(qualite).  <br/>
+
+        Le Header du CSV des équipements virtuels est : nomEquipementVirtuel;nomEquipementPhysique;(nomSourceDonneeEquipementPhysique);(cleRepartition);vCPU;cluster;(consoElecAnnuelle);(typeEqv);(capaciteStockage);(nomEntite);(qualite).  <br/>
+
+        Le Header du CSV des application est : nomApplication;typeEnvironnement;(nomEquipementVirtuel);(nomSourceEquipementVirtuel);domaine;sousDomaine;(nomEntite);nomEquipementPhysique;(nomSourceDonnee);(qualite).  <br/>
+
+        Le Header du CSV des opérations non IT est : nomItemNonIT;quantite;type;dureeDeVie;localisation;(nomEntite);(nomSourceDonnee);nomCourtDatacenter;description;consoElecAnnuelle;(qualite).  <br/>
+
+        Le Header du CSV de la messagerie est : nombreMailEmis;nombreMailEmisXDestinataires;volumeTotalMailEmis;MoisAnnee;(nomEntite).  <br/>
+
+        Le Header du CSV des entités est : nomEntite;nbCollaborateurs;responsableEntite;responsableNumeriqueResponsable.
 
       operationId: importCSV
       requestBody:
@@ -186,7 +212,14 @@ paths:
               type: object
               required:
                 - nomLot
+                - nomOrganisation
               properties:
+                nomOrganisation:
+                  type: string
+                nomLot:
+                  type: string
+                dateLot:
+                  type: string
                 csvDataCenter:
                   type: string
                   format: binary
@@ -199,35 +232,33 @@ paths:
                 csvApplication:
                   type: string
                   format: binary
+                csvOperationNonIT:
+                  type: string
+                  format: binary
                 csvMessagerie:
                   type: string
                   format: binary
                 csvEntite:
                   type: string
                   format: binary
-                dateLot:
-                  type: string
-                nomOrganisation:
-                  type: string
-                nomLot:
-                  type: string
+
       responses:
         "500":
           description: Erreur interne du service
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "400":
           description: Contenu de la soumission incorrecte
           content:
-            'application/json':
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ErreurRest"
         "200":
           description: Rapport d'import des données d'entrées
           content:
-            'application/json':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -252,12 +283,27 @@ components:
         nomLot:
           description: "Nom du lot rattaché"
           type: string
+        etapes:
+          description: "Liste des étapes pour lesquelles on veut calculer les impacts"
+          type: array
+          items:
+            type: string
+        criteres:
+          description: "Liste des critères pour lesquels on veut calculer les impacts"
+          type: array
+          items:
+            type: string
     ModeRest:
       type: string
       enum:
         - ASYNC
         - SYNC
       default: ASYNC
+    DureeUsage:
+      type: string
+      enum:
+        - FIXE
+        - REEL
     StatutCalculRest:
       description: Statut des calculs.
       properties:
@@ -272,10 +318,13 @@ components:
           type: string
         equipementPhysique:
           description: "Bloc equipement physique"
-          $ref: '#/components/schemas/VolumeRest'
+          $ref: "#/components/schemas/VolumeRest"
+        operationNonIT:
+          description: "Bloc opération non it"
+          $ref: "#/components/schemas/VolumeRest"
         messagerie:
           description: "Bloc messagerie"
-          $ref: '#/components/schemas/VolumeRest'
+          $ref: "#/components/schemas/VolumeRest"
     VolumeRest:
       description: Volume
       type: object
@@ -301,6 +350,9 @@ components:
           type: integer
         nbrApplication:
           description: Nombre d'application concernées
+          type: integer
+        nbrOperationNonIT:
+          description: Nombre d'opérations non IT concernées
           type: integer
         nbrMessagerie:
           description: Nombre d'éléments de messagerie concernés
@@ -366,6 +418,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EquipementPhysiqueRest"
+        operationsNonIT:
+          type: array
+          items:
+            $ref: "#/components/schemas/OperationNonITRest"
         messageries:
           type: array
           items:
@@ -394,6 +450,9 @@ components:
           type: string
         nomSourceDonnee:
           description: "Nom de la source de la donnée"
+          type: string
+        qualite:
+          description: "Qualite de la donnée collectée (BASSE, MOYENNE ou HAUTE)"
           type: string
     EquipementPhysiqueRest:
       description: Représentation d'un équipement physique dans NumEcoEval
@@ -424,18 +483,27 @@ components:
           description: ""
           type: string
           format: date
+        dureeUsageInterne:
+          description: ""
+          type: number
+        dureeUsageAmont:
+          description: ""
+          type: number
+        dureeUsageAval:
+          description: ""
+          type: number
         nbCoeur:
           description: ""
           type: string
+        modeUtilisation:
+          description: ""
+          type: string
+        tauxUtilisation:
+          description: ""
+          type: number
         nomCourtDatacenter:
           description: ""
           type: string
-        nbJourUtiliseAn:
-          description: ""
-          type: number
-        goTelecharge:
-          description: ""
-          type: number
         quantite:
           description: ""
           type: number
@@ -452,6 +520,9 @@ components:
           description: ""
           items:
             $ref: "#/components/schemas/EquipementVirtuelRest"
+        qualite:
+          description: "Qualite de la donnée collectée (BASSE, MOYENNE ou HAUTE)"
+          type: string
     EquipementVirtuelRest:
       description: Représentation d'un équipement virtuel dans NumEcoEval
       properties:
@@ -501,6 +572,9 @@ components:
             Consommation électrique annuelle de l'équipement virtuel.
           type: number
           format: double
+        qualite:
+          description: "Qualite de la donnée collectée (BASSE, MOYENNE ou HAUTE)"
+          type: string
     ApplicationRest:
       description: Représentation d'une application dans NumEcoEval
       properties:
@@ -527,6 +601,46 @@ components:
           type: string
         nomSourceDonneeEquipementVirtuel:
           description: "Nom de la source de la donnée pour l'équipement virtuel"
+          type: string
+        qualite:
+          description: "Qualite de la donnée collectée (BASSE, MOYENNE ou HAUTE)"
+          type: string
+    OperationNonITRest:
+      description: Représentation d'une opération non IT dans NumEcoEval
+      properties:
+        nomItemNonIT:
+          description: ""
+          type: string
+        quantite:
+          description: ""
+          type: number
+        type:
+          description: ""
+          type: string
+        dureeDeVie:
+          description: ""
+          type: number
+        localisation:
+          description: ""
+          type: string
+        nomEntite:
+          description: ""
+          type: string
+        nomSourceDonnee:
+          description: "Nom de la source de la donnée"
+          type: string
+        nomCourtDatacenter:
+          description: ""
+          type: string
+        description:
+          description: ""
+          type: string
+        consoElecAnnuelle:
+          description: ""
+          type: number
+          format: double
+        qualite:
+          description: "Qualite de la donnée collectée (BASSE, MOYENNE ou HAUTE)"
           type: string
     MessagerieRest:
       description: Représentation d'éléments de messagerie dans NumEcoEval

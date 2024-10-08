@@ -238,63 +238,57 @@ class InventoryLoadingAppTests {
         // PhysicalEquipment Assertions
         final List<String> physicalEquipmentAllBadLines = Files.readAllLines(outputPath.resolve(formattedSessionDate).resolve("rejected_physical_equipment_" + formattedSessionDate + ".csv"));
         assertThat(physicalEquipmentAllBadLines)
-                .hasSize(24) // 1 header and 24 bad lines
-                .contains("nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur;inputFileName;lineNumber;message", Index.atIndex(0))
+                .hasSize(19) // 1 header and 18 bad lines
+                .contains("nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur;inputFileName;lineNumber;message", Index.atIndex(0))
                 .satisfies(
                         lst -> {
                             assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_champs_obligatoire.csv")).count()).isEqualTo(4);
-                            assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_format.csv")).count()).isEqualTo(14);
-                            assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_referentiel.csv")).count()).isEqualTo(4);
+                            assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_format.csv")).count()).isEqualTo(10);
+                            assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_referentiel.csv")).count()).isEqualTo(3);
                             assertThat(lst.stream().filter(line -> line.contains("equipementPhysique_avec_erreur_coherence.csv")).count()).isEqualTo(1);
                         })
                 .contains(
-                        ";Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;300;FR;;2017-02-22;;15;Datacenter 9;1500;500;dell;100;250;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;2;Field 'nomEquipementPhysique' is mandatory.",
-                        "Desktop 2;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;3;Field 'quantite' must be a positive integer.",
-                        "Desktop 6;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.6;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;9;Field 'nbCoeur' must be a positive integer.",
-                        "Desktop 12;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;v;0;HP;;;;equipementPhysique_avec_erreur_format.csv;15;Field 'goTelecharge' must be a positive integer.",
-                        "Desktop 1;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;v;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;2;Field 'quantite' must be a positive integer.",
-                        "Laptop 1;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;2020/02/31;;;;120;100;HP;;;;equipementPhysique_avec_erreur_format.csv;4;Field 'dateAchat' of type date must be in format 'YYYY-MM-DD'.",
-                        "Desktop 5;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.7;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;8;Field 'nbCoeur' must be a positive integer.",
-                        "Desktop 7;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;-1;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;10;Field 'nbCoeur' must be a positive integer.",
-                        "Desktop 11;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;400;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;14;Field 'nbJourUtiliseAn' must an integer between 0 and 365.",
-                        "Serveur 4;Sopra Steria Group;mockData;rack-server-with-hdd;3;;actif;300;FR;;2017-02-22;;15;Datacenter 9;1500;500;dell;100;250;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;5;Field 'type' is mandatory.",
-                        "Desktop 3;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;1.6;HP;;;;equipementPhysique_avec_erreur_format.csv;6;Field 'consoElecAnnuelle' must be a positive integer.",
-                        "Desktop 9;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;-1;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;12;Field 'nbJourUtiliseAn' must an integer between 0 and 365.",
-                        "Serveur 3;Sopra Steria Group;mockData;rack-server-with-hdd;;ServeurCalcul;inactif;300;FR;;2014-03-05;2023-03-05;10;Datacenter 9;200;400;dell;1000;500;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;4;Field 'quantite' is mandatory., Field 'quantite' must be a positive integer.",
-                        "Laptop 2;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;;2020/02/31;;;120;100;HP;;;;equipementPhysique_avec_erreur_format.csv;5;Field 'dateRetrait' of type date must be in format 'YYYY-MM-DD'.",
-                        "Desktop 4;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;-1;HP;;;;equipementPhysique_avec_erreur_format.csv;7;Field 'consoElecAnnuelle' must be a positive integer.",
-                        "Desktop 8;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.8;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;11;Field 'nbCoeur' must be a positive integer.",
-                        "Desktop 10;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;v;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_format.csv;13;Field 'nbJourUtiliseAn' must an integer between 0 and 365.",
-                        "Serveur 1;Sopra Steria Group;mockData;rack-server-with-hdd;1;ServeurCalcul;actif;365;FR;;2015-01-18;;10;Datacenter 70;1000;200;dell;200;200;i9;equipementPhysique_avec_erreur_coherence.csv;2;Datacenter Datacenter 70 does not exist within the inventory.",
-                        "Serveur Without Country;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7;equipementPhysique_avec_erreur_champs_obligatoire.csv;6;Field 'paysDUtilisation' is mandatory.",
-                        "Desktop with bad country;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Desktop;actif;215;England;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;2;Country England does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs.",
-                        "Desktop with bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Unknown;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;3;Equipment type Unknown does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs.",
-                        "Desktop with bad format and bad country;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Desktop;actif;deux cent quinze;England;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;4;Field 'nbJourUtiliseAn' must an integer between 0 and 365. Country England does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs.",
-                        "Desktop with bad format and bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Unknown;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;5;Field 'quantite' must be a positive integer. Equipment type Unknown does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs."
+                        ";Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2017-02-22;;15;Datacenter 9;500;dell;100;250;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;2;Field 'nomEquipementPhysique' is mandatory.",
+                        "Desktop 2;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;;equipementPhysique_avec_erreur_format.csv;3;Field 'quantite' must be a positive integer.",
+                        "Desktop 6;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;1.6;;0;HP;;;;equipementPhysique_avec_erreur_format.csv;9;Field 'nbCoeur' must be a positive integer.",
+                        "Desktop 1;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;v;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;;equipementPhysique_avec_erreur_format.csv;2;Field 'quantite' must be a positive integer.",
+                        "Laptop 1;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Hugo Lloris;2020/02/31;;;;100;HP;;;;equipementPhysique_avec_erreur_format.csv;4;Field 'dateAchat' of type date must be in format 'YYYY-MM-DD'.",
+                        "Desktop 5;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;1.7;;0;HP;;;;equipementPhysique_avec_erreur_format.csv;8;Field 'nbCoeur' must be a positive integer.",
+                        "Desktop 7;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;-1;;0;HP;;;;equipementPhysique_avec_erreur_format.csv;10;Field 'nbCoeur' must be a positive integer.",
+                        "Serveur 4;Sopra Steria Group;mockData;rack-server-with-hdd;3;;actif;FR;;2017-02-22;;15;Datacenter 9;500;dell;100;250;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;5;Field 'type' is mandatory.",
+                        "Desktop 3;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;1.6;HP;;;;equipementPhysique_avec_erreur_format.csv;6;Field 'consoElecAnnuelle' must be a positive integer.",
+                        "Serveur 3;Sopra Steria Group;mockData;rack-server-with-hdd;;ServeurCalcul;inactif;FR;;2014-03-05;2023-03-05;10;Datacenter 9;400;dell;1000;500;i9;equipementPhysique_avec_erreur_champs_obligatoire.csv;4;Field 'quantite' is mandatory., Field 'quantite' must be a positive integer.",
+                        "Laptop 2;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Hugo Lloris;;2020/02/31;;;100;HP;;;;equipementPhysique_avec_erreur_format.csv;5;Field 'dateRetrait' of type date must be in format 'YYYY-MM-DD'.",
+                        "Desktop 4;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;-1;HP;;;;equipementPhysique_avec_erreur_format.csv;7;Field 'consoElecAnnuelle' must be a positive integer.",
+                        "Desktop 8;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;1.8;;0;HP;;;;equipementPhysique_avec_erreur_format.csv;11;Field 'nbCoeur' must be a positive integer.",
+                        "Serveur Without Country;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7;equipementPhysique_avec_erreur_champs_obligatoire.csv;6;Field 'paysDUtilisation' is mandatory.",
+                        "Desktop with bad country;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Desktop;actif;England;Zinedine Zidane;2019-06-02;;;;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;2;Country England does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs.",
+                        "Desktop with bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Unknown;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;3;Equipment type Unknown does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs.",
+                        "Desktop with bad format and bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Unknown;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;;equipementPhysique_avec_erreur_referentiel.csv;4;Field 'quantite' must be a positive integer. Equipment type Unknown does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs."
                 );
 
         final List<String> physicalEquipmentAllValidLines = Files.readAllLines(outputPath.resolve(formattedSessionDate).resolve("accepted_physical_equipment_" + formattedSessionDate + ".csv"));
         assertThat(physicalEquipmentAllValidLines)
                 .hasSize(19) // 1 header and 18 valid lines
-                .contains("nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur", Index.atIndex(0))
+                .contains("nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur", Index.atIndex(0))
                 .contains(
-                        "Serveur;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7",
-                        "Serveur 5;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;300;FR;;2017-02-22;;15;Datacenter 5;1500;500;dell;100;250;i9",
-                        "Serveur 6;Sopra Steria Group;mockData;rack-server-with-hdd;2;ComputeServer;actif;300;FR;;2018-07-06;;5;Datacenter 9;200;400;dell;2000;500;i9",
-                        "Serveur 7;Sopra Steria Group%;mockData;rack-server-with-hdd;1;ServeurCalcul;inactif;300;FR;;2014-03-05;2023-03-05;10;Datacenter 5;200;400;dell;1000;500;i9",
-                        "Serveur 8;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 9;200;400;dell;2000;500;i7",
-                        "Serveur 9;Sopra Steria Group;mockData%;rack-server-with-hdd;2;ServeurCalcul;actif;300;FR;;2018-07-06;;5;Datacenter 5;200;400;dell;2000;500;i9",
-                        "Desktop 13;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;",
-                        "Serveur 10;Sopra Steria Group;mockData;rack-server-with-hdd&;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;200;400;dell;2000;500;i7",
-                        "Desktop 14;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;215;FR;Kylian Mbappé;2015-04-01;;;;0;0;HP;;;",
-                        "Laptop 3;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Raymond Domenech;2015-04-01;;;;10;350;HP;;;",
-                        "Laptop 4;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;2015-04-01;;;;120;100;HP;;;",
-                        "Laptop 5;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Didier Deschamp;2017-06-26;2019-09-30;;;260;10;HP;;;",
-                        "Ecran 2;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;20;HP;;;",
-                        "Serveur 11;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 9;300;400;dell;2000;500;i7",
-                        "Ecran 1;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;200;FR;Hugo Lloris;2019-09-30;;;;;20;HP;;;",
-                        "Serveur 12;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;215;FR;;2018-07-07;;5;Datacenter 9;300;400;dell;2000;500;i7",
-                        "Serveur 13;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;301;FR;;2018-07-07;;5;Datacenter 5;300;400;dell;2000;500;i7");
+                        "Serveur;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7",
+                        "Serveur 5;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2017-02-22;;15;Datacenter 5;500;dell;100;250;i9",
+                        "Serveur 6;Sopra Steria Group;mockData;rack-server-with-hdd;2;ComputeServer;actif;FR;;2018-07-06;;5;Datacenter 9;400;dell;2000;500;i9",
+                        "Serveur 7;Sopra Steria Group%;mockData;rack-server-with-hdd;1;ServeurCalcul;inactif;FR;;2014-03-05;2023-03-05;10;Datacenter 5;400;dell;1000;500;i9",
+                        "Serveur 8;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 9;400;dell;2000;500;i7",
+                        "Serveur 9;Sopra Steria Group;mockData%;rack-server-with-hdd;2;ServeurCalcul;actif;FR;;2018-07-06;;5;Datacenter 5;400;dell;2000;500;i9",
+                        "Desktop 13;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;",
+                        "Serveur 10;Sopra Steria Group;mockData;rack-server-with-hdd&;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7",
+                        "Desktop 14;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;1;Desktop;actif;FR;Kylian Mbappé;2015-04-01;;;;0;HP;;;",
+                        "Laptop 3;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Raymond Domenech;2015-04-01;;;;350;HP;;;",
+                        "Laptop 4;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Hugo Lloris;2015-04-01;;;;100;HP;;;",
+                        "Laptop 5;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Didier Deschamp;2017-06-26;2019-09-30;;;10;HP;;;",
+                        "Ecran 2;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;FR;Hugo Lloris;2019-09-30;;;;20;HP;;;",
+                        "Serveur 11;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 9;400;dell;2000;500;i7",
+                        "Ecran 1;Sopra Steria Group;mockData;Moniteur LED 27p LG 27BK550Y;1;Ecran;actif;FR;Hugo Lloris;2019-09-30;;;;20;HP;;;",
+                        "Serveur 12;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 9;400;dell;2000;500;i7",
+                        "Serveur 13;Sopra Steria Group;mockData;rack-server-with-hdd;3;ServeurCalcul;actif;FR;;2018-07-07;;5;Datacenter 5;400;dell;2000;500;i7");
 
         // VirtualEquipment Assertions
         final List<String> virtualEquipmentAllBadLines = Files.readAllLines(outputPath.resolve(formattedSessionDate).resolve("rejected_virtual_equipment_" + formattedSessionDate + ".csv"));

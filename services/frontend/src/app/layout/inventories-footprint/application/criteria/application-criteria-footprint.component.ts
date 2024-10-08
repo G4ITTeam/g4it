@@ -5,268 +5,112 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, computed, inject, Input, signal, Signal } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { combineLatestWith, first, takeUntil } from "rxjs";
 import { sortByProperty } from "sort-by-property";
-import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
-import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
-import { FootprintService } from "src/app/core/service/business/footprint.service";
-import { EchartsRepository } from "src/app/core/store/echarts.repository";
-import { FilterRepository } from "src/app/core/store/filter.repository";
 import {
-    ApplicationCriteriaFootprint,
+    ConstantApplicationFilter,
+    Filter,
+} from "src/app/core/interfaces/filter.interface";
+import {
     ApplicationFootprint,
     ApplicationImpact,
-    FootprintRepository,
     ImpactGraph,
-} from "src/app/core/store/footprint.repository";
+} from "src/app/core/interfaces/footprint.interface";
+import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
+import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
+import { FilterService } from "src/app/core/service/business/filter.service";
+import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
-import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../abstract-dashboard";
 import { InventoriesApplicationFootprintComponent } from "../inventories-application-footprint.component";
 @Component({
-    selector: "app-application-criteria-footprint.component",
+    selector: "app-application-criteria-footprint",
     templateUrl: "./application-criteria-footprint.component.html",
 })
 export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
-    private global = inject(GlobalStoreService);
+    @Input() footprint: ApplicationFootprint[] = [];
+    @Input() filterFields: ConstantApplicationFilter[] = [];
+    @Input() selectedInventoryId!: number;
 
-    selectedCriteria = {
-        name: "",
-        unite: "",
-        title: "",
-    };
-    selectedCriteriaUri: string = "";
-    selectedTranslatedCriteria: string = "";
-    selectedInventoryId: number = 0;
+    protected footprintStore = inject(FootprintStoreService);
+    private filterService = inject(FilterService);
+
+    selectedCriteria = computed(() => {
+        return this.translate.instant(
+            `criteria.${this.footprintStore.applicationCriteria()}`,
+        );
+    });
+
     selectedUnit: string = "peopleeq";
-    footprint: ApplicationFootprint[] = [];
-    criteriaFootprint: ApplicationCriteriaFootprint[] = [];
-    noData: boolean = false;
-    selectedEnvironnementFilter: string[] = [];
-    selectedLifecycleFilter: string[] = [];
-    selectedEquipmentsFilter: string[] = [];
-    selectedDomainFilter: string[] = [];
-    selectedSubDomainFilter: string[] = [];
+    noData: Signal<boolean> = computed(() => {
+        return this.checkIfNoData(this.footprintStore.applicationSelectedFilters());
+    });
     domainFilter: string[] = [];
-    selectedGraph: string = "global";
-    selectedDomain: string = "";
-    selectedSubdomain: string = "";
-    selectedApp: string = "";
+
+    criteriaFootprintSignal = signal([]);
+
     impactOrder: ImpactGraph[] = [];
     yAxislist: string[] = [];
 
-    options: EChartsOption = {};
-
-    optionsLifecycle: EChartsOption = {};
-
-    optionsEnv: EChartsOption = {};
+    options: Signal<EChartsOption> = computed(() => {
+        const localFootprint = this.appComponent.formatLifecycleImpact(this.footprint);
+        return this.loadBarChartOption(
+            this.footprintStore.applicationSelectedFilters(),
+            localFootprint,
+            this.footprintStore.applicationCriteria(),
+        );
+    });
     maxNumberOfBarsToBeDisplayed: number = 10;
 
     constructor(
-        private inventoryRepo: InventoryRepository,
         private appComponent: InventoriesApplicationFootprintComponent,
-        override filterRepo: FilterRepository,
-        override footprintRepo: FootprintRepository,
-        override echartsRepo: EchartsRepository,
         override translate: TranslateService,
-        private footprintService: FootprintService,
-        private router: Router,
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
+        override globalStore: GlobalStoreService,
     ) {
-        super(
-            filterRepo,
-            footprintRepo,
-            echartsRepo,
-            translate,
-            integerPipe,
-            decimalsPipe,
-        );
+        super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
     ngOnInit() {
-        this.filterRepo.selectedApplicationFilters$
-            .pipe(
-                combineLatestWith(
-                    this.footprintRepo.applicationFootprint$,
-                    this.filterRepo.selectedCriteria$,
-                    this.footprintRepo.appSelectedGraph$,
-                    this.inventoryRepo.selectedInventory$,
-                    this.footprintRepo.applicationCriteriaFootprint$,
-                    this.footprintRepo.appSelectedDomain$,
-                    this.footprintRepo.appSelectedSubdomain$,
-                    this.footprintRepo.appSelectedApp$,
-                ),
-                takeUntil(this.ngUnsubscribe),
-            )
-            .subscribe(
-                ([
-                    selectedFilters,
-                    applications,
-                    criteria,
-                    selectedGraph,
-                    inventory,
-                    criteriaFootprint,
-                    selectedDomain,
-                    selectedSubDomain,
-                    selectedApp,
-                ]) => {
-                    this.selectedInventoryId = parseInt(inventory!);
-                    this.criteriaFootprint =
-                        this.appComponent.formatLifecycleCriteriaImpact(
-                            criteriaFootprint,
-                        );
-
-                    this.footprint =
-                        this.appComponent.formatLifecycleImpact(applications);
-
-                    this.selectedApp = selectedApp;
-                    this.selectedDomain = selectedDomain;
-                    this.selectedSubdomain = selectedSubDomain;
-                    this.selectedGraph = selectedGraph;
-                    this.selectedEnvironnementFilter = selectedFilters.environments;
-                    this.selectedEquipmentsFilter = selectedFilters.types;
-                    this.selectedLifecycleFilter = this.appComponent.formatLifecycles(
-                        selectedFilters.lifeCycles,
-                    );
-                    if (selectedFilters.subdomains === undefined) {
-                        this.domainFilter = selectedFilters.domains;
-                        this.initDomainFilter();
-                    } else {
-                        this.selectedDomainFilter = [];
-                        this.selectedSubDomainFilter = [];
-                        this.selectedDomainFilter = selectedFilters.domains;
-                        this.selectedSubDomainFilter = selectedFilters.subdomains;
-                    }
-
-                    this.noData = this.checkIfNoData();
-
-                    let doCallAppApi = false;
-                    if (
-                        this.selectedGraph === "application" &&
-                        (this.criteriaFootprint.length === 0 ||
-                            this.selectedCriteriaUri !== this.getCriteriaFromUrl())
-                    ) {
-                        doCallAppApi = true;
-                    }
-
-                    this.selectedCriteriaUri =
-                        criteria === "" ? this.getCriteriaFromUrl() : criteria;
-                    this.selectedCriteria = this.translate.instant(
-                        `criteria.${this.selectedCriteriaUri}`,
-                    );
-
-                    if (doCallAppApi) {
-                        this.CallAppApi();
-                    } else {
-                        this.options = this.loadBarChartOption();
-                    }
-                },
-            );
-    }
-
-    private getCriteriaFromUrl(): string {
-        const currentUrl = this.router.url;
-        const segments = currentUrl.split("/");
-        return segments[segments.length - 1];
-    }
-
-    initDomainFilter() {
-        this.selectedDomainFilter = [];
-        this.selectedSubDomainFilter = [];
-        this.domainFilter.forEach((domain) => {
-            const splitDomain = domain.split(",");
-            this.selectedDomainFilter.push(splitDomain[0]);
-            splitDomain.shift();
-            if (splitDomain !== undefined) {
-                splitDomain.forEach((subDomain) => {
-                    this.selectedSubDomainFilter.push(subDomain);
-                });
-            }
-        });
+        this.footprint = this.appComponent.formatLifecycleImpact(this.footprint);
     }
 
     onChartClick(event: any) {
-        if (this.selectedGraph === "global") {
-            this.selectedGraph = "domain";
-            this.footprintRepo.setSelectedGraph("domain");
-            this.footprintRepo.setSelectedDomain(event.name);
-            this.options = this.loadBarChartOption();
-        } else if (this.selectedGraph === "domain") {
-            this.selectedGraph = "subdomain";
-            this.footprintRepo.setSelectedGraph("subdomain");
-            this.footprintRepo.setSelectedSubdomain(event.name);
-            this.options = this.loadBarChartOption();
-        } else if (this.selectedGraph === "subdomain") {
-            this.selectedGraph = "application";
-            this.selectedApp = event.name;
-            this.CallAppApi();
-            this.footprintRepo.setSelectedGraph("application");
-            this.footprintRepo.setSelectedApp(event.name);
+        if (this.footprintStore.appGraphType() === "global") {
+            this.footprintStore.setGraphType("domain");
+            this.footprintStore.setDomain(event.name);
+        } else if (this.footprintStore.appGraphType() === "domain") {
+            this.footprintStore.setGraphType("subdomain");
+            this.footprintStore.setSubDomain(event.name);
+        } else if (this.footprintStore.appGraphType() === "subdomain") {
+            this.footprintStore.setGraphType("application");
+            this.footprintStore.setApplication(event.name);
         }
-        this.footprintService
-            .initFiltersApplication(this.selectedInventoryId)
-            .pipe(first())
-            .subscribe();
     }
 
-    CallAppApi() {
-        if (this.selectedApp === "") return;
-        this.global.setLoading(true);
-        this.footprintService
-            .initApplicationCriteriaFootprint(
-                this.selectedInventoryId,
-                this.selectedApp,
-                this.selectedCriteriaUri,
-            )
-            .subscribe(() => {
-                this.options = this.loadBarChartOption();
-                this.global.setLoading(false);
-            });
-    }
-
-    onArrowClick(graph: string) {
-        if (graph === "application") {
-            this.selectedGraph = "subdomain";
-            this.selectedApp = "";
-            this.footprintRepo.setSelectedGraph("subdomain");
-            this.footprintRepo.setSelectedApp("");
-            this.options = this.loadBarChartOption();
-        } else if (graph === "subdomain") {
-            this.selectedGraph = "domain";
-            this.selectedSubdomain = "";
-            this.footprintRepo.setSelectedGraph("domain");
-            this.footprintRepo.setSelectedSubdomain("");
-            this.options = this.loadBarChartOption();
-        } else if (graph === "domain") {
-            this.selectedGraph = "global";
-            this.selectedDomain = "";
-            this.footprintRepo.setSelectedGraph("global");
-            this.footprintRepo.setSelectedDomain("");
-            this.options = this.loadBarChartOption();
+    onArrowClick() {
+        if (this.footprintStore.appGraphType() === "application") {
+            this.footprintStore.setGraphType("subdomain");
+            this.footprintStore.setApplication("");
+        } else if (this.footprintStore.appGraphType() === "subdomain") {
+            this.footprintStore.setGraphType("domain");
+            this.footprintStore.setSubDomain("");
+        } else if (this.footprintStore.appGraphType() === "domain") {
+            this.footprintStore.setGraphType("global");
+            this.footprintStore.setDomain("");
         }
-        this.footprintService
-            .initFiltersApplication(this.selectedInventoryId)
-            .pipe(first())
-            .subscribe();
     }
 
-    checkIfNoData() {
+    checkIfNoData(selectedFilters: Filter) {
+        this.appComponent.formatLifecycleImpact(this.footprint);
         let hasNoData = true;
         this.footprint.forEach((criteria) => {
             criteria.impacts.forEach((impact: ApplicationImpact) => {
-                if (
-                    this.selectedEnvironnementFilter.includes(impact.environment) &&
-                    this.selectedEquipmentsFilter.includes(impact.equipmentType) &&
-                    this.selectedLifecycleFilter.includes(impact.lifeCycle) &&
-                    this.selectedDomainFilter.includes(impact.domain) &&
-                    this.selectedSubDomainFilter.includes(impact.subDomain)
-                ) {
+                if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     hasNoData = false;
                 }
             });
@@ -274,35 +118,48 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         return hasNoData;
     }
 
-    computeData(barChartData: ApplicationFootprint[]) {
+    computeData(
+        barChartData: ApplicationFootprint[],
+        selectedFilters: Filter,
+        selectedCriteria: string,
+    ) {
         let result: any = {};
         barChartData.forEach((data) => {
-            if (data.criteria === this.selectedCriteriaUri) {
+            if (data.criteria === selectedCriteria) {
                 data.impacts.forEach((impact: ApplicationImpact) => {
-                    if (
-                        this.selectedEnvironnementFilter.includes(impact.environment) &&
-                        this.selectedEquipmentsFilter.includes(impact.equipmentType) &&
-                        this.selectedLifecycleFilter.includes(impact.lifeCycle) &&
-                        this.selectedDomainFilter.includes(impact.domain) &&
-                        this.selectedSubDomainFilter.includes(impact.subDomain)
-                    ) {
-                        switch (this.selectedGraph) {
+                    if (this.filterService.getFilterincludes(selectedFilters, impact)) {
+                        switch (this.footprintStore.appGraphType()) {
                             case "global":
                                 this.computeImpactOrder(impact, impact.domain);
                                 break;
                             case "domain":
-                                if (impact.domain === this.selectedDomain) {
+                                if (impact.domain === this.footprintStore.appDomain()) {
                                     this.computeImpactOrder(impact, impact.subDomain);
                                 }
                                 break;
                             case "subdomain":
                                 if (
-                                    impact.domain === this.selectedDomain &&
-                                    impact.subDomain === this.selectedSubdomain
+                                    impact.domain === this.footprintStore.appDomain() &&
+                                    impact.subDomain ===
+                                        this.footprintStore.appSubDomain()
                                 ) {
                                     this.computeImpactOrder(
                                         impact,
                                         impact.applicationName,
+                                    );
+                                }
+                                break;
+                            case "application":
+                                if (
+                                    impact.domain === this.footprintStore.appDomain() &&
+                                    impact.subDomain ===
+                                        this.footprintStore.appSubDomain() &&
+                                    impact.applicationName ===
+                                        this.footprintStore.appApplication()
+                                ) {
+                                    this.computeImpactOrder(
+                                        impact,
+                                        impact.virtualEquipmentName,
                                     );
                                 }
                                 break;
@@ -325,7 +182,9 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 subdomain: impact.subDomain,
                 app: impact.applicationName,
                 equipment: impact.equipmentType,
-                environnement: impact.environment,
+                environment: impact.environment,
+                virtualEquipmentName: impact.virtualEquipmentName,
+                cluster: impact.cluster,
                 subdomains: [impact.subDomain],
                 apps: [impact.applicationName],
                 lifecycle: impact.lifeCycle,
@@ -339,7 +198,9 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 subdomain: impact.subDomain,
                 app: impact.applicationName,
                 equipment: impact.equipmentType,
-                environnement: impact.environment,
+                environment: impact.environment,
+                virtualEquipmentName: impact.virtualEquipmentName,
+                cluster: impact.cluster,
                 subdomains: this.impactOrder[index].subdomains.concat(impact.subDomain),
                 apps: this.impactOrder[index].apps.concat(impact.applicationName),
                 lifecycle: impact.lifeCycle,
@@ -355,11 +216,12 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         const subdomainCount: number[] = [];
         const appCount: number[] = [];
         const equipmentList: string[] = [];
-        const environnementList: string[] = [];
+        const environmentList: string[] = [];
+        const clusterList: string[] = [];
         impactOrder.forEach((impact) => {
             let subdomainList: string[] = [];
             let appList: string[] = [];
-            switch (this.selectedGraph) {
+            switch (this.footprintStore.appGraphType()) {
                 case "global":
                     xAxis.push(impact.domain);
                     yAxis.push(impact.sipImpact);
@@ -394,11 +256,12 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     unitImpact.push(impact.unitImpact);
                     break;
                 case "application":
-                    xAxis.push(impact.serverEnvironnementDuo);
+                    xAxis.push(impact.virtualEquipmentName);
                     yAxis.push(impact.sipImpact);
                     unitImpact.push(impact.unitImpact);
                     equipmentList.push(impact.equipment);
-                    environnementList.push(impact.environnement);
+                    environmentList.push(impact.environment);
+                    clusterList.push(impact.cluster);
                     break;
             }
         });
@@ -409,80 +272,23 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             subdomainCount,
             appCount,
             equipmentList,
-            environnementList,
-        };
-    }
-
-    computeAppData(barChartData: ApplicationCriteriaFootprint[]) {
-        const vmAndEnvironnementList: string[] = [];
-        const impactOrderCriteria: any[] = [];
-        let vmAndEnvironnementName: string = "";
-        const xAxis: string[] = [];
-        const yAxis: string[] = [];
-        const unitImpact: number[] = [];
-        const clusterList: string[] = [];
-        const equipmentList: string[] = [];
-        const environnementList: string[] = [];
-        barChartData[0].impacts.forEach((impact) => {
-            if (
-                this.selectedEnvironnementFilter.includes(impact.environment) &&
-                this.selectedEquipmentsFilter.includes(impact.equipmentType) &&
-                this.selectedLifecycleFilter.includes(impact.lifeCycle)
-            ) {
-                vmAndEnvironnementName = impact.vmName + "-" + impact.environment;
-                if (!vmAndEnvironnementList.includes(vmAndEnvironnementName)) {
-                    vmAndEnvironnementList.push(vmAndEnvironnementName);
-                    impactOrderCriteria.push({
-                        vmAndEnvironnementName: vmAndEnvironnementName,
-                        sipImpact: impact.sip,
-                        unitImpact: impact.impact,
-                        equipment: impact.equipmentType,
-                        environnement: impact.environment,
-                        cluster: impact.cluster,
-                    });
-                } else {
-                    const index = vmAndEnvironnementList.indexOf(vmAndEnvironnementName);
-                    impactOrderCriteria[index] = {
-                        vmAndEnvironnementName: vmAndEnvironnementName,
-                        sipImpact: impactOrderCriteria[index].sipImpact + impact.sip,
-                        unitImpact: impactOrderCriteria[index].unitImpact + impact.impact,
-                        equipment: impact.equipmentType,
-                        environnement: impact.environment,
-                        cluster: impact.cluster,
-                    };
-                }
-            }
-        });
-        impactOrderCriteria.sort(sortByProperty("sipImpact", "desc"));
-        impactOrderCriteria.forEach((impact) => {
-            xAxis.push(impact.vmAndEnvironnementName);
-            yAxis.push(impact.sipImpact);
-            unitImpact.push(impact.unitImpact);
-            clusterList.push(impact.cluster);
-            equipmentList.push(impact.equipment);
-            environnementList.push(impact.environnement);
-        });
-        return {
-            xAxis,
-            yAxis,
-            unitImpact,
+            environmentList,
             clusterList,
-            equipmentList,
-            environnementList,
         };
     }
 
-    loadBarChartOption(): EChartsOption {
-        const unit = this.selectedCriteria.unite;
+    loadBarChartOption(
+        selectedFilters: Filter,
+        footprint: ApplicationFootprint[],
+        selectedCriteria: string,
+    ): EChartsOption {
+        const unit = this.selectedCriteria().unite;
         let result: any = {};
         this.impactOrder = [];
         this.yAxislist = [];
         let showZoom: boolean = true;
-        if (this.selectedGraph === "application") {
-            result = this.computeAppData(this.criteriaFootprint);
-        } else {
-            result = this.computeData(this.footprint);
-        }
+
+        result = this.computeData(footprint, selectedFilters, selectedCriteria);
         if (result.yAxis.length < 10) {
             showZoom = false;
         }
@@ -498,72 +304,81 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
+                    let impact = "";
+                    if (
+                        result &&
+                        result.unitImpact &&
+                        result.unitImpact[params.dataIndex]
+                    ) {
+                        impact = `
+                        <span>
+                            Impact : ${this.integerPipe.transform(params.value)}
+                                    ${this.translate.instant("common.peopleeq-min")}
+                                <br>
+                            Impact : ${
+                                result?.unitImpact[params.dataIndex] < 1
+                                    ? "< 1"
+                                    : result?.unitImpact[params.dataIndex].toFixed(0)
+                            }
+                                ${unit}
+                                ${
+                                    this.footprintStore.appGraphType() === "global"
+                                        ? "<br>" +
+                                          this.translate.instant(
+                                              "inventories-footprint.application.tooltip.nb-sd",
+                                          ) +
+                                          " : " +
+                                          result.subdomainCount[params.dataIndex] +
+                                          "<br>" +
+                                          this.translate.instant(
+                                              "inventories-footprint.application.tooltip.nb-app",
+                                          ) +
+                                          " : " +
+                                          result.appCount[params.dataIndex]
+                                        : ""
+                                }
+                                ${
+                                    this.footprintStore.appGraphType() === "domain"
+                                        ? "<br>" +
+                                          this.translate.instant(
+                                              "inventories-footprint.application.tooltip.nb-app",
+                                          ) +
+                                          " : " +
+                                          result.appCount[params.dataIndex]
+                                        : ""
+                                }
+                                ${
+                                    this.footprintStore.appGraphType() === "application"
+                                        ? "<br>" +
+                                          this.translate.instant(
+                                              "inventories-footprint.application.tooltip.cluster",
+                                          ) +
+                                          " : " +
+                                          result.clusterList[params.dataIndex] +
+                                          "<br>" +
+                                          this.translate.instant(
+                                              "inventories-footprint.application.tooltip.equipment",
+                                          ) +
+                                          " : " +
+                                          result.equipmentList[params.dataIndex] +
+                                          "<br>" +
+                                          this.translate.instant(
+                                              "inventories-footprint.application.tooltip.environnement",
+                                          ) +
+                                          " : " +
+                                          result.environmentList[params.dataIndex]
+                                        : ""
+                                }
+                                <span>
+                        `;
+                    }
+
                     return `
                         <div>
                             <span style="font-weight: bold; margin-right: 15px;">${
-                                result.xAxis[params.dataIndex]
+                                params.name
                             } : </span>
-                            <span>
-                            Impact : ${this.integerPipe.transform(
-                                result.yAxis[params.dataIndex],
-                            )}
-                                ${this.translate.instant("common.peopleeq-min")}
-                            <br>
-                            Impact : ${
-                                result.unitImpact[params.dataIndex] < 1
-                                    ? "< 1"
-                                    : result.unitImpact[params.dataIndex].toFixed(0)
-                            }
-                            ${unit}
-                            ${
-                                this.selectedGraph === "global"
-                                    ? "<br>" +
-                                      this.translate.instant(
-                                          "inventories-footprint.application.tooltip.nb-sd",
-                                      ) +
-                                      " : " +
-                                      result.subdomainCount[params.dataIndex] +
-                                      "<br>" +
-                                      this.translate.instant(
-                                          "inventories-footprint.application.tooltip.nb-app",
-                                      ) +
-                                      " : " +
-                                      result.appCount[params.dataIndex]
-                                    : ""
-                            }
-                            ${
-                                this.selectedGraph === "domain"
-                                    ? "<br>" +
-                                      this.translate.instant(
-                                          "inventories-footprint.application.tooltip.nb-app",
-                                      ) +
-                                      " : " +
-                                      result.appCount[params.dataIndex]
-                                    : ""
-                            }
-                            ${
-                                this.selectedGraph === "application"
-                                    ? "<br>" +
-                                      this.translate.instant(
-                                          "inventories-footprint.application.tooltip.cluster",
-                                      ) +
-                                      " : " +
-                                      result.clusterList[params.dataIndex] +
-                                      "<br>" +
-                                      this.translate.instant(
-                                          "inventories-footprint.application.tooltip.equipment",
-                                      ) +
-                                      " : " +
-                                      result.equipmentList[params.dataIndex] +
-                                      "<br>" +
-                                      this.translate.instant(
-                                          "inventories-footprint.application.tooltip.environnement",
-                                      ) +
-                                      " : " +
-                                      result.environnementList[params.dataIndex]
-                                    : ""
-                            }
-                            </span>
+                            ${impact}
                         </div>
                     `;
                 },

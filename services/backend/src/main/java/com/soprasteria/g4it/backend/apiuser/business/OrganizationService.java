@@ -23,12 +23,14 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -65,6 +67,9 @@ public class OrganizationService {
      */
     @Autowired
     SubscriberService subscriberService;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Value("${g4it.organization.deletion.day}")
     private Integer organizationDataDeletionDays;
@@ -124,7 +129,7 @@ public class OrganizationService {
                     throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", organizationUpsertRest.getName(), subscriberId));
                 });
 
-        // create organization
+        // Create organization
         final Organization organizationToCreate = organizationMapper.toEntity(organizationUpsertRest.getName(), subscriberService.getSubscriptionById(subscriberId), User.builder().id(user.getId()).build(), OrganizationStatus.ACTIVE.name());
         organizationToCreate.setIsMigrated(true);
         organizationRepository.save(organizationToCreate);
@@ -147,23 +152,8 @@ public class OrganizationService {
         final String currentStatus = organizationToSave.getStatus();
         final String newStatus = organizationUpsertRest.getStatus().name();
 
-        final String currentOrganization = organizationToSave.getName();
-        final String newOrganization = organizationUpsertRest.getName();
-
         if (currentStatus.equals(OrganizationStatus.ACTIVE.name()) && newStatus.equals(OrganizationStatus.ACTIVE.name())) {
-            if (currentOrganization.equals(newOrganization)) {
-                throw new G4itRestException("304", String.format("nothing to update in the organization '%s' ", organizationToSave.getId()));
-            }
-
-            // Handle update in organization's name
-            // Check if organization with same name already exist on this subscriber.
-            organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), newOrganization)
-                    .ifPresent((org) -> {
-                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, organizationUpsertRest.getSubscriberId()));
-                    });
-
-            log.info("Update Organization name in file system from '{}' to '{}'", currentOrganization, newOrganization);
-            organizationToSave.setName(newOrganization);
+            updateNameOrCriteria(organizationUpsertRest, organizationToSave);
 
         } else {
             Integer dataDeletionDays = null;
@@ -190,6 +180,53 @@ public class OrganizationService {
                 .build());
         organizationToSave.setLastUpdateDate(LocalDateTime.now());
         organizationRepository.save(organizationToSave);
+        clearOrganizationCache(organizationId);
         return organizationMapper.toBusinessObject(organizationToSave);
+    }
+
+    /**
+     * Update the organization's name or criteria
+     *
+     * @param organizationUpsertRest the organizationUpsertRest
+     * @param organizationToSave     the updated organization
+     */
+    private void updateNameOrCriteria(OrganizationUpsertRest organizationUpsertRest, Organization organizationToSave) {
+        final String currentOrganization = organizationToSave.getName();
+        final String newOrganization = organizationUpsertRest.getName();
+
+        final List<String> currentCriteriaDs = organizationToSave.getCriteriaDs();
+        final List<String> newCriteriaDs = organizationUpsertRest.getCriteriaDs();
+
+        final List<String> currentCriteriaIs = organizationToSave.getCriteriaIs();
+        final List<String> newCriteriaIs = organizationUpsertRest.getCriteriaIs();
+        boolean isCriteriaChange = !Objects.equals(newCriteriaDs, currentCriteriaDs) || !Objects.equals(newCriteriaIs, currentCriteriaIs);
+        boolean isNameChange = !currentOrganization.equals(newOrganization);
+        if (!(isCriteriaChange || isNameChange)) {
+            log.info("Nothing to update in the organization '{}'", organizationToSave.getId());
+            return;
+        }
+        // Set criteria for organization
+        if (isCriteriaChange) {
+            organizationToSave.setCriteriaDs(newCriteriaDs);
+            organizationToSave.setCriteriaIs(newCriteriaIs);
+        }
+        if (isNameChange) {
+            // Handle update in organization's name
+            // Check if organization with same name already exist on this subscriber.
+            organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), newOrganization)
+                    .ifPresent((org) -> {
+                        throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, organizationUpsertRest.getSubscriberId()));
+                    });
+
+            log.info("Update Organization name in file system from '{}' to '{}'", currentOrganization, newOrganization);
+            organizationToSave.setName(newOrganization);
+        }
+    }
+
+    /**
+     * clear cache to get the updated criteria
+     */
+    public void clearOrganizationCache(Long organizationId) {
+        Objects.requireNonNull(cacheManager.getCache("Organization")).evict(organizationId);
     }
 }

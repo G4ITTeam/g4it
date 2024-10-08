@@ -11,12 +11,14 @@
     <p-card>
         <div class="grid">
             @for (stat of stats; track $index) {
-                <div class="col-4 px-5 mt-2 mb-1" [class.text-gray-500]="!stat.value">
-                    <span tabIndex="0" class="relative text-3xl font-medium">
-                        <span class="mr-1">{{ stat.value ? stat.label : "--" }}</span>
+                <div class="px-5 mt-2 mb-1" [class.text-gray-500]="!stat.value">
+                    <span tabIndex="0" class="text-3xl font-medium">
+                        <span>{{ stat.value ? stat.label : "--" }} </span>
+                        <span class="text-sm font-normal">
+                            {{ stat.value ? stat.unit : "" }}
+                        </span>
                         <i
-                            class="pi pi-info-circle text-xs absolute cursor-pointer ml-1"
-                            [style]="{ top: '3px' }"
+                            class="pi pi-info-circle text-xs cursor-pointer vertical-align-top"
                             pTooltip="{{ stat.description }}"
                             tooltipEvent="focus"
                             tooltipPosition="right"

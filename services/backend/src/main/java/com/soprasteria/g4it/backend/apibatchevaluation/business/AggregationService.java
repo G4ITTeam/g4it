@@ -25,13 +25,12 @@ public class AggregationService {
     /**
      * Execute the aggregation of batch data
      *
-     * @param batchName   the batch name
-     * @param inventoryId the inventory id
+     * @param batchName the batch name
      */
-    public void aggregateBatchData(final String batchName, final Long inventoryId) {
+    public void aggregateBatchData(final String batchName) {
         aggEquipmentIndicatorRepository.deleteByBatchName(batchName);
         aggEquipmentIndicatorRepository.insertIntoAggEquipmentIndicators(batchName);
         aggApplicationIndicatorRepository.deleteByBatchName(batchName);
-        aggApplicationIndicatorRepository.insertIntoAggApplicationIndicators(batchName, inventoryId);
+        aggApplicationIndicatorRepository.insertIntoAggApplicationIndicators(batchName);
     }
 }

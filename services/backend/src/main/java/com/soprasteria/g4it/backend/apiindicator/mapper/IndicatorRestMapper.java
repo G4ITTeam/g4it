@@ -7,11 +7,12 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
-import com.soprasteria.g4it.backend.apiindicator.model.*;
-import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import java.util.List;
+
 import org.mapstruct.Mapper;
 
-import java.util.List;
+import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 
 @Mapper(componentModel = "spring")
 public interface IndicatorRestMapper {
@@ -39,12 +40,7 @@ public interface IndicatorRestMapper {
     List<DataCentersInformationRest> toDataCenterDto(final List<DataCentersInformationBO> source);
 
     DataCentersInformationRest toDataCenterDto(final DataCentersInformationBO source);
+    
+    List<PhysicalEquipmentElecConsumptionRest> toElecConsumptionDto(final List<PhysicalEquipmentElecConsumptionBO> source);
 
-    List<EquipmentFiltersRest> toEquipmentFiltersDto(final List<EquipmentFiltersBO> source);
-
-    EquipmentFiltersRest toEquipmentFiltersDto(final EquipmentFiltersBO source);
-
-    List<ApplicationFiltersRest> toApplicationFiltersDto(final List<ApplicationFiltersBO> source);
-
-    ApplicationFiltersRest toApplicationFiltersDto(final ApplicationFiltersBO source);
 }

@@ -593,4 +593,13 @@ databaseChangeLog:
               schemaName: public
               tableName: terminal
 
-
+  - changeSet:
+      id: add-column-criteria-digital_service
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: criteria
+                  type: varchar(255) array
