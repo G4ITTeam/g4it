@@ -1,0 +1,24 @@
+name: Build and Publish Keycloak Docker Image
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - services/keycloak/**
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: g4it/keycloak
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          workdir: services/keycloak
+          tag_names: true
