@@ -52,6 +52,7 @@
             **/utils/Constants.java,
             **/BackendApplication.java
         </sonar.coverage.exclusions>
+        <sonar.organization>g4itteam</sonar.organization>
         <sonar.java.binaries>**/*</sonar.java.binaries>
     </properties>
 
@@ -488,6 +489,10 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
