@@ -1,10 +1,10 @@
 <div
     class="filter-component"
-    (click)="toggle()"
+    (click)="overlayVisible = !overlayVisible"
     label="Show Overlay"
     tabindex="0"
     role="button"
-    aria-label="Access filters for your footprint data"
+    [attr.aria-label]="'common.access-filters' | translate"
 >
     <div>
         <img src="assets/images/icons/icon-filter.svg" alt="" />
@@ -17,88 +17,128 @@
     [responsive]="{
         breakpoint: '640px',
         direction: 'bottom',
-        contentStyleClass: 'h-20rem'
+        contentStyleClass: 'h-20rem',
     }"
     contentStyleClass="p-4 surface-overlay shadow-2 border-round filter-overlay"
 >
     <p-tabView>
-        <p-tabPanel
-            header="{{
-                'inventories-footprint.filter-tabs-application.environnement' | translate
-            }}"
-            [selected]="true"
-        >
-            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
-                <div *ngFor="let env of filters.environments" class="field-checkbox">
-                    <p-checkbox
-                        name="groupname"
-                        value="{{ env }}"
-                        label="{{ env }}"
-                        [(ngModel)]="selectedEnvironnement"
-                        (ngModelChange)="onFilterUpdate('environnement', env)"
-                    ></p-checkbox>
-                </div>
-            </p-scrollPanel>
-        </p-tabPanel>
-        <p-tabPanel
-            header="{{
-                'inventories-footprint.filter-tabs-application.equipment' | translate
-            }}"
-        >
-            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
-                <div
-                    *ngFor="let equipment of filters.types"
-                    class="checkbox-list"
-                    style="display: flex; flex-direction: column"
+        @for (tab of tabs; track $index) {
+            <p-tabPanel
+                header="{{
+                    'inventories-footprint.filter-tabs-application.' + tab.field
+                        | translate
+                }}"
+            >
+                <p-scrollPanel
+                    mode="vertical"
+                    [style]="{ width: '96%', height: '240px' }"
                 >
-                    <p-checkbox
-                        name="groupname"
-                        value="{{ equipment }}"
-                        label="{{ equipment }}"
-                        [attr.aria-label]="equipment"
-                        [(ngModel)]="selectedEquipment"
-                        (ngModelChange)="onFilterUpdate('equipment', equipment)"
-                    ></p-checkbox>
-                </div>
-            </p-scrollPanel>
-        </p-tabPanel>
-        <p-tabPanel
-            header="{{
-                'inventories-footprint.filter-tabs-application.lifecycle' | translate
-            }}"
-        >
-            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
-                <div
-                    *ngFor="let lifecycle of filters.lifeCycles"
-                    class="checkbox-list"
-                    style="display: flex; flex-direction: column"
-                >
-                    <p-checkbox
-                        name="groupname"
-                        value="{{ lifecycle }}"
-                        label="{{ lifecycle }}"
-                        [(ngModel)]="selectedlifecycle"
-                        (ngModelChange)="onFilterUpdate('lifecycle', lifecycle)"
-                    ></p-checkbox>
-                </div>
-            </p-scrollPanel>
-        </p-tabPanel>
-        <p-tabPanel
-            header="{{
-                'inventories-footprint.filter-tabs-application.domain' | translate
-            }}"
-        >
-            <p-scrollPanel [style]="{ width: '96%', height: '240px' }" mode="vertical">
-                <p-tree
-                    class="role-tree-view"
-                    [value]="domains"
-                    selectionMode="checkbox"
-                    [(selection)]="selectedValuesFilterDomain"
-                    [propagateSelectionDown]="true"
-                    (onNodeSelect)="nodeSelect($event)"
-                    (onNodeUnselect)="nodeUnselect($event)"
-                ></p-tree>
-            </p-scrollPanel>
-        </p-tabPanel>
+                    <ul>
+                        <li *ngFor="let item of allUnusedFilters[tab.field]">
+                            @if (!tab?.children?.length) {
+                                <p-checkbox
+                                    [ariaLabel]="item?.toString()"
+                                    name="groupname"
+                                    [value]="item"
+                                    label="{{
+                                        item?.toString() === all
+                                            ? ('common.all' | translate)
+                                            : item?.toString() === empty
+                                              ? ('common.empty' | translate)
+                                              : item
+                                    }}"
+                                    [(ngModel)]="
+                                        footprintStore.applicationSelectedFilters()[
+                                            tab.field
+                                        ]
+                                    "
+                                    (ngModelChange)="
+                                        onFilterSelected(
+                                            $event,
+                                            tab.field,
+                                            item.toString()
+                                        )
+                                    "
+                                ></p-checkbox>
+                            }
+                        </li>
+                        @if (tab?.children?.length) {
+                            <li>
+                                @for (
+                                    filter of allUnusedFilters[tab.field];
+                                    track $index
+                                ) {
+                                    <li
+                                        [ngClass]="
+                                            !filter?.children?.length ? 'ml-6 pl-2' : ''
+                                        "
+                                    >
+                                        @if (filter.visible) {
+                                            @if (filter?.children?.length) {
+                                                <p-button
+                                                    styleClass="mx-1"
+                                                    [rounded]="true"
+                                                    [text]="true"
+                                                    (click)="
+                                                        filter.collapsed =
+                                                            !filter.collapsed
+                                                    "
+                                                    [icon]="
+                                                        filter.collapsed
+                                                            ? 'pi pi-chevron-right'
+                                                            : 'pi pi-chevron-down'
+                                                    "
+                                                    [ariaLabel]="
+                                                        'common.accessibility.sharedUsers'
+                                                            | translate
+                                                    "
+                                                />
+                                            }
+                                            <p-checkbox
+                                                [binary]="true"
+                                                [(ngModel)]="filter.checked"
+                                                [label]="filter.label"
+                                                (onChange)="onTreeChange($event, filter)"
+                                                class="mb-3"
+                                            ></p-checkbox>
+                                            <div
+                                                [ngClass]="
+                                                    filter.collapsed ? 'hidden' : ''
+                                                "
+                                            >
+                                                @if (filter.children) {
+                                                    @for (
+                                                        child of filter.children;
+                                                        track $index
+                                                    ) {
+                                                        <li class="ml-8">
+                                                            @if (child.visible) {
+                                                                <p-checkbox
+                                                                    [binary]="true"
+                                                                    [label]="child.label"
+                                                                    [(ngModel)]="
+                                                                        child.checked
+                                                                    "
+                                                                    (onChange)="
+                                                                        onTreeChildChanged(
+                                                                            $event,
+                                                                            filter
+                                                                        )
+                                                                    "
+                                                                ></p-checkbox>
+                                                            }
+                                                        </li>
+                                                    }
+                                                }
+                                            </div>
+                                        }
+                                    </li>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </p-scrollPanel>
+            </p-tabPanel>
+        }
     </p-tabView>
 </p-overlay>

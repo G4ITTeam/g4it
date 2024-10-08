@@ -4,11 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
+import { RouterModule } from "@angular/router";
 import { DropdownModule } from "primeng/dropdown";
 import { InplaceModule } from "primeng/inplace";
 import { InputNumberModule } from "primeng/inputnumber";
@@ -24,6 +24,7 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DividerModule } from "primeng/divider";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
 import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/impact-button/impact-button.component";
@@ -86,11 +87,9 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         RadioButtonModule,
         DividerModule,
         digitalServicesFootprintRouter,
+        SidePanelDsSharedUsersComponent,
     ],
-    schemas: [
-        CUSTOM_ELEMENTS_SCHEMA,
-        NO_ERRORS_SCHEMA
-      ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     exports: [DigitalServicesFootprintComponent],
 })
 export class DigitalServicesFootprintModule {}

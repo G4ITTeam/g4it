@@ -3,7 +3,14 @@
 ></app-inventories-header-footprint>
 <p-scrollPanel [style]="{ width: '100%', height: '88%' }">
     <dataviz-filter [allFilters]="allUnmodifiedFilters"></dataviz-filter>
-    <p-tabMenu [scrollable]="true" [model]="criteres!" styleClass="px-1"></p-tabMenu>
+    @if (showTabMenu) {
+        <p-tabMenu
+            [model]="criteres!"
+            [scrollable]="true"
+            class="footprint-tabmenu"
+        ></p-tabMenu>
+    }
+
     @if (footprintStore.criteria() === multiCriteria) {
         <app-inventories-multicriteria-footprint
             [footprint]="allUnmodifiedFootprint"

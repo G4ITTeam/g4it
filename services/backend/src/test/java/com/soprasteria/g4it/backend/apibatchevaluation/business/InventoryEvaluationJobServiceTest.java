@@ -39,23 +39,22 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class InventoryEvaluationJobServiceTest {
 
+    final static List<String> criteriaList = List.of("ionising-radiation", "climate-change");
     @Mock
     private JobLauncher asyncJobLauncher;
     @Mock
     private JobRepository jobRepository;
     @Mock
     private JobExplorer jobExplorer;
-
     @InjectMocks
     private InventoryEvaluationJobService service;
+    @Mock
+    private OrganizationService organizationService;
 
     @BeforeEach
     public void beforeAll() {
         ReflectionTestUtils.setField(service, "localWorkingFolderBasePath", "./target/test-classes/");
     }
-
-    @Mock
-    private OrganizationService organizationService;
 
     @Test
     void whenCallLaunchInventoryEvaluation_thenReturnJobId() throws Exception {
@@ -76,7 +75,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenReturn(execution);
 
-        final Long jobId = service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId);
+        final Long jobId = service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList);
 
         assertThat(jobId).isEqualTo(1L);
 
@@ -100,7 +99,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobExecutionAlreadyRunningException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("Job is already running.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -124,7 +123,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobRestartException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("Illegal attempt at restarting Job.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -148,7 +147,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobInstanceAlreadyCompleteException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("An instance of this Job already exists.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -172,7 +171,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobParametersInvalidException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("Invalid parameters.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 

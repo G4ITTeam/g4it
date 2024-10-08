@@ -29,51 +29,53 @@ public interface AggApplicationIndicatorRepository extends JpaRepository<AggAppl
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = """
-            INSERT INTO agg_application_indicator (criteria, life_cycle, domain, sub_domain, environment, equipment_type, application_name, batch_name, inventory_id, impact, unit, sip)
-            SELECT
-               ia.critere AS criteria,
-               ia.etapeacv AS life_cycle,
-               COALESCE(ia.domaine, '') AS domain,
-               COALESCE(ia.sous_domaine, '') AS sub_domain,
-               ia.type_environnement AS environment,
-               ep.type AS equipment_type,
-               ia.nom_application AS application_name,
-               ia.nom_lot AS batch_name,
-               ep.inventory_id AS inventory_id,
-               SUM(ia.impact_unitaire) AS impact,
-               ia.unite AS unit,
-               SUM(ia.impact_unitaire / ref_sip.individual_sustainable_package) AS sip
-            FROM
-               ind_indicateur_impact_application ia
-               INNER JOIN ref_sustainable_individual_package ref_sip ON ref_sip.criteria = ia.critere
-               CROSS JOIN equipement_physique ep
-            WHERE
-               ia.statut_indicateur = 'OK'
-               AND ep.inventory_id = :inventoryId
-               AND ia.nom_lot = :batchName
-               AND ia.nom_equipement_physique = ep.nom_equipement_physique
-            GROUP BY
-               ia.critere,
-               ia.etapeacv,
-               ia.domaine,
-               ia.sous_domaine,
-               ia.type_environnement,
-               ep.type,
-               ia.nom_application,
-               ia.nom_lot,
-               ia.unite,
-               ep.inventory_id
+              INSERT INTO agg_application_indicator (criteria, life_cycle, domain, sub_domain, environment, equipment_type, application_name, batch_name, impact, unit, virtual_equipment_name, cluster, sip)
+              SELECT
+                 ia.critere AS criteria,
+                 ia.etapeacv AS life_cycle,
+                 COALESCE(ia.domaine, '') AS domain,
+                 COALESCE(ia.sous_domaine, '') AS sub_domain,
+                 ia.type_environnement AS environment,
+                 ep.type AS equipment_type,
+                 ia.nom_application AS application_name,
+                 ia.nom_lot AS batch_name,
+                 SUM(ia.impact_unitaire) AS impact,
+                 ia.unite AS unit,
+                 ia.nom_equipement_virtuel as virtual_equipment_name,
+                 ev.cluster as cluster,
+                 SUM(ia.impact_unitaire / ref_sip.individual_sustainable_package) AS sip
+              FROM
+                 ind_indicateur_impact_application ia
+                 INNER JOIN ref_sustainable_individual_package ref_sip ON ref_sip.criteria = ia.critere
+                 INNER JOIN en_equipement_physique ep ON ep.nom_equipement_physique  = ia.nom_equipement_physique
+                 INNER JOIN en_equipement_virtuel ev ON ev.nom_equipement_virtuel = ia.nom_equipement_virtuel
+              WHERE
+                 ia.statut_indicateur = 'OK'
+                 AND ia.nom_lot = :batchName
+                 AND ep.nom_lot = :batchName
+                 AND ev.nom_lot = :batchName
+                 GROUP BY
+                 ia.critere,
+                 ia.etapeacv,
+                 ia.domaine,
+                 ia.sous_domaine,
+                 ia.type_environnement,
+                 ep.type,
+                 ia.nom_application,
+                 ia.nom_lot,
+                 ia.unite,
+                 ia.nom_equipement_virtuel,
+                 ev.cluster
             """)
-    void insertIntoAggApplicationIndicators(@Param("batchName") String batchName, @Param("inventoryId") Long inventoryId);
+    void insertIntoAggApplicationIndicators(@Param("batchName") String batchName);
 
     /**
      * method to recovery of main indicators.
      *
-     * @param batchName   the batch name.
-     * @param inventoryId the inventory id.
+     * @param batchName the batch name.
      * @return main indicators
      */
-    List<AggApplicationIndicator> findByBatchNameAndInventoryId(final String batchName, final Long inventoryId);
+    List<AggApplicationIndicator> findByBatchName(final String batchName);
 
     @Transactional
     @Modifying

@@ -44,6 +44,7 @@ describe("DigitalServicesDataService", () => {
                 networks: [],
                 servers: [],
                 terminals: [],
+                members: [],
             },
         ];
 
@@ -70,6 +71,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
+            members: [],
         };
 
         service.create().subscribe((res) => {
@@ -94,6 +96,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
+            members: [],
         };
 
         service.update(updatedDigitalService).subscribe((res) => {
@@ -118,6 +121,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
+            members: [],
         };
 
         service.get(digitalService.uid).subscribe((res) => {
@@ -142,6 +146,7 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
+            members: [],
         };
 
         service.delete(digitalService.uid).subscribe();
@@ -162,11 +167,12 @@ describe("DigitalServicesDataService", () => {
             networks: [],
             servers: [],
             terminals: [],
+            members: [],
         };
         service.launchCalcul(digitalService.uid).subscribe();
 
         const req = httpMock.expectOne(
-            `digital-services/${digitalService.uid}/evaluation`
+            `digital-services/${digitalService.uid}/evaluation`,
         );
         expect(req.request.method).toEqual("POST");
 
@@ -263,17 +269,17 @@ describe("DigitalServicesDataService", () => {
             {
                 code: "smartphone-2",
                 value: "Mobile Phone",
-                lifespan: 5
+                lifespan: 5,
             },
             {
                 code: "landline-phone-1",
                 value: "Landline",
-                lifespan: 5
+                lifespan: 5,
             },
             {
                 code: "tablet-3",
                 value: "Tablet",
-                lifespan: 5
+                lifespan: 5,
             },
         ];
 

@@ -10,6 +10,7 @@ variables:
   DISABLE_BUMP_VERSION: "true"
   DISABLE_AUTO_TAG: "true"
   DISABLE_PROMOTE_IMAGE: "true"
+  DISABLE_DEPENDENCY_CHECK: "true"
 
 build-application:
   image: ${CI_REGISTRY}/dep/library/project-oci-images/build-java-jdk21-maven:3.9.5

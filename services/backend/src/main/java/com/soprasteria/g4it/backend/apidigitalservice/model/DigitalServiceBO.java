@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.model;
 
+import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
 import com.soprasteria.g4it.backend.common.model.NoteBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,11 +40,21 @@ public class DigitalServiceBO {
      * Name of user  who created the digital service.
      */
     private String userName;
-    
+
     /**
-     * Id of user who created the digital service.
+     * Creator's info of the digital service.
      */
-    private Long userId;
+    private UserInfoBO creator;
+
+    /**
+     * Users' info having access to the digital service.
+     */
+    private List<UserInfoBO> members;
+
+    /**
+     * The Criterias key.
+     */
+    private List<String> criteria;
 
     /**
      * Creation date.

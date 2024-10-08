@@ -18,6 +18,17 @@ const jsonDataApplicationParticule = require("../data/inventory-data/indicators_
 const jsonDataApplicationClimate = require("../data/inventory-data/indicators_application_climate.json");
 const jsonDataApplicationAcidification = require("../data/inventory-data/indicators_application_acidification.json");
 const jsonDataApplicationResource = require("../data/inventory-data/indicators_application_resource.json");
+const jsonDataApplicationWater = require("../data/inventory-data/indicators_application_water.json");
+const jsonDataApplicationOzone = require("../data/inventory-data/indicators_application_ozone.json");
+const jsonDataApplicationCancer = require("../data/inventory-data/indicators_application_cancer.json");
+const jsonDataApplicationNoncancer = require("../data/inventory-data/indicators_application_noncancer.json");
+const jsonDataApplicationPhotochemical = require("../data/inventory-data/indicators_application_photochemical.json");
+const jsonDataApplicationTerrestrial = require("../data/inventory-data/indicators_application_terrestrial.json");
+const jsonDataApplicationFreshwater = require("../data/inventory-data/indicators_application_freshwater.json");
+const jsonDataApplicationMarine = require("../data/inventory-data/indicators_application_marine.json");
+const jsonDataApplicationEcotoxicity = require("../data/inventory-data/indicators_application_ecotoxicity.json");
+const jsonDataApplicationLand = require("../data/inventory-data/indicators_application_land.json");
+const jsonDataApplicationFossils = require("../data/inventory-data/indicators_application_fossils.json");
 /**
  * GET INVENTORIES INFORMATIONS
  */
@@ -57,7 +68,7 @@ router.get("", (req, res) => {
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch01",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                 ],
             },
@@ -86,14 +97,14 @@ router.get("", (req, res) => {
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch03",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                     {
                         batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch02",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                 ],
             },
@@ -133,7 +144,7 @@ router.get("", (req, res) => {
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch01",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                 ],
             },
@@ -165,14 +176,14 @@ router.get("", (req, res) => {
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch03",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                     {
                         batchStatusCode: "COMPLETED",
                         createTime: new Date("28 April 2023 10:12 UTC"),
                         endTime: new Date("28 April 2023 13:12 UTC"),
                         batchName: "Batch02",
-                        progressPercentage:"50%"
+                        progressPercentage: "50%",
                     },
                 ],
             },
@@ -241,24 +252,35 @@ router.get("/:inventoryDate/indicators/applications/filters", (req, res) => {
     return res.send(jsonFilterApp);
 });
 
-router.get(
-    "/:inventoryDate/indicators/applications/:app/:criteria",
-    (req, res) => {
-        if (req.params.criteria === "ionising-radiation") {
-            return res.send(jsonDataApplicationRadiation);
-        } else if (req.params.criteria === "climate-change") {
-            return res.send(jsonDataApplicationClimate);
-        } else if (req.params.criteria === "acidification") {
-            return res.send(jsonDataApplicationAcidification);
-        } else if (req.params.criteria === "particulate-matter") {
-            return res.send(jsonDataApplicationParticule);
-        } else if (req.params.criteria === "resource-use") {
-            return res.send(jsonDataApplicationResource);
-        } else {
-            res.sendStatus(404);
-        }
+router.get("/:inventoryDate/indicators/applications/:app/:criteria", (req, res) => {
+    if (req.params.criteria === "ionising-radiation") {
+        return res.send(jsonDataApplicationRadiation);
+    } else if (req.params.criteria === "climate-change") {
+        return res.send(jsonDataApplicationClimate);
+    } else if (req.params.criteria === "acidification") {
+        return res.send(jsonDataApplicationAcidification);
+    } else if (req.params.criteria === "particulate-matter") {
+        return res.send(jsonDataApplicationParticule);
+    } else if (req.params.criteria === "resource-use") {
+        return res.send(jsonDataApplicationResource);
+    } else if (req.params.criteria === "ozone-depletion") {
+        return res.send(jsonDataApplicationOzone);
+    } else if (req.params.criteria === "photochemical-ozone-formation") {
+        return res.send(jsonDataApplicationPhotochemical);
+    } else if (req.params.criteria === "eutrophication-terrestrial") {
+        return res.send(jsonDataApplicationTerrestrial);
+    } else if (req.params.criteria === "eutrophication-freshwater") {
+        return res.send(jsonDataApplicationFreshwater);
+    } else if (req.params.criteria === "eutrophication-marine") {
+        return res.send(jsonDataApplicationMarine);
+    } else if (req.params.criteria === "ecotoxicity-freshwater") {
+        return res.send(jsonDataApplicationEcotoxicity);
+    } else if (req.params.criteria === "resource-use-fossils") {
+        return res.send(jsonDataApplicationFossils);
+    } else {
+        res.sendStatus(404);
     }
-);
+});
 
 router.get("/:inventoryDate/indicators/datacenters", (req, res) => {
     if (req.params.inventoryDate === "06-2023") {
@@ -267,86 +289,80 @@ router.get("/:inventoryDate/indicators/datacenters", (req, res) => {
     res.sendStatus(404);
 });
 
-router.get(
-    "/:inventoryDate/indicators/physicalEquipmentsAvgAge",
-    (req, res) => {
-        if (req.params.inventoryDate === "06-2023") {
-            return res.send([
-                {
-                    organisation: "SSG",
-                    inventoryDate: "06-2023",
-                    country: "France",
-                    type: "Monitor",
-                    nomEntite: null,
-                    statut: "Retired",
-                    poids: 50,
-                    ageMoyen: 1.5,
-                },
-                {
-                    organisation: "SSG",
-                    inventoryDate: "06-2023",
-                    country: "Spain",
-                    type: "Smartphone",
-                    nomEntite: "ACME FRANCE",
-                    statut: "Retired",
-                    poids: 70,
-                    ageMoyen: 1.8,
-                },
-                {
-                    organisation: "SSG",
-                    inventoryDate: "06-2023",
-                    country: "Germany",
-                    type: "Monitor",
-                    nomEntite: "ACME SERVICES",
-                    statut: "On order",
-                    poids: 200,
-                    ageMoyen: 1.3,
-                },
-            ]);
-        }
-        res.sendStatus(404);
+router.get("/:inventoryDate/indicators/physicalEquipmentsAvgAge", (req, res) => {
+    if (req.params.inventoryDate === "06-2023") {
+        return res.send([
+            {
+                organisation: "SSG",
+                inventoryDate: "06-2023",
+                country: "France",
+                type: "Monitor",
+                nomEntite: null,
+                statut: "Retired",
+                poids: 50,
+                ageMoyen: 1.5,
+            },
+            {
+                organisation: "SSG",
+                inventoryDate: "06-2023",
+                country: "Spain",
+                type: "Smartphone",
+                nomEntite: "ACME FRANCE",
+                statut: "Retired",
+                poids: 70,
+                ageMoyen: 1.8,
+            },
+            {
+                organisation: "SSG",
+                inventoryDate: "06-2023",
+                country: "Germany",
+                type: "Monitor",
+                nomEntite: "ACME SERVICES",
+                statut: "On order",
+                poids: 200,
+                ageMoyen: 1.3,
+            },
+        ]);
     }
-);
+    res.sendStatus(404);
+});
 
-router.get(
-    "/:inventoryDate/indicators/physicalEquipmentsLowImpact",
-    (req, res) => {
-        if (req.params.inventoryDate === "06-2023") {
-            return res.send([
-                {
-                    organisation: "SSG",
-                    inventoryDate: "06-2023",
-                    paysUtilisation: "France",
-                    type: "Monitor",
-                    nomEntite: null,
-                    statut: "Retired",
-                    quantite: 50,
-                    lowImpact: true,
-                },
-                {
-                    organisation: "SSG",
-                    inventoryDate: "06-2023",
-                    paysUtilisation: "Spain",
-                    type: "Smartphone",
-                    nomEntite: "ACME FRANCE",
-                    statut: "Retired",
-                    quantite: 70,
-                    lowImpact: false,
-                },
-                {
-                    organisation: "SSG",
-                    inventoryDate: "06-2023",
-                    paysUtilisation: "Germany",
-                    type: "Monitor",
-                    nomEntite: "ACME SERVICES",
-                    statut: "On order",
-                    quantite: 30,
-                    lowImpact: true,
-                },
-            ]);
-        }
-        res.sendStatus(404);
+router.get("/:inventoryDate/indicators/physicalEquipmentsLowImpact", (req, res) => {
+    if (req.params.inventoryDate === "06-2023") {
+        return res.send([
+            {
+                organisation: "SSG",
+                inventoryDate: "06-2023",
+                paysUtilisation: "France",
+                type: "Monitor",
+                nomEntite: null,
+                statut: "Retired",
+                quantite: 50,
+                lowImpact: true,
+            },
+            {
+                organisation: "SSG",
+                inventoryDate: "06-2023",
+                paysUtilisation: "Spain",
+                type: "Smartphone",
+                nomEntite: "ACME FRANCE",
+                statut: "Retired",
+                quantite: 70,
+                lowImpact: false,
+            },
+            {
+                organisation: "SSG",
+                inventoryDate: "06-2023",
+                paysUtilisation: "Germany",
+                type: "Monitor",
+                nomEntite: "ACME SERVICES",
+                statut: "On order",
+                quantite: 30,
+                lowImpact: true,
+            },
+        ]);
     }
-);
+    res.sendStatus(404);
+});
 
 module.exports = router;

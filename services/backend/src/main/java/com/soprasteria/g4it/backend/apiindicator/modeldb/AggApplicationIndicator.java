@@ -32,8 +32,6 @@ public class AggApplicationIndicator implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long inventoryId;
-
     private String batchName;
 
     private String criteria;
@@ -53,6 +51,10 @@ public class AggApplicationIndicator implements Serializable {
     private Double impact;
 
     private String unit;
+
+    private String virtualEquipmentName;
+
+    private String cluster;
 
     private Double sip;
 }

@@ -26,17 +26,27 @@
             </div>
         </p-card>
         <br />
-        <app-impact-button
-            *ngFor="let impact of impacts"
-            [impact]="impact.name"
-            [impactText]="impact.title"
-            [impactUnite]="impact.unite"
-            [value]="selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw"
-            [selectedCriteria]="selectedCriteria"
-            [selectedUnit]="selectedUnit"
-            (selectedCriteriaChange)="handleChartChange($event)"
-            class="impact-button-criteria"
-        ></app-impact-button>
+        <p-scrollPanel
+            styleClass="footprint-scrollbar"
+            [style]="{ height: '400px', width: 'auto' }"
+        >
+            <div class="impacts-container">
+                <div *ngFor="let impact of impacts">
+                    <app-impact-button
+                        [impact]="impact.name"
+                        [impactText]="impact.title"
+                        [impactUnite]="impact.unite"
+                        [value]="
+                            selectedUnit === 'Peopleeq' ? impact.peopleeq : impact.raw
+                        "
+                        [selectedCriteria]="selectedCriteria"
+                        [selectedUnit]="selectedUnit"
+                        (selectedCriteriaChange)="handleChartChange($event)"
+                        class="impact-button-criteria"
+                    ></app-impact-button>
+                </div>
+            </div>
+        </p-scrollPanel>
     </div>
     <div class="digital-service-chart-container">
         <div *ngIf="chartType == 'bar' && barChartChild == true">
@@ -80,7 +90,7 @@
                     alt=""
                     class="button-icon"
                 />
-                {{ "criteria.global-vision.title" | translate }}
+                {{ "criteria-title.global-vision.title" | translate }}
             </h4>
             <h3>
                 {{ getCriteriaTranslation(selectedCriteria) }}
@@ -128,8 +138,8 @@
     </div>
     <div class="information-car-digital-service">
         <app-information-card
-            [title]="getTitleOrContent('title')"
-            [content]="getTitleOrContent('content')"
+            [title]="getTitleOrContent('digital-services-card-title')"
+            [content]="getTitleOrContent('digital-services-card-content')"
             [isLong]="true"
         ></app-information-card>
     </div>

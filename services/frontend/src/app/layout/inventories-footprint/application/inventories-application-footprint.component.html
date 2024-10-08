@@ -1,6 +1,28 @@
-<app-inventories-header-footprint [inventoryId]="inventoryId"></app-inventories-header-footprint>
+<app-inventories-header-footprint
+    [inventoryId]="inventoryId"
+></app-inventories-header-footprint>
 <p-scrollPanel [style]="{ width: '100%', height: '88%' }">
-    <dataviz-filter-application></dataviz-filter-application>
-    <p-tabMenu [scrollable]="true" [model]="criteres!"></p-tabMenu>
-    <router-outlet></router-outlet>
+    <dataviz-filter-application
+        [allFilters]="filteredFilters()"
+    ></dataviz-filter-application>
+    @if (showTabMenu) {
+        <p-tabMenu
+            [model]="criteres!"
+            styleClass="px-1"
+            [scrollable]="true"
+            class="footprint-tabmenu"
+        ></p-tabMenu>
+    }
+    @if (footprintStore.applicationCriteria() === multiCriteria) {
+        <app-application-multicriteria-footprint
+            [filterFields]="filterFields"
+            [footprint]="footprint"
+        ></app-application-multicriteria-footprint>
+    } @else {
+        <app-application-criteria-footprint
+            [filterFields]="filterFields"
+            [footprint]="footprint"
+            [selectedInventoryId]="inventoryId"
+        ></app-application-criteria-footprint>
+    }
 </p-scrollPanel>

@@ -22,7 +22,7 @@ import java.io.Serializable;
                         @ColumnResult(name = "id", type = Long.class),
                         @ColumnResult(name = "inventory_id", type = Long.class),
                         @ColumnResult(name = "inventory_name"),
-                        @ColumnResult(name = "pays_utilisation"),
+                        @ColumnResult(name = "country"),
                         @ColumnResult(name = "type"),
                         @ColumnResult(name = "nom_entite"),
                         @ColumnResult(name = "statut"),
@@ -40,7 +40,7 @@ import java.io.Serializable;
                        OVER ()                                                    AS id,
                        inv.id                                                     AS inventory_id,
                        inv.NAME                                                   AS inventory_name,
-                       COALESCE(NULLIF(dc.localisation, ''), ep.pays_utilisation) AS pays_utilisation,
+                       COALESCE(NULLIF(dc.localisation, ''), ep.pays_utilisation) AS country,
                        ep.type                                                    AS type,
                        ep.nom_entite,
                        ep.statut,
@@ -74,7 +74,7 @@ public class PhysicalEquipmentLowImpactView implements Serializable {
 
     private String inventoryName;
 
-    private String paysUtilisation;
+    private String country;
 
     private String type;
 

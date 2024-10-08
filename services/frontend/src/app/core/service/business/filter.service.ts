@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Constants } from "src/constants";
+import { Filter, TransformedDomain } from "../../interfaces/filter.interface";
+import { ApplicationImpact } from "../../interfaces/footprint.interface";
 
 @Injectable({
     providedIn: "root",
@@ -35,5 +37,34 @@ export class FilterService {
         }
         // in all other cases, we just have to let the selectedCountries as is
         return [...selectedValues];
+    }
+
+    getFilterincludes(selectedFilters: Filter, impact: ApplicationImpact): boolean {
+        const domain = selectedFilters["domain"].find(
+            (d) => (d as TransformedDomain)?.label === impact.domain,
+        ) as TransformedDomain;
+        return (
+            this.isAllFiltersMatch(selectedFilters, impact, true) &&
+            domain?.children?.some(
+                (child) => child.label === impact.subDomain && child.checked,
+            )
+        );
+    }
+
+    isAllFiltersMatch(
+        selectedFilters: Filter,
+        impact: any,
+        removeDomain: boolean,
+    ): boolean {
+        return (
+            removeDomain
+                ? Constants.APPLICATION_FILTERS.filter(
+                      (filter) => !filter?.children?.length,
+                  )
+                : Constants.APPLICATION_FILTERS
+        ).every((filter) => {
+            const field = filter.field;
+            return selectedFilters[field]?.includes(impact[field as any]);
+        });
     }
 }

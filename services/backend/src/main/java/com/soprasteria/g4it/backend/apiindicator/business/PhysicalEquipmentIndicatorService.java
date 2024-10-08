@@ -8,10 +8,13 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.soprasteria.g4it.backend.apiindicator.mapper.PhysicalEquipmentIndicatorMapper;
+import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentElecConsumptionBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentsAvgAgeBO;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentElecConsumptionView;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentLowImpactView;
 import com.soprasteria.g4it.backend.apiindicator.repository.PhysicalEquipmentAvgAgeViewRepository;
+import com.soprasteria.g4it.backend.apiindicator.repository.PhysicalEquipmentElecConsumptionViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.PhysicalEquipmentLowImpactViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
@@ -42,6 +45,9 @@ public class PhysicalEquipmentIndicatorService {
      */
     @Autowired
     private PhysicalEquipmentLowImpactViewRepository physicalEquipmentLowImpactViewRepository;
+
+    @Autowired
+    private PhysicalEquipmentElecConsumptionViewRepository physicalEquipmentElecConsumptionViewRepository;
 
     /**
      * Physical equipment indicators mapper.
@@ -101,11 +107,32 @@ public class PhysicalEquipmentIndicatorService {
         final List<PhysicalEquipmentLowImpactView> indicators = physicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
                     indicator.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getType()));
-                    indicator.setLowImpact(numEcoEvalReferentialRemotingService.isLowImpact(indicator.getPaysUtilisation()));
+                    indicator.setLowImpact(numEcoEvalReferentialRemotingService.isLowImpact(indicator.getCountry()));
                 }
         );
 
         return physicalEquipmentIndicatorMapper
                 .physicalEquipmentLowImpacttoDTO(indicators);
+    }
+
+    /**
+     * Retrieve electric consumption of physical equipments
+     *
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
+     * @param batchName      the batch name
+     * @return electric consumption indicators
+     */
+    public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String subscriber, final Long organizationId, final String batchName, final Long criteriaNumber) {
+
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        final List<PhysicalEquipmentElecConsumptionView> indicators =
+                physicalEquipmentElecConsumptionViewRepository.findPhysicalEquipmentElecConsumptionIndicators(batchName, criteriaNumber);
+
+        indicators.forEach(
+                indicator -> indicator.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getType()))
+        );
+
+        return physicalEquipmentIndicatorMapper.physicalEquipmentElecConsumptionToDto(indicators);
     }
 }

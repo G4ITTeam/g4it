@@ -2,13 +2,42 @@
 
 ## main branch
 
+## 2.8.0
+
 ### Major Changes
 
-## 2.7.0
+- 579 | In the DS module, add an option to select the criteria used for the digital service evaluation
+- 578 | In the IS module, add an option to select the criteria used for the inventory evaluation
+- 572 | In the Administration module, add an option to select the criteria used for the evaluation (by subscriber / by organization's module)
+- 573 | Add the 11 missing criteria that negaOctet have in database into G4IT
+- 571 | Set up a criteria parameter for subscribers, organizations and modules
 
 ### Minor Changes
 
+- 657 | Last feedback on the criteria selection
+- 652 | Data is not displayed in tooltip
+- 653 | defects/enhancements in existing implementations
+- 573 | fix digital service view
+- 630 | Note format broken
+- 631 | Labels have not been translated in FR
+- 611 | Encoding special characters in the right way while uploading files
+- 573 | Add the 11 missing criteria that negaOctet have in database into G4IT
+- 588 | Filter refactoring on the application view
+- 589 | Display the number of people having access to a digital service
+- 614 | Issue fixed on 564 - Digital service export to csv still have header fields
+- 609 | Control on VM sum is not implemented correctly
+- 564 | Delete all mention of "nbJourUtiliseAn" and "goTelecharge"
+- 590 | Unlink instead of delete shared digital services
+- 589 | Display the number of people having access to a digital service
+- 560 | Add a new key indicator : total electricity consumption
 - 602 | Compute server reset to default one when editting
+
+## 2.7.0
+
+### Major Changes
+
+### Minor Changes
+
 - 586 | Display a message when no user is found
 - 583 | Organization is not deleted after one week
 - 485 | Export data from a digital service

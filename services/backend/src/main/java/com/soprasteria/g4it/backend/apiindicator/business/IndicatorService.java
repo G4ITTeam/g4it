@@ -9,14 +9,12 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 
 
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
-import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationVmIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.AggApplicationIndicator;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.AggEquipmentIndicator;
 import com.soprasteria.g4it.backend.apiindicator.repository.AggApplicationIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.AggEquipmentIndicatorRepository;
-import com.soprasteria.g4it.backend.apiindicator.repository.ApplicationVmIndicatorViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -30,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils.transformCriteriaKeyToCriteriaName;
 import static com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils.transformCriteriaNameToCriteriaKey;
 
 
@@ -49,9 +46,6 @@ public class IndicatorService {
     private AggApplicationIndicatorRepository aggApplicationIndicatorRepository;
 
     @Autowired
-    private ApplicationVmIndicatorViewRepository applicationVmIndicatorViewRepository;
-
-    @Autowired
     private DataCenterIndicatorService dataCenterIndicatorService;
 
     @Autowired
@@ -65,9 +59,6 @@ public class IndicatorService {
 
     @Autowired
     private ApplicationIndicatorMapper applicationIndicatorMapper;
-
-    @Autowired
-    private ApplicationVmIndicatorMapper applicationVmIndicatorMapper;
 
     @Autowired
     private OrganizationService organizationService;
@@ -104,10 +95,10 @@ public class IndicatorService {
      * @param batchName      the num-eco-eval batch name.
      * @return indicator by criteria.
      */
-    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final String batchName, Long inventoryId) {
+    public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final String batchName) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
-        final List<AggApplicationIndicator> aggApplicationIndicators = aggApplicationIndicatorRepository.findByBatchNameAndInventoryId(batchName, inventoryId).stream()
+        final List<AggApplicationIndicator> aggApplicationIndicators = aggApplicationIndicatorRepository.findByBatchName(batchName).stream()
                 .peek(aggApplicationIndicator ->
                         aggApplicationIndicator.setEquipmentType(
                                 TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggApplicationIndicator.getEquipmentType())
@@ -115,33 +106,6 @@ public class IndicatorService {
                 .toList();
 
         return applicationIndicatorMapper.toDto(aggApplicationIndicators);
-    }
-
-    /**
-     * Retrieve application indicators.
-     *
-     * @param subscriber      the subscriber
-     * @param organizationId  the organization id
-     * @param batchName       the num-eco-eval batch name.
-     * @param inventoryId     the inventory id
-     * @param applicationName the application name.
-     * @param criteria        the criteria key.
-     * @return indicator by criteria.
-     */
-    public List<ApplicationIndicatorBO<ApplicationVmImpactBO>> getApplicationVmIndicators(final String subscriber,
-                                                                                          final Long organizationId,
-                                                                                          final String batchName,
-                                                                                          final Long inventoryId,
-                                                                                          final String applicationName, final String criteria) {
-
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final var result = applicationVmIndicatorViewRepository.findIndicators(batchName, inventoryId, applicationName, transformCriteriaKeyToCriteriaName(criteria)).stream()
-                .peek(indicator -> indicator.setEquipmentType(
-                        TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getEquipmentType())
-                ))
-                .toList();
-        return applicationVmIndicatorMapper.toDto(result);
-
     }
 
     /**
@@ -195,6 +159,20 @@ public class IndicatorService {
                                                                              final Long organizationId,
                                                                              final Long inventoryId) {
         return physicalEquipmentIndicatorService.getPhysicalEquipmentsLowImpact(subscriber, organizationId, inventoryId);
+    }
+
+    /**
+     * Retrieve electric consumption of physical equipments
+     *
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
+     * @param batchName      the batch name
+     * @return electric consumption indicators
+     */
+    public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String subscriber,
+                                                                                        final Long organizationId,
+                                                                                        final String batchName, final Long criteriaNumber) {
+        return physicalEquipmentIndicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, batchName, criteriaNumber);
     }
 
 }

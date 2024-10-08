@@ -52,6 +52,16 @@ public class ApplicationImpactBO {
     private String applicationName;
 
     /**
+     * The virtual equipment name.
+     */
+    private String virtualEquipmentName;
+
+    /**
+     * The cluster.
+     */
+    private String cluster;
+
+    /**
      * Application impact.
      */
     private Double impact;

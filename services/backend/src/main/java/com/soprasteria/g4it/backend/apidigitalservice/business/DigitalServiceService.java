@@ -23,10 +23,12 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceS
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
+import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.ModeRest;
+import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
@@ -55,7 +57,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 /**
  * Digital-Service service.
  */
@@ -78,19 +79,16 @@ public class DigitalServiceService {
     private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Autowired
     private DigitalServiceMapper digitalServiceMapper;
-
     @Autowired
     private DatacenterDigitalServiceMapper datacenterDigitalServiceMapper;
-
     @Autowired
     private NumEcoEvalRemotingService numEcoEvalRemotingService;
-
     @Autowired
     private IndicatorService indicatorService;
-
     @Autowired
     private OrganizationService organizationService;
-
+    @Autowired
+    private CriteriaService criteriaService;
     @Autowired
     private FileMapperInfo fileInfo;
 
@@ -152,7 +150,7 @@ public class DigitalServiceService {
     public List<DigitalServiceBO> getDigitalServices(final Long organizationId, final long userId) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
-        // Retrieve digital services creates by the user
+        // Retrieve digital services created by the user
         List<DigitalService> digitalServices = digitalServiceRepository.findByOrganizationAndUserId(linkedOrganization, userId);
 
         // Retrieve shared digital services for the user
@@ -163,8 +161,32 @@ public class DigitalServiceService {
 
         final List<DigitalService> combinedDigitalServices = Stream.concat(digitalServices.stream(), sharedDigitalServices.stream())
                 .toList();
+        List<DigitalServiceBO> allDigitalServicesBO = digitalServiceMapper.toBusinessObject(combinedDigitalServices);
 
-        return digitalServiceMapper.toBusinessObject(combinedDigitalServices);
+
+        return allDigitalServicesBO.stream().peek(digitalServiceBO -> {
+            User user = getDigitalServiceEntity(digitalServiceBO.getUid()).getUser();
+            //set creator info
+            digitalServiceBO.setCreator(UserInfoBO.builder().id(user.getId())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName()).build());
+
+            List<DigitalServiceShared> shared = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceBO.getUid());
+            List<UserInfoBO> members = null;
+            if (shared != null) {
+                members = shared.stream().map(
+                        sharedDigitalService -> {
+                            User userEntity = sharedDigitalService.getUser();
+                            return UserInfoBO.builder().id(userEntity.getId())
+                                    .firstName(userEntity.getFirstName())
+                                    .lastName(userEntity.getLastName())
+                                    .build();
+                        }).collect(Collectors.toList());
+            }
+            //set member info
+            digitalServiceBO.setMembers(members);
+
+        }).toList();
     }
 
     /**
@@ -199,7 +221,10 @@ public class DigitalServiceService {
         digitalServiceMapper.mergeEntity(digitalServiceToUpdate, digitalService, digitalServiceReferentialService, User.builder().id(user.getId()).build());
 
         // Save the updated digital service.
-        return digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
+        DigitalServiceBO updateDigitalServiceBO = digitalServiceMapper.toFullBusinessObject(digitalServiceRepository.save(digitalServiceToUpdate));
+        updateDigitalServiceBO.setCreator(digitalService.getCreator());
+        updateDigitalServiceBO.setMembers(digitalService.getMembers());
+        return updateDigitalServiceBO;
     }
 
     /**
@@ -209,8 +234,36 @@ public class DigitalServiceService {
      * @return the business object.
      */
     public DigitalServiceBO getDigitalService(final String digitalServiceUid) {
-        return digitalServiceMapper.toFullBusinessObject(getDigitalServiceEntity(digitalServiceUid));
+        DigitalService digitalServiceEntity = getDigitalServiceEntity(digitalServiceUid);
+
+        DigitalServiceBO digitalServiceBO = digitalServiceMapper.toFullBusinessObject(digitalServiceEntity);
+
+        // Set the creator information
+        User user = digitalServiceEntity.getUser();
+        digitalServiceBO.setCreator(UserInfoBO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build());
+
+        List<DigitalServiceShared> sharedDigitalServices = digitalServiceSharedRepository.findByDigitalServiceUid(digitalServiceUid);
+
+        List<UserInfoBO> members = sharedDigitalServices.stream()
+                .map(sharedDigitalService -> {
+                    User sharedUser = sharedDigitalService.getUser();
+                    return UserInfoBO.builder()
+                            .id(sharedUser.getId())
+                            .firstName(sharedUser.getFirstName())
+                            .lastName(sharedUser.getLastName())
+                            .build();
+                })
+                .collect(Collectors.toList());
+        // Set the members' information
+        digitalServiceBO.setMembers(members);
+
+        return digitalServiceBO;
     }
+
 
     /**
      * Get the existing data centers linked to digital service.
@@ -228,9 +281,9 @@ public class DigitalServiceService {
      * @param organizationId    the linked organization's id.
      * @param digitalServiceUid the digital service id.
      */
-    public void runCalculations(final Long organizationId, final String digitalServiceUid) {
-        // Remove indicators.
+    public void runCalculations(final String subscriber, final Long organizationId, final String digitalServiceUid) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        // Remove indicators.
         indicatorService.deleteIndicators(digitalServiceUid);
 
         final DigitalServiceBO digitalService = getDigitalService(digitalServiceUid);
@@ -271,9 +324,10 @@ public class DigitalServiceService {
                 log.error("Unable to delete temp csv folder {}", dir.getAbsolutePath());
                 throw new UnableToGenerateFileException();
             }
-
+            // Get criteria for digital service
+            List<String> criteriaKeyList = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalService.getCriteria()).active();
             // Call NumEcoEval in SYNC mode, it means calculations are finished after this statement
-            numEcoEvalRemotingService.callCalculation(digitalServiceUid, ModeRest.SYNC);
+            numEcoEvalRemotingService.callCalculation(digitalServiceUid, ModeRest.SYNC, criteriaKeyList);
 
             // Update last calculation date.
             final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalServiceUid);
@@ -312,7 +366,6 @@ public class DigitalServiceService {
                 String.valueOf(calculateQuantity(terminalBO)), // quantity.
                 "Terminal", // type.
                 "", // status.
-                "", // number of days of use per year.
                 Optional.ofNullable(terminalBO.getCountry()).orElse(""), // country of use.
                 "", // user.
                 LocalDate.now()
@@ -321,7 +374,6 @@ public class DigitalServiceService {
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
                 "", // core number.
                 "", // datacenter short name.
-                "", // downloaded go.
                 "", // annual electricity consumption.
                 "", // manufacturer.
                 "", // hard drive size.
@@ -341,14 +393,12 @@ public class DigitalServiceService {
                 String.valueOf(calculateQuantity(networkBO, networkType.getAnnualQuantityOfGo())), // quantity.
                 "Network", // type.
                 "", // status.
-                "365", // number of days of use per year.
                 Optional.ofNullable(country).orElse(""), // country of use.
                 "", // user.
                 LocalDate.now().minusYears(1).format(DateTimeFormatter.ISO_LOCAL_DATE), // date of purchase.
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
                 "", // core number.
                 "", // datacenter short name.
-                "", // downloaded go.
                 "", // annual electricity consumption.
                 "", // manufacturer.
                 "", // hard drive size.
@@ -367,14 +417,12 @@ public class DigitalServiceService {
                 String.valueOf(calculateQuantity(serverBO)), // quantity.
                 StringUtils.equalsIgnoreCase("Dedicated", serverBO.getMutualizationType()) ? "Dedicated Server" : "Shared Server", // type.
                 "", // status.
-                "", // number of days of use per year.
                 serverBO.getDatacenter().getLocation(), // country of use.
                 "", // user.
                 LocalDate.now().minusDays((long) Math.floor(365d * serverBO.getLifespan())).format(DateTimeFormatter.ISO_LOCAL_DATE), // date of purchase.
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
                 "", // core number.
                 serverBO.getDatacenter().getUid(), // datacenter short name.
-                "", // downloaded go.
                 String.valueOf(serverBO.getAnnualElectricConsumption()), // annual electricity consumption.
                 "", // manufacturer.
                 "", // hard drive size.
@@ -401,7 +449,8 @@ public class DigitalServiceService {
         return "";
     }
 
-    private String buildVirtualEquipmentLineWithServer(final VirtualEquipmentBO virtualEquipmentBO, final ServerBO serverBO) {
+    private String buildVirtualEquipmentLineWithServer(final VirtualEquipmentBO virtualEquipmentBO,
+                                                       final ServerBO serverBO) {
         return String.join(";",
                 virtualEquipmentBO.getUid(), // virtual equipment name.
                 serverBO.getUid(), // physical equipment name.
@@ -473,7 +522,8 @@ public class DigitalServiceService {
      * @param digitalServiceUid the digital service id.
      * @return the url.
      */
-    public String shareDigitalService(final String subscriber, final Long organizationId, final String digitalServiceUid) {
+    public String shareDigitalService(final String subscriber, final Long organizationId,
+                                      final String digitalServiceUid) {
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
                 new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, subscriber, organizationId))
         );
@@ -496,13 +546,14 @@ public class DigitalServiceService {
      * @param sharedUid         the unique id of url shared
      * @param userId            userId of the user accessing the link
      */
-    public void linkDigitalServiceToUser(final String subscriber, final Long organizationId, final String digitalServiceUid, final String sharedUid, final long userId) {
-        //check if digital service exists
+    public void linkDigitalServiceToUser(final String subscriber, final Long organizationId,
+                                         final String digitalServiceUid, final String sharedUid, final long userId) {
+        // Check if digital service exists
         DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid).orElseThrow(() ->
                 new G4itRestException("404", String.format("Digital service %s not found in %s/%d", digitalServiceUid, subscriber, organizationId))
         );
 
-        //validate if the shared url is not expired
+        // Validate if the shared url is not expired
         Optional<DigitalServiceLink> sharedLink = digitalServiceLinkRepository.findById(sharedUid);
         if (sharedLink.isEmpty()) {
             throw new G4itRestException("410", String.format("The shared url for Digital service %s/%s/%d has expired.", digitalServiceUid, subscriber, organizationId));
@@ -511,8 +562,8 @@ public class DigitalServiceService {
         User user = userRepository.findById(userId).orElseThrow();
 
         // if the current user owns or has already accessed the digital service then return
-        if (digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, user.getId()) ||
-                digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, user.getId())) {
+        if (digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, userId) ||
+                digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, userId)) {
             return;
         }
 
@@ -523,4 +574,16 @@ public class DigitalServiceService {
 
     }
 
+    /**
+     * Unlink the shared digital service from user
+     *
+     * @param digitalServiceUid the shared digital service's uid
+     * @param userId            the user id
+     */
+    public void unlinkSharedDigitalService(final String digitalServiceUid, final long userId) {
+
+        Optional<DigitalServiceShared> optDigitalServiceShared = digitalServiceSharedRepository.findByDigitalServiceUidAndUserId(digitalServiceUid, userId);
+        optDigitalServiceShared.ifPresent(digitalServiceShared -> digitalServiceSharedRepository.delete(digitalServiceShared));
+
+    }
 }

@@ -59,27 +59,6 @@ components:
         type: string
       required: true
       description: The note uid.
-    domainQueryParam:
-      in: query
-      name: domain
-      schema:
-        type: string
-      required: false
-      description: The domain name.
-    subDomainQueryParam:
-      in: query
-      name: subDomain
-      schema:
-        type: string
-      required: false
-      description: The sub domain name.
-    applicationNameQueryParam:
-      in: query
-      name: applicationName
-      schema:
-        type: string
-      required: false
-      description: The application name.
     batchNamePathParam:
       in: path
       name: batchName
@@ -279,6 +258,10 @@ components:
           type: array
           items:
             type: string
+        criteria:
+          type: array
+          items:
+            type: string
         organizations:
           type: array
           items:
@@ -304,6 +287,14 @@ components:
         deletionDate:
           type: string
           format: 'date-time'
+        criteriaIs:
+          type: array
+          items:
+            type: string
+        criteriaDs:
+          type: array
+          items:
+            type: string
     InventoryRest:
       description: Information of an IS inventory
       type: object
@@ -342,6 +333,10 @@ components:
         applicationCount:
           type: integer
           format: int64
+        criteria:
+          type: array
+          items:
+            type: string
         integrationReports:
           type: array
           items:
@@ -402,6 +397,10 @@ components:
         batchName:
           description: Name of batch in numecoeval
           type: string
+        criteria:
+          description: criteria on which evaluation is done
+          items:
+            type: string
 
     ExportReportRest:
       description: Information of an export results
@@ -508,6 +507,10 @@ components:
           type: string
         applicationName:
           type: string
+        virtualEquipmentName:
+          type: string
+        cluster:
+          type: string
         impact:
           type: number
           format: double
@@ -545,53 +548,6 @@ components:
           type: number
           format: double
 
-    EquipmentFiltersRest:
-      type: object
-      properties:
-        countries:
-          type: array
-          items:
-            type: string
-        entities:
-          type: array
-          items:
-            type: string
-        equipments:
-          type: array
-          items:
-            type: string
-        status:
-          type: array
-          items:
-            type: string
-    ApplicationFiltersRest:
-      type: object
-      properties:
-        environments:
-          type: array
-          items:
-            type: string
-        lifeCycles:
-          type: array
-          items:
-            type: string
-        types:
-          type: array
-          items:
-            type: string
-        domains:
-          type: array
-          items:
-            $ref: "#/components/schemas/ApplicationDomainsFiltersRest"
-    ApplicationDomainsFiltersRest:
-      type: object
-      properties:
-        name:
-          type: string
-        subDomains:
-          type: array
-          items:
-            type: string
     DataCentersIndicatorsRest:
       type: array
       items:
@@ -634,12 +590,26 @@ components:
         ageMoyen:
           type: number
           format: double
+    PhysicalEquipmentElecConsumptionRest:
+      type: object
+      properties:
+        country:
+          type: string
+        type:
+          type: string
+        nomEntite:
+          type: string
+        statut:
+          type: string
+        elecConsumption:
+          type: number
+          format: double
     PhysicalEquipmentLowImpactRest:
       type: object
       properties:
         inventoryName:
           type: string
-        paysUtilisation:
+        country:
           type: string
         type:
           type: string
@@ -660,9 +630,13 @@ components:
           type: string
         name:
           type: string
-        userId:
-          type: integer
-          format: int64
+        creator:
+          type: object
+          $ref: "#/components/schemas/UserInfoRest"
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserInfoRest"
         creationDate:
           type: string
           format: date-time
@@ -672,6 +646,10 @@ components:
         lastCalculationDate:
           type: string
           format: date-time
+        criteria:
+          type: array
+          items:
+            type: string
         terminals:
           type: array
           items:
@@ -1110,6 +1088,10 @@ components:
           format: int64
         name:
           type: string
+        criteria:
+          type: array
+          items:
+            type: string
         note:
           $ref: "#/components/schemas/NoteUpsertRest"
 
@@ -1183,4 +1165,22 @@ components:
           description: Organization date retention days
           type: integer
           format: int64
+        criteriaIs:
+          type: array
+          items:
+            type: string
+        criteriaDs:
+          type: array
+          items:
+            type: string
+
+    CriteriaRest:
+      description: Criteria to evaluate the impact
+      type: object
+      properties:
+        criteria:
+          type: array
+          items:
+            type: string
+
 

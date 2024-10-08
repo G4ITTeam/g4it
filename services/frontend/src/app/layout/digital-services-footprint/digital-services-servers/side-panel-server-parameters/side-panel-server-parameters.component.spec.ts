@@ -1131,6 +1131,7 @@ describe("SidePanelServerParametersComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
+                members: [],
             }),
         );
         const setServerSpy = spyOn(serviceBusiness, "setServerForm");
@@ -1164,6 +1165,7 @@ describe("SidePanelServerParametersComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
+                members: [],
             }),
         );
         const setServerSpy = spyOn(serviceBusiness, "setServerForm");

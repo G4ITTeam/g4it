@@ -8,20 +8,21 @@
 import { Component, Input, Signal, computed, inject, signal } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Filter } from "src/app/core/interfaces/filter.interface";
-import {
-    Criterias,
-    Datacenter,
-    PhysicalEquipment,
-    PhysicalEquipmentAvgAge,
-    PhysicalEquipmentLowImpact,
-} from "src/app/core/store/footprint.repository";
+import {} from "src/app/core/interfaces/footprint.interface";
 import { Constants } from "src/constants";
 
 import {
+    Criterias,
+    Datacenter,
     FootprintCalculated,
     Impact,
+    PhysicalEquipment,
+    PhysicalEquipmentAvgAge,
+    PhysicalEquipmentLowImpact,
+    PhysicalEquipmentsElecConsumption,
     Stat,
 } from "src/app/core/interfaces/footprint.interface";
+import { InventoryFilterSet } from "src/app/core/interfaces/inventory.interfaces";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
@@ -33,14 +34,16 @@ import { AbstractDashboard } from "../abstract-dashboard";
 export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboard {
     private store = inject(FootprintStoreService);
     private footprintService = inject(FootprintService);
-
+    currentLang: string = this.translate.currentLang;
+    criteriakeys = Object.keys(this.translate.translations[this.currentLang].criteria);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
-    @Input() equipments: [PhysicalEquipmentAvgAge[], PhysicalEquipmentLowImpact[]] = [
-        [],
-        [],
-    ];
+    @Input() equipments: [
+        PhysicalEquipmentAvgAge[],
+        PhysicalEquipmentLowImpact[],
+        PhysicalEquipmentsElecConsumption[],
+    ] = [[], [], []];
 
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     selectedDimension = signal(this.dimensions[0]);
@@ -57,8 +60,8 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         footprintCalculated.forEach((data) => {
             data.impacts.sort(
                 (a, b) =>
-                    Constants.CRITERIAS.indexOf(a.criteria) -
-                    Constants.CRITERIAS.indexOf(b.criteria),
+                    this.criteriakeys.indexOf(a.criteria) -
+                    this.criteriakeys.indexOf(b.criteria),
             );
         });
 
@@ -139,7 +142,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                 data: item.impacts.map((impact: Impact) => ({
                     value: impact.sumSip,
                     label: {
-                        formatter: (params: any) => {
+                        formatter: () => {
                             return `${impact.sumImpact} ${this.translate.instant(`criteria.${impact.criteria}`).unit}`;
                         },
                     },
@@ -177,7 +180,14 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         }
     }
 
-    valueEquipment(v: PhysicalEquipment, field: string) {
+    valueEquipment(
+        v:
+            | PhysicalEquipment
+            | PhysicalEquipmentLowImpact
+            | PhysicalEquipmentsElecConsumption,
+        field: string,
+        islowImpact: boolean,
+    ) {
         switch (field) {
             case "country":
                 return v.country;
@@ -192,29 +202,14 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         }
     }
 
-    valueEquipmentLowImpact(v: PhysicalEquipmentLowImpact, field: string) {
-        switch (field) {
-            case "country":
-                return v.paysUtilisation;
-            case "nomEntite":
-                return v.nomEntite;
-            case "equipment":
-                return v.type;
-            case "status":
-                return v.statut;
-            default:
-                return null;
-        }
-    }
-
     computeDataCenterStats(
         datacenters: Datacenter[] = [],
-        filters: Filter,
+        filters: Filter<string>,
         filterFields: string[],
     ): Stat[] {
         if (datacenters.length === 0) return this.getDatacenterStats();
 
-        const filtersSet: any = {};
+        const filtersSet: InventoryFilterSet = {};
         filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
 
         const hasAllFilters = Object.keys(filtersSet).every((item) =>
@@ -224,16 +219,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         const filteredDatacenters = hasAllFilters
             ? datacenters
             : datacenters.filter((datacenter) => {
-                  let isPresent = true;
-                  for (const field in filtersSet) {
-                      let value = this.valueDatacenter(datacenter, field)!;
-                      if (!value) value = Constants.EMPTY;
-                      if (!filtersSet[field].has(value)) {
-                          isPresent = false;
-                          break;
-                      }
-                  }
-                  return isPresent;
+                  return this.isDataCenterPresent(datacenter, filtersSet);
               });
 
         let datacenterPhysicalEquipmentCount = 0;
@@ -280,18 +266,29 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     }
 
     computeEquipmentStats(
-        equipments: [PhysicalEquipmentAvgAge[], PhysicalEquipmentLowImpact[]],
-        filters: Filter,
+        equipments: [
+            PhysicalEquipmentAvgAge[],
+            PhysicalEquipmentLowImpact[],
+            PhysicalEquipmentsElecConsumption[],
+        ],
+        filters: Filter<string>,
         filterFields: string[],
     ): Stat[] {
         const equipmentsAvgAge = equipments[0];
         const equipmentsLowImpact = equipments[1];
+        const equipmentsElecConsumption = equipments[2];
 
-        if (equipmentsAvgAge.length === 0 && equipmentsLowImpact.length === 0)
+        if (
+            equipmentsAvgAge.length === 0 &&
+            equipmentsLowImpact.length === 0 &&
+            equipmentsElecConsumption.length === 0
+        )
             return this.getEquipmentStats();
 
-        const filtersSet: any = {};
-        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
+        const filtersSet: InventoryFilterSet = {};
+        filterFields.forEach(
+            (field) => (filtersSet[field as string] = new Set(filters[field as string])),
+        );
 
         const hasAllFilters = Object.keys(filtersSet).every((item) =>
             filtersSet[item].has(Constants.ALL),
@@ -300,16 +297,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         const filteredEquipmentsAvgAge = hasAllFilters
             ? equipmentsAvgAge
             : equipmentsAvgAge.filter((equipment) => {
-                  let isPresent = true;
-                  for (const field in filtersSet) {
-                      let value = this.valueEquipment(equipment, field)!;
-                      if (!value) value = Constants.EMPTY;
-                      if (!filtersSet[field].has(value)) {
-                          isPresent = false;
-                          break;
-                      }
-                  }
-                  return isPresent;
+                  return this.isEquipmentPresent(equipment, filtersSet, false);
               });
 
         let physicalEquipmentSum = 0;
@@ -327,16 +315,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         const filteredEquipmentsLowImpact = hasAllFilters
             ? equipmentsLowImpact
             : equipmentsLowImpact.filter((equipment) => {
-                  let isPresent = true;
-                  for (const field in filtersSet) {
-                      let value = this.valueEquipmentLowImpact(equipment, field)!;
-                      if (!value) value = Constants.EMPTY;
-                      if (!filtersSet[field].has(value)) {
-                          isPresent = false;
-                          break;
-                      }
-                  }
-                  return isPresent;
+                  return this.isEquipmentPresent(equipment, filtersSet, true);
               });
 
         let physicalEquipmentTotalCount = 0;
@@ -353,17 +332,72 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             }
         });
 
+        const filteredEquipmentsElecConsumption = hasAllFilters
+            ? equipmentsElecConsumption
+            : equipmentsElecConsumption.filter((equipment) => {
+                  return this.isEquipmentPresent(equipment, filtersSet, false);
+              });
+
+        let elecConsumptionSum = 0;
+
+        filteredEquipmentsElecConsumption.forEach((physicalEquipment) => {
+            let { elecConsumption } = physicalEquipment;
+
+            elecConsumptionSum += elecConsumption;
+        });
+
         return this.getEquipmentStats(
             physicalEquipmentCount,
             physicalEquipmentSum / physicalEquipmentCount,
             (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100,
+            elecConsumptionSum,
         );
+    }
+
+    isPresent<
+        T extends
+            | Datacenter
+            | PhysicalEquipment
+            | PhysicalEquipmentLowImpact
+            | PhysicalEquipmentsElecConsumption,
+    >(
+        item: T,
+        filtersSet: InventoryFilterSet,
+        islowImpact: boolean,
+        valueFn: (v: T, field: string, islowImpact: boolean) => string | null,
+    ): boolean {
+        let isPresent = true;
+        for (const field in filtersSet) {
+            let value = valueFn(item, field, islowImpact)!;
+            if (!value) value = Constants.EMPTY;
+            if (!filtersSet[field].has(value)) {
+                isPresent = false;
+                break;
+            }
+        }
+        return isPresent;
+    }
+
+    isDataCenterPresent(datacenter: Datacenter, filtersSet: InventoryFilterSet) {
+        return this.isPresent(datacenter, filtersSet, false, this.valueDatacenter);
+    }
+
+    isEquipmentPresent(
+        equipment:
+            | PhysicalEquipment
+            | PhysicalEquipmentLowImpact
+            | PhysicalEquipmentsElecConsumption,
+        filtersSet: InventoryFilterSet,
+        islowImpact: boolean,
+    ): boolean {
+        return this.isPresent(equipment, filtersSet, islowImpact, this.valueEquipment);
     }
 
     getEquipmentStats(
         count: number = NaN,
         avgAge: number = NaN,
         lowImpact: number = NaN,
+        elecConsumption: number = NaN,
     ) {
         return [
             {
@@ -377,6 +411,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             {
                 label: this.decimalsPipe.transform(avgAge),
                 value: isNaN(avgAge) ? undefined : avgAge,
+                unit: this.translate.instant("inventories-footprint.global.years"),
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.ave-age",
                 ),
@@ -389,6 +424,17 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
                     "inventories-footprint.global.tooltip.low-impact",
                 ),
                 title: this.translate.instant("inventories-footprint.global.low-impact"),
+            },
+            {
+                label: `${this.decimalsPipe.transform(elecConsumption)}`,
+                unit: this.translate.instant("inventories-footprint.global.kwh"),
+                value: isNaN(elecConsumption) ? undefined : Math.round(elecConsumption),
+                description: this.translate.instant(
+                    "inventories-footprint.global.tooltip.elec-consumption",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.global.elec-consumption",
+                ),
             },
         ];
     }

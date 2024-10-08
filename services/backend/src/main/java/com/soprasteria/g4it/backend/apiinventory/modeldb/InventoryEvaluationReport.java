@@ -70,6 +70,11 @@ public class InventoryEvaluationReport implements Serializable {
     private LocalDateTime endTime;
 
     /**
+     * Criteria list to evaluate impacts on
+     */
+    private List<String> criteria;
+
+    /**
      * NumEcoEval inputs integration reports.
      */
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
@@ -84,7 +89,7 @@ public class InventoryEvaluationReport implements Serializable {
     private NumEcoEvalCalculationReport numEcoEvalCalculationReport;
 
     /**
-     * Boolean isAggregated, used for data migration
+     * Boolean isApplicationAggregated, used for data migration
      */
-    private Boolean isAggregated;
+    private Boolean isApplicationAggregated;
 }

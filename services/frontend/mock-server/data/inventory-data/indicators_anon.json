@@ -9,8 +9,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 2.1618197E-8,
-                "sip": 3.3516585E-4
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -18,7 +18,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 2.834025E-7,
+                "impact": 2.834025e-7,
                 "sip": 0.004393837
             },
             {
@@ -27,7 +27,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 1.0951554E-7,
+                "impact": 1.0951554e-7,
                 "sip": 0.0016979154
             },
             {
@@ -36,7 +36,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 5.48856E-7,
+                "impact": 5.48856e-7,
                 "sip": 0.008509396
             },
             {
@@ -45,7 +45,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In maintenance",
-                "impact": 7.852986E-7,
+                "impact": 7.852986e-7,
                 "sip": 0.012175173
             },
             {
@@ -54,7 +54,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In stock",
-                "impact": 6.8694804E-5,
+                "impact": 6.8694804e-5,
                 "sip": 1.0650357
             },
             {
@@ -63,7 +63,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In transit",
-                "impact": 7.0005804E-8,
+                "impact": 7.0005804e-8,
                 "sip": 0.0010853612
             },
             {
@@ -72,7 +72,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 3.4425856E-4,
+                "impact": 3.4425856e-4,
                 "sip": 5.337342
             },
             {
@@ -81,7 +81,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Missing",
-                "impact": 2.480752E-5,
+                "impact": 2.480752e-5,
                 "sip": 0.38461268
             },
             {
@@ -90,7 +90,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Retired",
-                "impact": 2.8678089E-5,
+                "impact": 2.8678089e-5,
                 "sip": 0.44462153
             },
             {
@@ -99,7 +99,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 1.924966E-4,
+                "impact": 1.924966e-4,
                 "sip": 2.9844434
             },
             {
@@ -108,7 +108,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "In stock",
-                "impact": 4.4371632E-7,
+                "impact": 4.4371632e-7,
                 "sip": 0.0068793227
             },
             {
@@ -117,7 +117,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Missing",
-                "impact": 4.349593E-7,
+                "impact": 4.349593e-7,
                 "sip": 0.0067435554
             },
             {
@@ -126,7 +126,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Router",
                 "status": "In use",
-                "impact": 1.28164575E-5,
+                "impact": 1.28164575e-5,
                 "sip": 0.19870476
             },
             {
@@ -135,7 +135,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Switch",
                 "status": "In use",
-                "impact": 6.130054E-5,
+                "impact": 6.130054e-5,
                 "sip": 0.9503959
             },
             {
@@ -144,7 +144,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "In use",
-                "impact": 1.2406551E-5,
+                "impact": 1.2406551e-5,
                 "sip": 0.19234963
             },
             {
@@ -153,7 +153,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "Retired",
-                "impact": 5.2253035E-6,
+                "impact": 5.2253035e-6,
                 "sip": 0.08101246
             },
             {
@@ -171,7 +171,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 2.604241E-6,
+                "impact": 2.604241e-6,
                 "sip": 0.04037583
             },
             {
@@ -180,7 +180,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In stock",
-                "impact": 1.292699E-4,
+                "impact": 1.292699e-4,
                 "sip": 2.0041847
             },
             {
@@ -189,7 +189,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 8.662777E-4,
+                "impact": 8.662777e-4,
                 "sip": 13.430663
             },
             {
@@ -198,7 +198,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Missing",
-                "impact": 3.9089215E-7,
+                "impact": 3.9089215e-7,
                 "sip": 0.0060603437
             },
             {
@@ -207,7 +207,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 1.6613996E-5,
+                "impact": 1.6613996e-5,
                 "sip": 0.25758135
             },
             {
@@ -216,7 +216,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "In use",
-                "impact": 3.8119688E-6,
+                "impact": 3.8119688e-6,
                 "sip": 0.059100293
             },
             {
@@ -225,7 +225,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "Retired",
-                "impact": 6.3124355E-7,
+                "impact": 6.3124355e-7,
                 "sip": 0.009786721
             },
             {
@@ -234,7 +234,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 2.7645324E-4,
+                "impact": 2.7645324e-4,
                 "sip": 4.2860966
             },
             {
@@ -243,7 +243,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 6.765887E-8,
+                "impact": 6.765887e-8,
                 "sip": 0.0010489747
             },
             {
@@ -252,7 +252,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "Retired",
-                "impact": 5.8946374E-5,
+                "impact": 5.8946374e-5,
                 "sip": 0.9138973
             },
             {
@@ -261,7 +261,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Consumed",
-                "impact": 1.6450926E-7,
+                "impact": 1.6450926e-7,
                 "sip": 0.0025505312
             },
             {
@@ -270,7 +270,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In maintenance",
-                "impact": 2.1102756E-5,
+                "impact": 2.1102756e-5,
                 "sip": 0.3271745
             },
             {
@@ -279,7 +279,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In stock",
-                "impact": 2.955131E-4,
+                "impact": 2.955131e-4,
                 "sip": 4.5815983
             },
             {
@@ -297,7 +297,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 8.623557E-5,
+                "impact": 8.623557e-5,
                 "sip": 1.3369856
             },
             {
@@ -306,7 +306,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Retired",
-                "impact": 3.9809602E-4,
+                "impact": 3.9809602e-4,
                 "sip": 6.1720314
             },
             {
@@ -324,7 +324,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "On order",
-                "impact": 4.4605787E-7,
+                "impact": 4.4605787e-7,
                 "sip": 0.0069156257
             },
             {
@@ -333,7 +333,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "Retired",
-                "impact": 1.8919642E-4,
+                "impact": 1.8919642e-4,
                 "sip": 2.9332778
             },
             {
@@ -342,7 +342,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 1.7940432E-5,
+                "impact": 1.7940432e-5,
                 "sip": 0.27814624
             },
             {
@@ -351,7 +351,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 9.692499E-5,
+                "impact": 9.692499e-5,
                 "sip": 1.502713
             },
             {
@@ -369,7 +369,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Tracer",
                 "status": "In use",
-                "impact": 1.0723355E-7,
+                "impact": 1.0723355e-7,
                 "sip": 0.0016625356
             },
             {
@@ -378,7 +378,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 2.950455E-5,
+                "impact": 2.950455e-5,
                 "sip": 0.4574349
             },
             {
@@ -387,7 +387,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 5.2624728E-6,
+                "impact": 5.2624728e-6,
                 "sip": 0.08158872
             },
             {
@@ -396,8 +396,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 5.0898738E-8,
-                "sip": 7.891277E-4
+                "impact": 5.0898738e-8,
+                "sip": 7.891277e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -405,7 +405,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 1.747141E-5,
+                "impact": 1.747141e-5,
                 "sip": 0.27087456
             },
             {
@@ -414,7 +414,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 1.0346803E-6,
+                "impact": 1.0346803e-6,
                 "sip": 0.016041556
             },
             {
@@ -423,7 +423,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 4.09257E-6,
+                "impact": 4.09257e-6,
                 "sip": 0.0634507
             },
             {
@@ -432,7 +432,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 1.1617913E-6,
+                "impact": 1.1617913e-6,
                 "sip": 0.018012267
             },
             {
@@ -441,7 +441,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 8.560314E-6,
+                "impact": 8.560314e-6,
                 "sip": 0.13271804
             },
             {
@@ -450,7 +450,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In maintenance",
-                "impact": 1.4926025E-5,
+                "impact": 1.4926025e-5,
                 "sip": 0.23141125
             },
             {
@@ -468,7 +468,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In transit",
-                "impact": 3.350586E-6,
+                "impact": 3.350586e-6,
                 "sip": 0.05194707
             },
             {
@@ -486,7 +486,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Missing",
-                "impact": 5.5085967E-4,
+                "impact": 5.5085967e-4,
                 "sip": 8.54046
             },
             {
@@ -495,7 +495,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Retired",
-                "impact": 5.890316E-4,
+                "impact": 5.890316e-4,
                 "sip": 9.132273
             },
             {
@@ -513,7 +513,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "In stock",
-                "impact": 1.675494E-5,
+                "impact": 1.675494e-5,
                 "sip": 0.25976652
             },
             {
@@ -522,7 +522,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Missing",
-                "impact": 3.502722E-5,
+                "impact": 3.502722e-5,
                 "sip": 0.5430577
             },
             {
@@ -531,7 +531,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Router",
                 "status": "In use",
-                "impact": 1.4508025E-4,
+                "impact": 1.4508025e-4,
                 "sip": 2.2493062
             },
             {
@@ -540,7 +540,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Switch",
                 "status": "In use",
-                "impact": 7.8050705E-4,
+                "impact": 7.8050705e-4,
                 "sip": 12.100884
             },
             {
@@ -549,7 +549,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "In use",
-                "impact": 5.586711E-4,
+                "impact": 5.586711e-4,
                 "sip": 8.661568
             },
             {
@@ -558,7 +558,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "Retired",
-                "impact": 2.4764606E-4,
+                "impact": 2.4764606e-4,
                 "sip": 3.8394737
             },
             {
@@ -576,7 +576,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 2.7626988E-5,
+                "impact": 2.7626988e-5,
                 "sip": 0.42832538
             },
             {
@@ -603,7 +603,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Missing",
-                "impact": 4.146764E-6,
+                "impact": 4.146764e-6,
                 "sip": 0.06429091
             },
             {
@@ -612,7 +612,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 1.7640361E-4,
+                "impact": 1.7640361e-4,
                 "sip": 2.7349398
             },
             {
@@ -621,7 +621,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "In use",
-                "impact": 2.8559492E-5,
+                "impact": 2.8559492e-5,
                 "sip": 0.44278282
             },
             {
@@ -630,7 +630,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "Retired",
-                "impact": 5.0109197E-6,
+                "impact": 5.0109197e-6,
                 "sip": 0.07768868
             },
             {
@@ -648,7 +648,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 1.0552516E-6,
+                "impact": 1.0552516e-6,
                 "sip": 0.016360488
             },
             {
@@ -666,7 +666,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Consumed",
-                "impact": 2.565793E-6,
+                "impact": 2.565793e-6,
                 "sip": 0.039779738
             },
             {
@@ -675,7 +675,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In maintenance",
-                "impact": 3.3709808E-4,
+                "impact": 3.3709808e-4,
                 "sip": 5.226327
             },
             {
@@ -729,7 +729,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "On order",
-                "impact": 3.2439136E-6,
+                "impact": 3.2439136e-6,
                 "sip": 0.050293233
             },
             {
@@ -747,7 +747,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 9.943253E-4,
+                "impact": 9.943253e-4,
                 "sip": 15.415895
             },
             {
@@ -774,7 +774,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Tracer",
                 "status": "In use",
-                "impact": 7.7984583E-7,
+                "impact": 7.7984583e-7,
                 "sip": 0.012090633
             },
             {
@@ -792,7 +792,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 3.2778858E-4,
+                "impact": 3.2778858e-4,
                 "sip": 5.0819936
             },
             {
@@ -801,7 +801,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 8.9014003E-7,
+                "impact": 8.9014003e-7,
                 "sip": 0.01380062
             },
             {
@@ -819,8 +819,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 5.2394453E-9,
-                "sip": 8.123171E-5
+                "impact": 5.2394453e-9,
+                "sip": 8.123171e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -828,7 +828,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 2.0492465E-7,
+                "impact": 2.0492465e-7,
                 "sip": 0.0031771264
             },
             {
@@ -837,7 +837,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 7.0083765E-8,
+                "impact": 7.0083765e-8,
                 "sip": 0.00108657
             },
             {
@@ -846,7 +846,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 1.2684977E-7,
+                "impact": 1.2684977e-7,
                 "sip": 0.0019666632
             },
             {
@@ -855,7 +855,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In maintenance",
-                "impact": 9.585644E-8,
+                "impact": 9.585644e-8,
                 "sip": 0.0014861465
             },
             {
@@ -864,7 +864,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In stock",
-                "impact": 7.2770467E-6,
+                "impact": 7.2770467e-6,
                 "sip": 0.11282243
             },
             {
@@ -873,8 +873,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In transit",
-                "impact": 1.6966798E-8,
-                "sip": 2.630511E-4
+                "impact": 1.6966798e-8,
+                "sip": 2.630511e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -882,7 +882,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 3.840415E-5,
+                "impact": 3.840415e-5,
                 "sip": 0.59541315
             },
             {
@@ -891,7 +891,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Missing",
-                "impact": 3.0481096E-6,
+                "impact": 3.0481096e-6,
                 "sip": 0.047257513
             },
             {
@@ -900,7 +900,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Retired",
-                "impact": 3.288548E-6,
+                "impact": 3.288548e-6,
                 "sip": 0.05098524
             },
             {
@@ -909,7 +909,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 1.5776341E-4,
+                "impact": 1.5776341e-4,
                 "sip": 2.4459443
             },
             {
@@ -918,7 +918,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "In stock",
-                "impact": 5.227977E-7,
+                "impact": 5.227977e-7,
                 "sip": 0.008105391
             },
             {
@@ -927,7 +927,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Missing",
-                "impact": 4.1931915E-7,
+                "impact": 4.1931915e-7,
                 "sip": 0.006501072
             },
             {
@@ -936,7 +936,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Router",
                 "status": "In use",
-                "impact": 4.5249667E-6,
+                "impact": 4.5249667e-6,
                 "sip": 0.070154525
             },
             {
@@ -945,7 +945,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Switch",
                 "status": "In use",
-                "impact": 2.2104672E-5,
+                "impact": 2.2104672e-5,
                 "sip": 0.3427081
             },
             {
@@ -954,7 +954,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "In use",
-                "impact": 2.950964E-6,
+                "impact": 2.950964e-6,
                 "sip": 0.04575138
             },
             {
@@ -963,7 +963,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "Retired",
-                "impact": 1.2665699E-6,
+                "impact": 1.2665699e-6,
                 "sip": 0.019636743
             },
             {
@@ -972,7 +972,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 7.5293746E-4,
+                "impact": 7.5293746e-4,
                 "sip": 11.673449
             },
             {
@@ -981,7 +981,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 1.6665672E-6,
+                "impact": 1.6665672e-6,
                 "sip": 0.025838252
             },
             {
@@ -990,7 +990,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In stock",
-                "impact": 8.2154686E-5,
+                "impact": 8.2154686e-5,
                 "sip": 1.2737161
             },
             {
@@ -999,7 +999,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 5.691708E-4,
+                "impact": 5.691708e-4,
                 "sip": 8.824354
             },
             {
@@ -1008,7 +1008,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Missing",
-                "impact": 2.5014893E-7,
+                "impact": 2.5014893e-7,
                 "sip": 0.0038782777
             },
             {
@@ -1017,7 +1017,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 1.06100815E-5,
+                "impact": 1.06100815e-5,
                 "sip": 0.16449738
             },
             {
@@ -1026,7 +1026,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "In use",
-                "impact": 1.5410411E-6,
+                "impact": 1.5410411e-6,
                 "sip": 0.02389211
             },
             {
@@ -1035,7 +1035,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "Retired",
-                "impact": 2.2461491E-7,
+                "impact": 2.2461491e-7,
                 "sip": 0.0034824016
             },
             {
@@ -1044,7 +1044,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 3.2315592E-4,
+                "impact": 3.2315592e-4,
                 "sip": 5.010169
             },
             {
@@ -1053,8 +1053,8 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 1.5637092E-8,
-                "sip": 2.4243553E-4
+                "impact": 1.5637092e-8,
+                "sip": 2.4243553e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -1062,7 +1062,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "Retired",
-                "impact": 1.0171012E-4,
+                "impact": 1.0171012e-4,
                 "sip": 1.5769011
             },
             {
@@ -1071,8 +1071,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Consumed",
-                "impact": 3.8020833E-8,
-                "sip": 5.8947026E-4
+                "impact": 3.8020833e-8,
+                "sip": 5.8947026e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -1080,7 +1080,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In maintenance",
-                "impact": 5.751593E-6,
+                "impact": 5.751593e-6,
                 "sip": 0.08917198
             },
             {
@@ -1089,7 +1089,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In stock",
-                "impact": 1.554683E-4,
+                "impact": 1.554683e-4,
                 "sip": 2.4103613
             },
             {
@@ -1098,7 +1098,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 6.7079475E-4,
+                "impact": 6.7079475e-4,
                 "sip": 10.399919
             },
             {
@@ -1107,7 +1107,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 6.7588575E-5,
+                "impact": 6.7588575e-5,
                 "sip": 1.047885
             },
             {
@@ -1116,7 +1116,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Retired",
-                "impact": 1.8527872E-4,
+                "impact": 1.8527872e-4,
                 "sip": 2.8725383
             },
             {
@@ -1134,7 +1134,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "On order",
-                "impact": 4.4669503E-7,
+                "impact": 4.4669503e-7,
                 "sip": 0.006925504
             },
             {
@@ -1143,7 +1143,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "Retired",
-                "impact": 1.8946668E-4,
+                "impact": 1.8946668e-4,
                 "sip": 2.937468
             },
             {
@@ -1152,7 +1152,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 6.0815864E-6,
+                "impact": 6.0815864e-6,
                 "sip": 0.09428816
             },
             {
@@ -1161,7 +1161,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 8.2096565E-5,
+                "impact": 8.2096565e-5,
                 "sip": 1.2728149
             },
             {
@@ -1170,7 +1170,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Smartphone",
                 "status": "In use",
-                "impact": 1.7616306E-4,
+                "impact": 1.7616306e-4,
                 "sip": 2.7312102
             },
             {
@@ -1179,7 +1179,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Tracer",
                 "status": "In use",
-                "impact": 1.0738672E-7,
+                "impact": 1.0738672e-7,
                 "sip": 0.0016649103
             },
             {
@@ -1188,7 +1188,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 1.3314095E-5,
+                "impact": 1.3314095e-5,
                 "sip": 0.20642008
             },
             {
@@ -1197,7 +1197,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 1.7435628E-6,
+                "impact": 1.7435628e-6,
                 "sip": 0.027031982
             },
             {
@@ -1206,8 +1206,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 5.1108517E-9,
-                "sip": 7.9238016E-5
+                "impact": 5.1108517e-9,
+                "sip": 7.9238016e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -1215,7 +1215,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 5.7886286E-6,
+                "impact": 5.7886286e-6,
                 "sip": 0.089746185
             },
             {
@@ -1224,7 +1224,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 1.2950223E-6,
+                "impact": 1.2950223e-6,
                 "sip": 0.020077866
             },
             {
@@ -1233,7 +1233,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 1.5274622E-5,
+                "impact": 1.5274622e-5,
                 "sip": 0.23681584
             },
             {
@@ -1242,7 +1242,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 1.2950223E-5,
+                "impact": 1.2950223e-5,
                 "sip": 0.20077865
             },
             {
@@ -1251,7 +1251,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 9.290955E-6,
+                "impact": 9.290955e-6,
                 "sip": 0.14404581
             },
             {
@@ -1260,7 +1260,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In maintenance",
-                "impact": 1.346087E-7,
+                "impact": 1.346087e-7,
                 "sip": 0.0020869565
             },
             {
@@ -1269,7 +1269,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In stock",
-                "impact": 5.1249863E-6,
+                "impact": 5.1249863e-6,
                 "sip": 0.07945715
             },
             {
@@ -1278,8 +1278,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In transit",
-                "impact": 1.6217916E-8,
-                "sip": 2.5144056E-4
+                "impact": 1.6217916e-8,
+                "sip": 2.5144056e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -1287,7 +1287,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 2.8324175E-5,
+                "impact": 2.8324175e-5,
                 "sip": 0.43913448
             },
             {
@@ -1296,7 +1296,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Missing",
-                "impact": 6.891242E-6,
+                "impact": 6.891242e-6,
                 "sip": 0.10684096
             },
             {
@@ -1305,7 +1305,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "Retired",
-                "impact": 6.3294783E-6,
+                "impact": 6.3294783e-6,
                 "sip": 0.09813145
             },
             {
@@ -1314,7 +1314,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Consumed",
-                "impact": 1.08032196E-4,
+                "impact": 1.08032196e-4,
                 "sip": 1.6749178
             },
             {
@@ -1323,7 +1323,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "In stock",
-                "impact": 1.0845211E-7,
+                "impact": 1.0845211e-7,
                 "sip": 0.0016814282
             },
             {
@@ -1332,7 +1332,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Missing",
-                "impact": 2.0372198E-7,
+                "impact": 2.0372198e-7,
                 "sip": 0.0031584802
             },
             {
@@ -1341,8 +1341,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Retired",
-                "impact": 5.322803E-9,
-                "sip": 8.252408E-5
+                "impact": 5.322803e-9,
+                "sip": 8.252408e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -1350,7 +1350,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Router",
                 "status": "In use",
-                "impact": 7.986096E-5,
+                "impact": 7.986096e-5,
                 "sip": 1.2381544
             },
             {
@@ -1359,7 +1359,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "IP Switch",
                 "status": "In use",
-                "impact": 5.279865E-4,
+                "impact": 5.279865e-4,
                 "sip": 8.185837
             },
             {
@@ -1368,7 +1368,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "In use",
-                "impact": 4.681364E-5,
+                "impact": 4.681364e-5,
                 "sip": 0.7257928
             },
             {
@@ -1377,7 +1377,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Mobility Device",
                 "status": "Retired",
-                "impact": 2.2905935E-5,
+                "impact": 2.2905935e-5,
                 "sip": 0.35513076
             },
             {
@@ -1395,7 +1395,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 2.5948666E-5,
+                "impact": 2.5948666e-5,
                 "sip": 0.4023049
             },
             {
@@ -1404,7 +1404,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In stock",
-                "impact": 2.6863523E-5,
+                "impact": 2.6863523e-5,
                 "sip": 0.4164887
             },
             {
@@ -1413,7 +1413,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "In use",
-                "impact": 5.7491683E-4,
+                "impact": 5.7491683e-4,
                 "sip": 8.913439
             },
             {
@@ -1422,7 +1422,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Missing",
-                "impact": 4.865375E-7,
+                "impact": 4.865375e-7,
                 "sip": 0.007543217
             },
             {
@@ -1431,7 +1431,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Monitor",
                 "status": "Retired",
-                "impact": 2.9350269E-5,
+                "impact": 2.9350269e-5,
                 "sip": 0.45504293
             },
             {
@@ -1440,7 +1440,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "In use",
-                "impact": 7.539491E-5,
+                "impact": 7.539491e-5,
                 "sip": 1.1689134
             },
             {
@@ -1449,7 +1449,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Network Gear",
                 "status": "Retired",
-                "impact": 5.183695E-6,
+                "impact": 5.183695e-6,
                 "sip": 0.080367364
             },
             {
@@ -1467,7 +1467,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 1.1635315E-7,
+                "impact": 1.1635315e-7,
                 "sip": 0.0018039248
             },
             {
@@ -1485,7 +1485,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Consumed",
-                "impact": 1.1635315E-7,
+                "impact": 1.1635315e-7,
                 "sip": 0.0018039248
             },
             {
@@ -1494,7 +1494,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In maintenance",
-                "impact": 3.5501434E-6,
+                "impact": 3.5501434e-6,
                 "sip": 0.05504098
             },
             {
@@ -1503,7 +1503,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In stock",
-                "impact": 4.0298277E-5,
+                "impact": 4.0298277e-5,
                 "sip": 0.6247795
             },
             {
@@ -1512,7 +1512,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "In use",
-                "impact": 4.1132153E-4,
+                "impact": 4.1132153e-4,
                 "sip": 6.377078
             },
             {
@@ -1521,7 +1521,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Missing",
-                "impact": 3.786925E-5,
+                "impact": 3.786925e-5,
                 "sip": 0.5871202
             },
             {
@@ -1530,7 +1530,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Personal Computer",
                 "status": "Retired",
-                "impact": 2.6101014E-4,
+                "impact": 2.6101014e-4,
                 "sip": 4.046669
             },
             {
@@ -1548,7 +1548,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "On order",
-                "impact": 2.9524924E-7,
+                "impact": 2.9524924e-7,
                 "sip": 0.0045775077
             },
             {
@@ -1557,7 +1557,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Printer",
                 "status": "Retired",
-                "impact": 3.3717463E-4,
+                "impact": 3.3717463e-4,
                 "sip": 5.227514
             },
             {
@@ -1566,7 +1566,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 5.276586E-4,
+                "impact": 5.276586e-4,
                 "sip": 8.180754
             },
             {
@@ -1575,7 +1575,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Server",
                 "status": "Retired",
-                "impact": 1.4571174E-5,
+                "impact": 1.4571174e-5,
                 "sip": 0.22590967
             },
             {
@@ -1593,7 +1593,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Smartphone",
                 "status": "In use",
-                "impact": 3.9762617E-4,
+                "impact": 3.9762617e-4,
                 "sip": 6.1647468
             },
             {
@@ -1602,7 +1602,7 @@
                 "entity": "ACME FRANCE",
                 "equipment": "Tracer",
                 "status": "In use",
-                "impact": 2.9524924E-7,
+                "impact": 2.9524924e-7,
                 "sip": 0.0045775077
             },
             {
@@ -1620,7 +1620,7 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 9.8974056E-8,
+                "impact": 9.8974056e-8,
                 "sip": 0.0015344815
             }
         ]
@@ -1636,7 +1636,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.004453057,
-                "sip": 6.7598585E-8
+                "sip": 6.7598585e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1645,7 +1645,7 @@
                 "equipment": "Consumable",
                 "status": "Consumed",
                 "impact": 0.0031780384,
-                "sip": 4.8243464E-8
+                "sip": 4.8243464e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1654,7 +1654,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 0.0012280929,
-                "sip": 1.8642776E-8
+                "sip": 1.8642776e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1663,7 +1663,7 @@
                 "equipment": "Personal Computer",
                 "status": "In use",
                 "impact": 0.049068794,
-                "sip": 7.448773E-7
+                "sip": 7.448773e-7
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1672,7 +1672,7 @@
                 "equipment": "Communication Device",
                 "status": "In maintenance",
                 "impact": 0.16176093,
-                "sip": 2.4555738E-6
+                "sip": 2.4555738e-6
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1681,7 +1681,7 @@
                 "equipment": "Communication Device",
                 "status": "In stock",
                 "impact": 14.150202,
-                "sip": 2.1480383E-4
+                "sip": 2.1480383e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1690,7 +1690,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 0.01442025,
-                "sip": 2.1890324E-7
+                "sip": 2.1890324e-7
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1708,7 +1708,7 @@
                 "equipment": "Communication Device",
                 "status": "Missing",
                 "impact": 5.110014,
-                "sip": 7.757137E-5
+                "sip": 7.757137e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1717,7 +1717,7 @@
                 "equipment": "Communication Device",
                 "status": "Retired",
                 "impact": 5.907299,
-                "sip": 8.967437E-5
+                "sip": 8.967437e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1726,7 +1726,7 @@
                 "equipment": "Consumable",
                 "status": "Consumed",
                 "impact": 2.1586316,
-                "sip": 3.2768603E-5
+                "sip": 3.2768603e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1735,7 +1735,7 @@
                 "equipment": "Consumable",
                 "status": "In stock",
                 "impact": 0.0049757767,
-                "sip": 7.5533606E-8
+                "sip": 7.5533606e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1744,7 +1744,7 @@
                 "equipment": "Consumable",
                 "status": "Missing",
                 "impact": 0.0048775766,
-                "sip": 7.404291E-8
+                "sip": 7.404291e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1753,7 +1753,7 @@
                 "equipment": "IP Router",
                 "status": "In use",
                 "impact": 8.477939,
-                "sip": 1.2869736E-4
+                "sip": 1.2869736e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1762,7 +1762,7 @@
                 "equipment": "IP Switch",
                 "status": "In use",
                 "impact": 40.549595,
-                "sip": 6.1555364E-4
+                "sip": 6.1555364e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1771,7 +1771,7 @@
                 "equipment": "Mobility Device",
                 "status": "In use",
                 "impact": 2.555582,
-                "sip": 3.8794413E-5
+                "sip": 3.8794413e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1780,7 +1780,7 @@
                 "equipment": "Mobility Device",
                 "status": "Retired",
                 "impact": 1.0763421,
-                "sip": 1.6339158E-5
+                "sip": 1.6339158e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1789,7 +1789,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 13.193886,
-                "sip": 2.0028668E-4
+                "sip": 2.0028668e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1798,7 +1798,7 @@
                 "equipment": "Monitor",
                 "status": "Retired",
                 "impact": 0.029203618,
-                "sip": 4.4331867E-7
+                "sip": 4.4331867e-7
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1807,7 +1807,7 @@
                 "equipment": "Monitor",
                 "status": "In stock",
                 "impact": 1.4496158,
-                "sip": 2.2005554E-5
+                "sip": 2.2005554e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1816,7 +1816,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 9.714325,
-                "sip": 1.4746604E-4
+                "sip": 1.4746604e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1825,7 +1825,7 @@
                 "equipment": "Monitor",
                 "status": "Missing",
                 "impact": 0.0043834136,
-                "sip": 6.654138E-8
+                "sip": 6.654138e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1834,7 +1834,7 @@
                 "equipment": "Monitor",
                 "status": "Retired",
                 "impact": 0.18630719,
-                "sip": 2.8281925E-6
+                "sip": 2.8281925e-6
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1843,7 +1843,7 @@
                 "equipment": "Network Gear",
                 "status": "In use",
                 "impact": 2.4283564,
-                "sip": 3.6863097E-5
+                "sip": 3.6863097e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1852,7 +1852,7 @@
                 "equipment": "Network Gear",
                 "status": "Retired",
                 "impact": 0.4175603,
-                "sip": 6.338676E-6
+                "sip": 6.338676e-6
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1861,7 +1861,7 @@
                 "equipment": "Personal Computer",
                 "status": "In use",
                 "impact": 3.278011,
-                "sip": 4.9761078E-5
+                "sip": 4.9761078e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1870,7 +1870,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 0.006048834,
-                "sip": 9.182291E-8
+                "sip": 9.182291e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1879,7 +1879,7 @@
                 "equipment": "Personal Computer",
                 "status": "Retired",
                 "impact": 0.69128174,
-                "sip": 1.0493841E-5
+                "sip": 1.0493841e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1888,7 +1888,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 0.014707448,
-                "sip": 2.2326296E-7
+                "sip": 2.2326296e-7
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1897,7 +1897,7 @@
                 "equipment": "Personal Computer",
                 "status": "In maintenance",
                 "impact": 1.9151437,
-                "sip": 2.9072391E-5
+                "sip": 2.9072391e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1906,7 +1906,7 @@
                 "equipment": "Personal Computer",
                 "status": "In stock",
                 "impact": 28.243359,
-                "sip": 4.2874168E-4
+                "sip": 4.2874168e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1924,7 +1924,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 7.3057375,
-                "sip": 1.1090304E-4
+                "sip": 1.1090304e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1933,7 +1933,7 @@
                 "equipment": "Personal Computer",
                 "status": "Retired",
                 "impact": 35.26533,
-                "sip": 5.353371E-4
+                "sip": 5.353371e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1942,7 +1942,7 @@
                 "equipment": "Printer",
                 "status": "In use",
                 "impact": 32.154247,
-                "sip": 4.8811003E-4
+                "sip": 4.8811003e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1951,7 +1951,7 @@
                 "equipment": "Printer",
                 "status": "On order",
                 "impact": 0.0050020344,
-                "sip": 7.5932206E-8
+                "sip": 7.5932206e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1960,7 +1960,7 @@
                 "equipment": "Printer",
                 "status": "Retired",
                 "impact": 2.121624,
-                "sip": 3.2206815E-5
+                "sip": 3.2206815e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1969,7 +1969,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 11.867388,
-                "sip": 1.801501E-4
+                "sip": 1.801501e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1978,7 +1978,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 61.988194,
-                "sip": 9.409972E-4
+                "sip": 9.409972e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -1996,7 +1996,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.0012025029,
-                "sip": 1.8254314E-8
+                "sip": 1.8254314e-8
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -2005,7 +2005,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 19.366365,
-                "sip": 2.9398658E-4
+                "sip": 2.9398658e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -2014,7 +2014,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 3.4810648,
-                "sip": 5.284349E-5
+                "sip": 5.284349e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -2023,7 +2023,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.010484453,
-                "sip": 1.5915678E-7
+                "sip": 1.5915678e-7
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -2032,7 +2032,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 11.557136,
-                "sip": 1.7544038E-4
+                "sip": 1.7544038e-4
             },
             {
                 "acvStep": "FABRICATION",
@@ -2041,7 +2041,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 5.5036187,
-                "sip": 8.3546394E-5
+                "sip": 8.3546394e-5
             },
             {
                 "acvStep": "FABRICATION",
@@ -2095,7 +2095,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 17.822266,
-                "sip": 2.7054673E-4
+                "sip": 2.7054673e-4
             },
             {
                 "acvStep": "FABRICATION",
@@ -2275,7 +2275,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 13.942233,
-                "sip": 2.1164681E-4
+                "sip": 2.1164681e-4
             },
             {
                 "acvStep": "FABRICATION",
@@ -2293,7 +2293,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 33.899864,
-                "sip": 5.14609E-4
+                "sip": 5.14609e-4
             },
             {
                 "acvStep": "FABRICATION",
@@ -2428,7 +2428,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 7.5385065,
-                "sip": 1.1443653E-4
+                "sip": 1.1443653e-4
             },
             {
                 "acvStep": "FABRICATION",
@@ -2446,7 +2446,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.017347407,
-                "sip": 2.6333825E-7
+                "sip": 2.6333825e-7
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2455,7 +2455,7 @@
                 "equipment": "Consumable",
                 "status": "Consumed",
                 "impact": 0.32278594,
-                "sip": 4.8999764E-6
+                "sip": 4.8999764e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2464,7 +2464,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 0.101597935,
-                "sip": 1.5422837E-6
+                "sip": 1.5422837e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2473,7 +2473,7 @@
                 "equipment": "Personal Computer",
                 "status": "In use",
                 "impact": 0.27170405,
-                "sip": 4.1245394E-6
+                "sip": 4.1245394e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2482,7 +2482,7 @@
                 "equipment": "Communication Device",
                 "status": "In maintenance",
                 "impact": 0.3471093,
-                "sip": 5.269211E-6
+                "sip": 5.269211e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2491,7 +2491,7 @@
                 "equipment": "Communication Device",
                 "status": "In stock",
                 "impact": 24.530308,
-                "sip": 3.723766E-4
+                "sip": 3.723766e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2500,7 +2500,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 0.05617578,
-                "sip": 8.5276326E-7
+                "sip": 8.5276326e-7
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2518,7 +2518,7 @@
                 "equipment": "Communication Device",
                 "status": "Missing",
                 "impact": 10.230468,
-                "sip": 1.5530121E-4
+                "sip": 1.5530121e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2527,7 +2527,7 @@
                 "equipment": "Communication Device",
                 "status": "Retired",
                 "impact": 11.054113,
-                "sip": 1.6780438E-4
+                "sip": 1.6780438e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2545,7 +2545,7 @@
                 "equipment": "Consumable",
                 "status": "In stock",
                 "impact": 0.71697956,
-                "sip": 1.088394E-5
+                "sip": 1.088394e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2554,7 +2554,7 @@
                 "equipment": "Consumable",
                 "status": "Missing",
                 "impact": 0.6057654,
-                "sip": 9.19568E-6
+                "sip": 9.19568e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2563,7 +2563,7 @@
                 "equipment": "IP Router",
                 "status": "In use",
                 "impact": 6.8793383,
-                "sip": 1.0443018E-4
+                "sip": 1.0443018e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2572,7 +2572,7 @@
                 "equipment": "IP Switch",
                 "status": "In use",
                 "impact": 33.38394,
-                "sip": 5.067771E-4
+                "sip": 5.067771e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2581,7 +2581,7 @@
                 "equipment": "Mobility Device",
                 "status": "In use",
                 "impact": 9.966756,
-                "sip": 1.51298E-4
+                "sip": 1.51298e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2590,7 +2590,7 @@
                 "equipment": "Mobility Device",
                 "status": "Retired",
                 "impact": 4.2084684,
-                "sip": 6.3885665E-5
+                "sip": 6.3885665e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2608,7 +2608,7 @@
                 "equipment": "Monitor",
                 "status": "Retired",
                 "impact": 2.4159632,
-                "sip": 3.6674963E-5
+                "sip": 3.6674963e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2635,7 +2635,7 @@
                 "equipment": "Monitor",
                 "status": "Missing",
                 "impact": 0.36263198,
-                "sip": 5.50485E-6
+                "sip": 5.50485e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2644,7 +2644,7 @@
                 "equipment": "Monitor",
                 "status": "Retired",
                 "impact": 15.381057,
-                "sip": 2.3348854E-4
+                "sip": 2.3348854e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2653,7 +2653,7 @@
                 "equipment": "Network Gear",
                 "status": "In use",
                 "impact": 2.1682067,
-                "sip": 3.2913955E-5
+                "sip": 3.2913955e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2662,7 +2662,7 @@
                 "equipment": "Network Gear",
                 "status": "Retired",
                 "impact": 0.3333723,
-                "sip": 5.06068E-6
+                "sip": 5.06068e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2680,7 +2680,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 0.03349364,
-                "sip": 5.084424E-7
+                "sip": 5.084424e-7
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2698,7 +2698,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 0.08143817,
-                "sip": 1.2362531E-6
+                "sip": 1.2362531e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2707,7 +2707,7 @@
                 "equipment": "Personal Computer",
                 "status": "In maintenance",
                 "impact": 22.54637,
-                "sip": 3.4225988E-4
+                "sip": 3.4225988e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2761,7 +2761,7 @@
                 "equipment": "Printer",
                 "status": "On order",
                 "impact": 0.6258508,
-                "sip": 9.500581E-6
+                "sip": 9.500581e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2779,7 +2779,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 8.99539,
-                "sip": 1.3655241E-4
+                "sip": 1.3655241e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2806,7 +2806,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.15045626,
-                "sip": 2.283966E-6
+                "sip": 2.283966e-6
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2815,7 +2815,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 20.305063,
-                "sip": 3.0823625E-4
+                "sip": 3.0823625e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2824,7 +2824,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 2.577293,
-                "sip": 3.9123992E-5
+                "sip": 3.9123992e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2833,7 +2833,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.017249124,
-                "sip": 2.618463E-7
+                "sip": 2.618463e-7
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -2842,7 +2842,7 @@
                 "equipment": "Server",
                 "status": "In use",
                 "impact": 8.556612,
-                "sip": 1.2989165E-4
+                "sip": 1.2989165e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -2851,7 +2851,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.25331047,
-                "sip": 3.84532E-6
+                "sip": 3.84532e-6
             },
             {
                 "acvStep": "UTILISATION",
@@ -2860,7 +2860,7 @@
                 "equipment": "Consumable",
                 "status": "Consumed",
                 "impact": 2.9877644,
-                "sip": 4.5355056E-5
+                "sip": 4.5355056e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -2869,7 +2869,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 2.5331047,
-                "sip": 3.84532E-5
+                "sip": 3.84532e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -2878,7 +2878,7 @@
                 "equipment": "Personal Computer",
                 "status": "In use",
                 "impact": 1.8173401,
-                "sip": 2.7587706E-5
+                "sip": 2.7587706e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -2905,7 +2905,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 12.614277,
-                "sip": 1.9148807E-4
+                "sip": 1.9148807e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -2968,7 +2968,7 @@
                 "equipment": "Consumable",
                 "status": "Retired",
                 "impact": 4.1400704,
-                "sip": 6.284737E-5
+                "sip": 6.284737e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -3210,7 +3210,7 @@
                 "entity": null,
                 "equipment": "Server",
                 "status": "In use",
-                "impact": 1.2033396E7,
+                "impact": 1.2033396e7,
                 "sip": 182.67015
             },
             {
@@ -3247,7 +3247,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 2.353758,
-                "sip": 3.5730674E-5
+                "sip": 3.5730674e-5
             }
         ]
     },
@@ -3262,7 +3262,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.67612576,
-                "sip": 7.9427403E-4
+                "sip": 7.9427403e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -3280,7 +3280,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 0.5989024,
-                "sip": 7.035564E-4
+                "sip": 7.035564e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -3622,7 +3622,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.586423,
-                "sip": 6.888963E-4
+                "sip": 6.888963e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4072,7 +4072,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.10787093,
-                "sip": 1.2672062E-4
+                "sip": 1.2672062e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -4126,7 +4126,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 0.34931642,
-                "sip": 4.1035702E-4
+                "sip": 4.1035702e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -4306,7 +4306,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 0.29458264,
-                "sip": 3.460589E-4
+                "sip": 3.460589e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -4324,7 +4324,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 0.7162634,
-                "sip": 8.414255E-4
+                "sip": 8.414255e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -4459,7 +4459,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.10562427,
-                "sip": 1.2408137E-4
+                "sip": 1.2408137e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -4531,7 +4531,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 0.31715775,
-                "sip": 3.7257886E-4
+                "sip": 3.7257886e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -4594,7 +4594,7 @@
                 "equipment": "Consumable",
                 "status": "Retired",
                 "impact": 0.1040928,
-                "sip": 1.2228229E-4
+                "sip": 1.2228229e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -4888,7 +4888,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.0036275906,
-                "sip": 2.9020724E-5
+                "sip": 2.9020724e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4897,7 +4897,7 @@
                 "equipment": "Consumable",
                 "status": "Consumed",
                 "impact": 0.05394779,
-                "sip": 4.3158233E-4
+                "sip": 4.3158233e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4906,7 +4906,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 0.020847104,
-                "sip": 1.6677684E-4
+                "sip": 1.6677684e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4915,7 +4915,7 @@
                 "equipment": "Personal Computer",
                 "status": "In use",
                 "impact": 0.091230154,
-                "sip": 7.298412E-4
+                "sip": 7.298412e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4942,7 +4942,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 0.011747159,
-                "sip": 9.397727E-5
+                "sip": 9.397727e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4987,7 +4987,7 @@
                 "equipment": "Consumable",
                 "status": "In stock",
                 "impact": 0.08446473,
-                "sip": 6.7571783E-4
+                "sip": 6.7571783e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -4996,7 +4996,7 @@
                 "equipment": "Consumable",
                 "status": "Missing",
                 "impact": 0.08279777,
-                "sip": 6.6238217E-4
+                "sip": 6.6238217e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5077,7 +5077,7 @@
                 "equipment": "Monitor",
                 "status": "Missing",
                 "impact": 0.07440926,
-                "sip": 5.952741E-4
+                "sip": 5.952741e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5104,7 +5104,7 @@
                 "equipment": "Network Gear",
                 "status": "Retired",
                 "impact": 0.103142336,
-                "sip": 8.251387E-4
+                "sip": 8.251387e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5122,7 +5122,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 0.011246171,
-                "sip": 8.996937E-5
+                "sip": 8.996937e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5140,7 +5140,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 0.027344521,
-                "sip": 2.1875616E-4
+                "sip": 2.1875616e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5203,7 +5203,7 @@
                 "equipment": "Printer",
                 "status": "On order",
                 "impact": 0.08491046,
-                "sip": 6.792837E-4
+                "sip": 6.792837e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5248,7 +5248,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.02041271,
-                "sip": 1.6330168E-4
+                "sip": 1.6330168e-4
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5275,7 +5275,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.008540943,
-                "sip": 6.832754E-5
+                "sip": 6.832754e-5
             },
             {
                 "acvStep": "DISTRIBUTION",
@@ -5653,7 +5653,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.11462241,
-                "sip": 9.169792E-4
+                "sip": 9.169792e-4
             },
             {
                 "acvStep": "FABRICATION",
@@ -5698,7 +5698,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.001884439,
-                "sip": 1.5075512E-5
+                "sip": 1.5075512e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5707,7 +5707,7 @@
                 "equipment": "Consumable",
                 "status": "Consumed",
                 "impact": 0.045486163,
-                "sip": 3.6388932E-4
+                "sip": 3.6388932e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5716,7 +5716,7 @@
                 "equipment": "Monitor",
                 "status": "In use",
                 "impact": 0.010394975,
-                "sip": 8.315979E-5
+                "sip": 8.315979e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5725,7 +5725,7 @@
                 "equipment": "Personal Computer",
                 "status": "In use",
                 "impact": 0.03584529,
-                "sip": 2.8676234E-4
+                "sip": 2.8676234e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5734,7 +5734,7 @@
                 "equipment": "Communication Device",
                 "status": "In maintenance",
                 "impact": 0.03210551,
-                "sip": 2.568441E-4
+                "sip": 2.568441e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5752,7 +5752,7 @@
                 "equipment": "Communication Device",
                 "status": "In transit",
                 "impact": 0.0061023436,
-                "sip": 4.881875E-5
+                "sip": 4.881875e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5887,7 +5887,7 @@
                 "equipment": "Monitor",
                 "status": "Missing",
                 "impact": 0.037102625,
-                "sip": 2.96821E-4
+                "sip": 2.96821e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5914,7 +5914,7 @@
                 "equipment": "Network Gear",
                 "status": "Retired",
                 "impact": 0.057370428,
-                "sip": 4.5896342E-4
+                "sip": 4.5896342e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5932,7 +5932,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 0.0044187396,
-                "sip": 3.5349916E-5
+                "sip": 3.5349916e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -5950,7 +5950,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 0.010743951,
-                "sip": 8.5951615E-5
+                "sip": 8.5951615e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -6013,7 +6013,7 @@
                 "equipment": "Printer",
                 "status": "On order",
                 "impact": 0.086950265,
-                "sip": 6.956021E-4
+                "sip": 6.956021e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -6058,7 +6058,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.020903084,
-                "sip": 1.6722467E-4
+                "sip": 1.6722467e-4
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -6085,7 +6085,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.0018356476,
-                "sip": 1.4685181E-5
+                "sip": 1.4685181e-5
             },
             {
                 "acvStep": "FIN_DE_VIE",
@@ -6103,7 +6103,7 @@
                 "equipment": "Communication Device",
                 "status": "In use",
                 "impact": 0.03494669,
-                "sip": 2.7957352E-4
+                "sip": 2.7957352e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -6139,7 +6139,7 @@
                 "equipment": "Communication Device",
                 "status": "In maintenance",
                 "impact": 0.006791517,
-                "sip": 5.433214E-5
+                "sip": 5.433214e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -6156,8 +6156,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In transit",
-                "impact": 8.182551E-4,
-                "sip": 6.546041E-6
+                "impact": 8.182551e-4,
+                "sip": 6.546041e-6
             },
             {
                 "acvStep": "UTILISATION",
@@ -6202,7 +6202,7 @@
                 "equipment": "Consumable",
                 "status": "In stock",
                 "impact": 0.0054718186,
-                "sip": 4.377455E-5
+                "sip": 4.377455e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -6211,7 +6211,7 @@
                 "equipment": "Consumable",
                 "status": "Missing",
                 "impact": 0.0102785425,
-                "sip": 8.222834E-5
+                "sip": 8.222834e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -6219,8 +6219,8 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Consumable",
                 "status": "Retired",
-                "impact": 2.685555E-4,
-                "sip": 2.148444E-6
+                "impact": 2.685555e-4,
+                "sip": 2.148444e-6
             },
             {
                 "acvStep": "UTILISATION",
@@ -6301,7 +6301,7 @@
                 "equipment": "Monitor",
                 "status": "Missing",
                 "impact": 0.024547653,
-                "sip": 1.9638122E-4
+                "sip": 1.9638122e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -6346,7 +6346,7 @@
                 "equipment": "Personal Computer",
                 "status": "Missing",
                 "impact": 0.005870456,
-                "sip": 4.6963647E-5
+                "sip": 4.6963647e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -6364,7 +6364,7 @@
                 "equipment": "Personal Computer",
                 "status": "Consumed",
                 "impact": 0.005870456,
-                "sip": 4.6963647E-5
+                "sip": 4.6963647e-5
             },
             {
                 "acvStep": "UTILISATION",
@@ -6427,7 +6427,7 @@
                 "equipment": "Printer",
                 "status": "On order",
                 "impact": 0.014896439,
-                "sip": 1.1917151E-4
+                "sip": 1.1917151e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -6481,7 +6481,7 @@
                 "equipment": "Tracer",
                 "status": "In use",
                 "impact": 0.014896439,
-                "sip": 1.1917151E-4
+                "sip": 1.1917151e-4
             },
             {
                 "acvStep": "UTILISATION",
@@ -6498,8 +6498,173 @@
                 "entity": "ACME SERVICES",
                 "equipment": "Communication Device",
                 "status": "In use",
-                "impact": 7.5500895E-4,
-                "sip": 6.0400716E-6
+                "impact": 7.5500895e-4,
+                "sip": 6.0400716e-6
+            }
+        ]
+    },
+    "water-use": {
+        "label": "Use of the water resources",
+        "unit": "m3 eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "ozone-depletion": {
+        "label": "Depletion of the ozone layer",
+        "unit": "kg CFC-11 eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "human-toxicity-cancer": {
+        "label": "Human toxicity, cancer",
+        "unit": "CTUh",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "human-toxicity-non-cancer": {
+        "label": "Human toxicity, non cancer",
+        "unit": "CTUh",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "photochemical-ozone-formation": {
+        "label": "Photochemical ozone formation",
+        "unit": "kg N M VO C eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "eutrophication-terrestrial": {
+        "label": "Eutrophication, terrestrial",
+        "unit": "mol N eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "eutrophication-freshwater": {
+        "label": "Eutrophication, freshwater",
+        "unit": "kg P eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "eutrophication-marine": {
+        "label": "Eutrophication, marine",
+        "unit": "kg N eq",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "ecotoxicity-freshwater": {
+        "label": "Ecotoxicity, freshwater",
+        "unit": "CTUe",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "land-use": {
+        "label": "Land use",
+        "unit": "Pt",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
+            }
+        ]
+    },
+    "resource-use-fossils": {
+        "label": "Resource use, fossils",
+        "unit": "MJ",
+        "impacts": [
+            {
+                "acvStep": "DISTRIBUTION",
+                "country": "China",
+                "entity": "ACME SERVICES",
+                "equipment": "Communication Device",
+                "status": "In use",
+                "impact": 2.1618197e-8,
+                "sip": 3.3516585e-4
             }
         ]
     }

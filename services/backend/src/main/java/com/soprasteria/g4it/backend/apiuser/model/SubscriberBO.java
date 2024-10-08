@@ -45,6 +45,11 @@ public class SubscriberBO {
     private String authorizedDomains;
 
     /**
+     * The criteria
+     */
+    private List<String> criteria;
+
+    /**
      * User roles on subscriber.
      */
     private List<String> roles;

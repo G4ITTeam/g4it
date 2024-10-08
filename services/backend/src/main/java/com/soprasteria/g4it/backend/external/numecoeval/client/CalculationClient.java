@@ -46,11 +46,14 @@ public class CalculationClient {
      * @param modeRest  the mode ASYNC or SYNC
      * @return the RapportDemandeCalculRest
      */
-    public RapportDemandeCalculRest submitCalculations(final String batchName, final ModeRest modeRest) {
-
+    public RapportDemandeCalculRest submitCalculations(final String batchName, final ModeRest modeRest, final List<String> criteriaList) {
         final var demandeCalculRest = new DemandeCalculRest();
         demandeCalculRest.setNomLot(batchName);
-        return calculsApi.soumissionPourCalcul(demandeCalculRest, modeRest).block();
+        demandeCalculRest.setEtapes(null);
+        demandeCalculRest.setCriteres(criteriaList);
+        log.info("Criteria to calculate the evaluation on: {}", criteriaList);
+
+        return calculsApi.soumissionPourCalcul(demandeCalculRest, null, modeRest).block();
 
     }
 
@@ -74,11 +77,9 @@ public class CalculationClient {
     ) {
         final String batchDateString = batchDate == null ? null : batchDate.toString();
 
-        final ResponseEntity<List<RapportImportRest>> response = importsApi.importCSVWithHttpInfo(batchName, dataCenterCsv,
-                        physicalEquipmentCsv, virtualEquipmentCsv, applicationCsv, null, null,
-                        batchDateString, organizationId)
+        final ResponseEntity<List<RapportImportRest>> response = importsApi.importCSVWithHttpInfo(organizationId, batchName, batchDateString, dataCenterCsv,
+                        physicalEquipmentCsv, virtualEquipmentCsv, applicationCsv, null, null, null)
                 .block();
-
         if (response == null) {
             throw new NumEcoEvalConnectorRuntimeException("NumEcoEval returned null response when calling POST /importCSV");
 

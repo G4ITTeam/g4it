@@ -5,12 +5,10 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin } from "rxjs";
 import { Constants } from "src/constants";
-import { Filter } from "../../interfaces/filter.interface";
-import { FilterApplicationReceived } from "../../store/filter.repository";
 import {
     ApplicationCriteriaFootprint,
     ApplicationFootprint,
@@ -18,7 +16,8 @@ import {
     Datacenter,
     PhysicalEquipmentAvgAge,
     PhysicalEquipmentLowImpact,
-} from "../../store/footprint.repository";
+    PhysicalEquipmentsElecConsumption,
+} from "../../interfaces/footprint.interface";
 
 const endpoint = Constants.ENDPOINTS.inventories;
 
@@ -50,29 +49,6 @@ export class FootprintDataService {
         );
     }
 
-    getFilters(inventoryId: number): Observable<Filter> {
-        return this.http.get<Filter>(
-            `${endpoint}/${inventoryId}/indicators/equipments/filters`,
-        );
-    }
-
-    getApplicationFilters(
-        inventoryId: number,
-        domain = "",
-        subDomain = "",
-        applicationName = "",
-    ): Observable<FilterApplicationReceived> {
-        const obj: any = {};
-        if (domain) obj.domain = domain;
-        if (subDomain) obj.subDomain = subDomain;
-        if (applicationName) obj.applicationName = applicationName;
-
-        return this.http.get<FilterApplicationReceived>(
-            `${endpoint}/${inventoryId}/indicators/applications/filters`,
-            { params: new HttpParams({ fromObject: obj }) },
-        );
-    }
-
     getDatacenters(inventoryId: number) {
         return this.http.get<Datacenter[]>(
             `${endpoint}/${inventoryId}/indicators/datacenters`,
@@ -86,7 +62,11 @@ export class FootprintDataService {
         const lowImpact$ = this.http.get<PhysicalEquipmentLowImpact[]>(
             `${endpoint}/${inventoryId}/indicators/physicalEquipmentsLowImpact`,
         );
-        return forkJoin([averageAge$, lowImpact$]);
+        const elecConsumption$ = this.http.get<PhysicalEquipmentsElecConsumption[]>(
+            `${endpoint}/${inventoryId}/indicators/physicalEquipmentsElecConsumption`,
+        );
+
+        return forkJoin([averageAge$, lowImpact$, elecConsumption$]);
     }
 
     sendExportRequest(inventoryId: number): Observable<number> {

@@ -4,18 +4,19 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { Injectable } from "@angular/core";
 import { Observable, lastValueFrom } from "rxjs";
 import { sortByProperty } from "sort-by-property";
 import {
-    Inventory,
     CreateInventory,
+    Inventory,
+    InventoryCriteriaRest,
     InventoryUpdateRest,
 } from "src/app/core/interfaces/inventory.interfaces";
+import { Constants } from "src/constants";
 import { InventoryRepository } from "../../store/inventory.repository";
 import { InventoryDataService } from "../data/inventory-data.service";
-import { Constants } from "src/constants";
 
 @Injectable({
     providedIn: "root",
@@ -82,5 +83,11 @@ export class InventoryService {
 
     deleteInventory(id: number): Observable<Inventory[]> {
         return this.inventoryDataService.deleteInventory(id);
+    }
+
+    updateInventoryCriteria(
+        inventoryCriteria: InventoryCriteriaRest,
+    ): Observable<Inventory> {
+        return this.inventoryDataService.updateInventoryCriteria(inventoryCriteria);
     }
 }

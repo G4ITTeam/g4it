@@ -83,94 +83,6 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications/{applicationName}/{criteria}:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/inventoryIdPathParam'
-      - in: path
-        name: applicationName
-        schema:
-          type: string
-        required: true
-      - in: path
-        name: criteria
-        schema:
-          type: string
-        required: true
-    get:
-      description: Endpoint to retrieve application VM indicators following unit calculations of ecological impact.
-      tags:
-        - inventory-indicator
-      operationId: getApplicationVmIndicators
-      x-custom-role: "hasRole('INVENTORY_READ')"
-      responses:
-        "200":
-          description: Return application vm indicators
-          content:
-            'application/json':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ApplicationVmIndicatorRest"
-        "400":
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/equipments/filters:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/inventoryIdPathParam'
-    get:
-      description: Endpoint to retrieve possible equipment filters following unit calculations of ecological impact.
-      tags:
-        - inventory-indicator
-      operationId: getEquipmentFilters
-      x-custom-role: "hasRole('INVENTORY_READ')"
-      responses:
-        "200":
-          description: Return equipment filters
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/EquipmentFiltersRest"
-        "400":
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          $ref: '#/components/responses/InternalServerError'
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/applications/filters:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/inventoryIdPathParam'
-      - $ref: '#/components/parameters/domainQueryParam'
-      - $ref: '#/components/parameters/subDomainQueryParam'
-      - $ref: '#/components/parameters/applicationNameQueryParam'
-    get:
-      description: Endpoint to retrieve possible application filters following unit calculations of ecological impact.
-      tags:
-        - inventory-indicator
-      operationId: getApplicationFilters
-      x-custom-role: "hasRole('INVENTORY_READ')"
-      responses:
-        "200":
-          description: Return application filters
-          content:
-            'application/json':
-              schema:
-                $ref: "#/components/schemas/ApplicationFiltersRest"
-        "400":
-          $ref: '#/components/responses/BadRequestError'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          $ref: '#/components/responses/InternalServerError'
   /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/datacenters:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
@@ -196,6 +108,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+
   /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
@@ -223,6 +136,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+
   /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'
@@ -244,6 +158,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PhysicalEquipmentLowImpactRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      summary: endpoint to retrieve the electric consumption of physical equipments
+      description: endpoint to retrieve the electric consumption of physical equipments
+      tags:
+        - inventory-indicator
+      operationId: getPhysicalEquipmentElecConsumption
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        "200":
+          description: return electric consumption of physical equipments
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PhysicalEquipmentElecConsumptionRest'
         "400":
           $ref: '#/components/responses/BadRequestError'
         '401':

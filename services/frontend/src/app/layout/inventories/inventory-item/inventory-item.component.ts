@@ -10,7 +10,14 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
-import { Inventory } from "src/app/core/interfaces/inventory.interfaces";
+import {
+    OrganizationCriteriaRest,
+    SubscriberCriteriaRest,
+} from "src/app/core/interfaces/administration.interfaces";
+import {
+    Inventory,
+    InventoryCriteriaRest,
+} from "src/app/core/interfaces/inventory.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { EvaluationDataService } from "src/app/core/service/data/evaluation-data.service";
@@ -35,8 +42,20 @@ export class InventoryItemComponent implements OnInit {
     @Output() openSidebarForNote: EventEmitter<number> = new EventEmitter();
     @Output() openTab: EventEmitter<number> = new EventEmitter();
     @Output() closeTab: EventEmitter<number> = new EventEmitter();
+    @Output() saveInventory = new EventEmitter<InventoryCriteriaRest>();
 
     batchStatusMapping: any = Constants.EVALUATION_BATCH_STATUS_MAPPING;
+    displayPopup = false;
+    selectedCriteria: string[] = [];
+    subscriber: SubscriberCriteriaRest = { criteria: [] };
+    organization: OrganizationCriteriaRest = {
+        subscriberId: 0,
+        name: "",
+        status: "",
+        dataRetentionDays: 0,
+        criteriaIs: [],
+        criteriaDs: [],
+    };
 
     constructor(
         private inventoryService: InventoryService,
@@ -49,7 +68,19 @@ export class InventoryItemComponent implements OnInit {
         public userService: UserService,
     ) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.userService.currentSubscriber$.subscribe((subscriber) => {
+            this.subscriber.criteria = subscriber.criteria!;
+        });
+        this.userService.currentOrganization$.subscribe((organization) => {
+            this.organization.subscriberId = organization.subscriberId!;
+            this.organization.name = organization.name;
+            this.organization.status = organization.status;
+            this.organization.dataRetentionDays = organization.dataRetentionDays!;
+            this.organization.criteriaIs = organization.criteriaIs!;
+            this.organization.criteriaDs = organization.criteriaDs!;
+        });
+    }
 
     isRunning() {
         if (!this.inventory.lastEvaluationReport) return false;
@@ -90,13 +121,20 @@ export class InventoryItemComponent implements OnInit {
 
     redirectFootprint(redirectTo: string): void {
         if (!this.inventory.lastEvaluationReport) return;
-
+        const criteriaArrayLength = this.inventory?.criteria?.length;
         let uri = undefined;
 
         if (redirectTo === "equipment" && this.inventory.physicalEquipmentCount > 0) {
-            uri = Constants.MUTLI_CRITERIA;
+            uri =
+                criteriaArrayLength! === 1
+                    ? this.inventory?.criteria![0]
+                    : Constants.MUTLI_CRITERIA;
         } else if (redirectTo === "application" && this.inventory.applicationCount > 0) {
-            uri = "application";
+            uri =
+                "application/" +
+                (criteriaArrayLength! === 1
+                    ? this.inventory.criteria![0]
+                    : Constants.MUTLI_CRITERIA);
         }
 
         if (uri === undefined) return;
@@ -172,5 +210,15 @@ export class InventoryItemComponent implements OnInit {
 
     trackByFn(index: any) {
         return index;
+    }
+
+    displayPopupFct() {
+        const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
+        this.selectedCriteria =
+            this.inventory.criteria ??
+            this.organization?.criteriaIs ??
+            this.subscriber?.criteria ??
+            defaultCriteria;
+        this.displayPopup = true;
     }
 }

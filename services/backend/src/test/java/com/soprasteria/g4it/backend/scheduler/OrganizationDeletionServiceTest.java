@@ -59,7 +59,7 @@ class OrganizationDeletionServiceTest {
         when(inventoryRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(inventoryEntity1.get()));
         when(digitalServiceRepo.findByOrganization(linkedOrganization)).thenReturn(List.of(digitalServiceEntity.get()));
         when(organizationRepository.findAllByStatusIn(List.of(OrganizationStatus.TO_BE_DELETED.name()))).thenReturn(List.of(linkedOrganization));
-        when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
+        lenient().when(fileDeletionService.deleteFiles(any(), any(), any(), any())).thenReturn(List.of());
 
         // EXECUTE
         organizationDeletionService.executeDeletion();

@@ -6,30 +6,14 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { RouterModule, Routes } from "@angular/router";
-import { Constants } from "src/constants";
-import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
+import { FootprintRedirectGuard } from "src/app/guard/footprint-redirect.guard";
 import { InventoriesApplicationFootprintComponent } from "./inventories-application-footprint.component";
-import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
 
 const routes: Routes = [
     {
-        path: "",
+        path: ":criteria",
         component: InventoriesApplicationFootprintComponent,
-        children: [
-            {
-                path: Constants.MUTLI_CRITERIA,
-                component: ApplicationMulticriteriaFootprintComponent,
-            },
-            {
-                path: ":critere",
-                component: ApplicationCriteriaFootprintComponent,
-            },
-            {
-                path: "",
-                redirectTo: Constants.MUTLI_CRITERIA,
-                pathMatch: "full",
-            },
-        ],
+        canActivate: [FootprintRedirectGuard],
     },
 ];
 

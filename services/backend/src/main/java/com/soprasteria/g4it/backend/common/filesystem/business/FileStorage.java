@@ -67,7 +67,7 @@ public interface FileStorage {
      */
     void upload(final String fileLocalPath, final FileFolder folder, final String fileName) throws IOException;
 
-    String upload(final FileFolder folder, final String fileName, final String type, final byte[] fileContent) throws IOException;
+    String upload(final FileFolder folder, final String fileName, final String type, final InputStream fileContent) throws IOException;
 
     String getFileUrl(final FileFolder folder, final String fileName);
 

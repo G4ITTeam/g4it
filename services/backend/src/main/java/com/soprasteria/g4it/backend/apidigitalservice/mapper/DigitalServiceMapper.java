@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.Server;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.util.Optional;
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true),
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         uses = {TerminalMapper.class, NetworkMapper.class, ServerMapper.class})
+@Slf4j
 public abstract class DigitalServiceMapper {
 
     @Autowired
@@ -55,7 +57,6 @@ public abstract class DigitalServiceMapper {
     @Mapping(target = "terminals", ignore = true)
     @Mapping(target = "networks", ignore = true)
     @Mapping(target = "servers", ignore = true)
-    @Mapping(target = "userId", source = "user.id")
     public abstract DigitalServiceBO toBusinessObject(final DigitalService entity);
 
     /**
@@ -64,7 +65,6 @@ public abstract class DigitalServiceMapper {
      * @param source the source list.
      * @return the business object list.
      */
-    @Mapping(target = "userId", source = "user.id")
     public abstract List<DigitalServiceBO> toBusinessObject(final List<DigitalService> source);
 
     /**
@@ -74,7 +74,6 @@ public abstract class DigitalServiceMapper {
      * @return the DigitalServiceBO.
      */
     @Named("fullMapping")
-    @Mapping(target = "userId", source = "user.id")
     public abstract DigitalServiceBO toFullBusinessObject(final DigitalService entity);
 
     /**
@@ -138,14 +137,26 @@ public abstract class DigitalServiceMapper {
                         .contains(server.getUid()));
         Optional.ofNullable(source.getServers()).orElse(new ArrayList<>()).forEach(server -> mergeServer(target, server, digitalServiceReferentialService));
 
+        List<String> sourceCriteria = source.getCriteria();
+        List<String> targetCriteria = target.getCriteria();
+        if (!Objects.equals(sourceCriteria, targetCriteria)) {
+            //set criteria
+            target.setCriteria(sourceCriteria);
+        }
+
         // Merge note
         Note note = noteMapper.toEntity(source.getNote());
         if (note != null) {
             if (target.getNote() == null) {
+                //create note
                 note.setCreatedBy(user);
+            } else if (note.getContent().equals(target.getNote().getContent())) {
+                //nothing to update in the note
+                return;
             }
             note.setLastUpdatedBy(user);
         }
+        // update/delete note
         target.setNote(note);
     }
 

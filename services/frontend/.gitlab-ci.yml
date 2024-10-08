@@ -7,6 +7,7 @@ variables:
   PROJECT_ROOT_DIR: "services/frontend"
   CHECKMARX_PROJECT: "${CHECKMARX_PATH}/frontend"
   DISABLE_PROMOTE_IMAGE: "true"
+  DISABLE_DEPENDENCY_CHECK: "true"
   PROJ_FILE_PATH: "package.json"
   ANGULAR_CLI_VERSION: "17.0.9"
 
@@ -65,12 +66,12 @@ build-image:
   image:
     # Use debug to have sh
     name: ${CI_REGISTRY}/dep/library/devops-images/kaniko:v1.18.0-debug-update1
-    entrypoint: [ "" ]
+    entrypoint: [""]
   script:
-    - !reference [ .build-image, script ]
+    - !reference [.build-image, script]
   interruptible: true
   rules:
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX'
+    - if: "$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX"
       when: always
 
 checkmarx:

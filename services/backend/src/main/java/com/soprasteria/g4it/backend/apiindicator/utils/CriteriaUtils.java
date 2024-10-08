@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.utils;
 
 /**
@@ -32,6 +32,12 @@ public final class CriteriaUtils {
             case "Acidification" -> "acidification";
             case "Particulate matter and respiratory inorganics" -> "particulate-matter";
             case "Resource use (minerals and metals)" -> "resource-use";
+            case "Ozone depletion" -> "ozone-depletion";
+            case "Photochemical ozone formation" -> "photochemical-ozone-formation";
+            case "Eutrophication, terrestrial" -> "eutrophication-terrestrial";
+            case "Eutrophication, freshwater" -> "eutrophication-freshwater";
+            case "Eutrophication, marine" -> "eutrophication-marine";
+            case "Resource use, fossils" -> "resource-use-fossils";
             default -> "";
         };
     }
@@ -49,6 +55,12 @@ public final class CriteriaUtils {
             case "acidification" -> "Acidification";
             case "particulate-matter" -> "Particulate matter and respiratory inorganics";
             case "resource-use" -> "Resource use (minerals and metals)";
+            case "ozone-depletion" -> "Ozone depletion";
+            case "photochemical-ozone-formation" -> "Photochemical ozone formation";
+            case "eutrophication-terrestrial" -> "Eutrophication, terrestrial";
+            case "eutrophication-freshwater" -> "Eutrophication, freshwater";
+            case "eutrophication-marine" -> "Eutrophication, marine";
+            case "resource-use-fossils" -> "Resource use, fossils";
             default -> "";
         };
     }

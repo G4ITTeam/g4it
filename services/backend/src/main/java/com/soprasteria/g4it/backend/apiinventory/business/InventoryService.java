@@ -7,11 +7,13 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
+import com.soprasteria.g4it.backend.apibatchevaluation.repository.InventoryEvaluationReportRepository;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
 import com.soprasteria.g4it.backend.apiinventory.model.AbstractReportBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReportBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.InventoryEvaluationReport;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -54,6 +57,8 @@ public class InventoryService {
      */
     @Autowired
     private InventoryMapper inventoryMapper;
+    @Autowired
+    private InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
 
     /**
      * Retrieve the last batch name in inventory.
@@ -68,6 +73,17 @@ public class InventoryService {
                 .filter(report -> "COMPLETED".equals(report.getBatchStatusCode()) && report.getEndTime() != null)
                 .max(Comparator.comparing(InventoryEvaluationReportBO::getEndTime))
                 .map(AbstractReportBO::getBatchName);
+    }
+
+    /**
+     * Retrieve number of criteria
+     *
+     * @param batchName the batch name
+     * @return number of criteria on which evaluation was done
+     */
+    public Long getCriteriaNumber(final String batchName) {
+        InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
+        return (long) evaluationReport.getCriteria().size();
     }
 
     /**
@@ -134,7 +150,7 @@ public class InventoryService {
     }
 
     /**
-     * Create an inventory.
+     * Update note or criteria for an inventory.
      *
      * @param subscriberName      the subscriberName.
      * @param organizationId      the organization's id
@@ -151,6 +167,13 @@ public class InventoryService {
         final Inventory inventoryToSave = inventory.get();
         inventoryToSave.setName(inventoryUpdateRest.getName());
 
+        List<String> currentCriteria = inventoryToSave.getCriteria();
+        List<String> newCriteria = inventoryUpdateRest.getCriteria();
+        // Set criteria
+        if (!Objects.equals(currentCriteria, newCriteria)) {
+            inventoryToSave.setCriteria(newCriteria);
+        }
+        // Set note
         Note note = inventoryToSave.getNote();
 
         if (inventoryUpdateRest.getNote() == null) {

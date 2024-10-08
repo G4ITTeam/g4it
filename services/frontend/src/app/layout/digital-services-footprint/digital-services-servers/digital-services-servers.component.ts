@@ -34,6 +34,7 @@ export class DigitalServicesServersComponent {
         servers: [],
         networks: [],
         terminals: [],
+        members: [],
     };
     sidebarVisible: boolean = false;
 
@@ -97,9 +98,6 @@ export class DigitalServicesServersComponent {
         this.digitalServicesBusiness.setServerForm(newServer);
         this.router.navigate(["create"], { relativeTo: this.route });
         this.digitalServicesBusiness.openPanel();
-        this.digitalService.servers = JSON.parse(
-            JSON.stringify(this.digitalService.servers),
-        );
     }
 
     updateServer(server: DigitalServiceServerConfig) {
@@ -107,9 +105,6 @@ export class DigitalServicesServersComponent {
         this.digitalServicesBusiness.setServerForm({ ...server });
         this.router.navigate(["parameters"], { relativeTo: this.route });
         this.digitalServicesBusiness.openPanel();
-        this.digitalService.servers = JSON.parse(
-            JSON.stringify(this.digitalService.servers),
-        );
     }
 
     async deleteServers(server: DigitalServiceServerConfig) {

@@ -159,9 +159,9 @@ public class LocalFileStorage implements FileStorage {
 
     @Override
     public String upload(final FileFolder folder, final String fileName, final String type,
-                         final byte[] fileContent) throws IOException {
+                         final InputStream fileContent) throws IOException {
         // Upload with a multipart file
-        writeFile(folder, fileName, new ByteArrayInputStream(fileContent));
+        writeFile(folder, fileName, fileContent);
         return toPath(folder, fileName).toString();
     }
 

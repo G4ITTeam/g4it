@@ -4,7 +4,7 @@ storage
 storage/*
 !storage/--INTERNAL-G4IT--
 
-storagetmp/export
+storagetmp/*
 
 ### Maven ###
 target/

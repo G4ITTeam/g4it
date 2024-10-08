@@ -17,22 +17,28 @@ import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class FileSystemService {
 
+    private static final int REPLACEMENT_CHAR = 65533;
     /**
      * Content types.
      */
@@ -50,7 +56,13 @@ public class FileSystemService {
 
     @Autowired
     private OrganizationService organizationService;
+    @Value("${local.working.folder}")
+    private String localWorkingFolder;
 
+    @PostConstruct
+    public void initFolder() throws IOException {
+        Files.createDirectories(Path.of(localWorkingFolder, "input", "inventory"));
+    }
 
     /**
      * List files of subscriber and organization in INPUT directory
@@ -163,11 +175,41 @@ public class FileSystemService {
      * @return the file path.
      */
     private String uploadFile(final MultipartFile file, final FileStorage fileStorage) {
+        final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
         try {
-            return fileStorage.upload(FileFolder.INPUT, file.getOriginalFilename(), file.getName(), file.getBytes());
+            BufferedReader br = getBufferedReader(file);
+            // if the encoding was not utf8, we open the file again with an encoding adapted to ANSI
+            File outputFile = tempPath.toFile();
+            try (Writer out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    out.append(line).append("\n");
+                }
+                out.flush();
+            }
+            InputStream tmpInputStream = new FileInputStream(outputFile);
+            var result = fileStorage.upload(FileFolder.INPUT, file.getOriginalFilename(), file.getName(), tmpInputStream);
+            tmpInputStream.close();
+            Files.delete(tempPath);
+            return result;
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
         }
+    }
+
+    private static BufferedReader getBufferedReader(MultipartFile file) throws IOException {
+        var isr = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
+        boolean isOk = true;
+        while (isr.ready()) {
+            // if there is a character like this �, it means that the encoding was not utf-8
+            if (isr.read() == REPLACEMENT_CHAR) {
+                isOk = false;
+                break;
+            }
+        }
+        String encoding = isOk ? StandardCharsets.UTF_8.toString() : "Cp1252";
+        return new BufferedReader(new InputStreamReader(file.getInputStream(), encoding));
     }
 
     /**

@@ -76,6 +76,7 @@ class UserServiceTest {
                                         .status(OrganizationStatus.ACTIVE.name())
                                         .build()))
                                 .name(SUBSCRIBER)
+                                .criteria(List.of("criteria"))
                                 .build())
                         .build()))
                 .userOrganizations(List.of(UserOrganization

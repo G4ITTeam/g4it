@@ -5,7 +5,8 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, DestroyRef, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { take } from "rxjs";
@@ -13,9 +14,11 @@ import {
     Organization,
     OrganizationUpsertRest,
     Subscriber,
+    SubscriberCriteriaRest,
 } from "src/app/core/interfaces/administration.interfaces";
 import { AdministrationService } from "src/app/core/service/business/administration.service";
 import { UserDataService } from "src/app/core/service/data/user-data.service";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
 
 @Component({
@@ -24,6 +27,8 @@ import { Constants } from "src/constants";
     providers: [ConfirmationService, MessageService],
 })
 export class OrganizationsComponent {
+    private destroyRef = inject(DestroyRef);
+
     editable = false;
     subscribersDetails!: Subscriber[];
     unmodifiedSubscribersDetails!: Subscriber[];
@@ -32,11 +37,15 @@ export class OrganizationsComponent {
 
     status = Constants.ORGANIZATION_STATUSES;
 
+    displayPopup = false;
+    selectedCriteria: string[] = [];
+
     constructor(
         private confirmationService: ConfirmationService,
         public administrationService: AdministrationService,
         private translate: TranslateService,
         private userDataService: UserDataService,
+        private globalStore: GlobalStoreService,
     ) {}
 
     ngOnInit() {
@@ -59,7 +68,6 @@ export class OrganizationsComponent {
         const organizations =
             this.unmodifiedSubscribersDetails.find((s) => s.name === subscriber.name)
                 ?.organizations || [];
-
         organization.uiStatus = undefined;
 
         if (event.trim().includes(" ")) {
@@ -141,6 +149,23 @@ export class OrganizationsComponent {
         this.administrationService
             .updateOrganization(organizationId, body)
             .subscribe((_) => {
+                this.init(this.subscriber.name);
+                this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
+            });
+    }
+
+    displayPopupFct() {
+        const slicedCriteria = Object.keys(this.globalStore.criteriaList()).slice(0, 5);
+        this.selectedCriteria = this.subscriber.criteria ?? slicedCriteria;
+        this.displayPopup = true;
+    }
+
+    handleSaveSubscriber(subscriberCriteria: SubscriberCriteriaRest) {
+        this.administrationService
+            .updateSubscriberCriteria(this.subscriber.id, subscriberCriteria)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((_) => {
+                this.displayPopup = false;
                 this.init(this.subscriber.name);
                 this.userDataService.fetchUserInfo().pipe(take(1)).subscribe();
             });

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 
 import { Note } from "./note.interface";
 
@@ -25,7 +25,9 @@ export interface Inventory {
     lastEvaluationReport?: EvaluationReport;
     lastIntegrationReport?: IntegrationReport;
     note?: Note;
-    exportReport: ExportReport
+    exportReport: ExportReport;
+    criteria?: string[];
+    organizationId?: number;
 }
 
 export interface InventoryUpdateRest {
@@ -74,4 +76,15 @@ export interface ExportReport {
     batchName: string;
     resultFileUrl: string;
     resultFileSize: number;
+}
+
+export interface InventoryFilterSet {
+    [key: string]: Set<string>;
+}
+
+export interface InventoryCriteriaRest {
+    id: number;
+    name: string;
+    criteria: string[];
+    note: Note;
 }

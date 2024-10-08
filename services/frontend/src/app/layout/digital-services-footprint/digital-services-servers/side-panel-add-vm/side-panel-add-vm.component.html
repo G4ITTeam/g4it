@@ -31,14 +31,16 @@
                     ngDefaultControl
                     locale="fr-FR"
                 />
-                <p class="error-text" *ngIf="addVmForm.get('vcpu')?.hasError('required')">
-                    {{ "digital-services-servers.total.vcpu" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-                <p class="error-text" *ngIf="isValueTooHigh">
-                    {{ "digital-services-servers.error.vcpu" | translate }}
-                    ({{ server.totalVCpu }}
-                    {{ "digital-services-servers.vcpu" | translate }})
+                <p class="error-text">
+                    @if (vcpuControl.hasError("required")) {
+                        {{ "digital-services-servers.total.vcpu" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    }
+                    @if (vcpuControl.hasError("isValueTooHigh")) {
+                        {{ "digital-services-servers.error.vcpu" | translate }}
+                        ({{ server.totalVCpu }}
+                        {{ "digital-services-servers.vcpu" | translate }})
+                    }
                 </p>
             </div>
             <div *ngIf="server.type === 'Storage'" class="label-input-div-medium">
@@ -54,13 +56,15 @@
                     ngDefaultControl
                     locale="fr-FR"
                 />
-                <p class="error-text" *ngIf="addVmForm.get('disk')?.hasError('required')">
-                    {{ "digital-services-servers.total.disk" | translate }}
-                    {{ "common.mandatory" | translate }}
-                </p>
-                <p class="error-text" *ngIf="isValueTooHigh">
-                    {{ "digital-services-servers.error.disk" | translate }}
-                    ({{ server.totalDisk }})
+                <p class="error-text">
+                    @if (diskControl.hasError("required")) {
+                        {{ "digital-services-servers.total.disk" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    }
+                    @if (diskControl.hasError("isValueTooHigh")) {
+                        {{ "digital-services-servers.error.disk" | translate }}
+                        ({{ server.totalDisk }})
+                    }
                 </p>
             </div>
         </div>
@@ -75,17 +79,21 @@
                     [required]="true"
                     [min]="0"
                     styleClass="inputnumber-medium"
+                    (onInput)="verifyValue()"
                     [(ngModel)]="vm.quantity"
                     name="quantity"
                     ngDefaultControl
                     locale="fr-FR"
                 />
-                <p
-                    class="error-text"
-                    *ngIf="addVmForm.get('quantity')?.hasError('required')"
-                >
-                    {{ "digital-services-servers.quantity" | translate }}
-                    {{ "common.mandatory" | translate }}
+
+                <p class="error-text">
+                    @if (quantityControl.hasError("required")) {
+                        {{ "digital-services-servers.quantity" | translate }}
+                        {{ "common.mandatory" | translate }}
+                    }
+                    @if (quantityControl.hasError("isQuantityTooLow")) {
+                        {{ "digital-services-servers.error.quantity" | translate }}
+                    }
                 </p>
             </div>
             <div class="label-input-div-medium">
@@ -117,7 +125,7 @@
             <p-button
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 styleClass="yellow-button"
-                [disabled]="addVmForm.invalid || isValueTooHigh"
+                [disabled]="addVmForm.invalid"
                 type="submit"
             >
                 {{ "common.add" | translate }}

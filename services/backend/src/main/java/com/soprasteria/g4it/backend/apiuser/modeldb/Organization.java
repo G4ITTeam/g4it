@@ -73,6 +73,16 @@ public class Organization extends AbstractBaseEntity implements Serializable {
     private String status;
 
     /**
+     * The Criteria key for inventory.
+     */
+    private List<String> criteriaIs;
+
+    /**
+     * Criteria key for digital service.
+     */
+    private List<String> criteriaDs;
+
+    /**
      * The last user who updated the note.
      */
     @OnDelete(action = OnDeleteAction.SET_NULL)

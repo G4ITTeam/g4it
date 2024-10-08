@@ -11,6 +11,7 @@ import { CardModule } from "primeng/card";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
 import { DigitalServicesItemComponent } from "./digital-services-item/digital-services-item.component";
 import { DigitalServicesComponent } from "./digital-services.component";
 import { digitalServicesRouter } from "./digital-services.router";
@@ -24,6 +25,7 @@ import { digitalServicesRouter } from "./digital-services.router";
         SharedModule,
         ConfirmPopupModule,
         digitalServicesRouter,
+        SidePanelDsSharedUsersComponent,
     ],
     exports: [DigitalServicesComponent, DigitalServicesItemComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

@@ -7,6 +7,10 @@
  */
 package com.soprasteria.g4it.backend.apiadministrator.business;
 
+
+import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
+import com.soprasteria.g4it.backend.apiuser.business.UserService;
+import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
@@ -18,8 +22,10 @@ import com.soprasteria.g4it.backend.apiuser.repository.SubscriberRepository;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
+import com.soprasteria.g4it.backend.server.gen.api.dto.CriteriaRest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -34,19 +40,35 @@ import java.util.stream.Collectors;
 public class AdministratorService {
 
     /**
-     * The Administrator Role Service
-     */
-    AdministratorRoleService administratorRoleService;
-
-    /**
      * Repository to access subscriber data.
      */
+    @Autowired
     SubscriberRepository subscriberRepository;
-
     /**
      * Repository to access user data.
      */
     UserRepository userRepository;
+    /**
+     * Subscriber Mapper.
+     */
+    @Autowired
+    SubscriberRestMapper subscriberRestMapper;
+    /**
+     * The Administrator Role Service
+     */
+    @Autowired
+    private AdministratorRoleService administratorRoleService;
+    /**
+     * The Subscriber Service
+     */
+    @Autowired
+    private SubscriberService subscriberService;
+
+   /**
+    * The User Service
+    */
+    @Autowired
+    private UserService userService;
 
     /**
      * Retrieve the list of subscribers for the user which has ROLE_SUBSCRIBER_ADMINISTRATOR on it
@@ -60,6 +82,21 @@ public class AdministratorService {
         return user.getSubscribers().stream()
                 .filter(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
                 .toList();
+    }
+
+    /**
+     * @param subscriberId the subscriber id
+     * @param criteriaRest criteria to set
+     * @param user         the current user
+     * @return the SubscriberBo with updated criteria
+     */
+    public SubscriberBO updateSubscriberCriteria(final Long subscriberId, final CriteriaRest criteriaRest, final UserBO user) {
+        administratorRoleService.hasAdminRightsOnAnySubscriber(user);
+        Subscriber subscriberToUpdate = subscriberService.getSubscriptionById(subscriberId);
+        subscriberToUpdate.setCriteria(criteriaRest.getCriteria());
+        subscriberRepository.save(subscriberToUpdate);
+        userService.clearUserAllCache();
+        return subscriberRestMapper.toBusinessObject(subscriberToUpdate);
     }
 
 
@@ -115,7 +152,7 @@ public class AdministratorService {
                                     .map(userOrg -> userOrg.getOrganization().getId())
                                     .toList();
 
-                    UserSearchBO userSearch = UserSearchBO.builder()
+                    return UserSearchBO.builder()
                             .id(searchedUser.getId())
                             .firstName(searchedUser.getFirstName())
                             .lastName(searchedUser.getLastName())
@@ -123,10 +160,8 @@ public class AdministratorService {
                             .linkedOrgIds(linkedOrgIds)
                             .roles(userRoles)
                             .build();
-
-                    return userSearch;
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 
 }

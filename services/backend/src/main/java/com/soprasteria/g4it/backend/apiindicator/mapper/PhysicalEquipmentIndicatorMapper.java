@@ -7,9 +7,11 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
+import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentElecConsumptionBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentsAvgAgeBO;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentAvgAgeView;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentElecConsumptionView;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.PhysicalEquipmentLowImpactView;
 import org.mapstruct.Mapper;
 
@@ -21,4 +23,6 @@ public interface PhysicalEquipmentIndicatorMapper {
     List<PhysicalEquipmentsAvgAgeBO> physicalEquipmentAvgAgetoDto(final List<PhysicalEquipmentAvgAgeView> source);
 
     List<PhysicalEquipmentLowImpactBO> physicalEquipmentLowImpacttoDTO(final List<PhysicalEquipmentLowImpactView> source);
+
+    List<PhysicalEquipmentElecConsumptionBO> physicalEquipmentElecConsumptionToDto(final List<PhysicalEquipmentElecConsumptionView> source);
 }

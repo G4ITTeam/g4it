@@ -4,21 +4,20 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
 import { OverlayModule } from "primeng/overlay";
 import { TabMenuModule } from "primeng/tabmenu";
 import { TreeSelectModule } from "primeng/treeselect";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie-chart/application-criteria-pie-chart.component";
 import { CriteriaStatsComponent } from "./criteria-stats/criteria-stats.component";
 import { ApplicationCriteriaFootprintComponent } from "./criteria/application-criteria-footprint.component";
 import { DatavizFilterApplicationComponent } from "./dataviz-filter-application/dataviz-filter-application.component";
 import { InventoriesApplicationFootprintComponent } from "./inventories-application-footprint.component";
 import { inventoriesApplicationRouteur } from "./inventories-application-footprint.router";
 import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/application-multicriteria-footprint.component";
-import { ApplicationStatsComponent } from "./application-stats/application-stats.component";
-import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie-chart/application-criteria-pie-chart.component";
 
 @NgModule({
     declarations: [
@@ -26,7 +25,6 @@ import { ApplicationCriteriaPieChartComponent } from "./application-criteria-pie
         ApplicationMulticriteriaFootprintComponent,
         ApplicationCriteriaFootprintComponent,
         DatavizFilterApplicationComponent,
-        ApplicationStatsComponent,
         CriteriaStatsComponent,
         ApplicationCriteriaPieChartComponent,
     ],

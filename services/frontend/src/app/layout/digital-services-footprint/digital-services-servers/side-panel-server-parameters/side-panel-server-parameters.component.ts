@@ -9,7 +9,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "primeng/api";
-import { Subject, lastValueFrom, takeUntil } from "rxjs";
+import { lastValueFrom, Subject, takeUntil } from "rxjs";
 import {
     DigitalService,
     DigitalServiceServerConfig,
@@ -53,8 +53,9 @@ export class SidePanelServerParametersComponent implements OnInit {
         terminals: [],
         servers: [],
         networks: [],
+        members: [],
     };
-
+    totalVmvCpu = 0;
     serverForm = this._formBuilder.group({
         host: [this.server.host, Validators.required],
         datacenter: [{ uid: "", name: "", location: "", pue: 1 }, Validators.required],
@@ -92,7 +93,7 @@ export class SidePanelServerParametersComponent implements OnInit {
                     await this.setHostReferential(res.type);
                     this.server = { ...res };
                     await this.setDatacenterReferential(res.datacenter);
-                    const serverSaved = digitalServiceResponse.servers.find(
+                    const serverSaved = this.digitalService.servers.find(
                         (r) => r.uid === res.uid,
                     );
                     const typeValueChanged = serverSaved?.type !== res.type;
@@ -108,6 +109,7 @@ export class SidePanelServerParametersComponent implements OnInit {
                         );
                         this.server.host = this.hostOptions[this.indexHostStorage];
                     }
+                    this.verifyValue();
                 });
         });
 
@@ -159,6 +161,32 @@ export class SidePanelServerParametersComponent implements OnInit {
             ...data,
             displayLabel: `${data.name} (${data.location} - PUE = ${data.pue})`,
         };
+    }
+    verifyValue() {
+        this.totalVmvCpu = 0;
+        const vcputControl = this.serverForm.get("vcpu");
+        if (this.server.vm?.length) {
+            this.totalVmvCpu = this.server.vm.reduce(
+                (acc, vm) => acc + vm.vCpu * vm.quantity,
+                0,
+            );
+            if (
+                this.server?.totalVCpu !== null &&
+                (this.server?.totalVCpu ?? 0) < this.totalVmvCpu
+            ) {
+                vcputControl?.setErrors({
+                    ...vcputControl?.errors,
+                    isValueTooHigh: true,
+                });
+                vcputControl?.markAsDirty();
+            } else {
+                delete vcputControl?.errors?.["isValueTooHigh"];
+                vcputControl?.updateValueAndValidity();
+            }
+        } else {
+            delete vcputControl?.errors?.["isValueTooHigh"];
+            vcputControl?.updateValueAndValidity();
+        }
     }
 
     initializeDefaultValue() {

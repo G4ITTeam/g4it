@@ -50,23 +50,23 @@ public interface InventoryEvaluationReportRepository extends JpaRepository<Inven
      */
     List<InventoryEvaluationReport> findByBatchStatusCode(String batchStatusCode, Limit limit);
 
-    List<InventoryEvaluationReport> findByBatchStatusCodeAndIsAggregated(String batchStatusCode, boolean isAggregated, Sort sort);
+    List<InventoryEvaluationReport> findByBatchStatusCodeAndIsApplicationAggregated(String batchStatusCode, boolean isApplicationAggregated, Sort sort);
 
     @Modifying
     @Transactional
     @Query("""
             UPDATE InventoryEvaluationReport
-            SET isAggregated = true
+            SET isApplicationAggregated = true
             WHERE id IN :ids
             """)
-    int updateIsAggregated(@Param("ids") List<Long> ids);
+    int updateIsApplicationAggregated(@Param("ids") List<Long> ids);
 
     @Modifying
     @Transactional
     @Query("""
             UPDATE InventoryEvaluationReport
             SET batchStatusCode = :batchStatusCode, progressPercentage = '80%'
-            WHERE batchStatusCode = 'COMPLETED' AND isAggregated = false
+            WHERE batchStatusCode = 'COMPLETED' AND isApplicationAggregated = false
             """)
     int resetReportsIfNotAggregated(@Param("batchStatusCode") String batchStatusCode);
 

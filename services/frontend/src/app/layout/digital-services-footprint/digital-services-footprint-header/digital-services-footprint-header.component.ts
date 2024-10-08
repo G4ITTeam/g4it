@@ -5,20 +5,35 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
+import {
+    Component,
+    DestroyRef,
+    EventEmitter,
+    inject,
+    Input,
+    OnInit,
+    Output,
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { firstValueFrom, lastValueFrom } from "rxjs";
-import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
+import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
+import {
+    DigitalService,
+    DSCriteriaRest,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
+import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { delay } from "src/app/core/utils/time";
+
 @Component({
     selector: "app-digital-services-footprint-header",
     templateUrl: "./digital-services-footprint-header.component.html",
@@ -36,14 +51,23 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         terminals: [],
         servers: [],
         networks: [],
+        members: [],
     };
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
     disableCalcul = true;
     sidebarVisible: boolean = false;
+    sidebarDsVisible = false;
     isLinkCopied = false;
     selectedSubscriberName = "";
     selectedOrganizationId!: number;
     selectedOrganizationName = "";
+    isShared = false;
+    displayPopup = false;
+    selectedCriteria: string[] = [];
+    organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
+    subscriber!: Subscriber;
+
+    private destroyRef = inject(DestroyRef);
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -53,19 +77,30 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         public userService: UserService,
         private messageService: MessageService,
         private clipboardService: ClipboardService,
+        private digitalServiceBusinessService: DigitalServiceBusinessService,
     ) {}
 
     ngOnInit() {
+        const list: OrganizationWithSubscriber[] = [];
         this.digitalServicesData.digitalService$.subscribe((res) => {
             this.digitalService = res;
             this.disableCalcul = !this.canLaunchCompute();
+            this.digitalServiceIsShared();
         });
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
+            this.subscriber = subscriber;
         });
         this.userService.currentOrganization$.subscribe((organization: Organization) => {
-            this.selectedOrganizationId = organization.id;
-            this.selectedOrganizationName = organization.name;
+            this.organization.subscriberName = this.subscriber.name;
+            this.organization.subscriberId = this.subscriber.id;
+            this.organization.organizationName = organization.name;
+            this.organization.organizationId = organization.id;
+            this.organization.status = organization.status;
+            this.organization.dataRetentionDays = organization.dataRetentionDays!;
+            this.organization.displayLabel = `${organization.name} - (${this.subscriber.name})`;
+            this.organization.criteriaDs = organization.criteriaDs!;
+            this.organization.criteriaIs = organization.criteriaIs!;
         });
     }
 
@@ -87,11 +122,46 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             )} ${this.digitalService.name} ?
             ${this.translate.instant("digital-services.popup.delete-text")}`,
             icon: "pi pi-exclamation-triangle",
-            accept: async () => {
-                await lastValueFrom(
-                    this.digitalServicesData.delete(this.digitalService.uid),
-                );
-                this.router.navigateByUrl(this.changePageToDigitalServices());
+            accept: () => {
+                this.global.setLoading(true);
+                this.digitalServicesData
+                    .delete(this.digitalService.uid)
+                    .pipe(
+                        takeUntilDestroyed(this.destroyRef),
+                        finalize(() => {
+                            this.global.setLoading(false);
+                        }),
+                    )
+                    .subscribe(() =>
+                        this.router.navigateByUrl(this.changePageToDigitalServices()),
+                    );
+            },
+        });
+    }
+
+    confirmUnlink(event: Event) {
+        this.confirmationService.confirm({
+            closeOnEscape: true,
+            target: event.target as EventTarget,
+            acceptLabel: this.translate.instant("common.yes"),
+            rejectLabel: this.translate.instant("common.no"),
+            message: `${this.translate.instant(
+                "digital-services.popup.delete-question-shared",
+            )}`,
+            icon: "pi pi-exclamation-triangle",
+            accept: () => {
+                this.global.setLoading(true);
+                this.digitalServicesData
+                    .unlink(this.digitalService.uid)
+                    .pipe(
+                        takeUntilDestroyed(this.destroyRef),
+                        finalize(() => {
+                            this.global.setLoading(false);
+                        }),
+                    )
+                    .subscribe(() =>
+                        this.router.navigateByUrl(this.changePageToDigitalServices()),
+                    );
             },
         });
     }
@@ -113,9 +183,11 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             const digitalServiceId = this.digitalService?.uid;
 
             if (digitalServiceId) {
-                this.router.navigate([
-                    `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
-                ]);
+                this.router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+                    this.router.navigate([
+                        `/subscribers/${subscriber}/organizations/${organization}/digital-services/${digitalServiceId}/footprint/dashboard`,
+                    ]);
+                });
             }
         }
     }
@@ -149,6 +221,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         } as Note;
 
         this.digitalServicesData.update(this.digitalService).subscribe((res) => {
+            this.sidebarVisible = false;
             this.messageService.add({
                 severity: "success",
                 summary: this.translate.instant("common.note.save"),
@@ -192,5 +265,37 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                 summary: this.translate.instant("common.fileNoLongerAvailable"),
             });
         }
+    }
+
+    async digitalServiceIsShared() {
+        const userId = (await firstValueFrom(this.userService.user$)).id;
+        if (this.digitalService.creator?.id !== userId) {
+            this.isShared = true;
+        } else {
+            this.isShared = false;
+        }
+    }
+
+    displayPopupFct() {
+        const defaultCriteria = Object.keys(this.global.criteriaList()).slice(0, 5);
+        this.selectedCriteria =
+            this.digitalService.criteria ??
+            this.organization.criteriaDs ??
+            this.subscriber.criteria ??
+            defaultCriteria;
+        this.displayPopup = true;
+    }
+
+    handleSaveDs(DSCriteria: DSCriteriaRest) {
+        this.digitalServiceBusinessService
+            .updateDsCriteria(this.digitalService.uid, DSCriteria)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
+                this.digitalServicesData
+                    .get(this.digitalService.uid)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe();
+                this.displayPopup = false;
+            });
     }
 }

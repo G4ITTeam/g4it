@@ -1,15 +1,12 @@
-nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
-Desktop 1;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;v;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop 2;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Laptop 1;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;2020/02/31;;;;120;100;HP;;;
-Laptop 2;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;215;FR;Hugo Lloris;;2020/02/31;;;120;100;HP;;;
-Desktop 3;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;1.6;HP;;;
-Desktop 4;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;-1;HP;;;
-Desktop 5;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.7;;0;0;HP;;;
-Desktop 6;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.6;;0;0;HP;;;
-Desktop 7;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;-1;;0;0;HP;;;
-Desktop 8;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;1.8;;0;0;HP;;;
-Desktop 9;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;-1;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop 10;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;v;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop 11;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;400;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop 12;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;215;FR;Zinedine Zidane;2019-06-02;;;;v;0;HP;;;
+nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
+Desktop 1;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;v;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;
+Desktop 2;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;
+Laptop 1;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Hugo Lloris;2020/02/31;;;;100;HP;;;
+Laptop 2;Sopra Steria Group;mockData;HP EliteBook 735 G6;1;Laptop;actif;FR;Hugo Lloris;;2020/02/31;;;100;HP;;;
+Desktop 3;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;1.6;HP;;;
+Desktop 4;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;3;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;;;-1;HP;;;
+Desktop 5;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;1.7;;0;HP;;;
+Desktop 6;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;1.6;;0;HP;;;
+Desktop 7;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;6;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;-1;;0;HP;;;
+Desktop 8;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;7;Desktop;actif;FR;Zinedine Zidane;2019-06-02;;1.8;;0;HP;;;
+

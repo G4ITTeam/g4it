@@ -77,3 +77,5 @@ databaseChangeLog:
             constraintName: userdigitalserviceshared_unique
             tableName: digital_service_shared
 
+
+

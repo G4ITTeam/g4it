@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { takeUntil } from "rxjs";
@@ -21,10 +21,7 @@ import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
-import { EchartsRepository } from "src/app/core/store/echarts.repository";
-import { FilterRepository } from "src/app/core/store/filter.repository";
-import { FootprintRepository } from "src/app/core/store/footprint.repository";
-import { Constants } from "src/constants";
+import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 
 @Component({
@@ -33,7 +30,7 @@ import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboar
 })
 export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
-    implements OnInit
+    implements OnInit, OnDestroy
 {
     chartType = "radial";
     noData = true;
@@ -55,6 +52,8 @@ export class DigitalServicesFootprintDashboardComponent
         terminals: [],
         servers: [],
         networks: [],
+        criteria: [],
+        members: [],
     };
 
     title = "";
@@ -68,48 +67,58 @@ export class DigitalServicesFootprintDashboardComponent
     serverData: DigitalServiceServersImpact[] = [];
     terminalData: DigitalServiceTerminalsImpact[] = [];
 
+    calculatedCriteriaList: string[] = [];
+
     constructor(
         private digitalServicesDataService: DigitalServicesDataService,
         private digitalServicesService: DigitalServiceBusinessService,
-        override filterRepo: FilterRepository,
-        override footprintRepo: FootprintRepository,
-        override echartsRepo: EchartsRepository,
+        override globalStore: GlobalStoreService,
         override translate: TranslateService,
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
     ) {
-        super(
-            filterRepo,
-            footprintRepo,
-            echartsRepo,
-            translate,
-            integerPipe,
-            decimalsPipe,
-        );
+        super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
     ngOnInit() {
         this.digitalServicesDataService.digitalService$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((ds: DigitalService) => {
-                this.initImpacts();
                 this.digitalService = ds;
                 this.retrieveFootprintData(this.digitalService.uid);
+                this.digitalService.criteria = ds.criteria;
+                if (this.impacts?.length === 1) {
+                    this.selectedCriteria = this.impacts[0]?.name;
+                    this.chartType = "pie";
+                }
             });
     }
 
     initImpacts(): void {
-        this.impacts = Constants.CRITERIAS.map((criteria) => {
+        this.selectedLang = this.translate.currentLang;
+        const criteriaKeys = Object.keys(this.globalStore.criteriaList());
+        this.impacts = (
+            this.calculatedCriteriaList.length > 0
+                ? criteriaKeys.filter((criteria) =>
+                      this.calculatedCriteriaList.includes(criteria),
+                  )
+                : criteriaKeys
+        ).map((criteria) => {
             return { name: criteria, title: "", unite: "", raw: null, peopleeq: null };
         });
     }
 
     retrieveFootprintData(uid: string): void {
+        this.calculatedCriteriaList = [];
         this.digitalServicesService
             .getFootprint(uid)
             .subscribe((footprint: DigitalServiceFootprint[]) => {
                 this.globalVisionChartData = footprint;
-
+                const firstTierData = footprint[0];
+                firstTierData.impacts.forEach((impact) => {
+                    this.calculatedCriteriaList.push(impact.criteria);
+                });
+                this.initImpacts();
                 this.setCriteriaButtons(footprint);
                 if (footprint.length > 0) {
                     this.noData = false;
@@ -187,34 +196,69 @@ export class DigitalServicesFootprintDashboardComponent
 
     getTitleOrContent(textType: string) {
         let translation: string;
+        this.selectedLang = this.translate.currentLang;
         if (this.chartType == "bar") {
             if (this.barChartChild === true && this.selectedParam === "Server") {
-                translation = this.translate.instant(
-                    this.getTranslationKey(this.selectedParam + " Lifecycle", textType),
-                );
+                if (textType === "digital-services-card-title") {
+                    translation = this.translate.instant(
+                        "digital-services-cards.server-lifecycle.title",
+                    );
+                } else {
+                    translation = this.translate.instant(
+                        "digital-services-cards.server-lifecycle.content",
+                    );
+                }
             } else {
-                translation = this.translate.instant(
-                    this.getTranslationKey(this.selectedParam, textType),
-                );
+                if (textType === "digital-services-card-title") {
+                    translation = this.translate.instant(
+                        "digital-services-cards.server.title",
+                    );
+                } else {
+                    translation = this.translate.instant(
+                        "digital-services-cards.server.content",
+                    );
+                }
             }
         } else {
-            translation = this.translate.instant(
-                this.getTranslationKey(this.selectedCriteria, textType),
-            );
+            if (
+                !Object.keys(this.globalStore.criteriaList()).includes(
+                    this.selectedCriteria,
+                )
+            ) {
+                if (textType === "digital-services-card-title") {
+                    translation = this.translate.instant(
+                        "digital-services-cards." +
+                            this.selectedCriteria.toLowerCase().replace(/\s+/g, "-") +
+                            ".title",
+                    );
+                } else {
+                    translation = this.translate.instant(
+                        "digital-services-cards." +
+                            this.selectedCriteria.toLowerCase().replace(/\s+/g, "-") +
+                            ".content",
+                    );
+                }
+            } else {
+                translation = this.translate.instant(
+                    this.getTranslationKey(this.selectedCriteria, textType),
+                );
+            }
         }
         return translation;
     }
 
     getTranslationKey(param: string, textType: string) {
-        const key =
-            "digital-services-cards." +
-            param.toLowerCase().replace(/ /g, "-") +
-            "." +
-            textType;
+        const key = "criteria." + param.toLowerCase().replace(/ /g, "-") + "." + textType;
         return key;
     }
 
     getTNSTranslation(input: string) {
         return this.translate.instant("digital-services." + input);
+    }
+
+    ngOnDestroy() {
+        // Clean store data
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
     }
 }

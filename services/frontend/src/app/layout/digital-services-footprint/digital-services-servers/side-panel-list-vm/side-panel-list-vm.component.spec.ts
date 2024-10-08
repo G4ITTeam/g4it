@@ -50,7 +50,11 @@ describe("SidePanelListVmComponent", () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [SidePanelListVmComponent, SidePanelAddVmComponent , DecimalsPipe],
+            declarations: [
+                SidePanelListVmComponent,
+                SidePanelAddVmComponent,
+                DecimalsPipe,
+            ],
             imports: [
                 FormsModule,
                 ReactiveFormsModule,
@@ -171,7 +175,8 @@ describe("SidePanelListVmComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
-            })
+                members: [],
+            }),
         );
         const setServerSpy = spyOn(ServiceBusiness, "setServerForm");
         const close = spyOn(component, "close");
@@ -203,7 +208,8 @@ describe("SidePanelListVmComponent", () => {
                 terminals: [],
                 servers: [],
                 networks: [],
-            })
+                members: [],
+            }),
         );
         const setServerSpy = spyOn(ServiceBusiness, "setServerForm");
         const close = spyOn(component, "close");

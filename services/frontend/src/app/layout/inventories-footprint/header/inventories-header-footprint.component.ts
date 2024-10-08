@@ -156,6 +156,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
             .updateInventory(this.inventory)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
+                this.sidebarVisible = false;
                 this.messageService.add({
                     severity: "success",
                     summary: this.translate.instant("common.note.save"),

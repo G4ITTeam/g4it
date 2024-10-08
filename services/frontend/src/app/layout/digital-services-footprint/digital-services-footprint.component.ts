@@ -30,6 +30,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         terminals: [],
         servers: [],
         networks: [],
+        members: [],
     };
     tabItems: MenuItem[] | undefined;
 
@@ -72,7 +73,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
             {
                 label: this.translate.instant("digital-services.visualize"),
                 routerLink: "dashboard",
-                disabled: this.digitalService.lastCalculationDate === null,
+                visible: this.digitalService.lastCalculationDate !== undefined,
             },
         ];
     }

@@ -1388,5 +1388,159 @@
                 "unit": "kg Sb eq"
             }
         ]
+    },
+    {
+        "criteria": "water-use",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "ozone-depletion",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-cancer",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-non-cancer",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "photochemical-ozone-formation",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-terrestrial",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-freshwater",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-marine",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "ecotoxicity-freshwater",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "land-use",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "resource-use-fossils",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
     }
 ]

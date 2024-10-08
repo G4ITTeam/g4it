@@ -15,7 +15,6 @@ import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorServ
 import com.soprasteria.g4it.backend.apiindicator.mapper.IndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.ApplicationVmImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryExportReportBO;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
@@ -86,20 +85,6 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<ApplicationVmIndicatorRest>> getApplicationVmIndicators(final String subscriber,
-                                                                                       final Long organization,
-                                                                                       final Long inventoryId,
-                                                                                       final String applicationName,
-                                                                                       final String criteria) {
-        final List<ApplicationIndicatorBO<ApplicationVmImpactBO>> indicators = inventoryIndicatorService
-                .getApplicationVmIndicators(subscriber, organization, inventoryId, applicationName, criteria);
-        return ResponseEntity.ok().body(this.indicatorRestMapper.toApplicationVmIndicatorDto(indicators));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ResponseEntity<List<PhysicalEquipmentLowImpactRest>> getPhysicalEquipmentsLowImpact(final String subscriber,
                                                                                                final Long organization,
                                                                                                final Long inventoryId) {
@@ -114,6 +99,16 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                          final Long organization,
                                                                                          final Long inventoryId) {
         return ResponseEntity.ok(indicatorRestMapper.toAvgAgeDto(inventoryIndicatorService.getPhysicalEquipmentAvgAge(subscriber, organization, inventoryId)));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<PhysicalEquipmentElecConsumptionRest>> getPhysicalEquipmentElecConsumption(final String subscriber,
+                                                                                                          final Long organizationId,
+                                                                                                          final Long inventoryId) {
+        return ResponseEntity.ok(indicatorRestMapper.toElecConsumptionDto(inventoryIndicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, inventoryId)));
     }
 
     /**
@@ -136,33 +131,6 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                     final Long inventoryId) {
         return ResponseEntity.ok().body(
                 indicatorRestMapper.toDataCenterDto(inventoryIndicatorService.getDataCenterIndicators(subscriber, organization, inventoryId))
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<EquipmentFiltersRest> getEquipmentFilters(final String subscriber,
-                                                                    final Long organization,
-                                                                    final Long inventoryId) {
-        return ResponseEntity.ok().body(
-                indicatorRestMapper.toEquipmentFiltersDto(inventoryIndicatorService.getEquipmentFilters(subscriber, organization, inventoryId))
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<ApplicationFiltersRest> getApplicationFilters(final String subscriber,
-                                                                        final Long organization,
-                                                                        final Long inventoryId,
-                                                                        final String domain,
-                                                                        final String subDomain,
-                                                                        final String applicationName) {
-        return ResponseEntity.ok().body(
-                indicatorRestMapper.toApplicationFiltersDto(inventoryIndicatorService.getApplicationFilters(subscriber, organization, inventoryId, domain, subDomain, applicationName))
         );
     }
 

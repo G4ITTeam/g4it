@@ -8,6 +8,8 @@
 package com.soprasteria.g4it.backend.external.numecoeval.business;
 
 
+import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
+import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.ModeRest;
 import com.soprasteria.g4it.backend.exception.NumEcoEvalConnectorRuntimeException;
 import com.soprasteria.g4it.backend.external.numecoeval.client.CalculationClient;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -97,8 +100,8 @@ public class NumEcoEvalRemotingService {
      *
      * @param batchName the batch name.
      */
-    public void callCalculation(final String batchName) {
-        callCalculation(batchName, ModeRest.ASYNC);
+    public void callCalculation(final String batchName, final List<String> criteriaList) {
+        callCalculation(batchName, ModeRest.ASYNC, criteriaList);
     }
 
     /**
@@ -107,14 +110,22 @@ public class NumEcoEvalRemotingService {
      * @param batchName the batch name.
      * @param modeRest  the mode SYNC or ASYNC
      */
-    public void callCalculation(final String batchName, final ModeRest modeRest) {
+    public void callCalculation(final String batchName, final ModeRest modeRest, final List<String> criteriaKeyList) {
+        List<String> criteriaList = Optional.ofNullable(criteriaKeyList)
+                .map(keys -> keys.stream()
+                        .map(CriteriaUtils::transformCriteriaKeyToCriteriaName)
+                        .toList())
+                .orElseGet(() -> Constants.CRITERIA_LIST.stream()
+                        .map(CriteriaUtils::transformCriteriaKeyToCriteriaName)
+                        .toList());
 
-        final var rapportDemandeCalculRest = calculationClient.submitCalculations(batchName, modeRest);
+        final var rapportDemandeCalculRest = calculationClient.submitCalculations(batchName, modeRest, criteriaList);
 
         final NumEcoEvalCalculationReport entityReport = numEcoEvalCalculationReportMapper.toEntity(rapportDemandeCalculRest);
         //As NumEcoEval API always return nomLot : null we set it until fix on NumEcoEval side
         entityReport.setBatchName(batchName);
         numEcoEvalCalculationReportRepository.save(entityReport);
+
     }
 
     /**

@@ -207,10 +207,10 @@ public class AzureFileStorage implements FileStorage {
      * {@inheritDoc}
      */
     @Override
-    public String upload(final FileFolder folder, final String fileName, final String type, final byte[] fileContent) throws IOException {
+    public String upload(final FileFolder folder, final String fileName, final String type, final InputStream fileContent) throws IOException {
         final BlobClient client = blobContainerClient.getBlobClient(filePath(folder, fileName));
         log.info("Uploading {}", client.getBlobName());
-        try (final ByteArrayInputStream bis = new ByteArrayInputStream(fileContent)) {
+        try (final ByteArrayInputStream bis = new ByteArrayInputStream(fileContent.readAllBytes())) {
             client.upload(bis);
             client.setMetadata(Map.of("type", getTypeFromString(type).getValue()));
             return client.getBlobName().replaceFirst("input\\\\", "");

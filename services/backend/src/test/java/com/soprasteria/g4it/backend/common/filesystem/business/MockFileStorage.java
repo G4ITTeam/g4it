@@ -85,7 +85,7 @@ public class MockFileStorage implements FileStorage {
     }
 
     @Override
-    public String upload(FileFolder folder, String fileName, String type, byte[] fileContent) throws IOException {
+    public String upload(FileFolder folder, String fileName, String type, InputStream fileContent) throws IOException {
         // do nothing
         return toString();
     }

@@ -8,6 +8,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule, TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
@@ -15,11 +16,10 @@ import { InplaceModule } from "primeng/inplace";
 import { InputTextModule } from "primeng/inputtext";
 import { of } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { DigitalServicesFootprintHeaderComponent } from "./digital-services-footprint-header.component";
-import { RouterTestingModule } from "@angular/router/testing";
-import { UserService } from "src/app/core/service/business/user.service";
 
 describe("DigitalServicesFootprintHeaderComponent", () => {
     let component: DigitalServicesFootprintHeaderComponent;
@@ -36,6 +36,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             terminals: [],
             servers: [],
             networks: [],
+            members: [],
         } as DigitalService),
     };
 
@@ -78,7 +79,7 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         fixture.detectChanges();
         const emittedObject = { name: newDigitalServiceName };
         expect(component.digitalServiceChange.emit).toHaveBeenCalledWith(
-            jasmine.objectContaining(emittedObject)
+            jasmine.objectContaining(emittedObject),
         );
     });
 
@@ -91,13 +92,14 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: null,
             networks: [],
             servers: [],
+            members: [],
             terminals: [
                 {
                     uid: "randomUID",
                     type: {
                         code: "mobile-fix",
                         value: "Mobile",
-                        lifespan: 5
+                        lifespan: 5,
                     },
                     lifespan: 0,
                     country: "France",
@@ -118,13 +120,14 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
             lastCalculationDate: parseFloat("2023-09-04T09:56:34.658656Z"),
             networks: [],
             servers: [],
+            members: [],
             terminals: [
                 {
                     uid: "randomUID",
                     type: {
                         code: "mobile-fix",
                         value: "Mobile",
-                        lifespan: 5
+                        lifespan: 5,
                     },
                     lifespan: 0,
                     country: "France",

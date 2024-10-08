@@ -5,6 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+
 export abstract class Constants {
     static readonly LANGUAGES = ["en", "fr"];
     static readonly COLOR = [
@@ -160,18 +161,32 @@ export abstract class Constants {
         equipment: "equipments",
         status: "status",
     };
+    static readonly APPLICATION_FILTERS = [
+        { field: "environment", translated: false },
+        { field: "equipmentType", translated: false },
+        {
+            field: "lifeCycle",
+            translated: true,
+        },
+        {
+            field: "domain",
+            translated: false,
+            children: [
+                {
+                    field: "subDomain",
+                    translated: false,
+                },
+            ],
+        },
+    ];
+    static readonly APPLICATION_FILTERS_MAP: { [key: string]: string } = {
+        environment: "environments",
+        equipmentType: "types",
+        lifeCycle: "lifeCycles",
+        domain: "domains",
+    };
     static readonly ALL: string = "All";
     static readonly EMPTY: string = "!Empty"; // ! character is used for sorting Empty on top
 
     static readonly MUTLI_CRITERIA: string = "multi-criteria";
-
-    // key order is important for displaying criterias tabs
-    static readonly CRITERIA_ICON: any = {
-        "climate-change": "climate",
-        "resource-use": "hourglass",
-        "ionising-radiation": "ion",
-        acidification: "ph",
-        "particulate-matter": "factory",
-    };
-    static readonly CRITERIAS = Object.keys(this.CRITERIA_ICON);
 }

@@ -1,0 +1,16 @@
+{
+    "criteria": "water",
+    "unit": "m3 eq",
+    "impacts": [
+        {
+            "lifeCycle": "DISTRIBUTION",
+            "vmName": "virtual-eq-1",
+            "cluster": "PY1LNX02",
+            "subDomain": "Sub domain 2",
+            "environment": "Test",
+            "equipmentType": "Personal Computer",
+            "impact": 0.05014347365988,
+            "sip": 7.61191251003871e-7
+        }
+    ]
+}

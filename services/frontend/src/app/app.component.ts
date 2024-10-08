@@ -6,9 +6,11 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { Component } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
 import { Subject, firstValueFrom } from "rxjs";
 import { UserDataService } from "./core/service/data/user-data.service";
+import { GlobalStoreService } from "./core/store/global.store";
 
 @Component({
     selector: "app-root",
@@ -16,9 +18,12 @@ import { UserDataService } from "./core/service/data/user-data.service";
 })
 export class AppComponent {
     ngUnsubscribe = new Subject<void>();
+    selectedLang: string = this.translate.currentLang;
     constructor(
         private userService: UserDataService,
         private keycloak: KeycloakService,
+        private translate: TranslateService,
+        private globalStoreService: GlobalStoreService,
     ) {}
 
     async ngOnInit() {
@@ -32,5 +37,9 @@ export class AppComponent {
         }
         const user = await firstValueFrom(this.userService.fetchUserInfo());
         localStorage.setItem("username", user.email);
+
+        this.globalStoreService.setcriteriaList(
+            this.translate.translations[this.selectedLang].criteria,
+        );
     }
 }

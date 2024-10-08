@@ -11,6 +11,7 @@ import { Observable } from "rxjs";
 import {
     CreateInventory,
     Inventory,
+    InventoryCriteriaRest,
     InventoryUpdateRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { Constants } from "src/constants";
@@ -45,5 +46,11 @@ export class InventoryDataService {
 
     deleteInventory(id: number): Observable<Inventory[]> {
         return this.http.delete<any>(`${endpoint}/${id}`);
+    }
+
+    updateInventoryCriteria(
+        inventoryCriteria: InventoryCriteriaRest,
+    ): Observable<Inventory> {
+        return this.http.put<Inventory>(`${endpoint}`, inventoryCriteria);
     }
 }

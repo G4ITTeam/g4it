@@ -9,11 +9,12 @@ import { Component, Input, Signal, computed, inject, signal } from "@angular/cor
 
 import { EChartsOption } from "echarts";
 import {
+    Criteria,
+    Criterias,
     EchartPieDataItem,
     FootprintCalculated,
 } from "src/app/core/interfaces/footprint.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
-import { Criteria, Criterias } from "src/app/core/store/footprint.repository";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
@@ -61,9 +62,7 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
     });
 
     unitOfCriteria = computed(() =>
-        this.translate.instant(
-            `inventories-footprint.critere.${this.footprintStore.criteria()}.unite`,
-        ),
+        this.translate.instant(`criteria.${this.footprintStore.criteria()}.unite`),
     );
 
     changeUnitInStore(unit: string) {
@@ -73,10 +72,10 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
     infocard = computed(() => {
         return {
             title: this.translate.instant(
-                `inventories-footprint.critere.${this.footprintStore.criteria()}.title`,
+                `criteria.${this.footprintStore.criteria()}.inventory-title`,
             ),
             text: this.translate.instant(
-                `inventories-footprint.critere.${this.footprintStore.criteria()}.text`,
+                `criteria.${this.footprintStore.criteria()}.inventory-text`,
             ),
         };
     });

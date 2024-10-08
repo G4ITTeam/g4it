@@ -19,6 +19,15 @@ export interface DigitalService {
     networks: DigitalServiceNetworkConfig[];
     note?: Note;
     userId?: number;
+    criteria?: string[];
+    creator?: DigitalServiceUserInfo;
+    members: DigitalServiceUserInfo[];
+}
+
+export interface DigitalServiceUserInfo {
+    id: number;
+    firstName: string;
+    lastName: string;
 }
 
 export interface DigitalServiceServerConfig {
@@ -188,4 +197,19 @@ export interface Host {
 export interface HostCharacteristics {
     code: string;
     value: number;
+}
+
+export interface DSCriteriaRest {
+    uid: string;
+    name: string;
+    creator?: DigitalServiceUserInfo;
+    members: DigitalServiceUserInfo[];
+    creationDate: Date;
+    lastUpdateDate: Date;
+    lastCalculationDate: Date;
+    criteria: string[];
+    terminals: DigitalServiceTerminalConfig[];
+    servers: DigitalServiceServerConfig[];
+    networks: DigitalServiceNetworkConfig[];
+    note?: Note;
 }

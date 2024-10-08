@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Observable, ReplaySubject, lastValueFrom, map } from "rxjs";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import {
+    DSCriteriaRest,
     DigitalService,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
@@ -315,5 +316,12 @@ export class DigitalServiceBusinessService {
                 unit: this.translate.instant(`criteria.${footprint.criteria}.unite`),
             })),
         }));
+    }
+
+    updateDsCriteria(
+        digitalServiceUid: string,
+        DSCriteria: DSCriteriaRest,
+    ): Observable<DSCriteriaRest> {
+        return this.digitalServiceData.updateDsCriteria(digitalServiceUid, DSCriteria);
     }
 }

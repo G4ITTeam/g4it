@@ -1,5 +1,4 @@
-nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;nbJourUtiliseAn;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;goTelecharge;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
-Desktop with bad country;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Desktop;actif;215;England;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop with bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Unknown;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop with bad format and bad country;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Desktop;actif;deux cent quinze;England;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
-Desktop with bad format and bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Unknown;actif;215;FR;Zinedine Zidane;2019-06-02;;;;0;0;HP;;;
+nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
+Desktop with bad country;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Desktop;actif;England;Zinedine Zidane;2019-06-02;;;;0;HP;;;
+Desktop with bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;10;Unknown;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;
+Desktop with bad format and bad type;Sopra Steria Group;mockData;HP ProDesk 400 G1 MT;-1;Unknown;actif;FR;Zinedine Zidane;2019-06-02;;;;0;HP;;;

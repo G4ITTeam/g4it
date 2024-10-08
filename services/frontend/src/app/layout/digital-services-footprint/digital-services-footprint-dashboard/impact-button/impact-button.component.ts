@@ -8,7 +8,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
-import { Constants } from "src/constants";
 
 @Component({
     selector: "app-impact-button",
@@ -23,6 +22,7 @@ export class ImpactButtonComponent implements OnInit {
     @Output() selectedCriteriaChange: EventEmitter<any> = new EventEmitter();
     @Input() selectedUnit: string = "";
     impactImage: string = "";
+    selectedLang: string = "en";
 
     constructor(
         private sanitizer: DomSanitizer,
@@ -38,7 +38,8 @@ export class ImpactButtonComponent implements OnInit {
             this.impactImage = "assets/images/icons/icon-hourglass.svg";
             this.impactUnite = "N/A";
         }
-        this.impactImage = `assets/images/icons/icon-${Constants.CRITERIA_ICON[this.impact]}.svg`;
+        this.selectedLang = this.translate.currentLang;
+        this.impactImage = `assets/images/icons/icon-${this.translate.translations[this.selectedLang].criteria[this.impact].icon}.svg`;
     }
 
     changeCritere(critere: string) {

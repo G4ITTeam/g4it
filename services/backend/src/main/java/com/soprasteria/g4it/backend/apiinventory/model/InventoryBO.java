@@ -46,6 +46,8 @@ public class InventoryBO {
 
     private Long applicationCount;
 
+    private List<String> criteria;
+
     private List<InventoryIntegrationReportBO> integrationReports;
 
     private List<InventoryEvaluationReportBO> evaluationReports;

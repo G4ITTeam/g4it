@@ -20,11 +20,11 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
 @Component({
     selector: "app-digital-services-terminals",
     templateUrl: "./digital-services-terminals.component.html",
-    providers:[MessageService],
+    providers: [MessageService],
 })
 export class DigitalServicesTerminalsComponent implements OnInit {
-
-    @ViewChild('childSidePanel', {static: false}) childSidePanel! : DigitalServicesTerminalsSidePanelComponent;
+    @ViewChild("childSidePanel", { static: false })
+    childSidePanel!: DigitalServicesTerminalsSidePanelComponent;
 
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
@@ -38,11 +38,12 @@ export class DigitalServicesTerminalsComponent implements OnInit {
         terminals: [],
         servers: [],
         networks: [],
+        members: [],
     };
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
-        public userService: UserService
+        public userService: UserService,
     ) {}
 
     ngOnInit() {
@@ -53,20 +54,20 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     }
 
     resetTerminal() {
-        if(this.childSidePanel){
+        if (this.childSidePanel) {
             this.childSidePanel.resetTerminal();
         }
     }
 
     setTerminal(terminal: DigitalServiceTerminalConfig, index: number) {
-        this.terminal = {...terminal};
+        this.terminal = { ...terminal };
         this.terminal.idFront = index;
     }
 
     async updateTerminals(terminal: DigitalServiceTerminalConfig) {
         // Find the index of the terminal with the matching uid
         let existingTerminalIndex = this.digitalService.terminals?.findIndex(
-            (t) => t.uid === terminal.uid
+            (t) => t.uid === terminal.uid,
         );
         // If the terminal with the uid exists, update it; otherwise, add the new terminal
         if (
@@ -80,17 +81,15 @@ export class DigitalServicesTerminalsComponent implements OnInit {
             this.digitalService.terminals?.push(terminal);
         }
 
-         await lastValueFrom(
-            this.digitalServicesData.update(this.digitalService)
-        );
+        await lastValueFrom(this.digitalServicesData.update(this.digitalService));
         this.digitalService = await lastValueFrom(
-            this.digitalServicesData.get(this.digitalService.uid)
+            this.digitalServicesData.get(this.digitalService.uid),
         );
     }
 
     async deleteTerminals(terminal: DigitalServiceTerminalConfig) {
         let existingTerminalIndex = this.digitalService.terminals?.findIndex(
-            (t) => t.uid === terminal.uid
+            (t) => t.uid === terminal.uid,
         );
 
         if (
@@ -100,11 +99,9 @@ export class DigitalServicesTerminalsComponent implements OnInit {
         ) {
             this.digitalService.terminals.splice(existingTerminalIndex, 1);
         }
-         await lastValueFrom(
-            this.digitalServicesData.update(this.digitalService)
-        );
+        await lastValueFrom(this.digitalServicesData.update(this.digitalService));
         this.digitalService = await lastValueFrom(
-            this.digitalServicesData.get(this.digitalService.uid)
+            this.digitalServicesData.get(this.digitalService.uid),
         );
     }
 }
