@@ -2,7 +2,7 @@
 ME=$(basename $0)
 
 export EXISTING_VARS=$(printenv | awk -F= '{print $1}' | sed 's/^/\$/g' | paste -sd,);
-FILES=$(ls /usr/share/nginx/html/*.js /usr/share/nginx/html/*.html);
+FILES=$(ls $JSFOLDER/*.js $JSFOLDER/*.html);
 
 echo "$ME: info: injecting $EXISTING_VARS"
 for file in $FILES;

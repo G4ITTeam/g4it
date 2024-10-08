@@ -4,32 +4,28 @@ A keycloak instance to manage user authentications for G4IT
 
 ## Local vs Deployed
 
-The **local dev environment** uses podman-compose to start the keycloak instance (in `workspace/numecoeval/docker-compose.yml`)
-
+The __local dev environment__ uses podman-compose to start the keycloak instance (in `workspace/numecoeval/docker-compose.yml`)
 - Docker image used: bitnami/keycloak
 - URL : http://localhost:8180/auth
 - It uses this [extension](https://github.com/sventorben/keycloak-home-idp-discovery) located in `extensions` folder
 
-The **deployed environment** uses a built docker image with the `Dockerfile` in the current folder.
-
+The __deployed environment__ uses a built docker image with the `Dockerfile` in the current folder.
 - It also uses the same extension
 
 ## Local dev users
 
 The global admin user has these credentials :
-
 - username: admin
 - password: password
 
-The password is **password** for all users in local dev env
+The password is __password__ for all users in local dev env
 
-The \_local dev environment\_\_ automatically imports the `g4it` realm config name `dev-realm-export.json`. This realm has :
-
+The _local dev environment__ automatically imports the `g4it` realm config name `dev-realm-export.json`. This realm has :
 - 4 users:
-  - admin@dev.com : used for Subscriber Admin Role
+  - admin@dev.com    : used for Subscriber Admin Role
   - adminorg@dev.com : used for Organization Admin Role
-  - ro@dev.com : used for Read Only Role
-  - rw@dev.com : used for Read + Write Role
+  - ro@dev.com       : used for Read Only Role
+  - rw@dev.com       : used for Read + Write Role
 
 Roles are not configured inside Keycloak, but in the G4IT backend.
 
@@ -64,8 +60,7 @@ On the extension used, it is possible to add a custom configuration for domains 
 
 ## Upgrade Keycloak version
 
-For upgrading the Keycloak version:
-
+For upgrading the Keycloak version: 
 - Update the image tag in :
   - services/keycloak/Dockerfile
   - services/keycloak/.gitlab-ci.yml
