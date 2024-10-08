@@ -1,8 +1,17 @@
-ARG CI_REGISTRY
-
-FROM $CI_REGISTRY/dep/library/project-oci-images/runtime-java-jre21:update1
+# Use an official Maven image as the base image
+FROM maven:3.9.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
-COPY target/*.jar application.jar
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn -P SKIP-ALL-TEST clean package
+
+FROM eclipse-temurin:21-jre
+ARG JAR_FILE=/app/target/*.jar
+WORKDIR /app
+COPY --from=build $JAR_FILE application.jar
+COPY storage/--INTERNAL-G4IT-- storage/--INTERNAL-G4IT--
+RUN chown -R 1001:1001 /app/storage
 
 USER 1001
 EXPOSE 8080

@@ -2,13 +2,11 @@ name: Build and Publish Backend Docker Image
 
 on:
   push:
-    branches: ["test_actions"]
+    branches: ["main"]
     paths:
       - services/backend/**
-  pull_request:
-    branches: ["test_actions"]
-    paths:
-      - services/backend/**
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   build:
@@ -23,4 +21,3 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           workdir: services/backend
-          dockerfile: Dockerfile-opensource

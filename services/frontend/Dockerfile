@@ -1,22 +1,24 @@
-ARG CI_REGISTRY
+# Use an official Maven image as the base image
+FROM node:20-alpine as build
 
-FROM $CI_REGISTRY/dep/library/project-oci-images/runtime-angular-nginx-v1:update1
+WORKDIR /app
+COPY . .
+RUN npm ci \
+    && npm run build
 
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-
-# js resources to inject env variables
-ENV JSFOLDER=/usr/share/nginx/html
-# script to replace env variable before start
-COPY ./nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
-COPY dist/ /usr/share/nginx/html
+FROM nginx:latest
+COPY --from=build /app/dist/ /usr/share/nginx/html
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
 
 USER root
 
-RUN chmod a+rwx -R /usr/share/nginx/html
-RUN chmod a+x /docker-entrypoint.d/25-inject-env-var.sh
+RUN chmod a+rwx -R /usr/share/nginx/html \
+    && chmod a+x /docker-entrypoint.d/25-inject-env-var.sh \
+    && chown -R nginx:nginx /var/cache/nginx
 
 CMD ["nginx", "-g", "daemon off;"]
 
-USER 1001
+USER nginx
 EXPOSE 4200
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -f -s localhost:4200 || exit 1
