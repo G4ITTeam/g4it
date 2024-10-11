@@ -1,0 +1,27 @@
+name: Frontend - Build and Test
+on:
+  pull_request:
+    paths:
+      - "services/frontend/**"
+      - ".github/workflows/**"
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js $
+        uses: actions/setup-node@v3
+        with:
+          node-version: $
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies and run tests
+        run: |
+          cd services/frontend
+          npm ci
+          npm run test:ci
