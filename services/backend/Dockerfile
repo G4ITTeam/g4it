@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn -P SKIP-ALL-TEST clean package
+RUN mvn --no-transfer-progress -P SKIP-ALL-TEST clean package
 
 FROM eclipse-temurin:21-jre
 ARG JAR_FILE=/app/target/*.jar
