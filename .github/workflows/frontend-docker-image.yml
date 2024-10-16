@@ -1,10 +1,10 @@
-name: Build and Publish Frontend Docker Image
+name: Frontend Docker Image Scan and Publish
 
 on:
   push:
     branches: ["main"]
     paths:
-      - services/frontend/**
+      - services/backend/**
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
 
@@ -14,6 +14,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: "fs"
+          scan-ref: "services/frontend"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
