@@ -1,8 +1,10 @@
 name: Dependency Check Backend
+
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
+    paths:
+      - services/backend/**
 
 jobs:
   build:

@@ -34,7 +34,7 @@ jobs:
           SONAR_HOST_URL: "https://sonarcloud.io"
         run: |
           cd services/backend
-          mvn verify sonar:sonar -Pcoverage -Dsonar.projectKey=g4itteam_g4it_backend
+          mvn --no-transfer-progress verify sonar:sonar -Pcoverage -Dsonar.projectKey=g4itteam_g4it_backend
       - name: Run Trivy vulnerability scanner in fs mode
         uses: aquasecurity/trivy-action@0.20.0
         with:

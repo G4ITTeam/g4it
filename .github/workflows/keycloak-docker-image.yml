@@ -1,4 +1,4 @@
-name: Build and Publish Keycloak Docker Image
+name: Keycloak Docker Image Publish
 
 on:
   push:
