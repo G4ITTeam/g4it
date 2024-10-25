@@ -480,6 +480,8 @@ components:
         sip:
           type: number
           format: double
+        countValue:
+          type: number
 
     ApplicationIndicatorRest:
       type: object
@@ -517,6 +519,7 @@ components:
         sip:
           type: number
           format: double
+
     ApplicationVmIndicatorRest:
       type: object
       properties:

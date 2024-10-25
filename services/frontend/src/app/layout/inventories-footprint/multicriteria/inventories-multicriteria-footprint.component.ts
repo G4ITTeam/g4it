@@ -8,7 +8,6 @@
 import { Component, Input, Signal, computed, inject, signal } from "@angular/core";
 import { EChartsOption } from "echarts";
 import { Filter } from "src/app/core/interfaces/filter.interface";
-import {} from "src/app/core/interfaces/footprint.interface";
 import { Constants } from "src/constants";
 
 import {
@@ -48,6 +47,41 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     selectedDimension = signal(this.dimensions[0]);
 
+    maxCriteriaAndStep: Signal<string[]> = computed(() => {
+        let maxCriteriaLength = -1;
+        let maxCriteria = "climate-change";
+
+        for (let criteria in this.footprint) {
+            if (!this.footprint[criteria] || !this.footprint[criteria].impacts) continue;
+            const criteriaLength = this.footprint[criteria].impacts.length;
+            if (criteriaLength > maxCriteriaLength) {
+                maxCriteriaLength = criteriaLength;
+                maxCriteria = criteria;
+            }
+        }
+
+        let maxStepLength = -1;
+        let maxStep = "UTILISATION";
+
+        const sizeBySteps = this.footprint[maxCriteria].impacts.reduce((p: any, c) => {
+            var name = c.acvStep;
+            if (!p.hasOwnProperty(name)) {
+                p[name] = 0;
+            }
+            p[name]++;
+            return p;
+        }, {});
+
+        for (const step in sizeBySteps) {
+            if (sizeBySteps[step] > maxStepLength) {
+                maxStepLength = sizeBySteps[step];
+                maxStep = step;
+            }
+        }
+
+        return [maxCriteria, maxStep];
+    });
+
     options: Signal<EChartsOption> = computed(() => {
         const footprintCalculated = this.footprintService.calculate(
             this.footprint,
@@ -81,6 +115,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             this.equipments,
             this.store.filters(),
             this.filterFields,
+            this.footprint,
         ),
     );
 
@@ -202,6 +237,21 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         }
     }
 
+    valueImpact(v: Impact, field: string, islowImpact: boolean) {
+        switch (field) {
+            case "country":
+                return v.country;
+            case "entity":
+                return v.entity;
+            case "equipment":
+                return v.equipment;
+            case "status":
+                return v.status;
+            default:
+                return null;
+        }
+    }
+
     computeDataCenterStats(
         datacenters: Datacenter[] = [],
         filters: Filter<string>,
@@ -273,6 +323,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         ],
         filters: Filter<string>,
         filterFields: string[],
+        footprint: Criterias,
     ): Stat[] {
         const equipmentsAvgAge = equipments[0];
         const equipmentsLowImpact = equipments[1];
@@ -294,6 +345,16 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
             filtersSet[item].has(Constants.ALL),
         );
 
+        const impacts = footprint[this.maxCriteriaAndStep()[0]].impacts.filter(
+            (impact) => impact.acvStep === this.maxCriteriaAndStep()[1],
+        );
+
+        const physicalEquipmentCount = hasAllFilters
+            ? impacts.reduce((n, impact) => n + impact.countValue, 0)
+            : impacts
+                  .filter((impact) => this.isImpactPresent(impact, filtersSet))
+                  .reduce((n, impact) => n + impact.countValue, 0);
+
         const filteredEquipmentsAvgAge = hasAllFilters
             ? equipmentsAvgAge
             : equipmentsAvgAge.filter((equipment) => {
@@ -301,14 +362,12 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
               });
 
         let physicalEquipmentSum = 0;
-        let physicalEquipmentCount = 0;
 
         filteredEquipmentsAvgAge.forEach((physicalEquipment) => {
             let { poids, ageMoyen } = physicalEquipment;
             poids = poids || 0;
             ageMoyen = ageMoyen || 0;
 
-            physicalEquipmentCount += poids;
             physicalEquipmentSum += poids * ageMoyen;
         });
 
@@ -348,7 +407,9 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
 
         return this.getEquipmentStats(
             physicalEquipmentCount,
-            physicalEquipmentSum / physicalEquipmentCount,
+            physicalEquipmentCount == 0
+                ? undefined
+                : physicalEquipmentSum / physicalEquipmentCount,
             (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100,
             elecConsumptionSum,
         );
@@ -356,6 +417,7 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
 
     isPresent<
         T extends
+            | Impact
             | Datacenter
             | PhysicalEquipment
             | PhysicalEquipmentLowImpact
@@ -391,6 +453,10 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
         islowImpact: boolean,
     ): boolean {
         return this.isPresent(equipment, filtersSet, islowImpact, this.valueEquipment);
+    }
+
+    isImpactPresent(impact: Impact, filtersSet: InventoryFilterSet): boolean {
+        return this.isPresent(impact, filtersSet, false, this.valueImpact);
     }
 
     getEquipmentStats(

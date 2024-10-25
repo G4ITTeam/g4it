@@ -11,6 +11,7 @@ import { Subject } from "rxjs";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { Constants } from "src/constants";
 
 @Component({
     template: "",
@@ -30,6 +31,9 @@ export class AbstractDashboard {
         let key = view + "." + param;
         if (param === "other") {
             key = type === "legend" ? "common.otherLegend" : "common.other";
+        }
+        if (param === Constants.EMPTY) {
+            return this.translate.instant("common.empty");
         }
         return this.translate.instant(key) === key ? param : this.translate.instant(key);
     }

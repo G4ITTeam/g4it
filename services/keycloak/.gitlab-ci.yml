@@ -13,7 +13,7 @@ variables:
   DISABLE_SBOM_IMAGE: "true"
   DISABLE_SONARQUBE: "true"
   DISABLE_LICENSE_FINDER: "true"
-  G4IT_KEYCLOAK_TAG: "24.0.5"
+  G4IT_KEYCLOAK_TAG: "26.0.0"
 
 build-application:
   script: |

@@ -71,6 +71,7 @@ export interface Impact {
     status: string | null;
     impact: number;
     sip: number;
+    countValue: number;
 }
 
 export interface ImpactEntity extends Impact {

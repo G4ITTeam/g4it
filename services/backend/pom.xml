@@ -23,7 +23,7 @@
 
         <lombok.dependency.version>1.18.32</lombok.dependency.version>
         <liquibase-core.version>4.28.0</liquibase-core.version>
-        <keycloak-adapter-bom.version>24.0.5</keycloak-adapter-bom.version>
+        <keycloak-adapter-bom.version>25.0.6</keycloak-adapter-bom.version>
 
         <spring-cloud-azure-starter-storage-blob.version>5.13.0</spring-cloud-azure-starter-storage-blob.version>
         <spring-cloud-azure-starter-keyvault.version>5.13.0</spring-cloud-azure-starter-keyvault.version>
@@ -52,8 +52,6 @@
             **/utils/Constants.java,
             **/BackendApplication.java
         </sonar.coverage.exclusions>
-        <sonar.projectName>G4IT backend</sonar.projectName>
-        <sonar.organization>g4itteam</sonar.organization>
         <sonar.java.binaries>**/*</sonar.java.binaries>
     </properties>
 
@@ -114,6 +112,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
+            <version>25.0.3</version>
         </dependency>
         <!-- Database -->
         <dependency>
@@ -490,10 +489,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

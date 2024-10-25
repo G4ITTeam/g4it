@@ -2,6 +2,19 @@
 
 ## main branch
 
+## 2.8.2
+
+### Minor Changes
+
+- 666 | Equipment view - quantity empty when no date set
+- XXX | Upgrade Keycloak version to 26.0.0 to remove vulnerability
+
+## 2.8.1
+
+### Minor Changes
+
+- XXX | hotfix footprint criteria icon and title 
+
 ## 2.8.0
 
 ### Major Changes

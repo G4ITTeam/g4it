@@ -58,7 +58,7 @@ services:
           memory: 300M
 
   keycloak:
-    image: bitnami/keycloak:24.0.4
+    image: bitnami/keycloak:26.0.0
     container_name: keycloak
     environment:
       KEYCLOAK_BIND_ADDRESS: 0.0.0.0
