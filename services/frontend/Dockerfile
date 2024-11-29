@@ -4,7 +4,7 @@ FROM node:20-alpine as build
 WORKDIR /app
 COPY . .
 RUN npm ci \
-    && npm run build:nohref
+    && npm run build
 
 FROM nginx:latest
 COPY --from=build /app/dist/ /usr/share/nginx/html
