@@ -25,6 +25,8 @@ import { DividerModule } from "primeng/divider";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
+import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
+import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
 import { BarChartComponent } from "./digital-services-footprint-dashboard/bar-chart/bar-chart.component";
 import { DigitalServicesFootprintDashboardComponent } from "./digital-services-footprint-dashboard/digital-services-footprint-dashboard.component";
 import { ImpactButtonComponent } from "./digital-services-footprint-dashboard/impact-button/impact-button.component";
@@ -52,12 +54,14 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesTerminalsComponent,
         DigitalServicesNetworksComponent,
         DigitalServicesServersComponent,
+        DigitalServicesCloudServicesComponent,
         ImpactButtonComponent,
         RadialChartComponent,
         PieChartComponent,
         BarChartComponent,
         DigitalServicesTerminalsSidePanelComponent,
         DigitalServicesNetworksSidePanelComponent,
+        DigitalServicesCloudServicesSidePanelComponent,
         SidePanelCreateServerComponent,
         SidePanelServerParametersComponent,
         SidePanelDatacenterComponent,

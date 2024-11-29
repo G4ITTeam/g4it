@@ -4,26 +4,17 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
-@AllArgsConstructor
 public class ExportRuntimeException extends RuntimeException {
 
-    private final String error;
-
-    private Throwable cause;
-
-    @Override
-    public String getMessage() {
-        return error;
+    public ExportRuntimeException(final String message) {
+        super(message);
     }
 
+    public ExportRuntimeException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
 }

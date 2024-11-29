@@ -1,5 +1,5 @@
 <div
-    class="main-button-org-menu"
+    class="inline-block h-2rem w-2rem border-round-lg text-center vertical-align-middle p-2 cursor-pointer mx-4 mt-4"
     *ngIf="selectedOrganization"
     [style.backgroundColor]="selectedOrganization.color"
     [style.color]="chooseTextContrast(selectedOrganization.color)"
@@ -12,12 +12,12 @@
     {{ selectedOrganization!.name.charAt(0) }}
 </div>
 <div
-    class="org-menu overflow-y-auto"
-    [ngClass]="{ 'menu-visible': isMenuVisible }"
+    class="org-menu bg-white shadow-5 border-round-xs overflow-y-auto"
+    [ngClass]="{ block: isMenuVisible }"
     *ngIf="selectedOrganization"
 >
     <ul
-        class="org-menu-list"
+        class="w-max m-0 p-2"
         tabindex="0"
         role="application"
         [attr.aria-label]="
@@ -29,8 +29,12 @@
             ('common.selected' | translate)
         "
     >
-        <li *ngFor="let org of organizations">
+        <li
+            *ngFor="let org of organizations"
+            class="border-300 border-bottom-2 cursor-pointer hover:bg-gray-200"
+        >
             <a
+                class="p-3"
                 (click)="selectCompany(org)"
                 (keydown.enter)="selectCompany(org)"
                 role="link"
@@ -44,13 +48,14 @@
                 "
             >
                 <div
-                    class="icon-org-menu"
+                    class="inline-block h-2rem w-2rem border-round-lg text-center vertical-align-middle p-2 cursor-pointer my-2 mr-2 shadow-4"
                     [style.backgroundColor]="org.color"
                     [style.color]="chooseTextContrast(org.color)"
                 >
                     {{ org.organization!.name.charAt(0) }}
                 </div>
                 <span>
+                    {{ "common.organization" | translate }}
                     {{ org.organization!.name }} ({{ org.subscriber!.name }})
                     <i
                         *ngIf="

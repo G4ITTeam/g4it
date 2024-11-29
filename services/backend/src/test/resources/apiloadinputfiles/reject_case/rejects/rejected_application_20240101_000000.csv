@@ -1,0 +1,2 @@
+nomApplication;typeEnvironnement;nomEquipementVirtuel;nomSourceDonneeEquipementVirtuel;domaine;sousDomaine;nomEntite;nomEquipementPhysique;nomSourceDonnee;;inputFileName;lineNumber;message
+application-2;;virtual-eq-2-2;;Domain 1;Sub Domain 2;Entity 1;physical-eq-2;;;nominal.csv;5;environment must not be null

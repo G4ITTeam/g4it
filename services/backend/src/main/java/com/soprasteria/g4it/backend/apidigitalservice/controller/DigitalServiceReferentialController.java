@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Digital Service referential endpoints.
@@ -70,5 +71,30 @@ public class DigitalServiceReferentialController implements DigitalServiceRefere
                                                                  final String type) {
         return ResponseEntity.ok(digitalServiceReferentialRestMapper.toServerHostDto(digitalServiceReferentialService.getServerHosts(type)));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Map<String, String>> getBoaviztaCountries() {
+        return ResponseEntity.ok(digitalServiceReferentialService.getBoaviztaCountryMap());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<String>> getAllCloudProviders() {
+        return ResponseEntity.ok(digitalServiceReferentialService.getCloudProviders());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<String>> getAllCloudInstances(final String cloudProvider) {
+        return ResponseEntity.ok(digitalServiceReferentialService.getCloudInstances(cloudProvider));
+    }
+
 
 }

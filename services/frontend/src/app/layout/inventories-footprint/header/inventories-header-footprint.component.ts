@@ -28,6 +28,7 @@ import { Constants } from "src/constants";
 })
 export class InventoriesHeaderFootprintComponent implements OnInit {
     @Input() inventoryId: number = 0;
+    @Input() indicatorType: string = "";
 
     types = Constants.INVENTORY_TYPE;
     batchStatusCode: string | undefined = undefined;
@@ -59,7 +60,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
 
     async ngOnInit() {
         await this.initInventory();
-
         if (
             this.batchStatusCode &&
             this.batchStatusCode !== Constants.EXPORT_BATCH_GENERATED &&
@@ -119,8 +119,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     }
 
     changePageToInventories() {
-        let [_, subscribers, subscriber, organizations, organization] =
-            this.router.url.split("/");
+        let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
         return `/subscribers/${subscriber}/organizations/${organization}/inventories`;
     }
 

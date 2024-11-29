@@ -45,13 +45,12 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AdministratorOrganizationServiceTest {
+class AdministratorOrganizationServiceTest {
 
     @InjectMocks
     private AdministratorOrganizationService administratorOrganizationService;
 
     private long organizationId;
-    private long subscriberId;
 
     @Mock
     UserRepository userRepository;
@@ -81,7 +80,6 @@ public class AdministratorOrganizationServiceTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        subscriberId = organization.getSubscriber().getId();
         organizationId = organization.getId();
         doNothing().when(administratorRoleService).hasAdminRightOnSubscriberOrOrganization(any(), any(), any());
     }
@@ -104,7 +102,7 @@ public class AdministratorOrganizationServiceTest {
 
         List<UserInfoBO> users = administratorOrganizationService.linkUserToOrg(linkUserRoleRest, TestUtils.createUserBOAdminSub());
         assertEquals(1, users.size());
-        assertEquals(ROLE, users.get(0).getRoles().get(0));
+        assertEquals(ROLE, users.getFirst().getRoles().getFirst());
         verify(userOrganizationRepository, times(1)).save(any(UserOrganization.class));
         verify(userRoleOrganizationRepository, times(1)).saveAll(anyList());
     }
@@ -123,7 +121,7 @@ public class AdministratorOrganizationServiceTest {
 
         List<UserInfoBO> users = administratorOrganizationService.linkUserToOrg(linkUserRoleRest, TestUtils.createUserBOAdminSub());
         assertEquals(1, users.size());
-        assertEquals(List.of(), users.get(0).getRoles());
+        assertEquals(List.of(), users.getFirst().getRoles());
         verify(userOrganizationRepository, times(1)).save(any(UserOrganization.class));
     }
 

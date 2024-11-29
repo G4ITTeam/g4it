@@ -1,0 +1,155 @@
+@startuml User administration
+actor "Organizations' administrator" as user
+participant "G4IT frontend" as frontend
+participant "G4IT backend" as backend
+
+group UC#1 : Get users related to an organization
+user -> frontend: Open admin panel to administrate users
+frontend -> backend: GET /organizations?user={userId}
+note over backend
+Response example :
+[
+    {
+        "id": "0",
+        "organizationName" : "DEMO",
+        "subscriberName": "SUBSCRIBER-DEMO",
+        "associatedUserNumber" : "27"
+    },
+    {
+        "id": "1",
+        "organizationName" : "DEMO-2",
+        "subscriberName" : "SUBSCRIBER-DEMO",
+        "associatedUserNumber" : "2"
+    }
+]
+end note
+backend --> frontend: return every organization the user is associated with \n(association between g4it_user and g4it_organization + role ORGANIZATION_ADMINISTRATOR) \nand number of user associated to each organization
+user -> frontend: Access to the list of users related to an organization
+frontend -> backend : GET /users?organizationId={organizationId}
+note over backend
+Response example :
+[
+    {
+        "id": "0",
+        "email" : "prenom.nom@mail.com",
+        "organizationId" : "1"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "INVENTORY_READ"]
+    },
+    {
+        "id": "2",
+        "email" : "prenom.nom@mail2.com",
+        "organizationId" : "1"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "ORGANIZATION_ADMINISTRATOR"]
+    }
+]
+end note
+backend --> frontend : return list of users with associated roles
+frontend --> user : display the list of user with associated roles
+end
+
+group UC#2: Add a rights to a user on an organization
+user -> frontend : click on "search user"
+frontend -> backend : GET /organizations/{organizationId}/users?name={userName}
+backend--> frontend : return the list of user, with membership to this organization
+note over backend
+Response example :
+[
+    {
+        "id": "0",
+        "email" : "prenom.nom@mail.com",
+        "isAlreadyMember" : "true"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "INVENTORY_READ"]
+    },
+    {
+        "id": "2",
+        "email" : "prenom.nom@mail2.com",
+        "isAlreadyMember" : "false"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE"]
+    }
+]
+end note
+user -> frontend : click on "add user"
+frontend --> user : display roles to assign
+user -> frontend : choose role to assign
+frontend -> backend : POST /users
+note over frontend
+Body example
+{
+  "userId": 0,
+  "organizationId": 1,
+  "roles": ["ROLE_INVENTORY_WRITE"]
+}
+endnote
+backend --> frontend: assign roles to this organisation succeed or not
+frontend --> user: display success or failure
+end
+
+group UC#3 Edit rights to a user on an organization
+user -> frontend : click on "Members"
+frontend -> backend : GET /users?organizationId={organizationId}
+backend--> frontend : return the list of user already having roles on this organization
+note over backend
+Response example :
+[
+    {
+        "id": "0",
+        "email" : "prenom.nom@mail.com",
+        "organizationId" : "1"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "INVENTORY_READ"]
+    },
+    {
+        "id": "2",
+        "email" : "prenom.nom@mail2.com",
+        "organizationId" : "1"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "ORGANIZATION_ADMINISTRATOR"]
+    }
+]
+end note
+user -> frontend : Click on "Delete" button
+frontend -> backend : PUT /users the body contains the new roles related to the user
+note over frontend
+Body example
+{
+  "userId": 0,
+  "organizationId": 1,
+  "roles": ["ROLE_INVENTORY_WRITE"]
+}
+endnote
+backend --> frontend: edit roles to this organisation succeed or not
+frontend --> user : display success or failure
+end
+
+group UC#4 Delete association between a user and an organization
+user -> frontend : click on "Members"
+frontend -> backend : GET /users?organizationId={organizationId}
+backend--> frontend : return the list of user already having roles on this organization
+note over backend
+Response example :
+[
+    {
+        "id": "0",
+        "email" : "prenom.nom@mail.com",
+        "organizationId" : "1"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "INVENTORY_READ"]
+    },
+    {
+        "id": "2",
+        "email" : "prenom.nom@mail2.com",
+        "organizationId" : "1"
+        "role" : ["DIGITAL_SERVICE_WRITE", "DIGITAL_SERVICE_WRITE", "ORGANIZATION_ADMINISTRATOR"]
+    }
+]
+end note
+user -> frontend : modify roles
+frontend -> backend : PUT /users roles are empty as the user has no rights on this organization anymore
+note over frontend
+Body example
+{
+  "userId": 0,
+  "organizationId": 1
+}
+endnote
+backend --> frontend: delete roles to this organisation succeed or not
+frontend --> user : display success or failure
+end
+@enduml

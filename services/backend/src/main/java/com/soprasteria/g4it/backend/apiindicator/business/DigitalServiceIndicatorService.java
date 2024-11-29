@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
+import com.soprasteria.g4it.backend.apiindicator.controller.DigitalServiceCloudIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceNetworkIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceServerIndicatorBO;
@@ -44,5 +45,8 @@ public class DigitalServiceIndicatorService {
     public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String uid) {
         return digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(uid);
     }
-    
+
+    public List<DigitalServiceCloudIndicatorBO> getDigitalServiceCloudIndicators(final String uid) {
+        return digitalServiceIndicatorViewService.getDigitalServiceCloudIndicators(uid);
+    }
 }

@@ -7,13 +7,11 @@
  */
 package com.soprasteria.g4it.backend.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class G4itRestException extends RuntimeException {
 
     private String code;
@@ -23,11 +21,20 @@ public class G4itRestException extends RuntimeException {
     private Throwable cause;
 
     public G4itRestException(final String code) {
+        super();
         this.code = code;
     }
 
     public G4itRestException(final String code, final String message) {
+        super();
         this.code = code;
         this.message = message;
+    }
+
+    public G4itRestException(final String code, final String message, final Throwable cause) {
+        super();
+        this.code = code;
+        this.message = message;
+        this.cause = cause;
     }
 }

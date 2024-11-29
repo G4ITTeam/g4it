@@ -120,6 +120,7 @@ class InventoryServiceTest {
                 .applicationCount(0L)
                 .integrationReports(List.of())
                 .evaluationReports(List.of())
+                .tasks(List.of())
                 .build();
 
         when(inventoryRepo.findByOrganizationAndId(any(), eq(inventoryId))).thenReturn(Optional.of(inventory));

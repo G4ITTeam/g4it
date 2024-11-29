@@ -61,7 +61,7 @@ public class OrganizationBO {
      */
     private List<String> roles;
 
-    private Long subscriber_id;
+    private Long subscriberId;
 
     @EqualsAndHashCode.Exclude
     private LocalDateTime creationDate;

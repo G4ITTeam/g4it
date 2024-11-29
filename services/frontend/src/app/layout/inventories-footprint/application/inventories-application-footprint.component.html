@@ -1,5 +1,6 @@
 <app-inventories-header-footprint
     [inventoryId]="inventoryId"
+    [indicatorType]="'inventories.details.application' | translate | titlecase"
 ></app-inventories-header-footprint>
 <p-scrollPanel [style]="{ width: '100%', height: '88%' }">
     <dataviz-filter-application
@@ -11,6 +12,8 @@
             styleClass="px-1"
             [scrollable]="true"
             class="footprint-tabmenu"
+            role="heading"
+            [ariaLevel]="2"
         ></p-tabMenu>
     }
     @if (footprintStore.applicationCriteria() === multiCriteria) {
@@ -21,7 +24,7 @@
     } @else {
         <app-application-criteria-footprint
             [filterFields]="filterFields"
-            [footprint]="footprint"
+            [footprint]="criteriaFootprint"
             [selectedInventoryId]="inventoryId"
         ></app-application-criteria-footprint>
     }

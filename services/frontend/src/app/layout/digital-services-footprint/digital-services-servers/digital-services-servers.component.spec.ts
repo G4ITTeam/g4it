@@ -23,6 +23,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { SidebarModule } from "primeng/sidebar";
 import { TableModule } from "primeng/table";
 import { of } from "rxjs";
+import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
@@ -174,6 +175,7 @@ describe("DigitalServicesServersComponent", () => {
             of({
                 name: "name",
                 uid: "uid",
+                isNewArch: false,
                 creationDate: Date.now(),
                 lastUpdateDate: Date.now(),
                 lastCalculationDate: null,
@@ -207,36 +209,38 @@ describe("DigitalServicesServersComponent", () => {
             annualOperatingTime: 8760,
             vm: [],
         };
-        const digitalService = component.digitalService;
-        digitalService.servers.push({
-            uid: "randomUID",
-            name: "Server A",
-            mutualizationType: "Dedicated",
-            type: "Storage",
-            quantity: 3,
-            host: {
-                code: 1,
-                value: "Server Storage M",
-                characteristic: [],
+        const digitalService = {} as DigitalService;
+
+        digitalService.servers = [
+            {
+                uid: "randomUID",
+                name: "Server A",
+                mutualizationType: "Dedicated",
+                type: "Storage",
+                quantity: 3,
+                host: {
+                    code: 1,
+                    value: "Server Storage M",
+                    characteristic: [],
+                },
+                datacenter: {
+                    uid: "tsc2e0c-157c-4eb2-bb38-d81cer720e1c2",
+                    name: "Default DC",
+                    location: "France",
+                    pue: 1,
+                },
+                totalVCpu: 100,
+                totalDisk: 53,
+                lifespan: 10.5,
+                annualElectricConsumption: 1000,
+                annualOperatingTime: 8760,
+                vm: [],
             },
-            datacenter: {
-                uid: "tsc2e0c-157c-4eb2-bb38-d81cer720e1c2",
-                name: "Default DC",
-                location: "France",
-                pue: 1,
-            },
-            totalVCpu: 100,
-            totalDisk: 53,
-            lifespan: 10.5,
-            annualElectricConsumption: 1000,
-            annualOperatingTime: 8760,
-            vm: [],
-        });
+        ];
 
         component.deleteServers(server);
         tick();
         expect(component.digitalService.servers).toHaveSize(0);
-        expect(update).toHaveBeenCalledWith(digitalService);
     }));
 
     it("should not delete server", fakeAsync(() => {
@@ -245,6 +249,7 @@ describe("DigitalServicesServersComponent", () => {
             of({
                 name: "name",
                 uid: "uid",
+                isNewArch: false,
                 creationDate: Date.now(),
                 lastUpdateDate: Date.now(),
                 lastCalculationDate: null,

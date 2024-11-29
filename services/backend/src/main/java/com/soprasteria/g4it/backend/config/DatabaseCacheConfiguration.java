@@ -27,6 +27,16 @@ public class DatabaseCacheConfiguration {
     @CacheEvict(value = {
             "Organization",
             "getBusinessHours",
+            "ref_getAllLifecycleSteps",
+            "ref_getAllCriteria",
+            "ref_getHypotheses",
+            "ref_getItemTypes",
+            "ref_getMatchingItem",
+            "ref_getItemImpacts",
+            "ref_getCountries",
+            "boaviztaGetCountryMap",
+            "boaviztaGetProviderList",
+            "boaviztaGetInstanceList"
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.database.ttl}")
     public void emptyDatabaseCaches() {
@@ -42,7 +52,11 @@ public class DatabaseCacheConfiguration {
             "existsByUidAndUserId",
             "RoleRepository_findByName",
             "getUserByName",
-            "listTemplatesFiles"
+            "listTemplatesFiles",
+            "getElectricityMixQuartiles",
+            "getCountryList",
+            "isLowImpact",
+            "inventoryExists"
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.short.ttl}")
     public void emptyShortTtlCaches() {

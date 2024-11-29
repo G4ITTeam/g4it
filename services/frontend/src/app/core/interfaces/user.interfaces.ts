@@ -28,6 +28,7 @@ export interface Subscriber {
     organizations: Organization[];
     roles: Role[];
     criteria?: string[];
+    authorizedDomains?: string[];
 }
 
 export interface Organization {

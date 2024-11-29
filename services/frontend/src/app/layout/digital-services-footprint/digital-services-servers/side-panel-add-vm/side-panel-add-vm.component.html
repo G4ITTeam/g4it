@@ -1,17 +1,20 @@
 <div class="lg-file-panel-margin">
-    <div class="side-panel-title">
+    <div class="side-panel-title" appAutofocus tabindex="-1">
         {{ "digital-services-servers.add.vm" | translate }}
     </div>
     <form [formGroup]="addVmForm" (ngSubmit)="submitFormData()">
-        <div class="form-flex-row">
+        <div class="flex flex-row">
             <div class="label-input-div-medium">
-                <label>{{ "digital-services-servers.name" | translate }}</label>
+                <label for="name">{{
+                    "digital-services-servers.name" | translate
+                }}</label>
                 <input
                     pInputText
                     type="text"
                     formControlName="name"
                     [required]="true"
                     [(ngModel)]="vm.name"
+                    id="name"
                 />
                 <p class="error-text" *ngIf="addVmForm.get('name')?.hasError('required')">
                     {{ "digital-services-servers.name" | translate }}
@@ -19,7 +22,9 @@
                 </p>
             </div>
             <div *ngIf="server.type === 'Compute'" class="label-input-div-medium">
-                <label>{{ "digital-services-servers.total.vcpu" | translate }}</label>
+                <label for="vcpu">{{
+                    "digital-services-servers.total.vcpu" | translate
+                }}</label>
                 <p-inputNumber
                     formControlName="vcpu"
                     [required]="true"
@@ -28,6 +33,7 @@
                     (onInput)="verifyValue()"
                     [(ngModel)]="vm.vCpu"
                     name="vcpu"
+                    id="vcpu"
                     ngDefaultControl
                     locale="fr-FR"
                 />
@@ -44,7 +50,9 @@
                 </p>
             </div>
             <div *ngIf="server.type === 'Storage'" class="label-input-div-medium">
-                <label>{{ "digital-services-servers.total.disk" | translate }}</label>
+                <label for="disk">{{
+                    "digital-services-servers.total.disk" | translate
+                }}</label>
                 <p-inputNumber
                     formControlName="disk"
                     [required]="true"
@@ -53,6 +61,7 @@
                     (onInput)="verifyValue()"
                     [(ngModel)]="vm.disk"
                     name="disk"
+                    id="disk"
                     ngDefaultControl
                     locale="fr-FR"
                 />
@@ -71,9 +80,11 @@
         <div class="underlined-div-small">
             <p>{{ "digital-services-servers.additional" | translate }}</p>
         </div>
-        <div class="form-flex-row">
+        <div class="flex flex-row">
             <div class="label-input-div-medium">
-                <label>{{ "digital-services-servers.quantity" | translate }}</label>
+                <label for="quantity">{{
+                    "digital-services-servers.quantity" | translate
+                }}</label>
                 <p-inputNumber
                     formControlName="quantity"
                     [required]="true"
@@ -84,6 +95,7 @@
                     name="quantity"
                     ngDefaultControl
                     locale="fr-FR"
+                    id="quantity"
                 />
 
                 <p class="error-text">
@@ -97,7 +109,9 @@
                 </p>
             </div>
             <div class="label-input-div-medium">
-                <label>{{ "digital-services-servers.usage.time" | translate }}</label>
+                <label for="opratingTime">{{
+                    "digital-services-servers.usage.time" | translate
+                }}</label>
                 <p-inputNumber
                     formControlName="opratingTime"
                     [required]="true"
@@ -108,6 +122,7 @@
                     styleClass="inputnumber-medium"
                     ngDefaultControl
                     locale="fr-FR"
+                    id="opratingTime"
                 />
                 <p
                     class="error-text"

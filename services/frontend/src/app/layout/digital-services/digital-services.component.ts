@@ -12,6 +12,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { Organization } from "src/app/core/interfaces/user.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -30,6 +31,7 @@ export class DigitalServicesComponent {
 
     myDigitalServices: DigitalService[] = [];
     sharedDigitalServices: DigitalService[] = [];
+    selectedOrganization!: string;
 
     private destroyRef = inject(DestroyRef);
 
@@ -43,6 +45,11 @@ export class DigitalServicesComponent {
     ) {}
 
     async ngOnInit(): Promise<void> {
+        this.userService.currentOrganization$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((organization: Organization) => {
+                this.selectedOrganization = organization.name;
+            });
         this.global.setLoading(true);
         await this.retrieveDigitalServices();
         this.global.setLoading(false);

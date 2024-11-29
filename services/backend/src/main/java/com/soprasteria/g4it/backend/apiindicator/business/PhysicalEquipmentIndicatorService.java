@@ -20,8 +20,8 @@ import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PhysicalEquipmentIndicatorService {
 
     /**
@@ -56,12 +57,6 @@ public class PhysicalEquipmentIndicatorService {
     private PhysicalEquipmentIndicatorMapper physicalEquipmentIndicatorMapper;
 
     /**
-     * NumEcoEval Referential service.
-     */
-    @Autowired
-    private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
-
-    /**
      * The Organization Service
      */
     @Autowired
@@ -72,6 +67,12 @@ public class PhysicalEquipmentIndicatorService {
      */
     @Autowired
     private InventoryService inventoryService;
+
+    /**
+     * The LowImpact Service
+     */
+    @Autowired
+    private LowImpactService lowImpactService;
 
     /**
      * Retrieve average age indicators.
@@ -107,7 +108,7 @@ public class PhysicalEquipmentIndicatorService {
         final List<PhysicalEquipmentLowImpactView> indicators = physicalEquipmentLowImpactViewRepository.findPhysicalEquipmentLowImpactIndicatorsByOrgId(inventoryId);
         indicators.forEach(indicator -> {
                     indicator.setType(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getType()));
-                    indicator.setLowImpact(numEcoEvalReferentialRemotingService.isLowImpact(indicator.getCountry()));
+                    indicator.setLowImpact(lowImpactService.isLowImpact(indicator.getCountry()));
                 }
         );
 

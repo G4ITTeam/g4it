@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "primeng/api";
@@ -19,6 +19,7 @@ import {
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import SidePanelDatacenterComponent from "../side-panel-add-datacenter/side-panel-datacenter.component";
 
 @Component({
     selector: "side-panel-server-parameters",
@@ -26,6 +27,8 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     providers: [MessageService],
 })
 export class SidePanelServerParametersComponent implements OnInit {
+    @ViewChild("childSidePanel", { static: false })
+    childSidePanel!: SidePanelDatacenterComponent;
     ngUnsubscribe = new Subject<void>();
 
     addSidebarVisible: boolean = false;
@@ -44,17 +47,7 @@ export class SidePanelServerParametersComponent implements OnInit {
         vm: [],
     };
 
-    digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-        members: [],
-    };
+    digitalService: DigitalService = {} as DigitalService;
     totalVmvCpu = 0;
     serverForm = this._formBuilder.group({
         host: [this.server.host, Validators.required],
@@ -73,6 +66,7 @@ export class SidePanelServerParametersComponent implements OnInit {
     datacenterOptions: ServerDC[] = [];
     indexDatacenter: number = 0;
     dataInitialized: boolean = false;
+    createLabelKey = "common.add";
 
     constructor(
         private digitalDataService: DigitalServicesDataService,
@@ -109,6 +103,9 @@ export class SidePanelServerParametersComponent implements OnInit {
                         );
                         this.server.host = this.hostOptions[this.indexHostStorage];
                     }
+
+                    this.createLabelKey = this.getCreateLabelKey(this.server);
+
                     this.verifyValue();
                 });
         });
@@ -118,6 +115,19 @@ export class SidePanelServerParametersComponent implements OnInit {
             .subscribe((res) => {
                 this.dataInitialized = res;
             });
+    }
+
+    getCreateLabelKey(server: DigitalServiceServerConfig): string {
+        if (server.mutualizationType === "Dedicated" && server.uid === "") {
+            return "common.add";
+        }
+        if (server.mutualizationType === "Dedicated" && server.uid !== "") {
+            return "common.save";
+        }
+        if (server.mutualizationType === "Shared") {
+            return "common.next";
+        }
+        return "common.add";
     }
 
     async setHostReferential(type: string) {

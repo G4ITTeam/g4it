@@ -83,6 +83,11 @@ public class DigitalService {
     private LocalDateTime lastUpdateDate;
 
     /**
+     * is new arch
+     */
+    private Boolean isNewArch;
+    
+    /**
      * Attached note.
      */
     @OnDelete(action = OnDeleteAction.CASCADE)

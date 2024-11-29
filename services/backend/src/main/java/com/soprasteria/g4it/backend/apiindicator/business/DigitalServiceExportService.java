@@ -8,14 +8,22 @@
 
 package com.soprasteria.g4it.backend.apiindicator.business;
 
+import com.azure.storage.blob.models.BlobErrorCode;
+import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.*;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.numecoeval.PhysicalEquipmentIndicator;
 import com.soprasteria.g4it.backend.apiindicator.repository.numecoeval.PhysicalEquipmentIndicatorRepository;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService;
+import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -26,14 +34,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.soprasteria.g4it.backend.common.utils.ObjectUtils.getCsvString;
@@ -45,6 +51,7 @@ public class DigitalServiceExportService {
     private static final String LOG_FILE_CREATED = "Digital-service Export - '{}' {} file created successfully";
     private static final String LOG_NO_DATA = "Digital-service Export - '{}' {} file not created, no data";
     private static final String DELIMITER = ";";
+    private static final String IND_CLOUD_INSTANCES = "ind_cloud_instances";
     @Autowired
     private DigitalServiceRepository digitalServiceRepository;
     @Value("${local.working.folder}")
@@ -54,7 +61,14 @@ public class DigitalServiceExportService {
     @Autowired
     private PhysicalEquipmentIndicatorRepository physicalEquipmentIndicatorRepository;
     @Autowired
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Autowired
     private LocalFileService localFileService;
+    @Autowired
+    private FileSystemService fileSystemService;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @PostConstruct
     public void initFolder() throws IOException {
@@ -88,7 +102,10 @@ public class DigitalServiceExportService {
         createPhysicalEquipmentIndicatorFile(directoryPath, digitalService);
         createDatacenterFile(directoryPath, digitalService);
         createVirtualMachineFile(directoryPath, digitalService);
-
+        int cloudInstanceFileSize = createCloudInstanceFile(directoryPath, digitalService);
+        if (cloudInstanceFileSize > 0) {
+            createCloudInstanceIndicatorFile(subscriber, organization, directoryPath, digitalService.getUid());
+        }
         File zipFile = localFileService.createZipFile(
                 directoryPath,
                 digitalServicePath.resolve(String.join("_", "g4it", subscriber, String.valueOf(organization), digitalServiceUid, "export-result-files.zip"))
@@ -273,14 +290,12 @@ public class DigitalServiceExportService {
 
         dataLines.add(headers.stream().map(Header::getName).collect(Collectors.joining(DELIMITER)));
 
-        servers.forEach(server -> {
-            server.getVirtualEquipmentDigitalServices().forEach(vmDigitalService ->
-                    dataLines.add(String.join(DELIMITER,
-                            digitalService.getName(),
-                            fieldNamesWithDsName.stream().map(field -> getCsvString(field, vmDigitalService, VirtualEquipmentDigitalService.class)).collect(Collectors.joining(DELIMITER)))
-                    )
-            );
-        });
+        servers.forEach(server -> server.getVirtualEquipmentDigitalServices().forEach(vmDigitalService ->
+                dataLines.add(String.join(DELIMITER,
+                        digitalService.getName(),
+                        fieldNamesWithDsName.stream().map(field -> getCsvString(field, vmDigitalService, VirtualEquipmentDigitalService.class)).collect(Collectors.joining(DELIMITER)))
+                )
+        ));
 
         localFileService.writeFile(directoryPath.resolve(type + ".csv"), dataLines);
         log.info(LOG_FILE_CREATED, digitalServiceUid, type);
@@ -319,6 +334,114 @@ public class DigitalServiceExportService {
 
         localFileService.writeFile(directoryPath.resolve(type + ".csv"), dataLines);
         log.info(LOG_FILE_CREATED, digitalServiceUid, type);
+    }
+
+    /**
+     * Create cloud instance file
+     *
+     * @param directoryPath  directory path
+     * @param digitalService digital service
+     */
+    private int createCloudInstanceFile(final Path directoryPath, final DigitalService digitalService) {
+        final String type = "cloud_instances";
+        final String digitalServiceUid = digitalService.getUid();
+
+        List<InVirtualEquipment> inVirtualEquipments = inVirtualEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
+
+        if (inVirtualEquipments.isEmpty()) {
+            log.info(LOG_NO_DATA, digitalServiceUid, type);
+            return 0;
+        }
+        final List<String> dataLines = new ArrayList<>();
+        final List<Header> headers = csvFileMapperInfo.getMapping(FileType.CLOUD_INSTANCE);
+        final List<String> fieldNamesWithDsName = getFieldList(headers);
+
+        dataLines.add(headers.stream().map(Header::getName).collect(Collectors.joining(DELIMITER)));
+
+        inVirtualEquipments.forEach(item ->
+                dataLines.add(String.join(DELIMITER,
+                        digitalService.getName(),
+                        fieldNamesWithDsName.stream().map(field -> getCsvString(field, item, InVirtualEquipment.class)).collect(Collectors.joining(DELIMITER)))
+                )
+        );
+        localFileService.writeFile(directoryPath.resolve(type + ".csv"), dataLines);
+        log.info(LOG_FILE_CREATED, digitalServiceUid, type);
+        return inVirtualEquipments.size();
+    }
+
+    /**
+     * Create cloud instance indicator file
+     *
+     * @param subscriber        the subscriber
+     * @param organization      the organization
+     * @param directoryPath     directory path
+     * @param digitalServiceUid digital service uid
+     */
+    private void createCloudInstanceIndicatorFile(final String subscriber, final Long organization, final Path directoryPath, final String digitalServiceUid) {
+        Optional<Task> task = taskRepository.findByDigitalServiceUid(digitalServiceUid);
+        if (task.isEmpty()) {
+            log.info(LOG_NO_DATA, digitalServiceUid, IND_CLOUD_INSTANCES);
+            return;
+        }
+        final String fileName = task.get().getId() + ".zip";
+        try {
+            InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.EXPORT, fileName);
+
+            if (inputStream == null) {
+                log.info(LOG_NO_DATA, digitalServiceUid, IND_CLOUD_INSTANCES);
+                return;
+            }
+
+            processCloudInstanceIndicatorZip(inputStream, directoryPath, digitalServiceUid);
+
+        } catch (FileNotFoundException e) {
+            log.info(LOG_NO_DATA, digitalServiceUid, IND_CLOUD_INSTANCES);
+        } catch (BlobStorageException e) {
+            if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {
+                log.info(LOG_NO_DATA, digitalServiceUid, IND_CLOUD_INSTANCES);
+                return;
+            }
+            throw new G4itRestException("500", String.format("Something went wrong downloading file %s", fileName), e);
+        } catch (IOException e) {
+            throw new G4itRestException("500", String.format("Something went wrong processing file %s", fileName), e);
+        }
+    }
+
+    /**
+     * Process the cloud instance indicator zip file and extract its contents
+     *
+     * @param inputStream       Input stream of the zip file
+     * @param directoryPath     Target directory path
+     * @param digitalServiceUid Digital service UID
+     * @throws IOException If there's an error processing the file
+     */
+    private void processCloudInstanceIndicatorZip(InputStream inputStream, Path directoryPath,
+                                                  String digitalServiceUid) throws IOException {
+        // temporary directory to extract the zip
+        Path tempDir = Files.createTempDirectory("cloud-instance-indicator");
+
+        try (inputStream) {
+            localFileService.unzipFile(inputStream, tempDir);
+            Path indicatorFile = tempDir.resolve(IND_CLOUD_INSTANCES + ".csv");
+
+            if (Files.exists(indicatorFile)) {
+                // Read and process the CSV file
+                List<String> dataLines = Files.readAllLines(indicatorFile);
+
+                if (!dataLines.isEmpty()) {
+                    localFileService.writeFile(directoryPath.resolve(IND_CLOUD_INSTANCES + ".csv"), dataLines);
+                    log.info(LOG_FILE_CREATED, digitalServiceUid, IND_CLOUD_INSTANCES);
+                } else {
+                    log.info(LOG_NO_DATA, digitalServiceUid, IND_CLOUD_INSTANCES);
+                }
+            } else {
+                log.info(LOG_NO_DATA, digitalServiceUid, IND_CLOUD_INSTANCES);
+            }
+
+        } finally {
+            // Clean up temporary directory
+            FileSystemUtils.deleteRecursively(tempDir);
+        }
     }
 
     /**

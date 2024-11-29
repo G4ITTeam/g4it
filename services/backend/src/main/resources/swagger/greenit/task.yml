@@ -1,0 +1,94 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Task
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: task
+    description: All endpoint for task
+
+paths:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/task/{taskId}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - $ref: '#/components/parameters/taskIdPathParam'
+    get:
+      tags:
+        - task
+      summary: Get a task
+      operationId: getTask
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        '200':
+          description: Return the task object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+
+components:
+  parameters:
+    taskIdPathParam:
+      in: path
+      name: taskId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The task Id.
+
+  schemas:
+    TaskIdRest:
+      description: Task id
+      type: object
+      properties:
+        taskId:
+          type: integer
+          format: int64
+    TaskRest:
+      description: Task object
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        inventoryId:
+          type: integer
+          format: int64
+        digitalServiceUid:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+        progressPercentage:
+          type: string
+        criteria:
+          type: array
+          items:
+            type: string
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-tim
+        details:
+          type: array
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string

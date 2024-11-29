@@ -108,7 +108,8 @@ public class ValidateHeaderTasklet implements Tasklet {
         headers.removeAll(optionalHeaders);
 
         if (!headers.isEmpty()) {
-            LOGGER.warn("Columns {} are unknown.", String.join(", ", headers));
+            String headerInfo = String.join(", ", headers);
+            LOGGER.warn("Columns {} are unknown.", headerInfo);
         }
     }
 

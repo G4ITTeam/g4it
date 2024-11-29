@@ -32,7 +32,9 @@ import java.io.Serializable;
                         @ColumnResult(name = "country"),
                         @ColumnResult(name = "raw_value", type = Double.class),
                         @ColumnResult(name = "sip_value", type = Double.class),
-                        @ColumnResult(name = "unit")
+                        @ColumnResult(name = "unit"),
+                        @ColumnResult(name = "status"),
+                        @ColumnResult(name = "count_value", type = Long.class)
                 }
         )
 )
@@ -57,7 +59,9 @@ import java.io.Serializable;
                         dc.location                                                 as country,
                         sum(ep.impact_unitaire)                                     as raw_value,
                         sum(ep.impact_unitaire/sip.individual_sustainable_package)  as sip_value,
-                        ep.unite                                                    as unit
+                        ep.unite                                                    as unit,
+                        ep.statut_indicateur                                        as status,
+                        count(*)                                                    as count_value
                     from
                         ind_indicateur_impact_equipement_physique ep
                     inner join server s
@@ -68,7 +72,6 @@ import java.io.Serializable;
                         on sip.criteria = ep.critere
                     where ep.nom_lot = :uid
                     and ep.type_equipement = 'Dedicated Server'
-                    and ep.statut_indicateur = 'OK'
                     group by
                         ep.critere,
                         s.mutualization_type,
@@ -77,7 +80,8 @@ import java.io.Serializable;
                         ep.etapeacv,
                         dc.pue,
                         dc.location,
-                        ep.unite
+                        ep.unite,
+                        ep.statut_indicateur
                     union
                     select
                         ev.critere                                                  as criteria,
@@ -92,7 +96,9 @@ import java.io.Serializable;
                         dc.location                                                 as country,
                         sum(ev.impact_unitaire)                                     as raw_value,
                         sum(ev.impact_unitaire/sip.individual_sustainable_package)  as sip_value,
-                        ev.unite                                                    as unit
+                        ev.unite                                                    as unit,
+                        ev.statut_indicateur                                        as status,
+                        count(*)                                                    as count_value
                     from ind_indicateur_impact_equipement_virtuel ev
                     inner join virtual_equipment_digital_service vm
                         on vm.uid = ev.nom_equipement_virtuel
@@ -113,7 +119,8 @@ import java.io.Serializable;
                         ev.etapeacv,
                         dc.pue,
                         dc.location,
-                        ev.unite
+                        ev.unite,
+                        ev.statut_indicateur
                 ) as servers
                 """
 )
@@ -151,4 +158,8 @@ public class DigitalServiceServerIndicatorView implements Serializable {
     private Double sipValue;
 
     private String unit;
+
+    private String status;
+
+    private Long countValue;
 }

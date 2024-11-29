@@ -46,7 +46,12 @@ export class InventoriesFootprintComponent implements OnInit {
 
     criterias = [Constants.MUTLI_CRITERIA, ...Object.keys(this.global.criteriaList())];
 
-    criteres: MenuItem[] = [{ label: "Multi-criteria", routerLink: "../multi-criteria" }];
+    criteres: MenuItem[] = [
+        {
+            label: this.translate.instant("criteria-title.multi-criteria.title"),
+            routerLink: `../${Constants.MUTLI_CRITERIA}`,
+        },
+    ];
 
     allUnmodifiedFootprint: Criterias = {} as Criterias;
     allUnmodifiedFilters: Filter<string> = {};
@@ -65,6 +70,7 @@ export class InventoriesFootprintComponent implements OnInit {
     multiCriteria = Constants.MUTLI_CRITERIA;
     inventoryId = 0;
     showTabMenu = false;
+    dimensions = Constants.EQUIPMENT_DIMENSIONS;
     constructor(
         private activatedRoute: ActivatedRoute,
         private footprintDataService: FootprintDataService,
@@ -83,18 +89,22 @@ export class InventoriesFootprintComponent implements OnInit {
             .getFootprint(this.inventoryId)
             .pipe(finalize(() => (this.showTabMenu = true)))
             .subscribe((criterias: Criterias) => {
-                this.criteres = Object.entries(criterias).map(
-                    ([key, criteria]: [string, Criteria]) => {
-                        return {
-                            label: this.translate.instant(`criteria.${key}.title`),
-                            routerLink: `../${key}`,
-                        };
-                    },
+                const footprintCriteriaKeys = Object.keys(criterias);
+                const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter(
+                    (key) => footprintCriteriaKeys.includes(key),
                 );
+                this.criteres = sortedCriteriaKeys.map((key: string) => {
+                    return {
+                        label: this.translate.instant(`criteria.${key}.title`),
+                        routerLink: `../${key}`,
+                    };
+                });
                 if (this.criteres.length > 1) {
                     this.criteres.unshift({
-                        label: "Multi-criteria",
-                        routerLink: "../multi-criteria",
+                        label: this.translate.instant(
+                            "criteria-title.multi-criteria.title",
+                        ),
+                        routerLink: `../${Constants.MUTLI_CRITERIA}`,
                     });
                 }
             });

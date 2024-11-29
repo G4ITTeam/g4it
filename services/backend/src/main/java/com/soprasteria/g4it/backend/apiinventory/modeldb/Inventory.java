@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apibatchexport.modeldb.ExportReport;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -51,6 +52,11 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
      * The Criterias key.
      */
     private List<String> criteria;
+
+    /**
+     * is new arch
+     */
+    private Boolean isNewArch;
 
     /**
      * Attached note.
@@ -110,6 +116,11 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     @ToString.Exclude
     @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private ExportReport exportReport;
+
+    @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Task> tasks = new ArrayList<>();
 
     /**
      * Add integration report to inventory.

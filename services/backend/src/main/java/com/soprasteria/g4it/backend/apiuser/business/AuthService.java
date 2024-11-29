@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.apiuser.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
+import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.AuthorizationException;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.env.Environment;
 import org.springframework.data.util.Pair;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,10 +28,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Auth Service
@@ -39,10 +38,16 @@ import java.util.Set;
 @Slf4j
 public class AuthService {
 
-    private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host");
     private UserService userService;
     private DigitalServiceRepository digitalServiceRepository;
     private DigitalServiceSharedRepository digitalServiceSharedRepository;
+    private InventoryService inventoryService;
+    private Environment environment;
+    private static final String TOKEN_ERROR_MESSAGE = "The token is not a JWT token";
+    private static final String SUPPORT_ERROR_MESSAGE = "To access to G4IT, you must be added as a member of a organization, please contact your administrator or the support at support.g4it@soprasteria.com";
+    private static final String SUBSCRIBERS = "subscribers";
+    private static final Set<String> NOT_DIGITAL_SERVICE = Set.of("device-type", "country", "network-type", "server-host");
+
 
     /**
      * Gets user's information.
@@ -51,8 +56,13 @@ public class AuthService {
      */
     public UserBO getAdminUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (environment.matchesProfiles(Constants.NOSECURITY)) {
+            return userService.getNoSecurityUser(true);
+        }
+
         if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
-            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "The token is not a JWT token");
+            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, TOKEN_ERROR_MESSAGE);
         }
 
         UserBO user = userService.getUserFromToken(jwt);
@@ -60,8 +70,8 @@ public class AuthService {
 
         UserBO userBO = userService.getUserByName(user);
         if (userBO == null) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "To access to G4IT, you must be added as a member of a organization, please contact your administrator" +
-                    "or the support at support.g4it@soprasteria.com.");
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
+                    SUPPORT_ERROR_MESSAGE);
         }
         return userBO;
     }
@@ -73,14 +83,18 @@ public class AuthService {
      */
     public UserBO getUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (environment.matchesProfiles(Constants.NOSECURITY)) {
+            return userService.getNoSecurityUser(true);
+        }
         if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
-            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "The token is not a JWT token");
+            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, TOKEN_ERROR_MESSAGE);
         }
 
         UserBO userBO = userService.getUserByName(userService.getUserFromToken(jwt));
         if (userBO == null) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "To access to G4IT, you must be added as a member of a organization, please contact your administrator" +
-                    "or the support at support.g4it@soprasteria.com.");
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
+                    SUPPORT_ERROR_MESSAGE);
         }
         return userBO;
     }
@@ -94,11 +108,15 @@ public class AuthService {
         if (urlSplit == null)
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "Unable to determine associated organization");
 
-        if (urlSplit.length < 5) {
+        if (SUBSCRIBERS.equals(urlSplit[1]) && urlSplit.length < 5) {
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "Unable to determine associated organization");
         }
 
-        return Pair.of(urlSplit[2], urlSplit[4]);
+        if (SUBSCRIBERS.equals(urlSplit[1])) {
+            return Pair.of(urlSplit[2], urlSplit[4]);
+        }
+
+        return null;
     }
 
 
@@ -109,12 +127,17 @@ public class AuthService {
      */
     public UserBO verifyUserAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (environment.matchesProfiles(Constants.NOSECURITY)) {
+            return userService.getNoSecurityUser(false);
+        }
+
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "User is not connected");
         }
 
         if (!(authentication.getPrincipal() instanceof Jwt jwt)) {
-            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, "The token is not a JWT token");
+            throw new AuthorizationException(HttpServletResponse.SC_UNAUTHORIZED, TOKEN_ERROR_MESSAGE);
         }
 
         return userService.getUserFromToken(jwt);
@@ -132,8 +155,8 @@ public class AuthService {
     public JwtAuthenticationToken getJwtToken(final UserBO userInfo, final String subscriber, final Long organization) {
         final UserBO user = userService.getUserByName(userInfo);
         if (user == null) {
-            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "To access to G4IT, you must be added as a member of a organization, please contact your administrator" +
-                    "or the support at support.g4it@soprasteria.com.");
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN,
+                    SUPPORT_ERROR_MESSAGE);
         }
 
         // Verify authentication and get user roles.
@@ -144,7 +167,13 @@ public class AuthService {
         // Build new authentication with user roles in database.
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        final JwtAuthenticationToken newAuth = new JwtAuthenticationToken((Jwt) auth.getPrincipal(), userRoles, String.valueOf(user.getId()));
+        Jwt principalJwt = environment.matchesProfiles(Constants.NOSECURITY) ? Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("sub", "sub")
+                .claim("user", Map.of("email", Constants.SUPER_ADMIN_EMAIL))
+                .build() : (Jwt) auth.getPrincipal();
+
+        final JwtAuthenticationToken newAuth = new JwtAuthenticationToken(principalJwt, userRoles, String.valueOf(user.getId()));
         newAuth.setAuthenticated(true);
         newAuth.setDetails(auth.getDetails());
         return newAuth;
@@ -162,6 +191,14 @@ public class AuthService {
      */
     private List<String> controlAccess(final UserBO user, final String subscriberName, final Long organizationId) throws AuthorizationException {
 
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) {
+            log.info("UserId={} is authorized with role={}", user.getId(), Constants.ROLE_SUPER_ADMINISTRATOR);
+            List<String> allRoles = new ArrayList<>();
+            allRoles.add(Constants.ROLE_SUPER_ADMINISTRATOR);
+            allRoles.addAll(Constants.SUBSCRIBER_ROLES);
+            return allRoles;
+        }
+
         var subscriber = user.getSubscribers().stream()
                 .filter(e -> e.getName().equals(subscriberName))
                 .findAny()
@@ -169,7 +206,7 @@ public class AuthService {
 
         if (subscriber.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR)) {
             log.info("UserId={} is authorized for {}/{} with roles={}", user.getId(), subscriber.getName(), organizationId, Constants.ROLE_SUBSCRIBER_ADMINISTRATOR);
-            return Constants.ALL_ROLES;
+            return Constants.SUBSCRIBER_ROLES;
         }
 
         // Retrieve subscriber from uri, in second position.
@@ -222,6 +259,32 @@ public class AuthService {
         if (!(digitalServiceRepository.existsByUidAndUserId(digitalServiceUid, getUser().getId())
                 || digitalServiceSharedRepository.existsByDigitalServiceUidAndUserId(digitalServiceUid, getUser().getId()))) {
             throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "The user has no right to manage this digitalService");
+        }
+    }
+
+    /**
+     * Check if the user has the right to manage the inventory
+     * Also checks the inventory id is linked to the subscriber/organizationId
+     *
+     * @param urlSplit the split url
+     */
+    public void checkUserRightForInventory(String[] urlSplit) {
+        if (urlSplit.length <= 6) return;
+        if (!(SUBSCRIBERS.equals(urlSplit[1]) &&
+                "organizations".equals(urlSplit[3]) &&
+                "inventories".equals(urlSplit[5]))) return;
+
+        String subscriber = urlSplit[2];
+
+        try {
+            Long organizationId = Long.parseLong(urlSplit[4]);
+            Long inventoryId = Long.parseLong(urlSplit[6]);
+
+            if (!inventoryService.inventoryExists(subscriber, organizationId, inventoryId)) {
+                throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, String.format("The inventory '%d' does not exist or is not linked to %s/%s", inventoryId, subscriber, organizationId));
+            }
+        } catch (NumberFormatException e) {
+            throw new AuthorizationException(HttpServletResponse.SC_FORBIDDEN, "OrganizationId and inventoryId must be in Long format");
         }
     }
 }

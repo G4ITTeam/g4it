@@ -6,10 +6,30 @@ export interface Stat {
     description: string;
 }
 
+export interface CriteriaCalculated {
+    footprints: FootprintCalculated[];
+    hasError: boolean;
+    total: SumImpact;
+    criteriasCount?: StatusCountMap;
+}
+
 export interface FootprintCalculated {
     data: string;
     impacts: Impact[];
     total: SumImpact;
+    status: OkErrorStatus;
+}
+
+interface StatusCountMap {
+    [key: string]: {
+        status: StatusCount;
+    };
+}
+
+interface StatusCount {
+    ok: number;
+    error: number;
+    total: number;
 }
 
 export interface Impact {
@@ -27,6 +47,13 @@ export interface EchartPieDataItem {
     name: string;
     value: number;
     otherData: OtherDataValue;
+    status: OkErrorStatus;
+}
+
+interface OkErrorStatus {
+    ok: number;
+    error: number;
+    total: number;
 }
 
 export interface OtherDataValue {
@@ -71,6 +98,7 @@ export interface Impact {
     status: string | null;
     impact: number;
     sip: number;
+    statusIndicator: string;
     countValue: number;
 }
 
@@ -159,6 +187,7 @@ export interface ApplicationImpact {
     cluster: string;
     impact: number;
     sip: number;
+    statusIndicator: string;
 }
 
 export interface ImpactGraph {
@@ -174,6 +203,7 @@ export interface ImpactGraph {
     subdomains: string[];
     apps: string[];
     lifecycle: string;
+    status: StatusCount;
 }
 
 export interface ApplicationCriteriaFootprint {

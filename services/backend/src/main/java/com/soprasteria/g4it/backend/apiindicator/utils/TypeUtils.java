@@ -10,6 +10,10 @@ package com.soprasteria.g4it.backend.apiindicator.utils;
 
 public class TypeUtils {
 
+    private TypeUtils() {
+        
+    }
+
     /**
      * Get the type without prefix if it exists
      * prefix can be the subscriber_ or organization_

@@ -8,6 +8,14 @@
 package com.soprasteria.g4it.backend;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
@@ -19,10 +27,16 @@ import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OrganizationUpsertRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.UserRoleRest;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class TestUtils {
 
     public static String SUBSCRIBER = "SUBSCRIBER";
@@ -30,7 +44,16 @@ public class TestUtils {
     public static Long ORGANIZATION_ID = 1L;
     public static String EMAIL = "user.test@unitaire";
     public static String ROLE = "ROLE";
-
+    public static ObjectMapper mapper = new ObjectMapper()
+            .configure(SerializationFeature.INDENT_OUTPUT, true)
+            .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .registerModule(new JavaTimeModule()
+                    .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+            );
 
     public static UserBO createUserBO(final List<String> userRoles) {
         return UserBO.builder()
@@ -222,6 +245,40 @@ public class TestUtils {
                 .user(User.builder().id(userId).email(EMAIL).build())
                 .defaultFlag(true)
                 .build();
+    }
+
+    public static String toJson(Object object, String... ignoreFields) {
+        try {
+            return Arrays.stream(mapper.writeValueAsString(object).split("\n"))
+                    .filter(line -> {
+                        for (String field : ignoreFields) {
+                            if (line.contains("\"" + field + "\"")) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }).collect(Collectors.joining("\n"));
+        } catch (JsonProcessingException e) {
+            log.error("Cannot parse object: {}", object, e);
+            return "{}";
+        }
+    }
+
+    public static String formatJson(String json, String... ignoreFields) {
+        try {
+            return Arrays.stream(mapper.writeValueAsString(mapper.readValue(json, Object.class)).split("\n"))
+                    .filter(line -> {
+                        for (String field : ignoreFields) {
+                            if (line.contains("\"" + field + "\"")) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }).collect(Collectors.joining("\n"));
+        } catch (JsonProcessingException e) {
+            log.error("Cannot parse object: {}", json, e);
+            return json;
+        }
     }
 
 }

@@ -43,4 +43,8 @@ public class VirtualServerImpactBO {
      * Unit
      */
     private String unit;
+
+    private String status;
+
+    private Long countValue;
 }

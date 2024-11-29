@@ -846,3 +846,10 @@ databaseChangeLog:
       changes:
         - sql: UPDATE g4it_subscriber SET criteria = '{climate-change,ionising-radiation,acidification,particulate-matter,resource-use}'
             WHERE criteria is null;
+
+  - changeSet:
+      id: add-new-default-subscriber-in-g4it_subscriber
+      author: G4IT Dev Team
+      changes:
+        - sql: INSERT INTO g4it_subscriber (name,creation_date, last_update_date, authorized_domains,criteria) VALUES
+            ('SUBSCRIBER-DEMO',NOW(), NOW(), 'g4it.com','{climate-change,ionising-radiation,acidification,particulate-matter,resource-use}');

@@ -1,0 +1,16 @@
+[
+  {
+    "fullName": "Long name",
+    "id": 1,
+    "location": "France",
+    "name": "default",
+    "pue": 1.75
+  },
+  {
+    "fullName": "Long name2",
+    "id": 2,
+    "location": "Germany",
+    "name": "default2",
+    "pue": 1.25
+  }
+]

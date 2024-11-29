@@ -35,6 +35,8 @@ export class InventoriesApplicationFootprintComponent {
     protected footprintStore = inject(FootprintStoreService);
     private globalStore = inject(GlobalStoreService);
     footprintDataService = inject(FootprintDataService);
+    currentLang: string = this.translate.currentLang;
+    criteriakeys = Object.keys(this.translate.translations[this.currentLang].criteria);
 
     selectedCriteria: string = "";
     criteres: MenuItem[] = [];
@@ -56,6 +58,7 @@ export class InventoriesApplicationFootprintComponent {
         );
     });
     footprint: ApplicationFootprint[] = [];
+    criteriaFootprint: ApplicationFootprint = {} as ApplicationFootprint;
     allUnmodifiedFootprint: ApplicationFootprint[] = [];
     filterFields = Constants.APPLICATION_FILTERS;
 
@@ -113,12 +116,24 @@ export class InventoriesApplicationFootprintComponent {
         this.activatedRoute.paramMap.subscribe((params) => {
             const criteria = params.get("criteria")!;
             this.footprintStore.setApplicationCriteria(criteria);
+
+            if (criteria !== Constants.MUTLI_CRITERIA) {
+                this.criteriaFootprint = this.footprint.find(
+                    (f) => f.criteria === criteria,
+                )!;
+            }
         });
 
         this.footprintService
             .initApplicationFootprint(this.inventoryId)
             .pipe(finalize(() => (this.showTabMenu = true)))
             .subscribe((applicationFootprints: ApplicationFootprint[]) => {
+                applicationFootprints?.sort((a, b) => {
+                    return (
+                        this.criteriakeys.indexOf(a.criteria) -
+                        this.criteriakeys.indexOf(b.criteria)
+                    );
+                });
                 this.criteres = applicationFootprints.map((footprint) => {
                     return {
                         label: this.translate.instant(
@@ -130,8 +145,10 @@ export class InventoriesApplicationFootprintComponent {
 
                 if (this.criteres.length > 1) {
                     this.criteres.unshift({
-                        label: "Multi-criteria",
-                        routerLink: "../multi-criteria",
+                        label: this.translate.instant(
+                            "criteria-title.multi-criteria.title",
+                        ),
+                        routerLink: `../${Constants.MUTLI_CRITERIA}`,
                     });
                 }
             });
@@ -175,7 +192,11 @@ export class InventoriesApplicationFootprintComponent {
                 });
         }
         if (graphType === "application") {
-            let criteriaFootprint = this.allUnmodifiedFootprint.find(
+            // copy the footprint so that reference doesnot change the original
+            const applicationFootprint: ApplicationFootprint[] = JSON.parse(
+                JSON.stringify(this.allUnmodifiedFootprint),
+            );
+            let criteriaFootprint = applicationFootprint.find(
                 (item) => item.criteria === this.footprintStore.applicationCriteria(),
             );
 

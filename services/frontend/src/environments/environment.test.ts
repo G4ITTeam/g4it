@@ -17,5 +17,7 @@ export const environment = {
         issuer: "",
         realm: "g4it",
         clientId: "g4it",
+        enabled: "false",
     },
+     showBetaFeatures: "true"
 };

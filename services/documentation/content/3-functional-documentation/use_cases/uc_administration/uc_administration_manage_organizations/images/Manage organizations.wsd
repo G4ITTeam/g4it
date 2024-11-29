@@ -1,0 +1,68 @@
+@startuml Organization administration
+actor "Subscribers' administrator" as user
+participant "G4IT frontend" as frontend
+participant "G4IT backend" as backend
+
+group UC#1 : Get organizations
+user -> frontend: Open admin panel to administrate an organization
+frontend -> backend: GET /subscribers?user={userId}
+note over backend
+Response example :
+[
+    {
+        subscriberName: "SUBSCRIBER-DEMO",
+        organizations : [
+            {
+                id: "1",
+                name: "DEMO"
+            },
+            {
+                id: "2",
+                name: "DEMO-2"
+            }
+        ]
+    },
+    {
+        subscriberName: "ADEO",
+        organizations : [
+            {
+                id: "3",
+                name: "DEMO"
+            },
+            {
+                id: "4",
+                name: "MAIN"
+            }
+        ]
+    }
+]
+end note
+backend --> frontend: return every subscriber the user is associated with \n(association between g4it_user and g4it_subscriber + role SUBSCRIBER_ADMINISTRATOR) \nand organizations related to each subscriber
+end
+
+group UC#2 Delete an organization
+user -> frontend: Delete an organization
+frontend -> backend: PUT /organizations/{organizationId} \nwith the status "TO_BE_DELETED" and data_retention_day to 7 in the body
+backend --> frontend: Modification succeed or not
+frontend --> user: Visualize the organization as deactivated in case of success,\nelse error message displayed
+
+user -> frontend: Cancel delete on an organization
+frontend -> backend: PUT /organizations/organizationId} \nwith the status "null" and data_retention_day to "null" in the body
+backend --> frontend: Modification succeed or not
+frontend --> user: Visualize the organization as active in case of success,\nelse error message displayed
+end
+
+group UC#3: Create an organization
+user -> frontend: Add an organization related to a subscriber
+frontend -> backend: POST /organizations?subscriber={subscriberName} \nwith a body containing the organization's name
+backend --> frontend: Creation succeed or not
+frontend --> user: display a message (success in green or error in red)
+end
+
+group UC#4 Edit an organization
+user -> frontend: Edit an organization's name
+frontend -> backend: PUT /organizations/{organizationId} with the new name in the body
+backend --> frontend: Modification succeed or not
+frontend --> user: display a message (success in green or error in red)
+end
+@enduml

@@ -61,6 +61,8 @@ public class NewUserService {
             newUser = createNewUser(userInfo, subscriber, demoOrganization, accessRoles);
         }
 
+        if (accessRoles == null) return newUser;
+        
         // Link user with subscriber
         userSubscriberRepository.save(UserSubscriber.builder()
                 .user(newUser)
@@ -115,7 +117,7 @@ public class NewUserService {
                 .creationDate(LocalDateTime.now())
                 .build();
 
-        if (subscriber != null) {
+        if (subscriber != null && accessRoles != null) {
             userToCreate.setUserSubscribers(List.of(
                     UserSubscriber.builder()
                             .subscriber(subscriber)

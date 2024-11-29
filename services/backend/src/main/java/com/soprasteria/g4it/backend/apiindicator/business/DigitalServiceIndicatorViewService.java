@@ -8,7 +8,10 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceCloudIndicatorRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceServerIndicatorView;
+import com.soprasteria.g4it.backend.apiindicator.controller.DigitalServiceCloudImpactBO;
+import com.soprasteria.g4it.backend.apiindicator.controller.DigitalServiceCloudIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceNetworkIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceTerminalIndicatorMapper;
@@ -18,16 +21,16 @@ import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceNetwor
 import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceServerIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceTerminalIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -84,6 +87,18 @@ public class DigitalServiceIndicatorViewService {
      */
     @Autowired
     private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
+
+    @Autowired
+    private DigitalServiceCloudIndicatorRestMapper digitalServiceCloudIndicatorRestMapper;
+
+    @Autowired
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+
+    @Autowired
+    private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     /**
      * Retrieve digital service indicator.
@@ -165,7 +180,8 @@ public class DigitalServiceIndicatorViewService {
         final Optional<DigitalServiceServerIndicatorView> firstIndicator = indicator.getValue().stream().findFirst();
         String hostingEfficiency = null;
         if (firstIndicator.isPresent()) {
-            final Integer mixElecQuartile = numEcoEvalReferentialRemotingService.getMixElecQuartileIndex(firstIndicator.get().getCriteria(), firstIndicator.get().getCountry());
+            final Integer mixElecQuartile = numEcoEvalReferentialRemotingService.getElectricityMixQuartiles()
+                    .get(Pair.of(firstIndicator.get().getCountry(), firstIndicator.get().getCriteria()));
             hostingEfficiency = buildHostingEfficiency(mixElecQuartile, firstIndicator.get().getPue());
         }
 
@@ -173,7 +189,7 @@ public class DigitalServiceIndicatorViewService {
                 .builder()
                 .name(indicator.getKey())
                 // Sum sip value for each server's indicator.
-                .totalSipValue(indicator.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum())
+                .totalSipValue(indicator.getValue().stream().filter(ind -> ind.getSipValue() != null).mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum())
                 .impactStep(buildImpactStepList(indicator.getValue()))
                 .impactVmDisk(buildVirtualServerList(indicator.getValue(), mutualizationType))
                 .hostingEfficiency(hostingEfficiency)
@@ -218,11 +234,11 @@ public class DigitalServiceIndicatorViewService {
     /**
      * Map server impact steps.
      *
-     * @param value the indicator list.
+     * @param serverIndicators the indicator list.
      * @return server impact step list.
      */
-    private List<ImpactStepBO> buildImpactStepList(final List<DigitalServiceServerIndicatorView> value) {
-        return value
+    private List<ImpactStepBO> buildImpactStepList(final List<DigitalServiceServerIndicatorView> serverIndicators) {
+        return serverIndicators
                 .stream()
                 // Group by Acv Step to sum sipValue.
                 .collect(groupingBy(DigitalServiceServerIndicatorView::getLifecycleStep))
@@ -233,50 +249,86 @@ public class DigitalServiceIndicatorViewService {
     /**
      * Build impact step.
      *
-     * @param indicator the complex map containing acv step in key and indicators in value.
+     * @param serverIndicators the complex map containing acv step in key and indicators in value.
      * @return the impact step.
      */
     private static ImpactStepBO buildImpactStep(
-            final Map.Entry<String, List<DigitalServiceServerIndicatorView>> indicator) {
+            final Map.Entry<String, List<DigitalServiceServerIndicatorView>> serverIndicators) {
         return ImpactStepBO
                 .builder()
-                .acvStep(indicator.getKey())
+                .acvStep(serverIndicators.getKey())
                 // Sum value by acv step.
-                .sipValue(indicator.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum())
-                .rawValue(indicator.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum())
-                .unit(indicator.getValue().get(0).getUnit())
+                .sipValue(serverIndicators.getValue().stream().filter(ind -> ind.getSipValue() != null).mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum())
+                .rawValue(serverIndicators.getValue().stream().filter(ind -> ind.getRawValue() != null).mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum())
+                .unit(serverIndicators.getValue().getFirst().getUnit())
+                .status(serverIndicators.getValue().getFirst().getStatus())
+                .countValue(serverIndicators.getValue().stream().mapToLong(DigitalServiceServerIndicatorView::getCountValue).sum())
                 .build();
+    }
+
+    /**
+     * Create the server impact list, one element with OK, one element with ERREUR
+     *
+     * @param serverIndicators the server indicators
+     * @param isSharedServer   if is shared server
+     * @return the list of impact
+     */
+    List<VirtualServerImpactBO> createVirtualServerDataList(List<DigitalServiceServerIndicatorView> serverIndicators, boolean isSharedServer) {
+
+        List<VirtualServerImpactBO> result = new ArrayList<>();
+
+        List<DigitalServiceServerIndicatorView> okData = serverIndicators.stream().filter(entry -> Objects.equals(entry.getStatus(), "OK")).toList();
+        if (!okData.isEmpty()) {
+            DigitalServiceServerIndicatorView firstImpactOk = okData.getFirst();
+            result.add(buildVirtualServerImpactBO(
+                    isSharedServer ? firstImpactOk.getVmName() : firstImpactOk.getServerName(),
+                    isSharedServer ? firstImpactOk.getQuantity() : 1,
+                    okData.stream().filter(ind -> ind.getSipValue() != null).mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum(),
+                    okData.stream().filter(ind -> ind.getRawValue() != null).mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum(),
+                    firstImpactOk.getUnit(),
+                    firstImpactOk.getStatus(),
+                    okData.stream().mapToLong(DigitalServiceServerIndicatorView::getCountValue).sum()
+            ));
+        }
+
+        List<DigitalServiceServerIndicatorView> errorData = serverIndicators.stream().filter(entry -> Objects.equals(entry.getStatus(), "ERREUR")).toList();
+        if (!errorData.isEmpty()) {
+            DigitalServiceServerIndicatorView firstImpactError = errorData.getFirst();
+            result.add(buildVirtualServerImpactBO(
+                    isSharedServer ? firstImpactError.getVmName() : firstImpactError.getServerName(),
+                    isSharedServer ? firstImpactError.getQuantity() : 1,
+                    null, null,
+                    firstImpactError.getUnit(),
+                    firstImpactError.getStatus(),
+                    errorData.stream().mapToLong(DigitalServiceServerIndicatorView::getCountValue).sum()
+            ));
+        }
+
+        return result;
     }
 
     /**
      * Map virtual server impacts.
      *
-     * @param value             the indicator list.
+     * @param serverIndicators  the indicator list.
      * @param mutualizationType the mutalization type of the server.
      * @return the virtual server impact list.
      */
     private List<VirtualServerImpactBO> buildVirtualServerList(
-            final List<DigitalServiceServerIndicatorView> value, final String mutualizationType) {
-        if (mutualizationType.equals("SHARED")) {
-            final Map<String, List<DigitalServiceServerIndicatorView>> test = value.stream().collect(Collectors.groupingBy(DigitalServiceServerIndicatorView::getVmUid));
-            return test.entrySet().stream().map(entry -> buildVirtualServerImpactBO(
-                    entry.getValue().get(0).getVmName(),
-                    entry.getValue().get(0).getQuantity(),
-                    entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum(),
-                    entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum(),
-                    entry.getValue().get(0).getUnit()
-            )).toList();
+            final List<DigitalServiceServerIndicatorView> serverIndicators,
+            final String mutualizationType
+    ) {
 
+        List<VirtualServerImpactBO> serverData = new ArrayList<>();
+
+        if ("SHARED".equals(mutualizationType)) {
+            serverIndicators.stream().collect(groupingBy(DigitalServiceServerIndicatorView::getVmUid))
+                    .forEach((key, value1) -> serverData.addAll(createVirtualServerDataList(value1, true)));
         } else {
-            final Map<String, List<DigitalServiceServerIndicatorView>> test = value.stream().collect(Collectors.groupingBy(DigitalServiceServerIndicatorView::getServerName));
-            return test.entrySet().stream().map(entry -> buildVirtualServerImpactBO(
-                            entry.getValue().get(0).getServerName(),
-                            1,
-                            entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum(),
-                            entry.getValue().stream().mapToDouble(DigitalServiceServerIndicatorView::getRawValue).sum(),
-                            entry.getValue().get(0).getUnit()))
-                    .toList();
+            serverIndicators.stream().collect(groupingBy(DigitalServiceServerIndicatorView::getServerName))
+                    .forEach((key, value1) -> serverData.addAll(createVirtualServerDataList(value1, false)));
         }
+        return serverData;
     }
 
     /**
@@ -288,7 +340,7 @@ public class DigitalServiceIndicatorViewService {
      * @return the virtual server impact.
      */
     private VirtualServerImpactBO buildVirtualServerImpactBO(final String name, final Integer quantity,
-                                                             final Double sipValue, final Double rawValue, final String unit) {
+                                                             final Double sipValue, final Double rawValue, final String unit, final String status, final Long countValue) {
         return VirtualServerImpactBO
                 .builder()
                 .name(name)
@@ -296,7 +348,51 @@ public class DigitalServiceIndicatorViewService {
                 .sipValue(sipValue)
                 .rawValue(rawValue)
                 .unit(unit)
+                .status(status)
+                .countValue(countValue)
                 .build();
     }
 
+    /**
+     * Retrieve digital service cloud indicator.
+     *
+     * @param uid the digital service uid.
+     * @return cloud indicator list.
+     */
+    public List<DigitalServiceCloudIndicatorBO> getDigitalServiceCloudIndicators(final String uid) {
+        return taskRepository.findByDigitalServiceUid(uid)
+                .map(value -> outVirtualEquipmentRepository.findByTaskId(value.getId()).stream()
+                        .collect(groupingBy(OutVirtualEquipment::getCriterion))
+                        .entrySet().stream()
+                        .map(indicator -> new DigitalServiceCloudIndicatorBO(
+                                indicator.getKey(),
+                                indicator.getValue().stream().map(this::buildDigitalServiceCloudImpactBO).toList()))
+                        .toList())
+                .orElseGet(List::of);
+    }
+
+    /**
+     * Build digitalServiceCloudImpact from outVirtualEquipment
+     * Manual mapping
+     *
+     * @param outVirtualEquipment the virtual equipment output
+     * @return the impact
+     */
+    private DigitalServiceCloudImpactBO buildDigitalServiceCloudImpactBO(final OutVirtualEquipment outVirtualEquipment) {
+
+        return DigitalServiceCloudImpactBO.builder()
+                .acvStep(outVirtualEquipment.getLifecycleStep())
+                .cloudProvider(outVirtualEquipment.getProvider())
+                .country(outVirtualEquipment.getLocation())
+                .countValue(outVirtualEquipment.getCountValue())
+                .instanceType(outVirtualEquipment.getInstanceType())
+                .rawValue(outVirtualEquipment.getUnitImpact())
+                .sipValue(outVirtualEquipment.getPeopleEqImpact())
+                .status("ERROR".equals(outVirtualEquipment.getStatusIndicator()) ? "ERREUR" : outVirtualEquipment.getStatusIndicator())
+                .unit(outVirtualEquipment.getUnit())
+                .averageUsage(outVirtualEquipment.getUsageDuration())
+                .averageWorkLoad(outVirtualEquipment.getWorkload())
+                .quantity(outVirtualEquipment.getQuantity())
+                .build();
+    }
 }

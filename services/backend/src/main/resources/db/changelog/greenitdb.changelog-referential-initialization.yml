@@ -1,0 +1,233 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ref_lifecycle_step
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_lifecycle_step
+            columns:
+              - column:
+                  name: code
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_lifecycle_step_pk
+              - column:
+                  name: label
+                  type: varchar(255)
+  - changeSet:
+      id: create-ref_criterion
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_criterion
+            columns:
+              - column:
+                  name: code
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_criterion_pk
+              - column:
+                  name: label
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: unit
+                  type: varchar(255)
+
+  - changeSet:
+      id: create-ref_hypothesis
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_hypothesis
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_hypothesis_pk
+              - column:
+                  name: code
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: code, subscriber
+            constraintName: ref_hypothesis_unique
+            tableName: ref_hypothesis
+
+  - changeSet:
+      id: create-ref_item_type
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_item_type
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_item_type_pk
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: comment
+                  type: varchar(255)
+              - column:
+                  name: default_lifespan
+                  type: double
+              - column:
+                  name: is_server
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: ref_default_item
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: type, subscriber
+            constraintName: ref_item_type_unique
+            tableName: ref_item_type
+
+  - changeSet:
+      id: create-ref_item_impact
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_item_impact
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_item_impact_pk
+              - column:
+                  name: criterion
+                  type: varchar(255)
+              - column:
+                  name: lifecycle_step
+                  type: varchar(255)
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: category
+                  type: varchar(255)
+              - column:
+                  name: avg_electricity_consumption
+                  type: double
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: level
+                  type: varchar(255)
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: tier
+                  type: varchar(255)
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: value
+                  type: double
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+              - column:
+                  name: version
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: name, lifecycle_step, criterion, subscriber
+            constraintName: ref_item_impact_unique
+            tableName: ref_item_impact
+
+  - changeSet:
+      id: create-ref_matching_item
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: ref_matching_item
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: ref_matching_item_pk
+              - column:
+                  name: item_source
+                  type: varchar(255)
+              - column:
+                  name: ref_item_target
+                  type: varchar(255)
+              - column:
+                  name: subscriber
+                  type: varchar(255)
+        - addUniqueConstraint:
+            columnNames: item_source, subscriber
+            constraintName: ref_matching_item_unique
+            tableName: ref_matching_item
+
+  - changeSet:
+      id: create-ref_item_impact_indexes
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: ref_item_impact
+            indexName: idx_ref_item_impact_name
+            unique: false
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: ref_item_impact
+            indexName: idx_ref_item_impact_category
+            unique: false
+            columns:
+              - column:
+                  name: category

@@ -1,40 +1,60 @@
 <p-toast #toast position="bottom-center"></p-toast>
-<li class="loading-data-container" tabIndex="0">
-    <div
-        [class]="cssClass"
-        pTooltip="{{ toolTip }}"
-        tooltipPosition="left"
-        role="application"
-        [attr.aria-label]="toolTip"
-    >
-        {{ this.betweenDiv }}
-    </div>
-    <p *ngIf="type == 'estimation'; else loading">
-        {{ "inventories.estimate-date" | translate }}
-        {{ createTime | date: "dd/MM/yyyy HH:mm" }}
-    </p>
-    <ng-template #loading>
-        <p>
-            {{ "inventories.loading-date" | translate }}
+<ul>
+    <li class="loading-data-container">
+        <div
+            [class]="cssClass"
+            pTooltip="{{ toolTip }}"
+            tooltipPosition="left"
+            role="application"
+            [attr.aria-label]="toolTip"
+        >
+            {{ this.betweenDiv }}
+        </div>
+        <p *ngIf="type == 'estimation'; else loading">
+            {{ "inventories.estimate-date" | translate }}
             {{ createTime | date: "dd/MM/yyyy HH:mm" }}
         </p>
-    </ng-template>
-    <span
-        (click)="downloadFile()"
-        *ngIf="
-            (userService.isAllowedInventoryWrite$ | async) &&
-            (batchStatusCode === 'COMPLETED_WITH_ERRORS' ||
-                batchStatusCode === 'SKIPPED') &&
+        <ng-template #loading>
+            <p>
+                {{ "inventories.loading-date" | translate }}
+                {{ createTime | date: "dd/MM/yyyy HH:mm" }}
+            </p>
+        </ng-template>
+        <span
+            (click)="downloadFile()"
+            *ngIf="
+                (userService.isAllowedInventoryWrite$ | async) &&
+                (batchStatusCode === 'COMPLETED_WITH_ERRORS' ||
+                    batchStatusCode === 'SKIPPED') &&
                 batchLoading
-        "
-        class="cursor-pointer"
-    >
-        <img
-            src="assets/images/icons/icon-download.svg"
-            class="mx-3"
-            alt="{{ 'inventories.download-result' | translate }} {{
-                createTime | date: 'dd/MM/yyyy HH:mm'
-            }}"
-        />
-    </span>
-</li>
+            "
+            class="cursor-pointer"
+        >
+            <img
+                src="assets/images/icons/icon-download.svg"
+                class="mx-3"
+                alt="{{ 'inventories.download-result' | translate }} {{
+                    createTime | date: 'dd/MM/yyyy HH:mm'
+                }}"
+            />
+        </span>
+        @if (isNumeric(batchName)) {
+            <span
+                (click)="getTaskDetail(batchName)"
+                *ngIf="
+                    (userService.isAllowedInventoryWrite$ | async) &&
+                    batchStatusCode === 'FAILED'
+                "
+                class="cursor-pointer"
+            >
+                <img
+                    src="assets/images/icons/icon-download.svg"
+                    class="mx-3"
+                    alt="{{ 'inventories.download-result' | translate }} {{
+                        createTime | date: 'dd/MM/yyyy HH:mm'
+                    }}"
+                />
+            </span>
+        }
+    </li>
+</ul>

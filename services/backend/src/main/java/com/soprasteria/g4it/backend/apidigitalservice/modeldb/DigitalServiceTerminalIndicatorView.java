@@ -28,7 +28,9 @@ import java.io.Serializable;
                         @ColumnResult(name = "acv_step"),
                         @ColumnResult(name = "raw_value", type = Float.class),
                         @ColumnResult(name = "sip_value", type = Float.class),
-                        @ColumnResult(name = "unit")
+                        @ColumnResult(name = "unit"),
+                        @ColumnResult(name = "status"),
+                        @ColumnResult(name = "count_value", type = Long.class)
                 }
         )
 )
@@ -46,7 +48,9 @@ import java.io.Serializable;
                     ep.etapeacv                                                 as acv_step,
                     sum(ep.impact_unitaire)                                     as raw_value,
                     sum(ep.impact_unitaire/sip.individual_sustainable_package)  as sip_value,
-                    ep.unite                                                    as unit
+                    ep.unite                                                    as unit,
+                    ep.statut_indicateur                                        as status,
+                    count(*)                                                    as count_value
                 from
                     ind_indicateur_impact_equipement_physique ep
                 inner join
@@ -71,7 +75,8 @@ import java.io.Serializable;
                     t.country,
                     ep.etapeacv,
                     t.uid,
-                    ep.unite
+                    ep.unite,
+                    ep.statut_indicateur
                 """
 )
 @Entity
@@ -100,4 +105,8 @@ public class DigitalServiceTerminalIndicatorView implements Serializable {
     private Float sipValue;
 
     private String unit;
+
+    private String status;
+
+    private Long countValue;
 }

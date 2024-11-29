@@ -20,7 +20,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { ClipboardService } from "ngx-clipboard";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { finalize, firstValueFrom, lastValueFrom } from "rxjs";
+import { finalize, firstValueFrom, lastValueFrom, switchMap } from "rxjs";
 import { OrganizationWithSubscriber } from "src/app/core/interfaces/administration.interfaces";
 import {
     DigitalService,
@@ -31,8 +31,11 @@ import { Organization, Subscriber } from "src/app/core/interfaces/user.interface
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { InputDataService } from "src/app/core/service/data/input-data.service";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { delay } from "src/app/core/utils/time";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -41,20 +44,10 @@ import { delay } from "src/app/core/utils/time";
 })
 export class DigitalServicesFootprintHeaderComponent implements OnInit {
     private global = inject(GlobalStoreService);
+    public digitalServiceStore = inject(DigitalServiceStoreService);
 
-    @Input() digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-        members: [],
-    };
+    @Input() digitalService: DigitalService = {} as DigitalService;
     @Output() digitalServiceChange = new EventEmitter<DigitalService>();
-    disableCalcul = true;
     sidebarVisible: boolean = false;
     sidebarDsVisible = false;
     isLinkCopied = false;
@@ -66,7 +59,8 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
-
+    isNewArch = false;
+    showBetaFeatures: string = environment.showBetaFeatures;
     private destroyRef = inject(DestroyRef);
 
     constructor(
@@ -78,15 +72,27 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         private messageService: MessageService,
         private clipboardService: ClipboardService,
         private digitalServiceBusinessService: DigitalServiceBusinessService,
+        private inputDataService: InputDataService,
     ) {}
 
     ngOnInit() {
-        const list: OrganizationWithSubscriber[] = [];
-        this.digitalServicesData.digitalService$.subscribe((res) => {
-            this.digitalService = res;
-            this.disableCalcul = !this.canLaunchCompute();
-            this.digitalServiceIsShared();
-        });
+        this.digitalServicesData.digitalService$
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                switchMap((res) => {
+                    this.digitalService = res;
+                    return this.inputDataService.getVirtualEquipments(
+                        this.digitalService.uid,
+                    );
+                }),
+            )
+            .subscribe((virtualEquipments) => {
+                this.digitalServiceStore.setEnableCalcul(
+                    this.canLaunchCompute(virtualEquipments.length > 0),
+                );
+                this.digitalServiceIsShared();
+            });
+
         this.userService.currentSubscriber$.subscribe((subscriber: Subscriber) => {
             this.selectedSubscriberName = subscriber.name;
             this.subscriber = subscriber;
@@ -124,6 +130,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             icon: "pi pi-exclamation-triangle",
             accept: () => {
                 this.global.setLoading(true);
+
                 this.digitalServicesData
                     .delete(this.digitalService.uid)
                     .pipe(
@@ -192,17 +199,19 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         }
     }
 
-    canLaunchCompute(): boolean {
-        let hasDigitalServiceBeenUpdated: boolean = true;
-        if (this.digitalService.lastCalculationDate != null) {
-            hasDigitalServiceBeenUpdated =
-                this.digitalService.lastUpdateDate >
-                this.digitalService.lastCalculationDate;
-        }
+    canLaunchCompute(hasCloudService: boolean): boolean {
         const hasNetworks = this.digitalService.networks.length > 0;
         const hasTerminals = this.digitalService.terminals.length > 0;
         const hasServers = this.digitalService.servers.length > 0;
-        const hasData: boolean = hasNetworks || hasTerminals || hasServers || false;
+
+        const hasData = hasNetworks || hasTerminals || hasServers || hasCloudService;
+
+        const hasDigitalServiceBeenUpdated =
+            this.digitalService.lastCalculationDate == null
+                ? true
+                : this.digitalService.lastUpdateDate >
+                  this.digitalService.lastCalculationDate;
+
         if (hasDigitalServiceBeenUpdated && hasData) {
             return true;
         }
@@ -210,8 +219,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     changePageToDigitalServices() {
-        let [_, subscribers, subscriber, organizations, organization] =
-            this.router.url.split("/");
+        let [_, _1, subscriber, _2, organization] = this.router.url.split("/");
         return `/subscribers/${subscriber}/organizations/${organization}/digital-services`;
     }
 

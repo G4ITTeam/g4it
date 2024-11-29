@@ -1,0 +1,514 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Referential
+  description: This is an Inventory Server based on the OpenAPI 3.0 specification.
+  version: "1.0.0"
+
+tags:
+  - name: referential get
+    description: All endpoints for referential retrieval
+  - name: referential import export
+    description: All endpoints for referential import and export
+  - name: referential analysis
+    description: Endpoint for referential analysis
+
+paths:
+  /referential/{type}/csv:
+    parameters:
+      - name: type
+        in: path
+        description: Referential type, one value from the list 'lifecycleStep, criterion, hypothesis, itemType, itemImpact, matchingItem'
+        required: true
+        schema:
+          type: string
+          description: Referential type
+      - $ref: "#/components/parameters/subscriberQueryParam"
+    get:
+      tags:
+        - referential import export
+      summary: Export the referential in a csv format
+      description: |
+        <ul>
+        <li>Input: nothing </li>
+        <li>Output: csv referential file</li>
+        </ul>
+      operationId: exportReferentialCSV
+      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      responses:
+        "200":
+          description: return csv file
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - referential import export
+      summary: Import the referential in a csv format
+      description: |
+        The referential is global for the entire system.
+        The import can only be done via a csv file.
+        <ul>
+        <li>Input: the csv referential file</li>
+        <li>Output: csv file report: line number, line number in error, line parsed, error list detail</li>
+        </ul>
+      operationId: importReferentialCSV
+      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Csv file import report
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/ImportReportRest"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /referential/lifecycleSteps:
+    get:
+      tags:
+        - referential get
+      summary: Get all lifecycle steps
+      description: |
+        Returns all lifecycle steps.
+      operationId: getAllLifecycleSteps
+      x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
+      responses:
+        "200":
+          description: Lifecycle steps found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LifecycleStepRest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /referential/criteria:
+    get:
+      tags:
+        - referential get
+      summary: Get all ecological impact criteria
+      description: |
+        Returns all ecological impact criteria.
+      operationId: getAllCriteria
+      x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
+      responses:
+        "200":
+          description: Criteria found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CriterionRest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /referential/itemTypes:
+    get:
+      tags:
+        - referential get
+      summary: Get item types
+      description: |
+        Returns all types of items, can be filtered by type and subscriber
+      operationId: getItemTypes
+      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      parameters:
+        - name: type
+          in: query
+          description: type
+          required: false
+          schema:
+            type: string
+            description: type
+        - $ref: "#/components/parameters/subscriberQueryParam"
+      responses:
+        "200":
+          description: Item Types found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ItemTypeRest"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /referential/hypotheses:
+    get:
+      tags:
+        - referential get
+      summary: Get hypotheses by the subscriber
+      description: |
+        Returns an hypothesis list based on subscriber.
+      operationId: getHypotheses
+      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      parameters:
+        - $ref: "#/components/parameters/subscriberQueryParam"
+      responses:
+        "200":
+          description: Hypotheses found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HypothesisRest"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /referential/itemImpacts:
+    get:
+      tags:
+        - referential get
+      summary: Get Item Impacts
+      description: |
+        Retrieves Item Impacts based on 6 optional parameters:
+        <ul>
+            <li>The name of the ecological impact criterion: criteria</li>
+            <li>The code of the lifecycle step: lifecycleStep</li>
+            <li>The name of the sought item impact: name</li>
+            <li>The location: location</li>
+            <li>The category: category</li>
+            <li>The subscriber: subscriber</li>
+        </ul>
+        .
+      operationId: getItemImpacts
+      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      parameters:
+        - name: criterion
+          in: query
+          description: Name of the ecological impact criterion
+          required: false
+          schema:
+            type: string
+            description: Name of the ecological impact criterion
+        - name: lifecycleStep
+          in: query
+          description: Code of the lifecycles step
+          required: false
+          schema:
+            type: string
+            description: Code of the lifecycle step
+        - name: name
+          in: query
+          description: Name of the sought item impact
+          required: false
+          schema:
+            type: string
+            description: Name of the sought item impact
+        - name: location
+          in: query
+          description: Name of the location
+          required: false
+          schema:
+            type: string
+            description: Name of the location
+        - name: category
+          in: query
+          description: Name of the category
+          required: false
+          schema:
+            type: string
+            description: Name of the category
+        - $ref: "#/components/parameters/subscriberQueryParam"
+      responses:
+        "200":
+          description: List of item impacts found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ItemImpactRest"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /referential/matchingItem:
+    get:
+      tags:
+        - referential get
+      summary: Get item reference matching
+      operationId: getMatchingItem
+      x-custom-role: "hasRole('SUBSCRIBER_ADMINISTRATOR')"
+      parameters:
+        - name: source
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/subscriberQueryParam"
+      responses:
+        "200":
+          description: Match found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchingItemRest"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /referential/_analysis:
+    get:
+      tags:
+        - referential analysis
+      summary: Get a detailed error report of tables ref_matching_item and ref_item_impact tables
+      operationId: getAnalysis
+      x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
+      responses:
+        "200":
+          description: Analysis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnalysisTableRest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  schemas:
+    ImportReportRest:
+      type: object
+      properties:
+        file:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+        importedLineNumber:
+          type: integer
+          format: int64
+    LifecycleStepRest:
+      type: object
+      required: [ code ]
+      properties:
+        code:
+          pattern: "[A-Z_]+"
+          type: string
+          description: Lifecycle step code
+        label:
+          type: string
+          description: Lifecycle step label
+      description: Lifecycle step reference for equipment (lifecycleStep)
+    CriterionRest:
+      type: object
+      required: [ code ]
+      properties:
+        code:
+          pattern: "[A-Z_]+"
+          type: string
+          description: Criterion code
+        label:
+          type: string
+          description: Criterion label
+        unit:
+          type: string
+          description: Unit of the ecological impact criterion
+        description:
+          type: string
+          description: Description of the ecological impact criterion
+      description: Ecological impact criterion reference
+    ItemTypeRest:
+      type: object
+      required: [ type ]
+      properties:
+        id:
+          type: number
+          format: int64
+          description: id
+        type:
+          type: string
+          description: Item type, key of the reference
+        category:
+          type: string
+          description: Item category
+        isServer:
+          type: boolean
+          description: Flag indicating if the item is a server
+        comment:
+          type: string
+          description: Comment for the reference entry
+        defaultLifespan:
+          type: number
+          description: Default lifespan for this item type
+          format: double
+        source:
+          type: string
+          description: Source of the reference information
+        refDefaultItem:
+          type: string
+          description: Reference of the default item, allows matches in case of no direct match
+        subscriber:
+          type: string
+          description: Subscriber
+        version:
+          type: string
+          description: Version
+      description: Reference of item types usable in the system. The key is the type field.
+    HypothesisRest:
+      type: object
+      required: [ code, value, source ]
+      properties:
+        id:
+          type: number
+          format: int64
+          description: id
+        code:
+          type: string
+          description: Hypothesis code, key of the reference
+        value:
+          type: number
+          format: double
+          description: Value of the hypothesis
+        source:
+          type: string
+          description: Source of the hypothesis
+        description:
+          type: string
+          description: Description of the hypothesis
+        subscriber:
+          type: string
+          description: subscriber
+        version:
+          type: string
+          description: version
+      description: Reference of hypotheses used for calculations
+    MatchingItemRest:
+      type: object
+      required: [ itemSource, refItemTarget ]
+      properties:
+        id:
+          type: number
+          format: int64
+          description: id
+        itemSource:
+          type: string
+          description: item key of the reference
+        refItemTarget:
+          type: string
+          description: Reference of item matching the item
+        subscriber:
+          type: string
+          description: subscriber
+      description: Reference matching between a physical equipment model and an equipment reference in the references.
+    ItemImpactRest:
+      type: object
+      required: [ name, lifecycleStep, criterion, level, value, source ]
+      properties:
+        id:
+          type: number
+          format: int64
+          description: id
+        name:
+          type: string
+          description: Name of the item impact, part of the key in the reference
+        lifecycleStep:
+          type: string
+          pattern: "[A-Z_]+"
+          description: lifecycle step concerned, part of the key in the reference
+        criterion:
+          type: string
+          pattern: "[A-Z_]+"
+          description: Ecological impact criterion concerned, part of the key in the reference
+        description:
+          type: string
+          description: Description of the reference entry
+        level:
+          type: string
+          description: Level of the item impact concerned
+        tier:
+          type: string
+          description: Tier of the item impact concerned
+        category:
+          type: string
+          description: Category of the item impact concerned
+        avgElectricityConsumption:
+          type: number
+          description: Average electricity consumption
+          format: double
+        location:
+          type: string
+          description: Location of the item impact concerned
+        value:
+          type: number
+          description: Value of the ecological impact
+          format: double
+        unit:
+          type: string
+          description: Unit of the ecological impact criterion
+        source:
+          type: string
+          description: Source of the ecological impact for this item impact
+        subscriber:
+          type: string
+          description: subscriber
+        version:
+          type: string
+          description: version
+      description: Reference of the ecological impact of a item impact. The key consists of the fields name, step, and criterion.
+    AnalysisTableRest:
+      type: object
+      properties:
+        table:
+          type: string
+          description: table name
+        errors:
+          type: array
+          items:
+            type: string
+        warnings:
+          type: array
+          items:
+            type: string

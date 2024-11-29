@@ -1,0 +1,981 @@
+[
+    {
+        "criteria": "particulate-matter",
+        "impacts": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 1.091068853042998e-7,
+                "sipValue": 0.0016915795858949423,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 2.5196828801199445e-7,
+                "sipValue": 0.00390648515895009,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 5.96773077177204e-7,
+                "sipValue": 0.009252295829355717,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.000002108097987729707,
+                "sipValue": 0.03268368914723396,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 8.235362258801615e-8,
+                "sipValue": 0.0012768004089593887,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.000010746402949735057,
+                "sipValue": 0.16661089658737183,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.00015968410298228264,
+                "sipValue": 2.475722312927246,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.00004199580871500075,
+                "sipValue": 0.6510977745056152,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.0000032204575290961657,
+                "sipValue": 0.04992957413196564,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 1.547158063885945e-7,
+                "sipValue": 0.002398694632574916,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.000024188955649151467,
+                "sipValue": 0.3750225603580475,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.000008051878467085771,
+                "sipValue": 0.12483533471822739,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.00008114160300465301,
+                "sipValue": 1.2580093145370483,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "UTILISATION",
+                "rawValue": 6.44129386273562e-7,
+                "sipValue": 0.00998650211840868,
+                "unit": "Disease incidence"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.000772980391047895,
+                "sipValue": 11.98419189453125,
+                "unit": "Disease incidence"
+            }
+        ]
+    },
+    {
+        "criteria": "climate-change",
+        "impacts": [
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "UTILISATION",
+                "rawValue": 12.404823303222656,
+                "sipValue": 0.014572479762136936,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "UTILISATION",
+                "rawValue": 40.59834289550781,
+                "sipValue": 0.047692619264125824,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FABRICATION",
+                "rawValue": 21190.32421875,
+                "sipValue": 24.893184661865234,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 2.392296552658081,
+                "sipValue": 0.0028103336226195097,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 19.59099006652832,
+                "sipValue": 0.023014379665255547,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "UTILISATION",
+                "rawValue": 3075.240966796875,
+                "sipValue": 3.6126179695129395,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 2.2626490592956543,
+                "sipValue": 0.0026580311823636293,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "UTILISATION",
+                "rawValue": 594.0280151367188,
+                "sipValue": 0.6978302597999573,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 1.5747205018997192,
+                "sipValue": 0.0018498918507248163,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 229.66046142578125,
+                "sipValue": 0.26979202032089233,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FABRICATION",
+                "rawValue": 84.39820098876953,
+                "sipValue": 0.09914619475603104,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 4.5881829261779785,
+                "sipValue": 0.005389935802668333,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FABRICATION",
+                "rawValue": 327.71209716796875,
+                "sipValue": 0.3849774897098541,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.8460869193077087,
+                "sipValue": 0.0009939346928149462,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 440.4655456542969,
+                "sipValue": 0.5174338221549988,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FABRICATION",
+                "rawValue": 220.7325439453125,
+                "sipValue": 0.259304016828537,
+                "unit": "kg CO2 eq"
+            }
+        ]
+    },
+    {
+        "criteria": "ionising-radiation",
+        "impacts": [
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.1989680528640747,
+                "sipValue": 0.000003020388021468534,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "UTILISATION",
+                "rawValue": 501.00311279296875,
+                "sipValue": 0.007605360355228186,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.14852972328662872,
+                "sipValue": 0.0000022547205844603013,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "UTILISATION",
+                "rawValue": 12.646479606628418,
+                "sipValue": 0.00019197692745365202,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FABRICATION",
+                "rawValue": 51709.72265625,
+                "sipValue": 0.784967303276062,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "UTILISATION",
+                "rawValue": 124202.109375,
+                "sipValue": 1.8854210376739502,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FABRICATION",
+                "rawValue": 104.37843322753906,
+                "sipValue": 0.0015844922745600343,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "UTILISATION",
+                "rawValue": 1639.67626953125,
+                "sipValue": 0.024890722706913948,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FABRICATION",
+                "rawValue": 495.5617980957031,
+                "sipValue": 0.00752275949344039,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.4338296949863434,
+                "sipValue": 0.000006585649771295721,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.47093549370765686,
+                "sipValue": 0.000007148925760702696,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.0017349626868963242,
+                "sipValue": 2.633719553557512e-8,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.05335267260670662,
+                "sipValue": 8.099077604128979e-7,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.004905577749013901,
+                "sipValue": 7.446797667398641e-8,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FABRICATION",
+                "rawValue": 538.6429443359375,
+                "sipValue": 0.008176743052899837,
+                "unit": "kg CO2 eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 41.647647857666016,
+                "sipValue": 0.0006322223925963044,
+                "unit": "kg CO2 eq"
+            }
+        ]
+    },
+    {
+        "criteria": "acidification",
+        "impacts": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.06705271452665329,
+                "sipValue": 0.0005364217213355005,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "UTILISATION",
+                "rawValue": 8.056665420532227,
+                "sipValue": 0.06445332616567612,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FABRICATION",
+                "rawValue": 1.8939205408096313,
+                "sipValue": 0.015151364728808403,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.029451314359903336,
+                "sipValue": 0.00023561051057185978,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FABRICATION",
+                "rawValue": 131.93975830078125,
+                "sipValue": 1.0555180311203003,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.03249875828623772,
+                "sipValue": 0.0002599900763016194,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.038728777319192886,
+                "sipValue": 0.0003098302404396236,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.08327309787273407,
+                "sipValue": 0.0006661847583018243,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.1063615083694458,
+                "sipValue": 0.000850892043672502,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 6.437060832977295,
+                "sipValue": 0.051496487110853195,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 7.994217395782471,
+                "sipValue": 0.06395374238491058,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FABRICATION",
+                "rawValue": 1.3743724822998047,
+                "sipValue": 0.010994979180395603,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.09919486194849014,
+                "sipValue": 0.0007935588946565986,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.023620806634426117,
+                "sipValue": 0.00018896645633503795,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "UTILISATION",
+                "rawValue": 1.1666959524154663,
+                "sipValue": 0.009333567693829536,
+                "unit": "mol H+ eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.5691325664520264,
+                "sipValue": 0.0045530605129897594,
+                "unit": "mol H+ eq"
+            }
+        ]
+    },
+    {
+        "criteria": "resource-use",
+        "impacts": [
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.000003151051259919768,
+                "sipValue": 0.00011510689364513382,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FABRICATION",
+                "rawValue": 1.745869517326355,
+                "sipValue": 63.77605438232422,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.0000040751210690359585,
+                "sipValue": 0.00014886287681292742,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.000009370721272716764,
+                "sipValue": 0.0003423094458412379,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.000024627259335829876,
+                "sipValue": 0.0008996259421110153,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "FIN_DE_VIE",
+                "rawValue": 0.0008995892130769789,
+                "sipValue": 0.032861705869436264,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 2.9998236783512766e-8,
+                "sipValue": 0.0000010958260645566043,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.000007524859029217623,
+                "sipValue": 0.00027488070190884173,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 7.678141855649301e-7,
+                "sipValue": 0.00002804800715239253,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 8.481951851990743e-8,
+                "sipValue": 0.00000309842971546459,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.0000396068389818538,
+                "sipValue": 0.0014468252193182707,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.018186140805482864,
+                "sipValue": 0.6643338799476624,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Laptop",
+                "numberUsers": 21,
+                "yearlyUsageTimePerUser": 365,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.012768004089593887,
+                "sipValue": 0.46641111373901367,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "UTILISATION",
+                "rawValue": 0.001865464262664318,
+                "sipValue": 0.06814481317996979,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Tv box / decoder",
+                "numberUsers": 100,
+                "yearlyUsageTimePerUser": 100,
+                "acvStep": "FABRICATION",
+                "rawValue": 0.014020095579326153,
+                "sipValue": 0.5121496319770813,
+                "unit": "kg Sb eq"
+            },
+            {
+                "country": "France",
+                "description": "Desktop",
+                "numberUsers": 400,
+                "yearlyUsageTimePerUser": 1440,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 0.000008142673323163763,
+                "sipValue": 0.0002974492672365159,
+                "unit": "kg Sb eq"
+            }
+        ]
+    },
+    {
+        "criteria": "water-use",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "ozone-depletion",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-cancer",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "human-toxicity-non-cancer",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "photochemical-ozone-formation",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-terrestrial",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-freshwater",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "eutrophication-marine",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "ecotoxicity-freshwater",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "land-use",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    },
+    {
+        "criteria": "resource-use-fossils",
+        "impactsServer": [
+            {
+                "country": "Estonia",
+                "description": "Desktop",
+                "numberUsers": 50,
+                "yearlyUsageTimePerUser": 120,
+                "acvStep": "DISTRIBUTION",
+                "rawValue": 4.374563218334515e-7,
+                "sipValue": 0.006782268639653921
+            }
+        ]
+    }
+]

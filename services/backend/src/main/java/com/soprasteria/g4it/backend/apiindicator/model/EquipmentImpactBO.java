@@ -34,5 +34,7 @@ public class EquipmentImpactBO {
 
     private Double quantity;
 
+    private String statusIndicator;
+
     private Long countValue;
 }

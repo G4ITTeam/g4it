@@ -9,10 +9,14 @@ package com.soprasteria.g4it.backend.apidigitalservice.repository;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -48,4 +52,8 @@ public interface DigitalServiceRepository extends JpaRepository<DigitalService, 
     @Cacheable("existsByUidAndUserId")
     boolean existsByUidAndUserId(final String uid, final long userId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE DigitalService ds SET ds.lastUpdateDate = ?1 where ds.uid = ?2")
+    void updateLastUpdateDate(LocalDateTime lastUpdateDate, String digitalServiceUid);
 }

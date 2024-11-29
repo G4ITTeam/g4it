@@ -1,19 +1,16 @@
-<div class="layout-errror">
+<div class="flex-column flex h-full">
     <div class="error-header">
         <a href="."
             ><img
                 src="assets/images/logos/logo-overgreen.svg"
                 alt=""
-                class="top-header-error-logo"
+                class="absolute w-3rem mr-3 my-3 ml-5"
         /></a>
-        <h3 class="error-page-title">{{ errorTitle }}</h3>
-        <img
-            src="assets/images/logos/logo-ssg.svg"
-            alt=""
-            class="top-right-header-logo"
-        />
+        <h3 class="text-white text-xl font-light text-center mt-5">{{ errorTitle }}</h3>
     </div>
-    <main>
-        <p class="error-page-text">{{ errorText }}</p>
+    <main role="main">
+        <p class="text-center text-2xl w-30rem line-height-4 mx-auto mb-auto mt-4">
+            {{ errorText }}
+        </p>
     </main>
 </div>

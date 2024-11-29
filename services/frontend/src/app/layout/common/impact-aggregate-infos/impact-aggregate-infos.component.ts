@@ -27,10 +27,10 @@ export class ImpactAggregateInfosComponent {
     @Input() unit = "";
 
     @Output() changeUnit = new EventEmitter<string>();
+    criteriaLabel = "";
 
     icon = "";
     unitOfCriteria = "";
-    criteriaLabel = "";
 
     ngOnChanges(changes: SimpleChanges) {
         this.icon = this.translate.instant(`criteria.${this.criteria}.icon`);

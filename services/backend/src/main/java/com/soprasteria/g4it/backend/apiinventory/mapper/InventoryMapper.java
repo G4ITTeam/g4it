@@ -12,6 +12,8 @@ import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryExportReportBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.common.task.model.TaskBO;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -53,10 +55,11 @@ public interface InventoryMapper {
      */
     @Mapping(target = "organization", source = "organization")
     @Mapping(target = "name", source = "name")
+    @Mapping(target = "isNewArch", source = "isNewArch")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "lastUpdateDate", ignore = true)
-    Inventory toEntity(final Organization organization, final String name, final String type);
+    Inventory toEntity(final Organization organization, final String name, final String type, final Boolean isNewArch);
 
     @Mapping(target = "organization", ignore = true)
     Inventory toEntity(InventoryBO inventoryBO);
@@ -84,4 +87,6 @@ public interface InventoryMapper {
     @Mapping(target = "createTime", source = "batchCreateTime")
     @Mapping(target = "endTime", source = "batchEndTime")
     InventoryExportReportBO toBusinessObject(ExportReport exportReport);
+
+    TaskBO toBusinessObject(Task task);
 }

@@ -5,11 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, computed, OnInit, signal } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
 import { Subject, takeUntil } from "rxjs";
+import { sortByProperty } from "sort-by-property";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
 import {
     Organization,
@@ -18,24 +19,33 @@ import {
     User,
     UserInfo,
 } from "src/app/core/interfaces/user.interfaces";
-import { Version } from "src/app/core/interfaces/version.interfaces";
+import { Version, VersionRest } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
 import { generateColor } from "src/app/core/utils/color";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-header",
     templateUrl: "./header.component.html",
 })
 export class HeaderComponent implements OnInit {
-    version: Version = {
-        g4it: "",
-        numEcoEval: "",
-    };
+    digitalServicesTitle = computed(() =>
+        this.getTitle("digital-services.title", "digital-services"),
+    );
+    inventoriesTitle = computed(() => this.getTitle("inventories.title", "inventories"));
+    administrationTitle = computed(() =>
+        this.getTitle("common.administration", "administration"),
+    );
+    digitalServicesAriaCurrent = computed(() => this.getAriaCurrent("digital-services"));
+    inventoriesAriaCurrent = computed(() => this.getAriaCurrent("inventories"));
+    administrationAriaCurrent = computed(() => this.getAriaCurrent("administration"));
 
-    selectedPage: string = "";
+    versions: Version[] = [];
+
+    selectedPage = signal("");
 
     selectedLanguage: string = "en";
 
@@ -129,8 +139,16 @@ export class HeaderComponent implements OnInit {
         this.versionDataService
             .getVersion()
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((version: Version) => {
-                this.version = version;
+            .subscribe((version: VersionRest) => {
+                this.versions.push({ name: "g4it", version: version["g4it"] });
+                const externalVersions = [];
+                for (const key in version) {
+                    if (key !== "g4it") {
+                        externalVersions.push({ name: key, version: version[key] });
+                    }
+                }
+                externalVersions.sort(sortByProperty("name", "asc"));
+                this.versions.push(...externalVersions);
             });
 
         this.businessHoursService
@@ -143,7 +161,23 @@ export class HeaderComponent implements OnInit {
 
     setSelectedPage() {
         let [_, subscribers, _1, _2, _3, page] = this.router.url.split("/");
-        this.selectedPage = subscribers === "administration" ? "administration" : page;
+        this.selectedPage.set(subscribers === "administration" ? "administration" : page);
+    }
+
+    getTitle(name: string, page: string): any {
+        return this.selectedPage() === page
+            ? this.translate.instant(name, {
+                  OrganizationName: this.selectedOrganization.name,
+              }) +
+                  " - " +
+                  this.translate.instant("common.active-page")
+            : this.translate.instant(name, {
+                  OrganizationName: this.selectedOrganization.name,
+              });
+    }
+
+    getAriaCurrent(page: string): any {
+        return this.selectedPage() === page ? "page" : null;
     }
 
     getCapitaleLetter(str: string) {
@@ -172,7 +206,11 @@ export class HeaderComponent implements OnInit {
         localStorage.removeItem("username");
         localStorage.removeItem("currentOrganization");
         localStorage.removeItem("currentSubscriber");
-        await this.keycloak.logout();
+        if (environment.keycloak.enabled === "true") {
+            await this.keycloak.logout();
+        } else {
+            console.error("keycloak is not enabled");
+        }
     }
 
     originalOrder = () => 0;

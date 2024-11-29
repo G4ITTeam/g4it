@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 @Mapper(componentModel = "spring")
 public interface DigitalServiceNetworkIndicatorMapper {
 
@@ -32,13 +30,13 @@ public interface DigitalServiceNetworkIndicatorMapper {
     @Mapping(target = "impacts", source = "source")
     default List<DigitalServiceNetworkIndicatorBO> toDto(List<DigitalServiceNetworkIndicatorView> source) {
         final Map<String, List<DigitalServiceNetworkIndicatorView>> collection = source.stream().collect(Collectors.groupingBy(DigitalServiceNetworkIndicatorView::getCriteria));
-        return collection.entrySet().stream().map(
+        return collection.entrySet().stream().<DigitalServiceNetworkIndicatorBO>map(
                 entry ->
                         DigitalServiceNetworkIndicatorBO.builder()
                                 .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey()))
                                 .impacts(toImpact(entry.getValue()))
                                 .build()
-        ).collect(toList());
+        ).toList();
     }
 
 }

@@ -1,5 +1,5 @@
 <div class="px-4" [class]="styleClass">
-    <div class="side-panel-title" tabIndex="0">
+    <div class="side-panel-title" role="heading" appAutofocus tabIndex="-1">
         <i class="pi pi-clipboard text-2xl"></i>
         {{ title }}
     </div>
@@ -13,9 +13,13 @@
         ngDefaultControl
         class="pEditor"
         [style]="{ height: '420px' }"
-        [readonly]="!showButtons"
+        [readonly]="!showButtons || escape"
+        (keydown.escape)="escape = true"
+        (keydown.enter)="escape = false"
+        (click)="escape = false"
+        tabindex="0"
     >
-        <p-header>
+        <p-header [hidden]="escape">
             <span class="ql-formats">
                 <select class="ql-header" tabindex="-1">
                     <option value="1" tabindex="-1">

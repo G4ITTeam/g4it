@@ -33,7 +33,7 @@ class AggEquipmentIndicatorRepositoryTest {
         aggEquipmentIndicatorRepository.insertIntoAggEquipmentIndicators(batchName);
         final List<AggEquipmentIndicator> aggEquipmentIndicator = aggEquipmentIndicatorRepository.findByBatchName(batchName);
 
-        assertThat(aggEquipmentIndicator).hasSize(288);
+        assertThat(aggEquipmentIndicator).hasSize(323);
     }
 
 }

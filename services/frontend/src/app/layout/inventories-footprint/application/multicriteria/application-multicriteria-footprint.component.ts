@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
+import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     ConstantApplicationFilter,
     Filter,
@@ -31,6 +32,10 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
 export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboard {
     @Input() footprint: ApplicationFootprint[] = [];
     @Input() filterFields: ConstantApplicationFilter[] = [];
+    showDataConsistencyBtn = false;
+    showInconsitencyGraph = false;
+    criteriaMap: StatusCountMap = {};
+    xAxisInput: string[] = [];
     protected footprintStore = inject(FootprintStoreService);
     private filterService = inject(FilterService);
 
@@ -52,6 +57,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             this.footprintStore.applicationSelectedFilters(),
         );
     });
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -76,6 +82,10 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         }
     }
 
+    selectedStackBarClick(criteriaName: string): void {
+        this.onChartClick({ name: criteriaName });
+    }
+
     getUriFromCriterias(translatedCriteria: any, criteria: string): string | undefined {
         let uri = undefined;
         for (const key in translatedCriteria) {
@@ -96,18 +106,56 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         const unitImpact: any[] = [];
         const unit: string[] = [];
         const impactOrder: any[] = [];
+        this.xAxisInput = [];
+        this.criteriaMap = {};
+
         barChartData.forEach((data) => {
+            const translatedTitle = this.translate.instant(
+                `criteria.${data.criteria}`,
+            ).title;
             let sumSip = 0;
             let sumUnit = 0;
             data.impacts.forEach((impact) => {
+                if (!impact.impact) {
+                    impact.impact = 0;
+                    impact.sip = 0;
+                }
                 if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     sumSip += impact.sip;
                     sumUnit += impact.impact;
+
+                    const criteriaStatus = this.criteriaMap[translatedTitle]?.status;
+                    const statusIndicator = impact.statusIndicator;
+
+                    if (criteriaStatus) {
+                        criteriaStatus.ok +=
+                            statusIndicator === Constants.DATA_QUALITY_STATUS.ok ? 1 : 0;
+                        criteriaStatus.error +=
+                            statusIndicator === Constants.DATA_QUALITY_STATUS.error
+                                ? 1
+                                : 0;
+                        criteriaStatus.total += 1;
+                    } else {
+                        this.criteriaMap[translatedTitle] = {
+                            status: {
+                                ok:
+                                    statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                                        ? 1
+                                        : 0,
+                                error:
+                                    statusIndicator ===
+                                    Constants.DATA_QUALITY_STATUS.error
+                                        ? 1
+                                        : 0,
+                                total: 1,
+                            },
+                        };
+                    }
                 }
             });
             impactOrder.push({
                 criteria: data.criteriaTitle,
-                unite: data.unit,
+                unit: data.unit,
                 sipImpact: sumSip,
                 unitImpact: sumUnit,
             });
@@ -117,8 +165,23 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
             xAxis.push(impact.criteria);
             yAxis.push(impact.sipImpact);
             unitImpact.push(impact.unitImpact);
-            unit.push(impact.unite);
+            unit.push(impact.unit);
         });
+        this.xAxisInput = xAxis;
+        // sort statusIndicator key by criteria
+        this.criteriaMap = Object.keys(this.criteriaMap)
+            .sort((a, b) => this.xAxisInput.indexOf(a) - this.xAxisInput.indexOf(b))
+            .reduce((acc: StatusCountMap, key) => {
+                acc[key] = this.criteriaMap[key];
+                return acc;
+            }, {});
+
+        setTimeout(() => {
+            this.showDataConsistencyBtn = Object.values(this.criteriaMap).some(
+                (f) => f.status?.error,
+            );
+        });
+
         return {
             aria: {
                 enabled: true,
@@ -158,6 +221,18 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                 {
                     type: "category",
                     data: xAxis,
+                    axisLabel: {
+                        formatter: (value: any) => {
+                            const isAllImpactsOK =
+                                this.criteriaMap[value].status.error <= 0;
+                            return isAllImpactsOK
+                                ? `{grey|${value}}`
+                                : `{redBold| \u24d8} {red|${value}}`;
+                        },
+                        rich: Constants.CHART_RICH as any,
+                        margin: 15,
+                        rotate: 30,
+                    },
                 },
             ],
             yAxis: [
@@ -187,19 +262,7 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         let appNameList: string[] = [];
         applications.forEach((application) => {
             application.impacts.forEach((impact) => {
-                let {
-                    environment,
-                    equipmentType,
-                    lifeCycle,
-                    domain,
-                    subDomain,
-                    applicationName,
-                } = impact;
-                environment = environment || Constants.EMPTY;
-                equipmentType = equipmentType || Constants.EMPTY;
-                lifeCycle = lifeCycle || Constants.EMPTY;
-                domain = domain || Constants.EMPTY;
-                subDomain = subDomain || Constants.EMPTY;
+                let { applicationName } = impact;
                 if (
                     this.filterService.getFilterincludes(filters, impact) &&
                     !appNameList.includes(applicationName)

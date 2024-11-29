@@ -53,4 +53,6 @@ public class AggEquipmentIndicator implements Serializable {
     private Double sip;
 
     private Double quantity;
+
+    private String statusIndicator;
 }

@@ -1,0 +1,93 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-task-table
+      author: G4IT Dev Team
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - tableExists:
+                tableName: task
+      changes:
+        - createTable:
+            tableName: task
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: task_id_pk
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: task_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: task_digital_service_fk
+                    references: digital_service(uid)
+                    deleteCascade: true
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: status
+                  type: varchar(255)
+              - column:
+                  name: progress_percentage
+                  type: varchar(4)
+              - column:
+                  name: criteria
+                  type: varchar(255) array
+              - column:
+                  name: result_file_url
+                  type: text
+              - column:
+                  name: result_file_size
+                  type: int
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: end_time
+                  type: timestamp
+        - createIndex:
+            tableName: task
+            indexName: idx_task_digital_service_uid
+            unique: false
+            columns:
+              - column:
+                  name: digital_service_uid
+        - createIndex:
+            tableName: task
+            indexName: idx_task_inventory_id
+            unique: false
+            columns:
+              - column:
+                  name: inventory_id
+  - changeSet:
+      id: update-task-table-add-details
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: details
+                  type: varchar(255) array
+              - column:
+                  name: filenames
+                  type: varchar(255) array
+              - column:
+                  name: errors
+                  type: varchar(255) array

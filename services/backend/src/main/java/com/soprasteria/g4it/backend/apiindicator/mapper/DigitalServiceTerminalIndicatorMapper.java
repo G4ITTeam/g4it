@@ -17,8 +17,6 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 @Mapper(componentModel = "spring")
 public interface DigitalServiceTerminalIndicatorMapper {
 
@@ -37,10 +35,10 @@ public interface DigitalServiceTerminalIndicatorMapper {
         return source.stream()
                 .collect(Collectors.groupingBy(DigitalServiceTerminalIndicatorView::getCriteria))
                 .entrySet().stream()
-                .map(entry -> DigitalServiceTerminalIndicatorBO.builder()
+                .<DigitalServiceTerminalIndicatorBO>map(entry -> DigitalServiceTerminalIndicatorBO.builder()
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey()))
                         .impacts(toImpact(entry.getValue()))
                         .build())
-                .collect(toList());
+                .toList();
     }
 }

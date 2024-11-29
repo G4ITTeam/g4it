@@ -21,3 +21,10 @@ databaseChangeLog:
       file: db/changelog/greenitdb.changelog-digital-service-next.yml
   - include:
       file: db/changelog/greenitdb.changelog-shedlock.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-referential-initialization.yml
+  - include:
+      file: db/changelog/greenitdb.changelog-task-initialization.yml
+  - includeAll:
+      path: db/changelog/in-out/
+      endsWithFilter: .yml

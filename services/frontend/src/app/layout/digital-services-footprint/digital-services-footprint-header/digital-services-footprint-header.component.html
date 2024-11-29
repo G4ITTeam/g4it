@@ -1,10 +1,11 @@
 <p-toast #toast position="bottom-center"></p-toast>
 @if (sidebarVisible) {
     <p-sidebar
-        [(visible)]="sidebarVisible"
+        [visible]="true"
         position="right"
         styleClass="p-sidebar-md w-7"
         [showCloseIcon]="true"
+        (onHide)="sidebarVisible = false"
     >
         <app-common-editor
             [content]="digitalService.note?.content"
@@ -25,15 +26,18 @@
             styleClass="color-tertiary text-2xl font-semibold p-2"
             [routerLink]="changePageToDigitalServices()"
             [text]="true"
-            [attr.aria-label]="'digital-services.return' | translate"
+            [ariaLabel]="'digital-services.return' | translate"
             icon="pi pi-arrow-left"
-            [label]="'digital-services.title' | translate"
+            [label]="
+                'digital-services.title'
+                    | translate: { OrganizationName: organization.organizationName }
+            "
         />
 
         <div class="input-title flex align-items-center">
-            <h2 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)" class="px-2">
+            <h1 *ngIf="!(userService.isAllowedDigitalServiceWrite$ | async)" class="px-2">
                 {{ digitalService.name }}
-            </h2>
+            </h1>
             <p-inplace
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 [closable]="true"
@@ -42,9 +46,9 @@
                 styleClass="w-30rem inline-block"
             >
                 <ng-template pTemplate="display">
-                    <h2 class="px-2">
+                    <h1 class="px-2">
                         {{ digitalService.name }}
-                    </h2>
+                    </h1>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <input
@@ -62,10 +66,18 @@
         </div>
     </div>
     <div class="mr-3 flex align-items-center">
+        @if (showBetaFeatures === "true") {
+            <p-checkbox
+                [(ngModel)]="isNewArch"
+                label="Use new APIs"
+                [binary]="true"
+                name="isNewArch"
+            />
+        }
         <p-button
             (click)="sidebarVisible = true"
             styleClass="text-gray-900 header-button ml-1"
-            [attr.aria-label]="'common.accessibility.addNote' | translate"
+            [ariaLabel]="'common.accessibility.addNote' | translate"
             *ngIf="
                 !digitalService.note &&
                 (userService.isAllowedDigitalServiceWrite$ | async)
@@ -79,14 +91,14 @@
         <p-button
             (click)="sidebarVisible = true"
             styleClass="text-gray-900 header-button"
-            [attr.aria-label]="'common.accessibility.attachedNote' | translate"
+            [ariaLabel]="'common.accessibility.attachedNote' | translate"
             *ngIf="digitalService.note"
             [text]="true"
             [plain]="true"
             icon="pi pi-clipboard"
             [label]="'common.note.attached' | translate"
         />
-        @if (digitalService.members.length) {
+        @if (digitalService.members && digitalService.members.length) {
             <p-button
                 class="header-share-count"
                 styleClass="ml-1 "
@@ -105,7 +117,7 @@
             *ngIf="(userService.isAllowedDigitalServiceWrite$ | async) && !isLinkCopied"
             styleClass="bg-black text-white header-button"
             (click)="copyUrl()"
-            attr.aria-label="{{ 'digital-services.copyLink' | translate }}"
+            [ariaLabel]="'digital-services.copyLink' | translate"
             icon="pi pi-link"
             [label]="'digital-services.copyLink' | translate"
         />
@@ -115,12 +127,12 @@
             styleClass="bg-black text-white header-button"
             [disabled]="true"
             class="disabled-text-black"
-            attr.aria-label="{{ 'digital-services.copyLink' | translate }}"
+            [ariaLabel]="'digital-services.copyLink' | translate"
             [label]="'digital-services.linkCopied' | translate"
         />
 
         <p-button
-            attr.aria-label="{{ 'common.accessibility.download' | translate }}"
+            [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="exportData()"
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
@@ -131,7 +143,7 @@
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             styleClass="bg-black text-white header-button"
-            [disabled]="disableCalcul"
+            [disabled]="!digitalServiceStore.enableCalcul()"
             (onClick)="launchCalcul()"
             [label]="'common.calculate' | translate"
         />
@@ -144,7 +156,10 @@
             [plain]="true"
             (click)="displayPopupFct()"
             icon="pi pi-cog"
-            ariaLabel="choose criteria popup"
+            [ariaLabel]="
+                'digital-services.choose-criteria'
+                    | translate: { digitalServiceName: digitalService.name }
+            "
         >
         </p-button>
         <app-criteria-popup
@@ -168,6 +183,10 @@
                 (click)="confirmDelete($event)"
                 icon="pi pi-trash"
                 size="large"
+                [ariaLabel]="
+                    'digital-services.delete-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
             />
         } @else {
             <p-button
@@ -180,14 +199,20 @@
                 (click)="confirmUnlink($event)"
                 icon="pi pi-eye-slash"
                 size="large"
+                [ariaLabel]="
+                    'digital-services.unlink-digital-service'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
             />
         }
     </div>
 </div>
 
-<app-side-panel-ds-shared-users
-    [visible]="sidebarDsVisible"
-    [creator]="digitalService.creator"
-    [members]="digitalService.members"
-    (sidenavClose)="sidebarDsVisible = false"
-></app-side-panel-ds-shared-users>
+@if (digitalService) {
+    <app-side-panel-ds-shared-users
+        [visible]="sidebarDsVisible"
+        [creator]="digitalService.creator"
+        [members]="digitalService.members"
+        (sidenavClose)="sidebarDsVisible = false"
+    ></app-side-panel-ds-shared-users>
+}

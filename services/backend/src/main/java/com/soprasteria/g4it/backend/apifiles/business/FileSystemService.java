@@ -31,6 +31,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -126,7 +127,33 @@ public class FileSystemService {
         if (files == null) return List.of();
         checkFiles(files);
         FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
-        return files.stream().map(file -> this.uploadFile(file, fileStorage)).toList();
+        return files.stream().map(file -> this.uploadFile(file, fileStorage, null)).toList();
+    }
+
+    /**
+     * Manage files :
+     * - check files
+     * - get fileStorage
+     * - upload each file into fileStorage
+     *
+     * @param subscriber     the subscriber
+     * @param organizationId the organization's id
+     * @param files          the list of file
+     * @return the fileName list uploaded
+     */
+    public List<String> manageFilesAndRename(final String subscriber, final Long organizationId,
+                                             final List<MultipartFile> files, final List<String> filenames) {
+        if (files == null) return List.of();
+        checkFiles(files);
+        FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
+
+        final List<String> result = new ArrayList<>();
+
+        for (int i = 0; i < files.size(); i++) {
+            result.add(this.uploadFile(files.get(i), fileStorage, filenames.get(i)));
+        }
+
+        return result;
     }
 
     /**
@@ -174,7 +201,7 @@ public class FileSystemService {
      * @param fileStorage the fileStorage
      * @return the file path.
      */
-    private String uploadFile(final MultipartFile file, final FileStorage fileStorage) {
+    private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
         final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
         try {
             BufferedReader br = getBufferedReader(file);
@@ -189,7 +216,8 @@ public class FileSystemService {
                 out.flush();
             }
             InputStream tmpInputStream = new FileInputStream(outputFile);
-            var result = fileStorage.upload(FileFolder.INPUT, file.getOriginalFilename(), file.getName(), tmpInputStream);
+            var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
+            var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();
             Files.delete(tempPath);
             return result;

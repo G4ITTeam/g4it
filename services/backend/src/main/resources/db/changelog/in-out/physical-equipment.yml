@@ -1,0 +1,205 @@
+databaseChangeLog:
+  - changeSet:
+      id: in-out-create-in-table-physical-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: in_physical_equipment
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: in_physical_equipment_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: physical_eqp_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: physical_eqp_digital_service_fk
+                    references: digital_service(uid)
+              - column:
+                  name: datacenter_name
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: quantity
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: model
+                  type: varchar(255)
+              - column:
+                  name: manufacturer
+                  type: varchar(255)
+              - column:
+                  name: date_purchase
+                  type: date
+              - column:
+                  name: date_withdrawal
+                  type: date
+              - column:
+                  name: cpu_type
+                  type: varchar(255)
+              - column:
+                  name: cpu_core_number
+                  type: float
+              - column:
+                  name: size_disk_gb
+                  type: float
+              - column:
+                  name: size_memory_gb
+                  type: float
+              - column:
+                  name: source
+                  type: varchar(255)
+              - column:
+                  name: quality
+                  type: varchar(255)
+              - column:
+                  name: electricity_consumption
+                  type: float
+              - column:
+                  name: common_filters
+                  type: varchar(255) array
+              - column:
+                  name: filters
+                  type: varchar(255) array
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - addUniqueConstraint:
+                  columnNames: name, digital_service_uid, inventory_id
+                  constraintName: in_physical_equipment_unique
+                  tableName: in_physical_equipment
+
+  - changeSet:
+      id: in-out-create-out-table-physical-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: out_physical_equipment
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: out_physical_equipment_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: criterion
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lifecycle_step
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: physical_eqp_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: lifespan
+                  type: float
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: equipment_type
+                  type: varchar(255)
+              - column:
+                  name: engine_name
+                  type: varchar(255)
+              - column:
+                  name: engine_version
+                  type: varchar(255)
+              - column:
+                  name: referential_version
+                  type: varchar(255)
+              - column:
+                  name: status_indicator
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_impact
+                  type: float
+              - column:
+                  name: people_eq_impact
+                  type: float
+              - column:
+                  name: electricity_consumption
+                  type: float
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: common_filters
+                  type: varchar(255) array
+              - column:
+                  name: filters
+                  type: varchar(255) array
+              - column:
+                  name: errors
+                  type: varchar(255) array
+
+  - changeSet:
+      id: in-out-add-index-physical-equipment
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_physical_equipment
+            indexName: idx_in_physical_equipment_inventory_id
+            columns:
+              - column:
+                  name: inventory_id
+        - createIndex:
+            tableName: out_physical_equipment
+            indexName: idx_out_physical_equipment_task_id
+            columns:
+              - column:
+                  name: task_id
+                  descending: true

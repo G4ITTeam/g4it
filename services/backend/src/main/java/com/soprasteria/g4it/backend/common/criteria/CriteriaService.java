@@ -29,6 +29,8 @@ public class CriteriaService {
     @Autowired
     private OrganizationService organizationService;
 
+    private static final String ERROR_MESSAGE = "Subscriber %s not found";
+
     /**
      * Get the selected criteria from inventory, organization, subscriber
      * Empty list of nothing found
@@ -39,7 +41,7 @@ public class CriteriaService {
     public CriteriaByType getSelectedCriteria(String subscriber) {
 
         List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Subscriber %s not found.", subscriber))).getCriteria();
+                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
         return new CriteriaByType(subscriberCriterias, subscriberCriterias, null, null, null, null);
     }
@@ -56,7 +58,7 @@ public class CriteriaService {
     public CriteriaByType getSelectedCriteriaForInventory(String subscriber, Long organizationId, List<String> inventoryCriterias) {
 
         List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Subscriber %s not found.", subscriber))).getCriteria();
+                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
         final Organization organization = organizationService.getOrganizationById(organizationId);
 
@@ -86,7 +88,7 @@ public class CriteriaService {
     public CriteriaByType getSelectedCriteriaForDigitalService(String subscriber, Long organizationId, List<String> digitalServiceCriterias) {
 
         List<String> subscriberCriterias = subscriberRepository.findByName(subscriber)
-                .orElseThrow(() -> new G4itRestException("404", String.format("Subscriber %s not found.", subscriber))).getCriteria();
+                .orElseThrow(() -> new G4itRestException("404", String.format(ERROR_MESSAGE, subscriber))).getCriteria();
 
         final Organization organization = organizationService.getOrganizationById(organizationId);
 

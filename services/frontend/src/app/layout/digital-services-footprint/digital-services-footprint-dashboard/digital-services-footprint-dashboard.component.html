@@ -1,23 +1,26 @@
 <div class="footprint-digital-dashboard-container">
-    <div class="left-critere-menu-dashboard">
-        <div class="impacts-title">
+    <div>
+        <div
+            class="border-bottom-2 border-primary text-base font-medium p-1 text-center mt-2 mb-1 uppercase"
+            role="heading"
+            [ariaLevel]="3"
+        >
             {{ "digital-services.impacts" | translate }}
         </div>
-        <p-card class="rmv-padding-card">
-            <div class="round-button-container">
+        <p-card styleClass="mb-3">
+            <div class="text-center">
                 <button
-                    [class]="
-                        selectedUnit === 'Raw' ? 'round-button-selected' : 'round-button'
-                    "
+                    class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
+                    [ngClass]="selectedUnit === 'Raw' ? 'bg-secondary' : 'bg-gray-100'"
                     (click)="selectedUnit = 'Raw'"
                 >
                     {{ "digital-services.raw" | translate }}
                 </button>
+
                 <button
-                    [class]="
-                        selectedUnit === 'Peopleeq'
-                            ? 'round-button-selected'
-                            : 'round-button'
+                    class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
+                    [ngClass]="
+                        selectedUnit === 'Peopleeq' ? 'bg-secondary' : 'bg-gray-100'
                     "
                     (click)="selectedUnit = 'Peopleeq'"
                 >
@@ -25,12 +28,8 @@
                 </button>
             </div>
         </p-card>
-        <br />
-        <p-scrollPanel
-            styleClass="footprint-scrollbar"
-            [style]="{ height: '400px', width: 'auto' }"
-        >
-            <div class="impacts-container">
+        <p-scrollPanel [style]="{ height: '52vh', width: 'auto' }">
+            <div class="flex flex-column align-items-start w-full">
                 <div *ngFor="let impact of impacts">
                     <app-impact-button
                         [impact]="impact.name"
@@ -42,86 +41,112 @@
                         [selectedCriteria]="selectedCriteria"
                         [selectedUnit]="selectedUnit"
                         (selectedCriteriaChange)="handleChartChange($event)"
-                        class="impact-button-criteria"
+                        class="w-22rem"
                     ></app-impact-button>
                 </div>
             </div>
         </p-scrollPanel>
     </div>
     <div class="digital-service-chart-container">
-        <div *ngIf="chartType == 'bar' && barChartChild == true">
-            <h4 (click)="barChartChild = false">
-                <img
-                    src="assets/images/icons/icon-green-arrow-left.svg"
-                    alt=""
-                    class="button-icon"
-                />
-                {{ getCriteriaTranslation(selectedCriteria) }} /
-                {{ getTNSTranslation(selectedParam) }}
-            </h4>
-            <h3 *ngIf="selectedParam === 'Server'">
-                {{ selectedDetailName }}
-            </h3>
-            <h3 *ngIf="selectedParam === 'Terminal'">
-                {{ selectedDetailParam }}
-            </h3>
+        <div *ngIf="chartType() == 'bar' && barChartChild == true" class="flex">
+            <div class="inline">
+                <span (click)="barChartChild = false">
+                    <p-button
+                        styleClass="color-tertiary font-semibold p-2"
+                        [text]="true"
+                        icon="pi pi-arrow-left"
+                        aria-label="{{ getCriteriaTranslation(selectedCriteria) }} / {{
+                            getTNSTranslation(selectedParam)
+                        }}"
+                        label="{{ getCriteriaTranslation(selectedCriteria) }} / {{
+                            getTNSTranslation(selectedParam)
+                        }}"
+                    />
+                </span>
+                <h3 *ngIf="selectedParam === 'Server'">
+                    {{ selectedDetailName }}
+                </h3>
+                @if (
+                    selectedParam === "Terminal" ||
+                    selectedParam === constants.CLOUD_SERVICE
+                ) {
+                    <h3>{{ selectedDetailParam }}</h3>
+                }
+            </div>
+
+            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
         </div>
-        <div *ngIf="chartType == 'bar' && barChartChild == false">
-            <h4 (click)="chartType = 'pie'">
-                <img
-                    src="assets/images/icons/icon-green-arrow-left.svg"
-                    alt=""
-                    class="button-icon"
-                />
-                {{ getCriteriaTranslation(selectedCriteria) }}
-            </h4>
-            <h3>
-                {{ getTNSTranslation(selectedParam) }}
-            </h3>
+        <div *ngIf="chartType() == 'bar' && barChartChild == false" class="flex">
+            <div class="inline">
+                <span (click)="chartType.set('pie')">
+                    <p-button
+                        styleClass="color-tertiary font-semibold p-2"
+                        [text]="true"
+                        icon="pi pi-arrow-left"
+                        aria-label="{{ getCriteriaTranslation(selectedCriteria) }}"
+                        label="{{ getCriteriaTranslation(selectedCriteria) }}"
+                    />
+                </span>
+                <h3>
+                    {{ getTNSTranslation(selectedParam) }}
+                </h3>
+            </div>
+
+            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
         </div>
-        <div *ngIf="chartType == 'pie'">
-            <h4
-                (click)="
-                    this.chartType = 'radial'; this.selectedCriteria = 'Global Vision'
-                "
-            >
-                <img
-                    src="assets/images/icons/icon-green-arrow-left.svg"
-                    alt=""
-                    class="button-icon"
-                />
-                {{ "criteria-title.global-vision.title" | translate }}
-            </h4>
-            <h3>
-                {{ getCriteriaTranslation(selectedCriteria) }}
-            </h3>
+        <div *ngIf="chartType() == 'pie'" class="flex">
+            <div class="inline">
+                <span
+                    (click)="
+                        this.chartType.set('radial');
+                        this.selectedCriteria = 'Global Vision'
+                    "
+                >
+                    <p-button
+                        styleClass="color-tertiary font-semibold p-2"
+                        [text]="true"
+                        icon="pi pi-arrow-left"
+                        [aria-label]="'criteria-title.global-vision.title' | translate"
+                        [label]="'criteria-title.global-vision.title' | translate"
+                    />
+                </span>
+                <h3>
+                    {{ getCriteriaTranslation(selectedCriteria) }}
+                </h3>
+            </div>
+
+            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
         </div>
-        <div *ngIf="chartType == 'radial'">
-            <h3 style="margin-top: 31px">
+        <div *ngIf="chartType() == 'radial'" class="flex">
+            <h3 class="inline mt-5">
                 {{ getCriteriaTranslation(selectedCriteria) }}
             </h3>
+            <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
         </div>
         <div *ngIf="noData; else chart" class="no-data-round no-data-digital-service">
             <p class="grey-text text-round-empty">
                 {{ "common.no-data" | translate }}
             </p>
         </div>
+
         <ng-template #chart>
             <app-radial-chart
-                *ngIf="chartType == 'radial'"
+                *ngIf="chartType() == 'radial'"
                 [globalVisionChartData]="globalVisionChartData"
                 [selectedCriteria]="selectedCriteria"
+                [showInconsitency]="showInconsitency"
                 (selectedCriteriaChange)="handleChartChange($event)"
             ></app-radial-chart>
             <app-pie-chart
-                *ngIf="chartType == 'pie'"
+                *ngIf="chartType() == 'pie'"
                 [globalVisionChartData]="globalVisionChartData"
                 [selectedCriteria]="selectedCriteria"
+                [showInconsitency]="showInconsitency"
                 (selectedParamChange)="selectedParam = $event"
-                (chartTypeChange)="chartType = $event"
+                (chartTypeChange)="chartType.set($event)"
             ></app-pie-chart>
             <app-bar-chart
-                *ngIf="chartType == 'bar'"
+                *ngIf="chartType() == 'bar'"
                 [barChartChild]="barChartChild"
                 [selectedParam]="selectedParam"
                 [selectedDetailParam]="selectedDetailParam"
@@ -129,7 +154,9 @@
                 [selectedCriteria]="selectedCriteria"
                 [networkData]="networkData"
                 [serverData]="serverData"
+                [cloudData]="cloudData"
                 [terminalData]="terminalData"
+                [showInconsitency]="showInconsitency"
                 (barChartChildChange)="barChartChild = $event"
                 (selectedDetailParamChange)="selectedDetailParam = $event"
                 (selectedDetailNameChange)="selectedDetailName = $event"
@@ -144,3 +171,16 @@
         ></app-information-card>
     </div>
 </div>
+<ng-template #dataConsistencyRef>
+    @if (showInconsitencyBtn) {
+        <p-button
+            (click)="showInconsitency = !showInconsitency"
+            [rounded]="true"
+            [label]="'inventories-footprint.data-consistency' | translate"
+            [outlined]="!showInconsitency"
+            severity="danger"
+            class="ml-auto mt-3 mb-2"
+            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+        />
+    }
+</ng-template>

@@ -5,10 +5,19 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, Input, signal, Signal } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    Input,
+    signal,
+    Signal,
+    SimpleChanges,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { sortByProperty } from "sort-by-property";
+import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     ConstantApplicationFilter,
     Filter,
@@ -31,12 +40,16 @@ import { InventoriesApplicationFootprintComponent } from "../inventories-applica
     templateUrl: "./application-criteria-footprint.component.html",
 })
 export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
-    @Input() footprint: ApplicationFootprint[] = [];
+    @Input() footprint: ApplicationFootprint = {} as ApplicationFootprint;
     @Input() filterFields: ConstantApplicationFilter[] = [];
     @Input() selectedInventoryId!: number;
-
+    showDataConsistencyBtn = false;
+    showInconsitencyGraph = false;
+    xAxisInput: string[] = [];
+    criteriaMap: StatusCountMap = {};
+    allCriteriaMap: StatusCountMap = {};
     protected footprintStore = inject(FootprintStoreService);
-    private filterService = inject(FilterService);
+    private readonly filterService = inject(FilterService);
 
     selectedCriteria = computed(() => {
         return this.translate.instant(
@@ -56,17 +69,18 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
     yAxislist: string[] = [];
 
     options: Signal<EChartsOption> = computed(() => {
-        const localFootprint = this.appComponent.formatLifecycleImpact(this.footprint);
+        const localFootprint = this.appComponent.formatLifecycleImpact([this.footprint]);
         return this.loadBarChartOption(
             this.footprintStore.applicationSelectedFilters(),
             localFootprint,
             this.footprintStore.applicationCriteria(),
         );
     });
+
     maxNumberOfBarsToBeDisplayed: number = 10;
 
     constructor(
-        private appComponent: InventoriesApplicationFootprintComponent,
+        private readonly appComponent: InventoriesApplicationFootprintComponent,
         override translate: TranslateService,
         override integerPipe: IntegerPipe,
         override decimalsPipe: DecimalsPipe,
@@ -75,8 +89,10 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
-    ngOnInit() {
-        this.footprint = this.appComponent.formatLifecycleImpact(this.footprint);
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes) {
+            this.showInconsitencyGraph = false;
+        }
     }
 
     onChartClick(event: any) {
@@ -106,15 +122,15 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
     }
 
     checkIfNoData(selectedFilters: Filter) {
-        this.appComponent.formatLifecycleImpact(this.footprint);
+        this.appComponent.formatLifecycleImpact([this.footprint]);
         let hasNoData = true;
-        this.footprint.forEach((criteria) => {
-            criteria.impacts.forEach((impact: ApplicationImpact) => {
-                if (this.filterService.getFilterincludes(selectedFilters, impact)) {
-                    hasNoData = false;
-                }
-            });
+
+        this.footprint.impacts.forEach((impact: ApplicationImpact) => {
+            if (this.filterService.getFilterincludes(selectedFilters, impact)) {
+                hasNoData = false;
+            }
         });
+
         return hasNoData;
     }
 
@@ -127,6 +143,10 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         barChartData.forEach((data) => {
             if (data.criteria === selectedCriteria) {
                 data.impacts.forEach((impact: ApplicationImpact) => {
+                    if (!impact.impact) {
+                        impact.impact = 0;
+                        impact.sip = 0;
+                    }
                     if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                         switch (this.footprintStore.appGraphType()) {
                             case "global":
@@ -188,6 +208,17 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 subdomains: [impact.subDomain],
                 apps: [impact.applicationName],
                 lifecycle: impact.lifeCycle,
+                status: {
+                    ok:
+                        impact.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                            ? 1
+                            : 0,
+                    error:
+                        impact.statusIndicator === Constants.DATA_QUALITY_STATUS.error
+                            ? 1
+                            : 0,
+                    total: 1,
+                },
             });
         } else {
             const index = this.yAxislist.indexOf(yAxisValue);
@@ -204,6 +235,19 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 subdomains: this.impactOrder[index].subdomains.concat(impact.subDomain),
                 apps: this.impactOrder[index].apps.concat(impact.applicationName),
                 lifecycle: impact.lifeCycle,
+                status: {
+                    ok:
+                        this.impactOrder[index]?.status?.ok +
+                        (impact.statusIndicator === Constants.DATA_QUALITY_STATUS.ok
+                            ? 1
+                            : 0),
+                    error:
+                        this.impactOrder[index]?.status?.error +
+                        (impact.statusIndicator === Constants.DATA_QUALITY_STATUS.error
+                            ? 1
+                            : 0),
+                    total: this.impactOrder[index]?.status?.total + 1,
+                },
             };
         }
     }
@@ -218,6 +262,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         const equipmentList: string[] = [];
         const environmentList: string[] = [];
         const clusterList: string[] = [];
+        const status: StatusCountMap = {};
         impactOrder.forEach((impact) => {
             let subdomainList: string[] = [];
             let appList: string[] = [];
@@ -226,6 +271,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     xAxis.push(impact.domain);
                     yAxis.push(impact.sipImpact);
                     unitImpact.push(impact.unitImpact);
+                    status[impact.domain] = { status: impact.status };
                     impact.subdomains.forEach((subdomain: string) => {
                         if (!subdomainList.includes(subdomain)) {
                             subdomainList.push(subdomain);
@@ -243,6 +289,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     xAxis.push(impact.subdomain);
                     yAxis.push(impact.sipImpact);
                     unitImpact.push(impact.unitImpact);
+                    status[impact.subdomain] = { status: impact.status };
                     impact.apps.forEach((app: string) => {
                         if (!appList.includes(app)) {
                             appList.push(app);
@@ -254,6 +301,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     xAxis.push(impact.app);
                     yAxis.push(impact.sipImpact);
                     unitImpact.push(impact.unitImpact);
+                    status[impact.app] = { status: impact.status };
                     break;
                 case "application":
                     xAxis.push(impact.virtualEquipmentName);
@@ -262,6 +310,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     equipmentList.push(impact.equipment);
                     environmentList.push(impact.environment);
                     clusterList.push(impact.cluster);
+                    status[impact.virtualEquipmentName] = { status: impact.status };
                     break;
             }
         });
@@ -274,6 +323,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             equipmentList,
             environmentList,
             clusterList,
+            status,
         };
     }
 
@@ -289,6 +339,23 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         let showZoom: boolean = true;
 
         result = this.computeData(footprint, selectedFilters, selectedCriteria);
+
+        this.allCriteriaMap = result.status;
+        // sort descending of status error
+        const sortedCriteriaMap = Object.fromEntries(
+            Object.entries(this.allCriteriaMap)
+                .filter(([, value]) => value.status.error > 0)
+                .sort(([, a], [, b]) => b.status.error - a.status.error),
+        );
+        this.criteriaMap = sortedCriteriaMap;
+        this.xAxisInput = Object.keys(this.criteriaMap);
+
+        setTimeout(() => {
+            this.showDataConsistencyBtn = Object.values(this.allCriteriaMap).some(
+                (f) => f.status?.error,
+            );
+        });
+
         if (result.yAxis.length < 10) {
             showZoom = false;
         }
@@ -399,6 +466,18 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                 {
                     type: "category",
                     data: result.xAxis,
+                    axisLabel: {
+                        formatter: (value: any) => {
+                            const isAllImpactsOK =
+                                this.allCriteriaMap[value].status.error <= 0;
+                            return isAllImpactsOK
+                                ? `{grey|${value}}`
+                                : `{redBold| \u24d8} {red|${value}}`;
+                        },
+                        rich: Constants.CHART_RICH as any,
+                        margin: 15,
+                        rotate: 30,
+                    },
                 },
             ],
             yAxis: [
@@ -417,5 +496,9 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             ],
             color: Constants.BLUE_COLOR,
         };
+    }
+
+    selectedStackBarClick(criteriaName: string): void {
+        this.onChartClick({ name: criteriaName });
     }
 }

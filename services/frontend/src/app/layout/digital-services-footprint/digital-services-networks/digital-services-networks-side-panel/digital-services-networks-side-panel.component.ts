@@ -26,6 +26,7 @@ export class DigitalServicesNetworksSidePanelComponent {
     @Output() update: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() delete: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() cancel: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
+    @Output() sidebarVisible: EventEmitter<boolean> = new EventEmitter();
 
     networksForm = this._formBuilder.group({
         type: [{ code: "", value: "" }, Validators.required],
@@ -48,5 +49,9 @@ export class DigitalServicesNetworksSidePanelComponent {
 
     cancelNetwork() {
         this.cancel.emit(this.network);
+    }
+    close() {
+        this.cancel.emit(this.network);
+        this.sidebarVisible.emit(false);
     }
 }

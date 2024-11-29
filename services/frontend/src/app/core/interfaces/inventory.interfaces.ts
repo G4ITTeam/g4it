@@ -27,6 +27,9 @@ export interface Inventory {
     note?: Note;
     exportReport: ExportReport;
     criteria?: string[];
+    isNewArch: boolean;
+    tasks: TaskRest[];
+    lastTask?: TaskRest;
     organizationId?: number;
 }
 
@@ -39,6 +42,7 @@ export interface InventoryUpdateRest {
 export interface CreateInventory {
     type: string;
     name: string;
+    isNewArch: boolean;
 }
 
 export interface IntegrationReport {
@@ -57,6 +61,16 @@ export interface EvaluationReport {
     batchName: string;
     progressPercentage: string;
     progress?: any;
+}
+
+export interface TaskRest {
+    id: number;
+    status: string;
+    creationDate: Date;
+    progressPercentage: string;
+    type: string;
+    resultFileUrl: string;
+    details: string[];
 }
 
 export interface EvaluationBody {

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import {
@@ -15,6 +15,7 @@ import {
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { SidePanelAddVmComponent } from "../side-panel-add-vm/side-panel-add-vm.component";
 import { DigitalServiceBusinessService } from "./../../../../core/service/business/digital-services.service";
 
 @Component({
@@ -23,6 +24,9 @@ import { DigitalServiceBusinessService } from "./../../../../core/service/busine
     providers: [MessageService],
 })
 export class SidePanelListVmComponent implements OnInit {
+    @ViewChild("vmSidePanel", { static: false })
+    vmSidePanel!: SidePanelAddVmComponent;
+
     addVMPanelVisible: boolean = false;
     index: number | undefined;
 
@@ -57,17 +61,7 @@ export class SidePanelListVmComponent implements OnInit {
             },
         ],
     };
-    digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-        members: [],
-    };
+    digitalService: DigitalService = {} as DigitalService;
 
     constructor(
         private digitalServiceBusiness: DigitalServiceBusinessService,

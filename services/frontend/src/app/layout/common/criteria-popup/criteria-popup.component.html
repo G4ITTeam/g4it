@@ -47,7 +47,7 @@
                     />
                 </div>
             </div>
-            <div class="popup-field-checkbox mx-3">
+            <div class="flex gap-2 flex-wrap mx-3">
                 <div *ngFor="let criteria of criteriaList" class="field-checkbox">
                     <p-checkbox
                         [(ngModel)]="selectedCriteriaIS"
@@ -60,7 +60,7 @@
             </div>
         } @else {
             <div>
-                <h3>{{ "administration.user.is-header" | translate }}</h3>
+                <h5>{{ "administration.user.is-header" | translate }}</h5>
                 <div class="ml-5">
                     <div class="field-checkbox">
                         <p-checkbox
@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            <div class="popup-field-checkbox m-5">
+            <div class="flex gap-2 flex-wrap m-5">
                 <div *ngFor="let criteria of criteriaList" class="field-checkbox">
                     <p-checkbox
                         [(ngModel)]="selectedCriteriaIS"
@@ -90,7 +90,7 @@
                 </div>
             </div>
             <div>
-                <h3>{{ "administration.user.ds-header" | translate }}</h3>
+                <h5>{{ "administration.user.ds-header" | translate }}</h5>
                 <div class="ml-5">
                     <div class="field-checkbox">
                         <p-checkbox
@@ -108,7 +108,7 @@
                 </div>
             </div>
 
-            <div class="popup-field-checkbox m-5">
+            <div class="flex gap-2 flex-wrap m-5">
                 <div *ngFor="let criteria of criteriaList" class="field-checkbox">
                     <p-checkbox
                         [(ngModel)]="selectedCriteriaDS"
@@ -132,8 +132,8 @@
         }
 
         <ng-template pTemplate="footer">
-            <div class="dialog-footer">
-                <div class="left-aligned-button">
+            <div class="flex align-items-center justify-content-between">
+                <div class="flex justify-content-start mr-auto">
                     <p-button
                         styleClass="reset-button"
                         (click)="resetToDefault()"

@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { CUSTOM_ELEMENTS_SCHEMA, forwardRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -30,7 +30,7 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
                 {
                     provide: NG_VALUE_ACCESSOR,
                     useExisting: forwardRef(
-                        () => DigitalServicesTerminalsSidePanelComponent
+                        () => DigitalServicesTerminalsSidePanelComponent,
                     ),
                     multi: true,
                 },
@@ -89,17 +89,25 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
 
     it("should reset terminal when resetTerminal() is call", () => {
         //mock data
-        component.terminalDeviceTypes = [{
-            code: 'laptop-3',
-            lifespan: 6,
-            value: 'LaptopTest'
-        }]
+        component.terminalDeviceTypes = [
+            {
+                code: "laptop-3",
+                lifespan: 6,
+                value: "LaptopTest",
+            },
+        ];
+        component.countries = [
+            {
+                label: "France",
+                value: "France",
+            },
+        ];
         component.terminal = {
             uid: "randomUID",
             type: {
                 code: "mobile-fix",
                 value: "Mobile",
-                lifespan: 5
+                lifespan: 5,
             },
             lifespan: 0,
             country: "France",
@@ -109,11 +117,10 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
 
         //expected terminal after call
         var expectedTerminal = {
-            uid: undefined,
             type: {
                 code: "laptop-3",
                 value: "LaptopTest",
-                lifespan: 6
+                lifespan: 6,
             },
             lifespan: 6,
             country: "France",
@@ -123,8 +130,7 @@ describe("DigitalServicesTerminalsSidePanelComponent", () => {
 
         //call function
         component.resetTerminal();
+        delete component.terminal.idFront;
         expect(component.terminal).toEqual(expectedTerminal);
     });
-
-   
 });

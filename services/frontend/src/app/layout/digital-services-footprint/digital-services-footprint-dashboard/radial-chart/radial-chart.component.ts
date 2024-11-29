@@ -9,12 +9,16 @@ import {
     Component,
     EventEmitter,
     inject,
+    input,
     Input,
     Output,
     SimpleChanges,
 } from "@angular/core";
 import { EChartsOption } from "echarts";
-import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    DigitalServiceFootprint,
+    StatusCountMap,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
@@ -25,9 +29,13 @@ import { Constants } from "src/constants";
 })
 export class RadialChartComponent extends AbstractDashboard {
     @Input() globalVisionChartData: DigitalServiceFootprint[] | undefined;
-    @Output() selectedCriteriaChange: EventEmitter<any> = new EventEmitter();
+    @Output() selectedCriteriaChange: EventEmitter<string> = new EventEmitter();
 
+    showInconsitency = input<boolean>();
+    selectedCriteria = input<string>();
     options: EChartsOption = {};
+    criteriaMap: StatusCountMap = {};
+    xAxisInput: string[] = [];
     private global = inject(GlobalStoreService);
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -35,12 +43,40 @@ export class RadialChartComponent extends AbstractDashboard {
             this.options = this.loadRadialChartOption(this.globalVisionChartData || []);
         }
     }
+
+    getCriteriaMap(radialChartData: DigitalServiceFootprint[]): void {
+        radialChartData?.forEach((data) => {
+            data.impacts.forEach((impact) => {
+                const translatedCriteria = this.getCriteriaTranslation(
+                    impact.criteria.split(" ").slice(0, 2).join(" "),
+                );
+                this.criteriaMap[translatedCriteria] = {
+                    status: {
+                        ok:
+                            (this.criteriaMap[translatedCriteria]?.status?.ok ?? 0) +
+                            (impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                ? impact.countValue
+                                : 0),
+                        error:
+                            (this.criteriaMap[translatedCriteria]?.status?.error ?? 0) +
+                            (impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                ? impact.countValue
+                                : 0),
+                        total:
+                            (this.criteriaMap[translatedCriteria]?.status?.total ?? 0) +
+                            impact.countValue,
+                    },
+                };
+            });
+        });
+    }
+
     onChartClick(params: any) {
         this.selectedCriteriaChange.emit(params.data.impact.criteria);
     }
 
     loadRadialChartOption(radialChartData: DigitalServiceFootprint[]): EChartsOption {
-        const order = ["Terminal", "Network", "Server"];
+        const order = Constants.DIGITAL_SERVICES_CHART_ORDER;
         this.selectedLang = this.translate.currentLang;
         const criteriaOrder = Object.keys(this.global.criteriaList());
         radialChartData.sort((a: any, b: any) => {
@@ -53,16 +89,36 @@ export class RadialChartComponent extends AbstractDashboard {
                 );
             }),
         );
+        this.getCriteriaMap(radialChartData);
+        const noErrorRadialChartData: DigitalServiceFootprint[] = radialChartData.map(
+            (item) => {
+                return {
+                    ...item,
+                    impacts: item.impacts.filter(
+                        (i) =>
+                            i.status === Constants.DATA_QUALITY_STATUS.ok ||
+                            (i.status === Constants.DATA_QUALITY_STATUS.error &&
+                                !item.impacts.some(
+                                    (impact) =>
+                                        impact.criteria === i.criteria &&
+                                        impact.status ===
+                                            Constants.DATA_QUALITY_STATUS.ok,
+                                )),
+                    ),
+                };
+            },
+        );
+        const criteriaSetArray: string[] = Object.keys(this.criteriaMap);
+        this.xAxisInput = criteriaSetArray;
         return {
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
                     const dataIndex = params.dataIndex;
                     const seriesIndex = params.seriesIndex;
-                    const impact = radialChartData[seriesIndex].impacts[dataIndex];
-                    const roundedImpact = impact.sipValue.toFixed(0);
+                    const impact = noErrorRadialChartData[seriesIndex].impacts[dataIndex];
                     const name = this.existingTranslation(
-                        radialChartData[seriesIndex].tier,
+                        noErrorRadialChartData[seriesIndex].tier,
                         "digital-services",
                     );
                     return `<div style="display: flex; align-items: center; height: 30px;">
@@ -83,19 +139,29 @@ export class RadialChartComponent extends AbstractDashboard {
             },
             angleAxis: {
                 type: "category",
-                data: radialChartData[0].impacts.map((impact: any) => {
+                data: noErrorRadialChartData[0].impacts.map((impact) => {
                     const twoWordsImpact = impact.criteria
                         .split(" ")
                         .slice(0, 2)
                         .join(" ");
-                    return this.getCriteriaTranslation(twoWordsImpact);
+                    const wordsValue = this.getCriteriaTranslation(twoWordsImpact);
+                    return {
+                        value: wordsValue,
+                        textStyle: {
+                            color: !this.criteriaMap[wordsValue].status.error
+                                ? Constants.GRAPH_GREY
+                                : Constants.GRAPH_RED,
+                        },
+                    };
                 }),
                 axisLabel: {
                     formatter: (value: string) => {
-                        const truncateValue =
-                            value.length > 18 ? value.slice(0, 18) + "..." : value;
-                        return truncateValue;
+                        return this.criteriaMap[value].status.error
+                            ? `{redBold| \u24d8} {red| ${value}}`
+                            : `{grey| ${value}}`;
                     },
+                    rich: Constants.CHART_RICH as any,
+                    margin: 15,
                 },
             },
             radiusAxis: {
@@ -106,13 +172,14 @@ export class RadialChartComponent extends AbstractDashboard {
                 },
             },
             polar: {
-                radius: "80%",
+                radius: "76%",
                 center: ["50%", "55%"],
             },
-            series: radialChartData.map((item: any) => ({
+            series: noErrorRadialChartData.map((item: any) => ({
                 name: item.tier,
                 type: "bar",
                 coordinateSystem: "polar",
+                avoidLabelOverlap: true,
                 data: item.impacts.map((impact: any) => ({
                     value: impact.sipValue,
                     label: {
@@ -129,12 +196,21 @@ export class RadialChartComponent extends AbstractDashboard {
             })),
             legend: {
                 show: true,
-                data: radialChartData.map((item: any) => item.tier),
+                data: noErrorRadialChartData.map((item: any) => item.tier),
                 formatter: (param: any) => {
                     return this.existingTranslation(param, "digital-services");
                 },
             },
             color: Constants.COLOR,
         };
+    }
+
+    selectedStackBarClick(event: string): void {
+        const key = Object.keys(this.translate.instant("criteria")).find(
+            (key) => this.translate.instant("criteria")[key].title === event,
+        );
+        if (key) {
+            this.selectedCriteriaChange.emit(key);
+        }
     }
 }

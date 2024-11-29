@@ -51,7 +51,7 @@ class OrganizationDeletionServiceTest {
 
     @Test
     void testOrganizationDeletionService_toBeDeletedStatusWithPastDate() {
-        var now = LocalDateTime.now();
+        var now = LocalDateTime.now().minusHours(1);
         final Optional<Inventory> inventoryEntity1 = Optional.ofNullable(Inventory.builder().id(1L).name("03-2023").lastUpdateDate(now).build());
         final Optional<DigitalService> digitalServiceEntity = Optional.ofNullable(DigitalService.builder().uid("1234").name("name").lastUpdateDate(now).build());
         final Organization linkedOrganization = TestUtils.createToBeDeletedOrganization(OrganizationStatus.TO_BE_DELETED.name(), now);

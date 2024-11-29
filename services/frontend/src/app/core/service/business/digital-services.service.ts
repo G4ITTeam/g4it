@@ -9,9 +9,15 @@ import { Injectable, inject } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, ReplaySubject, lastValueFrom, map } from "rxjs";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
+import { Constants } from "src/constants";
+import { removeBlankSpaces } from "../../custom-validators/unique-name.validator";
 import {
+    CloudImpact,
+    CloudsImpact,
     DSCriteriaRest,
     DigitalService,
+    DigitalServiceCloudImpact,
+    DigitalServiceCloudResponse,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
     DigitalServiceServerConfig,
@@ -21,6 +27,7 @@ import {
     ServerImpact,
     ServersType,
 } from "../../interfaces/digital-service.interfaces";
+import { MapString } from "../../interfaces/generic.interfaces";
 import { DigitalServicesDataService } from "./../data/digital-services-data.service";
 
 @Injectable({
@@ -114,12 +121,33 @@ export class DigitalServiceBusinessService {
                         existingACVStep.sipValue += impact.sipValue;
                         existingACVStep.rawValue += impact.rawValue;
                         existingACVStep.unit = impact.unit;
+                        existingACVStep.statusCount.ok +=
+                            impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                ? impact.countValue
+                                : 0;
+                        existingACVStep.statusCount.error +=
+                            impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                ? impact.countValue
+                                : 0;
+                        existingACVStep.statusCount.total += impact.countValue;
                     } else {
                         existingCountry.impact.push({
                             ACVStep: impact.acvStep,
                             sipValue: impact.sipValue,
                             rawValue: impact.rawValue,
                             unit: impact.unit,
+                            status: impact.status,
+                            statusCount: {
+                                ok:
+                                    impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                        ? impact.countValue
+                                        : 0,
+                                error:
+                                    impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                        ? impact.countValue
+                                        : 0,
+                                total: impact.countValue,
+                            },
                         });
                     }
                     existingCountry.impact.sort((a: any, b: any) => {
@@ -139,6 +167,18 @@ export class DigitalServiceBusinessService {
                                 sipValue: impact.sipValue,
                                 rawValue: impact.rawValue,
                                 unit: impact.unit,
+                                status: impact.status,
+                                statusCount: {
+                                    ok:
+                                        impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                            ? impact.countValue
+                                            : 0,
+                                    error:
+                                        impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                            ? impact.countValue
+                                            : 0,
+                                    total: impact.countValue,
+                                },
                             },
                         ],
                     };
@@ -157,6 +197,7 @@ export class DigitalServiceBusinessService {
                         impact.numberUsers * impact.yearlyUsageTimePerUser;
                     existingType.rawValue += impact.rawValue;
                     existingType.unit = impact.unit;
+
                     // Find existing ACVStep or create a new one
                     const existingACVStep = existingType.impact.find(
                         (step: any) => step.ACVStep === impact.acvStep,
@@ -166,12 +207,33 @@ export class DigitalServiceBusinessService {
                         existingACVStep.sipValue += impact.sipValue;
                         existingACVStep.rawValue += impact.rawValue;
                         existingACVStep.unit = impact.unit;
+                        existingACVStep.statusCount.ok +=
+                            impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                ? impact.countValue
+                                : 0;
+                        existingACVStep.statusCount.error +=
+                            impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                ? impact.countValue
+                                : 0;
+                        existingACVStep.statusCount.total += impact.countValue;
                     } else {
                         existingType.impact.push({
                             ACVStep: impact.acvStep,
                             sipValue: impact.sipValue,
                             rawValue: impact.rawValue,
                             unit: impact.unit,
+                            status: impact.status,
+                            statusCount: {
+                                ok:
+                                    impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                        ? impact.countValue
+                                        : 0,
+                                error:
+                                    impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                        ? impact.countValue
+                                        : 0,
+                                total: impact.countValue,
+                            },
                         });
                     }
 
@@ -192,6 +254,18 @@ export class DigitalServiceBusinessService {
                                 sipValue: impact.sipValue,
                                 rawValue: impact.rawValue,
                                 unit: impact.unit,
+                                status: impact.status,
+                                statusCount: {
+                                    ok:
+                                        impact.status === Constants.DATA_QUALITY_STATUS.ok
+                                            ? impact.countValue
+                                            : 0,
+                                    error:
+                                        impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                                            ? impact.countValue
+                                            : 0,
+                                    total: impact.countValue,
+                                },
                             },
                         ],
                     };
@@ -221,6 +295,151 @@ export class DigitalServiceBusinessService {
             });
         });
         return transformedData;
+    }
+
+    transformCloudData(
+        cloudFootprint: DigitalServiceCloudResponse[],
+        countryMap: MapString,
+    ): DigitalServiceCloudImpact[] {
+        const transformedData: DigitalServiceCloudImpact[] = [];
+        const order = LifeCycleUtils.getLifeCycleList();
+
+        cloudFootprint.forEach((item) => {
+            const criteria = item.criteria.split(" ").slice(0, 2).join(" ");
+            const impactLocation: CloudsImpact[] = [];
+            const impactInstance: CloudsImpact[] = [];
+
+            item.impacts
+                .map((i) => ({ ...i, averageWorkLoad: i.averageWorkLoad * 100 }))
+                .forEach((impact: CloudImpact) => {
+                    this.processImpact(
+                        impact,
+                        impactLocation,
+                        order,
+                        "country",
+                        countryMap,
+                    );
+                    this.processImpact(
+                        impact,
+                        impactInstance,
+                        order,
+                        "instance",
+                        countryMap,
+                    );
+                });
+
+            this.finalizeImpacts(impactLocation);
+            this.finalizeImpacts(impactInstance);
+
+            transformedData.push({
+                criteria,
+                impactLocation,
+                impactInstance,
+            });
+        });
+
+        return transformedData;
+    }
+
+    private processImpact(
+        impact: CloudImpact,
+        impactArray: CloudsImpact[],
+        order: string[],
+        type: "country" | "instance",
+        countryMap: MapString,
+    ): void {
+        const name =
+            type === "country"
+                ? countryMap[impact.country]
+                : `${impact.cloudProvider?.toUpperCase()}-${impact.instanceType}`;
+        const existingImpact = impactArray.find((item) => item.name === name);
+
+        if (existingImpact) {
+            this.updateExistingImpact(existingImpact, impact, order);
+        } else {
+            impactArray.push(this.createNewImpact(name, impact));
+        }
+    }
+
+    private updateExistingImpact(
+        existingImpact: any,
+        impact: any,
+        order: string[],
+    ): void {
+        existingImpact.totalSipValue += impact.sipValue;
+        existingImpact.rawValue += impact.rawValue;
+        existingImpact.unit = impact.unit;
+        existingImpact.totalQuantity += impact.quantity;
+        existingImpact.totalAvgUsage += impact.averageUsage;
+        existingImpact.totalAvgWorkLoad += impact.averageWorkLoad * impact.quantity;
+
+        const existingACVStep = existingImpact.impact.find(
+            (step: any) => step.acvStep === impact.acvStep,
+        );
+
+        if (existingACVStep) {
+            existingACVStep.sipValue += impact.sipValue;
+            existingACVStep.rawValue += impact.rawValue;
+            existingACVStep.unit = impact.unit;
+            existingACVStep.statusCount.ok +=
+                impact.status === Constants.DATA_QUALITY_STATUS.ok
+                    ? impact.countValue
+                    : 0;
+            existingACVStep.statusCount.error +=
+                impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                    ? impact.countValue
+                    : 0;
+            existingACVStep.statusCount.total += impact.countValue;
+        } else {
+            existingImpact.impact.push(this.createACVStep(impact));
+        }
+
+        existingImpact.impact.sort(
+            (a: any, b: any) => order.indexOf(a.acvStep) - order.indexOf(b.acvStep),
+        );
+    }
+
+    private createNewImpact(name: string, impact: CloudImpact): CloudsImpact {
+        return {
+            name,
+            totalSipValue: impact.sipValue,
+            totalQuantity: impact.quantity,
+            totalAvgUsage: impact.averageUsage,
+            totalAvgWorkLoad: impact.averageWorkLoad * impact.quantity,
+            rawValue: impact.rawValue,
+            unit: impact.unit,
+            impact: [this.createACVStep(impact)],
+        };
+    }
+
+    private createACVStep(impact: CloudImpact) {
+        return {
+            acvStep: impact.acvStep,
+            sipValue: impact.sipValue,
+            rawValue: impact.rawValue,
+            unit: impact.unit,
+            status: impact.status,
+            statusCount: {
+                ok:
+                    impact.status === Constants.DATA_QUALITY_STATUS.ok
+                        ? impact.countValue
+                        : 0,
+                error:
+                    impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                        ? impact.countValue
+                        : 0,
+                total: impact.countValue,
+            },
+        };
+    }
+
+    private finalizeImpacts(impacts: CloudsImpact[]) {
+        impacts.forEach((impact) => {
+            impact.totalAvgWorkLoad = impact.totalAvgWorkLoad / impact.totalQuantity;
+            impact.totalAvgUsage = impact.totalAvgUsage / impact.totalQuantity;
+        });
+
+        impacts.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     getFootprint(uid: DigitalService["uid"]): Observable<DigitalServiceFootprint[]> {
@@ -265,6 +484,18 @@ export class DigitalServiceBusinessService {
             );
     }
 
+    getCloudsIndicators(
+        uid: DigitalService["uid"],
+    ): Observable<DigitalServiceCloudResponse[]> {
+        return this.digitalServiceData
+            .getCloudsIndicators(uid)
+            .pipe(
+                map((cloudFootprint) =>
+                    this.transformTerminalNetworkCriteriaUnit(cloudFootprint),
+                ),
+            );
+    }
+
     transformFootprintCriteriaUnit(
         footprint: DigitalServiceFootprint[],
     ): DigitalServiceFootprint[] {
@@ -273,18 +504,25 @@ export class DigitalServiceBusinessService {
             impacts: f.impacts.map((fi) => ({
                 ...fi,
                 unit: this.translate.instant(`criteria.${fi.criteria}.unite`),
+                unitValue: fi.unitValue ?? 0,
+                sipValue: fi.sipValue ?? 0,
             })),
         }));
     }
 
     transformTerminalNetworkCriteriaUnit<
-        T extends DigitalServiceTerminalResponse | DigitalServiceNetworksImpact,
+        T extends
+            | DigitalServiceTerminalResponse
+            | DigitalServiceNetworksImpact
+            | DigitalServiceCloudResponse,
     >(footprint: T[]): T[] {
         return footprint.map((f) => ({
             ...f,
             impacts: f.impacts.map((fi) => ({
                 ...fi,
                 unit: this.translate.instant(`criteria.${f.criteria}.unite`),
+                rawValue: fi.rawValue ?? 0,
+                sipValue: fi.sipValue ?? 0,
             })),
         }));
     }
@@ -310,10 +548,14 @@ export class DigitalServiceBusinessService {
             impactVmDisk: server.impactVmDisk.map((impact) => ({
                 ...impact,
                 unit: this.translate.instant(`criteria.${footprint.criteria}.unite`),
+                rawValue: impact.rawValue ?? 0,
+                sipValue: impact.sipValue ?? 0,
             })),
             impactStep: server.impactStep.map((impact) => ({
                 ...impact,
                 unit: this.translate.instant(`criteria.${footprint.criteria}.unite`),
+                rawValue: impact.rawValue ?? 0,
+                sipValue: impact.sipValue ?? 0,
             })),
         }));
     }
@@ -323,5 +565,17 @@ export class DigitalServiceBusinessService {
         DSCriteria: DSCriteriaRest,
     ): Observable<DSCriteriaRest> {
         return this.digitalServiceData.updateDsCriteria(digitalServiceUid, DSCriteria);
+    }
+
+    getNextAvailableName(existingNames: string[], baseName: string): string {
+        const nameSet = new Set(existingNames?.map((n) => removeBlankSpaces(n)));
+        let index = 1;
+        let newName = `${removeBlankSpaces(baseName)}${String.fromCharCode(64 + index)}`; // Start with "ServerA"
+
+        while (nameSet.has(newName)) {
+            index++;
+            newName = `${removeBlankSpaces(baseName)}${String.fromCharCode(64 + index)}`; // Increment to "ServerB", "ServerC", etc.
+        }
+        return `${baseName} ${String.fromCharCode(64 + index)}`;
     }
 }

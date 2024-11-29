@@ -2,18 +2,57 @@
 
 ## main branch
 
-## 2.8.2
+## 2.9.2
 
 ### Minor Changes
 
-- 666 | Equipment view - quantity empty when no date set
+- XXX | Backend - add environment variable : CORS_ALLOWED_ORIGINS
+- 735 | Production - Digital service cloud servers quantity is not used for visualization
+
+## 2.9.1
+
+### Minor Changes
+
+- 733 | Production - An error occurs during export
+- 734 | Production - Digital service cloud servers are not well cleaned
+
+## 2.9.0
+
+### Major Changes
+
+- 608 | UC digital service : Evaluate Cloud impact using BoaviztAPI
+- 597 | Digital Service Module : Create a cloud instance using BoaviztAPI
+- XXX | Improve global accessibility on the frontend
+
+### Minor Changes
+
+- 726 | Bugs on Cloud feature
+- 690 | Export Cloud data
+- 716 | Digital Service- Cloud Services: edit not working as expected
+- 623 | New Architecture - backend api load input files
+- 682 | Frontend Major and Minor Sonar fixes
+- 613 | Give access to a user where domain name is not an authorized domain
+- 703 | New inventory : Incorrect behavior when cleaning the date previously filled in
+- 704 | Update the title of the Application and Environment pages on My Information System
+- 628 | Add key indicator on criteria page
+- 710 | Fix issue App-information-card in information-digital-service is not updated on navigation
+- 702 | Data consistency show 100% of errors when export files contains no error
+- 682 | Frontend Major and Minor Sonar fixes
+- 698 | Allow mode to run without security
+- 672 | New Architecture - backend apis for in out objects
+- 622 | New Architecture - Backend API referential
+- 664 | Add organization name on digital services list view
+- 693 | Bug on application view to get indicators in application view
+- 676 | Upgrade frontend and backend dpendencies
+- 679 | Equipment view : filters on empty value are not working
+- 680 | Upgrade Keycloak version to 26.0.0 to remove vulnerability
 - XXX | Upgrade Keycloak version to 26.0.0 to remove vulnerability
-
-## 2.8.1
-
-### Minor Changes
-
-- XXX | hotfix footprint criteria icon and title 
+- 651 | Fixing sonar issues
+- 666 | Equipment view - quantity empty when no date set
+- 675 | Low impact electricity mix bad error management
+- 643 | New Architecture - Technical basis for cloud
+- 659 | first setup improvement and open-source documentation
+- 705 | Add a control on server name
 
 ## 2.8.0
 
@@ -27,6 +66,10 @@
 
 ### Minor Changes
 
+- 605 | Data quality in UC IS : Display the percentage of indicators with status 'ERREUR' in G4IT on the application view
+- 596 | Data quality in UC IS : Display the percentage of indicators with status 'ERREUR' in G4IT on the equipment view
+- 663 | Data consistency : Allow navigation through graph
+- 604 | Data quality in UC DS : Display the percentage of indicators with status 'ERREUR' in G4IT
 - 657 | Last feedback on the criteria selection
 - 652 | Data is not displayed in tooltip
 - 653 | defects/enhancements in existing implementations

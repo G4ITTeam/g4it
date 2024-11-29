@@ -16,9 +16,11 @@ import { ScrollPanelModule } from "primeng/scrollpanel";
 import { TabMenuModule } from "primeng/tabmenu";
 import { TabViewModule } from "primeng/tabview";
 import { ToastModule } from "primeng/toast";
+import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { ImpactAggregateInfosComponent } from "src/app/layout/common/impact-aggregate-infos/impact-aggregate-infos.component";
 import { InventoriesCritereFootprintComponent } from "./critere/inventories-critere-footprint.component";
+import { DataCenterEquipmentStatsComponent } from "./datacenter-equipment-stats/datacenter-equipment-stats.component";
 import { InventoriesFootprintComponent } from "./inventories-footprint.component";
 import { inventoriesFootprintRouter } from "./inventories-footprint.router";
 import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inventories-multicriteria-footprint.component";
@@ -28,6 +30,7 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
         InventoriesFootprintComponent,
         InventoriesMultiCriteriaFootprintComponent,
         InventoriesCritereFootprintComponent,
+        DataCenterEquipmentStatsComponent,
         ImpactAggregateInfosComponent,
     ],
     imports: [
@@ -49,9 +52,9 @@ import { InventoriesMultiCriteriaFootprintComponent } from "./multicriteria/inve
                     "src/app/core/shared/echarts.module"
                 ).then((m) => m.default),
         }),
-
         inventoriesFootprintRouter,
     ],
+    providers: [InventoryUtilService],
     exports: [InventoriesFootprintComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })

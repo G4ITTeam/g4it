@@ -35,43 +35,20 @@ export class DigitalServicesTerminalsSidePanelComponent {
     countries: { label: string; value: string }[] = [];
 
     terminalsForm!: FormGroup;
+    isNew = false;
 
     constructor(
         private digitalDataService: DigitalServicesDataService,
         private _formBuilder: FormBuilder,
         public userService: UserService,
-    ) { }
+    ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.isNew = this.terminal.idFront === undefined;
         this.initForm();
-        this.getTerminalsReferentials();
-    }
-
-    resetTerminal() {
-        this.terminal = {
-            uid: undefined,
-            type: {
-                code: "laptop-3",
-                value: "SetByReferential",
-                lifespan: 0, // forced set by referential
-            },
-            lifespan: 0, // forced set by referential
-            country: "France",
-            numberOfUsers: 0,
-            yearlyUsageTimePerUser: 0,
-        };
-        if (this.terminalDeviceTypes.length > 0) {
-            const laptop = this.terminalDeviceTypes.filter(
-                (o) => o.code === this.terminal.type.code,
-            );
-            if (laptop.length === 0) {
-                console.error(
-                    "The laptop-3 reference does not exist in the device type referential.",
-                );
-            } else {
-                this.terminal.type = laptop[0];
-                this.terminal.lifespan = this.terminal.type.lifespan;
-            }
+        await this.getTerminalsReferentials();
+        if (!this.terminal.idFront) {
+            this.resetTerminal();
         }
     }
 
@@ -92,15 +69,32 @@ export class DigitalServicesTerminalsSidePanelComponent {
         this.terminalDeviceTypes = referentials.sort((a, b) =>
             a.value.localeCompare(b.value),
         );
-        this.terminal.type = this.terminalDeviceTypes[0];
 
         const countryList = await lastValueFrom(
             this.digitalDataService.getCountryReferential(),
         );
         this.countries = countryList.sort().map((item) => ({ value: item, label: item }));
-        this.terminal.country = this.countries[0].value;
+    }
 
-        this.resetTerminal();
+    resetTerminal() {
+        const defaultType = this.terminalDeviceTypes.filter(
+            (item) => item.value === "Laptop",
+        );
+        const type =
+            defaultType.length > 0 ? defaultType[0] : this.terminalDeviceTypes[0];
+
+        const defaultCountry = this.countries.filter((item) => item.label === "France");
+
+        const country =
+            defaultCountry.length > 0 ? defaultCountry[0].value : this.countries[0].value;
+
+        this.terminal = {
+            type,
+            country,
+            numberOfUsers: 0,
+            yearlyUsageTimePerUser: 0,
+            lifespan: type.lifespan,
+        };
     }
 
     close() {

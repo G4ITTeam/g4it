@@ -18,8 +18,6 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * Application indicator mapper.
  */
@@ -51,12 +49,13 @@ public interface ApplicationIndicatorMapper {
     @Mapping(target = "impacts", source = "source")
     default List<ApplicationIndicatorBO<ApplicationImpactBO>> toDto(final List<AggApplicationIndicator> source) {
         return source.stream().collect(Collectors.groupingBy(ind -> Pair.of(ind.getCriteria(), ind.getUnit())))
-                .entrySet().stream().map(entry -> ApplicationIndicatorBO.builder()
+                .entrySet().stream().
+                        <ApplicationIndicatorBO<ApplicationImpactBO>>map(entry -> ApplicationIndicatorBO.builder()
                         .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(entry.getKey().getKey()))
                         .unit(entry.getKey().getValue())
                         .impacts(toImpact(entry.getValue()))
                         .build())
-                .collect(toList());
+                .toList();
     }
 
 }

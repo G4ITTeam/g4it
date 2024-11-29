@@ -1,8 +1,9 @@
 <div class="px-4" style="height: 100%">
     <div
         class="side-panel-title"
-        tabIndex="0"
         [attr.aria-label]="'new-inventory-choose' | translate"
+        appAutofocus
+        tabindex="-1"
     >
         {{ "administration.user.accessAndRole" | translate }}
     </div>
@@ -74,6 +75,9 @@
             {{ "administration.user.role" | translate }}
             {{ "common.mandatory" | translate }}
         </p>
+        <p *ngIf="isAdminRoleDisabled">
+            {{ "administration.user.unauthorized-domain" | translate }}
+        </p>
     </div>
     <div class="button-bottom-right">
         <p-button
@@ -86,7 +90,7 @@
             styleClass="black-button-sidebar"
             [disabled]="!adminModule"
             type="submit"
-            (click)="addToOrg()"
+            (click)="addUpdateOrg()"
             *ngIf="!updateOrganizationEnable"
         >
             <span>{{ "common.add" | translate }}</span>
@@ -96,7 +100,7 @@
             *ngIf="updateOrganizationEnable"
             [disabled]="!adminModule"
             type="submit"
-            (click)="updateOrg()"
+            (click)="addUpdateOrg()"
         >
             <span>{{ "common.save" | translate }}</span>
         </p-button>

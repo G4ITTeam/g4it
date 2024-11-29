@@ -78,6 +78,6 @@ public class User extends AbstractBaseEntity implements Serializable {
 
     @ToString.Exclude
     @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DigitalServiceShared> digitalServiceShared;
+    private transient List<DigitalServiceShared> digitalServiceShared;
 
 }

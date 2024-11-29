@@ -1,0 +1,247 @@
+databaseChangeLog:
+  - changeSet:
+      id: in-out-create-in-table-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: in_virtual_equipment
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: in_virtual_equipment_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: virtual_eqp_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: virtual_eqp_digital_service_fk
+                    references: digital_service(uid)
+              - column:
+                  name: datacenter_name
+                  type: varchar(255)
+              - column:
+                  name: physical_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: quantity
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: infrastructure_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: instance_type
+                  type: varchar(255)
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: provider
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: duration_hour
+                  type: float
+              - column:
+                  name: workload
+                  type: float
+              - column:
+                  name: electricity_consumption
+                  type: float
+              - column:
+                  name: vcpu_core_number
+                  type: float
+              - column:
+                  name: size_memory_gb
+                  type: float
+              - column:
+                  name: size_disk_gb
+                  type: float
+              - column:
+                  name: allocation_factor
+                  type: float
+              - column:
+                  name: common_filters
+                  type: varchar(255) array
+              - column:
+                  name: filters
+                  type: varchar(255) array
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - addUniqueConstraint:
+                  columnNames: name, digital_service_uid, inventory_id
+                  constraintName: in_virtual_equipment_unique
+                  tableName: in_virtual_equipment
+
+
+  - changeSet:
+      id: in-out-create-out-table-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: out_virtual_equipment
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  incrementBy: 100
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: out_virtual_equipment_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: criterion
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lifecycle_step
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: virtual_eqp_task_id_fk
+                    references: task(id)
+                    deleteCascade: true
+              - column:
+                  name: infrastructure_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: datacenter_name
+                  type: varchar(255)
+              - column:
+                  name: physical_equipment_name
+                  type: varchar(255)
+              - column:
+                  name: provider
+                  type: varchar(255)
+              - column:
+                  name: instance_type
+                  type: varchar(255)
+              - column:
+                  name: type
+                  type: varchar(255)
+              - column:
+                  name: equipment_type
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+              - column:
+                  name: engine_name
+                  type: varchar(255)
+              - column:
+                  name: engine_version
+                  type: varchar(255)
+              - column:
+                  name: referential_version
+                  type: varchar(255)
+              - column:
+                  name: status_indicator
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_impact
+                  type: float
+              - column:
+                  name: people_eq_impact
+                  type: float
+              - column:
+                  name: electricity_consumption
+                  type: float
+              - column:
+                  name: unit
+                  type: varchar(255)
+              - column:
+                  name: common_filters
+                  type: varchar(255) array
+              - column:
+                  name: filters
+                  type: varchar(255) array
+              - column:
+                  name: filters_physical_equipment
+                  type: varchar(255) array
+              - column:
+                  name: errors
+                  type: varchar(255) array
+
+  - changeSet:
+      id: in-out-add-index-virtual-equipment
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_virtual_equipment
+            indexName: idx_in_virtual_equipment_inventory_id_ph_eq_name
+            columns:
+              - column:
+                  name: inventory_id
+              - column:
+                  name: physical_equipment_name
+        - createIndex:
+            tableName: out_virtual_equipment
+            indexName: idx_out_virtual_equipment_task_id
+            columns:
+              - column:
+                  name: task_id
+                  descending: true
+
+  - changeSet:
+      id: in-out-create-out-table-virtual-equipment-add-fields
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_virtual_equipment
+            columns:
+              - column:
+                  name: count_value
+                  type: bigint
+              - column:
+                  name: usage_duration
+                  type: float
+              - column:
+                  name: workload
+                  type: float

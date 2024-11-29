@@ -82,7 +82,7 @@ export class DigitalServicesItemComponent {
         });
     }
     confirmUnlink(event: Event, digitalService: DigitalService) {
-        const { name, uid } = digitalService;
+        const { uid } = digitalService;
         this.confirmationService.confirm({
             closeOnEscape: true,
             target: event.target as EventTarget,

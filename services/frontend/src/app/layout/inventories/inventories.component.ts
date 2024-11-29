@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit, ViewChild } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Event, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -22,6 +22,7 @@ import { InventoryService } from "src/app/core/service/business/inventory.servic
 import { UserService } from "src/app/core/service/business/user.service";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
+import { FilePanelComponent } from "./file-panel/file-panel.component";
 
 @Component({
     selector: "app-inventories",
@@ -32,11 +33,13 @@ export class InventoriesComponent implements OnInit {
     private destroyRef = inject(DestroyRef);
     private global = inject(GlobalStoreService);
 
+    @ViewChild(FilePanelComponent) filePanelComponent: FilePanelComponent | undefined;
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
     sidebarType = "FILE"; // or NOTE
     id: number = 0;
     name: any = "";
+    isNewArch = false;
     inventories: Map<string, Inventory[]> = new Map();
     inventoriesForSimulationsAll: Inventory[] = [];
     inventoriesOpen: Set<number> = new Set();
@@ -189,6 +192,7 @@ export class InventoriesComponent implements OnInit {
     setInventoryToReload(inventory: Inventory) {
         let doAddIntegration = false;
         let doAddEvaluation = false;
+        let doAddTask = false;
 
         if (inventory.lastIntegrationReport) {
             doAddIntegration =
@@ -204,9 +208,15 @@ export class InventoriesComponent implements OnInit {
                 );
         }
 
-        if (doAddIntegration || doAddEvaluation) {
+        if (inventory.lastTask) {
+            doAddTask = !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                inventory.lastTask.status,
+            );
+        }
+
+        if (doAddIntegration || doAddEvaluation || doAddTask) {
             this.inventoriesToReload.add(inventory.id);
-        } else if (!doAddIntegration && !doAddIntegration) {
+        } else if (!doAddIntegration && !doAddEvaluation && !doAddTask) {
             this.inventoriesToReload.delete(inventory.id);
         }
     }
@@ -217,10 +227,11 @@ export class InventoriesComponent implements OnInit {
         this.sidebarPurpose = "upload";
         this.id = id;
 
-        for (let [key, value] of this.inventories) {
-            const name = value.find((inventory) => inventory.id === id)?.name;
-            if (name) {
-                this.name = name;
+        for (let value of this.inventories.values()) {
+            const inventory = value.find((inventory) => inventory.id === id);
+            if (inventory) {
+                this.isNewArch = inventory?.isNewArch || false;
+                this.name = inventory.name;
                 break;
             }
         }
@@ -231,7 +242,7 @@ export class InventoriesComponent implements OnInit {
         this.sidebarType = "NOTE";
         this.id = id;
 
-        for (let [key, value] of this.inventories) {
+        for (let value of this.inventories.values()) {
             const inventory = value.find((inventory) => inventory.id === id);
             if (inventory) {
                 this.selectedInventory = inventory;

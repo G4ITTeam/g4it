@@ -1,16 +1,17 @@
 <div class="lg-file-panel-margin">
-    <div class="side-panel-title">
+    <div class="side-panel-title" appAutofocus tabindex="-1">
         {{ "digital-services-servers.add.datacenter" | translate }}
     </div>
     <form [formGroup]="datacenterForm" (ngSubmit)="submitFormData()">
         <div class="label-input-div-full label-input-div-full-server">
-            <label>{{ "digital-services-servers.name" | translate }}</label>
+            <label for="name">{{ "digital-services-servers.name" | translate }}</label>
             <input
                 pInputText
                 type="text"
                 formControlName="name"
                 [required]="true"
                 (keyup)="onInputCheck()"
+                id="name"
             />
             <p
                 class="error-text"
@@ -24,9 +25,9 @@
                 {{ "common.mandatory" | translate }}
             </p>
         </div>
-        <div class="form-flex-row">
+        <div class="flex flex-row">
             <div class="label-input-div-medium">
-                <label>
+                <label for="pue">
                     {{ "digital-services-servers.pue" | translate }}
                 </label>
                 <p-inputNumber
@@ -40,6 +41,7 @@
                     name="pue"
                     ngDefaultControl
                     locale="fr-FR"
+                    id="pue"
                 />
                 <p
                     class="error-text"
@@ -65,7 +67,7 @@
                 </label>
             </div>
             <div class="label-input-div-medium">
-                <label>
+                <label for="country">
                     {{ "digital-services-servers.country" | translate }}
                 </label>
                 <p-dropdown
@@ -78,7 +80,9 @@
                     filterBy="label"
                     filterPlaceholder="Search"
                     name="country"
+                    inputId="country"
                     ngDefaultControl
+                    lang="en"
                 />
                 <p
                     class="error-text"

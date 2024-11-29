@@ -1,0 +1,2 @@
+nomCourtDatacenter;nomLongDatacenter;pue;localisation;nomEntite;;inputFileName;lineNumber;message
+unknown;Long name2;1.25;Unknown;Entity 1;;nominal.csv;3;Location Unknown does not exist in the referential. Check your reference or ask your administrator to update the referential according to your needs.

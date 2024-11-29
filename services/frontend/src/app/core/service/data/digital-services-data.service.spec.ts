@@ -13,7 +13,6 @@ import { TestBed } from "@angular/core/testing";
 
 import {
     DigitalService,
-    DigitalServiceFootprint,
     Host,
     NetworkType,
     ServerDC,
@@ -38,6 +37,7 @@ describe("DigitalServicesDataService", () => {
             {
                 uid: "",
                 name: "Digital Service#1",
+                isNewArch: false,
                 lastUpdateDate: Date.now(),
                 creationDate: Date.now(),
                 lastCalculationDate: null,
@@ -65,6 +65,7 @@ describe("DigitalServicesDataService", () => {
         const newDigitalService: DigitalService = {
             uid: "",
             name: "Digital Service#1",
+            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -90,6 +91,7 @@ describe("DigitalServicesDataService", () => {
         const updatedDigitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
+            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -115,6 +117,7 @@ describe("DigitalServicesDataService", () => {
         const digitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
+            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -140,6 +143,7 @@ describe("DigitalServicesDataService", () => {
         const digitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
+            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -161,6 +165,7 @@ describe("DigitalServicesDataService", () => {
         const digitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
+            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -192,72 +197,6 @@ describe("DigitalServicesDataService", () => {
         });
 
         const req = httpMock.expectOne(`digital-services/network-type`);
-
-        expect(req.request.method).toEqual("GET");
-
-        httpMock.verify();
-    });
-
-    it("should get Footprint", () => {
-        const footprint: DigitalServiceFootprint[] = [
-            {
-                tier: "Servers",
-                impacts: [
-                    {
-                        criteria: "particulate-matter",
-                        sipValue: 0.39,
-                        unitValue: 35,
-                        unit: "Disease incidence",
-                    },
-                    {
-                        criteria: "climate-change",
-                        sipValue: 0.44,
-                        unitValue: 44,
-                        unit: "kg CO2 eq",
-                    },
-                ],
-            },
-            {
-                tier: "Networks",
-                impacts: [
-                    {
-                        criteria: "Resource use (minerals and metals)",
-                        sipValue: 0.26,
-                        unitValue: 8,
-                        unit: "kg Sb eq",
-                    },
-                    {
-                        criteria: "climate-change",
-                        sipValue: 0.22,
-                        unitValue: 16,
-                        unit: "kg CO2 eq",
-                    },
-                ],
-            },
-            {
-                tier: "Terminals",
-                impacts: [
-                    {
-                        criteria: "particulate-matter",
-                        sipValue: 0.1,
-                        unitValue: 25,
-                        unit: "Disease incidence",
-                    },
-                    {
-                        criteria: "acidification",
-                        sipValue: 0.7,
-                        unitValue: 40,
-                        unit: "mol H+ eq",
-                    },
-                ],
-            },
-        ];
-
-        service.getFootprint("uid").subscribe((res) => {
-            expect(res).toEqual(footprint);
-        });
-
-        const req = httpMock.expectOne(`digital-services/uid/indicators`);
 
         expect(req.request.method).toEqual("GET");
 
@@ -375,5 +314,36 @@ describe("DigitalServicesDataService", () => {
         expect(req.request.method).toEqual("GET");
 
         httpMock.verify();
+    });
+
+    it("should fetch cloud indicators", () => {
+        const uid = "12345";
+        const mockResponse: any = [
+            {
+                criteria: "criteria1",
+                impacts: [
+                    {
+                        acvStep: "step1",
+                        sipValue: 10,
+                        rawValue: 20,
+                        unit: "unit1",
+                        status: "ok",
+                        statusCount: {
+                            ok: 1,
+                            error: 0,
+                            total: 1,
+                        },
+                    },
+                ],
+            },
+        ];
+
+        service.getCloudsIndicators(uid).subscribe((response) => {
+            expect(response).toEqual(mockResponse);
+        });
+
+        const req = httpMock.expectOne(`digital-services/${uid}/cloud/indicators`);
+        expect(req.request.method).toBe("GET");
+        req.flush(mockResponse);
     });
 });

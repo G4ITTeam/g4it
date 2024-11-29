@@ -906,6 +906,19 @@ databaseChangeLog:
               - column:
                   name: criteria
                   type: varchar(255) array
+
+  - changeSet:
+      id: add-column-status_indicator-agg_equipment_indicator
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: agg_equipment_indicator
+            columns:
+              - column:
+                  name: status_indicator
+                  type: varchar(255)
+        - sql: update agg_equipment_indicator set status_indicator = 'OK' where status_indicator is null ;
+
   - changeSet:
       id: add-columns-agg_application_indicator
       author: G4IT Dev Team
@@ -945,3 +958,35 @@ databaseChangeLog:
         - sql:
             UPDATE g4it_evaluation_report  SET criteria = '{climate-change,ionising-radiation,acidification,particulate-matter,resource-use}'
             WHERE criteria is null;
+
+  - changeSet:
+      id: add-column-status_indicator-agg_application_indicator
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: agg_application_indicator
+            columns:
+              - column:
+                  name: status_indicator
+                  type: varchar(255)
+        - sql: update agg_application_indicator set status_indicator ='OK' where status_indicator is null;
+
+  - changeSet:
+      id: add-column-is_new_arch-inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: is_new_arch
+                  type: boolean
+                  defaultValue: false
+        - sql: update inventory set is_new_arch = false where is_new_arch is null;
+
+  - changeSet:
+      id: update-default-status-agg_indicator-tables
+      author: G4IT Dev Team
+      changes:
+        - sql: update agg_application_indicator set status_indicator ='OK' where status_indicator is null;
+        - sql: update agg_equipment_indicator set status_indicator ='OK' where status_indicator is null;

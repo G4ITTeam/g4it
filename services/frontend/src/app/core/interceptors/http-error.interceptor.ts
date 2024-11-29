@@ -16,7 +16,7 @@ import {
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { Message, MessageService } from "primeng/api";
+import { MessageService } from "primeng/api";
 import { Observable, throwError } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 import { Constants } from "src/constants";
@@ -47,7 +47,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
             retry(1),
             catchError((returnedError) => {
-                this.handleErrorPageNavigation(returnedError.status);
+                this.handleErrorPageNavigation(returnedError);
                 return throwError(() => new Error(this.getErrorMessage(returnedError)));
             }),
         );
@@ -85,24 +85,39 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         return errorMessage;
     }
 
-    private handleErrorPageNavigation(errorStatus: HttpStatusCode) {
-        if (this.handledErrorStatus.includes(errorStatus)) {
-            this.router.navigate(["/something-went-wrong", errorStatus]);
-        } else if (errorStatus == HttpStatusCode.PayloadTooLarge) {
-            this.addToastMessage(
-                "Maximum file size exceeded",
-                "The maximum file size for import is 100MB",
-            );
-        }
-    }
+    private handleErrorPageNavigation(error: any) {
+        if (this.handledErrorStatus.includes(error.status)) {
+            if (error.status === HttpStatusCode.InternalServerError) {
+                let errorKey = error.error.message || "unknown";
+                console.error(error.error.message);
 
-    addToastMessage(title: string, message: string) {
-        const errMsg: Message = {
-            severity: "error",
-            summary: title,
-            detail: message,
-            sticky: true,
-        };
-        this.messageService.add(errMsg);
+                const errorKeys = Object.keys(this.translate.instant(`toast-errors`));
+                if (!errorKeys.includes(errorKey)) {
+                    errorKey = "unknown";
+                }
+
+                this.messageService.add({
+                    severity: "error",
+                    summary: this.translate.instant(`toast-errors.${errorKey}.title`),
+                    detail: this.translate.instant(`toast-errors.${errorKey}.text`),
+                    sticky: true,
+                });
+            } else {
+                this.router.navigate(["/something-went-wrong", error.status]);
+            }
+        } else if (error.status === 0) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant(`toast-errors.backend-unreachable.title`),
+                detail: this.translate.instant(`toast-errors.backend-unreachable.text`),
+            });
+        } else if (error.status == HttpStatusCode.PayloadTooLarge) {
+            this.messageService.add({
+                severity: "error",
+                summary: this.translate.instant(`toast-errors.payload-too-large.title`),
+                detail: this.translate.instant(`toast-errors.payload-too-large.text`),
+                sticky: true,
+            });
+        }
     }
 }

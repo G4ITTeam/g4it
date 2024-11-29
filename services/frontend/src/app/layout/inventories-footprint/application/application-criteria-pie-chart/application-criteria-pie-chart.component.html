@@ -1,7 +1,11 @@
 <div style="margin-bottom: 20px; margin-top: 20px">
     <div class="side-data-title">
-        <img src="assets/images/icons/icon-lifecycle-env.svg" alt="" />
-        <span tabIndex="0">{{
+        <img
+            src="assets/images/icons/icon-lifecycle-env.svg"
+            alt=""
+            class="w-3rem mr-3"
+        />
+        <span role="heading" [ariaLevel]="3">{{
             "inventories-footprint.filter-tabs-application.lifeCycle" | translate
         }}</span>
     </div>
@@ -17,8 +21,12 @@
     @if (footprintStore.appGraphType() === "application") {
         <div style="margin-bottom: 20px; margin-top: 20px">
             <div class="side-data-title">
-                <img src="assets/images/icons/icon-lifecycle-env.svg" alt="" />
-                <span tabIndex="0">{{
+                <img
+                    src="assets/images/icons/icon-lifecycle-env.svg"
+                    alt=""
+                    class="w-3rem mr-3"
+                />
+                <span>{{
                     "inventories-footprint.filter-tabs-application.environment"
                         | translate
                 }}</span>

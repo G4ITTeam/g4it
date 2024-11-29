@@ -51,6 +51,7 @@ describe("InventoryDataService", () => {
                 id: 2,
                 type: "test",
                 name: "test",
+                isNewArch: false,
                 date: new Date("12 April 2023 08:48 UTC"),
                 lastEvaluationReport: {
                     batchStatusCode: "test",
@@ -110,11 +111,13 @@ describe("InventoryDataService", () => {
                         "file:///C:/tmp/SOPRA-STERIA-GROUP/DEMO-1/export/20240326_1206_37.zip",
                     resultFileSize: 13221679,
                 },
+                tasks: [],
             },
             {
                 id: 2,
                 type: "test",
                 name: "test",
+                isNewArch: false,
                 date: new Date("12 April 2023 08:48 UTC"),
                 lastEvaluationReport: {
                     batchStatusCode: "test",
@@ -174,6 +177,7 @@ describe("InventoryDataService", () => {
                         "file:///C:/tmp/SOPRA-STERIA-GROUP/DEMO-1/export/20240326_1206_37.zip",
                     resultFileSize: 13221679,
                 },
+                tasks: [],
             },
         ];
 

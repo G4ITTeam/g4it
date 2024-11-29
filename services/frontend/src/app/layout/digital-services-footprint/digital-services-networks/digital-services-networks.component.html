@@ -21,11 +21,17 @@
             </div>
         </ng-template>
         <ng-template pTemplate="header">
+            <caption class="visually-hidden">
+                {{
+                    "digital-services-networks.networks" | translate
+                }}
+            </caption>
             <tr>
-                <th id="id">
+                <th scope="col" id="id">
                     {{ "digital-services-networks.id" | translate }}
                 </th>
                 <th
+                    scope="col"
                     id="networkType"
                     pSortableColumn="type.value"
                     class="terminal-table-column"
@@ -34,6 +40,7 @@
                     <p-sortIcon field="type.value"></p-sortIcon>
                 </th>
                 <th
+                    scope="col"
                     id="yearlyGo"
                     pSortableColumn="yearlyQuantityOfGbExchanged"
                     class="terminal-table-column"
@@ -55,7 +62,7 @@
                         (click)="
                             setNetworks(network, rowIndex + 1); sidebarVisible = true
                         "
-                        styleClass="p-button-text edit-button"
+                        styleClass="p-button-text mx-1"
                     >
                         <img
                             src="assets/images/icons/icon-edit.svg"
@@ -67,7 +74,7 @@
                     <p-button
                         *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         (click)="actionNetwork('delete', network)"
-                        styleClass="p-button-text edit-button"
+                        styleClass="p-button-text"
                     >
                         <img
                             src="assets/images/icons/icon-bin.svg"
@@ -81,12 +88,21 @@
         </ng-template>
     </p-table>
 </div>
-<p-sidebar [(visible)]="sidebarVisible" position="right" styleClass="p-sidebar-lg">
-    <app-digital-services-networks-side-panel
-        [network]="network"
-        [networkTypes]="networkTypes"
-        (update)="actionNetwork('update', $event)"
-        (delete)="actionNetwork('delete', $event)"
-        (cancel)="actionNetwork('cancel', $event)"
-    ></app-digital-services-networks-side-panel>
-</p-sidebar>
+@if (sidebarVisible) {
+    <p-sidebar
+        [visible]="true"
+        position="right"
+        styleClass="p-sidebar-lg"
+        (onHide)="networkSidePanel.close()"
+    >
+        <app-digital-services-networks-side-panel
+            #networkSidePanel
+            (sidebarVisible)="(sidebarVisible)"
+            [network]="network"
+            [networkTypes]="networkTypes"
+            (update)="actionNetwork('update', $event)"
+            (delete)="actionNetwork('delete', $event)"
+            (cancel)="actionNetwork('cancel', $event)"
+        ></app-digital-services-networks-side-panel>
+    </p-sidebar>
+}

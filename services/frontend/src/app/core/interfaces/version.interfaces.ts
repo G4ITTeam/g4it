@@ -4,8 +4,12 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
+export interface VersionRest {
+    [key: string]: string;
+}
+
 export interface Version {
-    numEcoEval: string;
-    g4it: string;
+    name: string;
+    version: string;
 }

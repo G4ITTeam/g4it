@@ -7,6 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.utils;
 
+import java.util.Map;
+
 /**
  * Utils class for criteria.
  */
@@ -18,6 +20,20 @@ public final class CriteriaUtils {
     private CriteriaUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
+
+    public static final Map<String, String> CRITERIA_MAP = Map.ofEntries(
+            Map.entry("climate-change", "Climate change"),
+            Map.entry("ionising-radiation", "Ionising radiation"),
+            Map.entry("acidification", "Acidification"),
+            Map.entry("particulate-matter", "Particulate matter and respiratory inorganics"),
+            Map.entry("resource-use", "Resource use (minerals and metals)"),
+            Map.entry("ozone-depletion", "Ozone depletion"),
+            Map.entry("photochemical-ozone-formation", "Photochemical ozone formation"),
+            Map.entry("eutrophication-terrestrial", "Eutrophication, terrestrial"),
+            Map.entry("eutrophication-freshwater", "Eutrophication, freshwater"),
+            Map.entry("eutrophication-marine", "Eutrophication, marine"),
+            Map.entry("resource-use-fossils", "Resource use, fossils")
+    );
 
     /**
      * Method to transform criteria label to criteria key.
@@ -49,20 +65,7 @@ public final class CriteriaUtils {
      * @return the criteria label.
      */
     public static String transformCriteriaKeyToCriteriaName(final String criteriaKey) {
-        return switch (criteriaKey) {
-            case "climate-change" -> "Climate change";
-            case "ionising-radiation" -> "Ionising radiation";
-            case "acidification" -> "Acidification";
-            case "particulate-matter" -> "Particulate matter and respiratory inorganics";
-            case "resource-use" -> "Resource use (minerals and metals)";
-            case "ozone-depletion" -> "Ozone depletion";
-            case "photochemical-ozone-formation" -> "Photochemical ozone formation";
-            case "eutrophication-terrestrial" -> "Eutrophication, terrestrial";
-            case "eutrophication-freshwater" -> "Eutrophication, freshwater";
-            case "eutrophication-marine" -> "Eutrophication, marine";
-            case "resource-use-fossils" -> "Resource use, fossils";
-            default -> "";
-        };
+        return CRITERIA_MAP.getOrDefault(criteriaKey, "");
     }
 
 }

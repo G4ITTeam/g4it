@@ -1,111 +1,141 @@
 <div class="footprint-dashboard-container-app-criteria mt-3">
     <div class="chart-container">
-        <span>
+        <div class="flex">
             @if (footprintStore.appGraphType() === "global") {
                 <h3
-                    tabindex="0"
                     attr.aria-label="{{ selectedCriteria().title }}{{
                         'inventories-footprint.application.critere.graph.title'
                             | translate
                     }}"
+                    class="inline"
                 >
                     {{ "inventories-footprint.global.global-vision" | translate }}
                     ({{ "common.peopleeq-min" | translate }})
                 </h3>
+                <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
             } @else {
-                <h4
-                    class="cursor-pointer m-0 text-xl color-tertiary"
-                    (click)="onArrowClick()"
-                    tabindex="0"
-                    attr.aria-label="{{
-                        'inventories-footprint.application.selected-infos' | translate
-                    }}{{ footprintStore.appDomain() }}{{
-                        footprintStore.appSubDomain()
-                    }}{{ footprintStore.appApplication() }}"
-                >
-                    <img
-                        src="assets/images/icons/icon-green-arrow-left.svg"
-                        alt=""
-                        class="button-icon"
-                    />
-                    {{ "inventories-footprint.global.global-vision" | translate }}
-                    {{
-                        footprintStore.appGraphType() === "subdomain"
-                            ? " / " + footprintStore.appDomain()
-                            : footprintStore.appGraphType() === "application"
-                              ? " / " +
-                                footprintStore.appDomain() +
-                                " / " +
-                                footprintStore.appSubDomain()
-                              : ""
-                    }}
-                </h4>
-                @if (footprintStore.appGraphType() === "domain") {
-                    <h3
-                        tabindex="0"
+                <div class="inline">
+                    <h4
+                        class="cursor-pointer m-0 text-xl color-tertiary"
+                        (click)="onArrowClick()"
                         attr.aria-label="{{
-                            'inventories-footprint.application.domain-view' | translate
-                        }}{{ selectedCriteria().title }}{{
-                            'inventories-footprint.application.critere.graph.title'
-                                | translate
-                        }}"
+                            'inventories-footprint.application.selected-infos' | translate
+                        }}{{ footprintStore.appDomain() }}{{
+                            footprintStore.appSubDomain()
+                        }}{{ footprintStore.appApplication() }}"
                     >
-                        {{ footprintStore.appDomain() }}
-                        ({{ "common.peopleeq-min" | translate }})
-                    </h3>
-                }
-                @if (footprintStore.appGraphType() === "subdomain") {
-                    <h3
-                        tabindex="0"
-                        attr.aria-label="{{
-                            'inventories-footprint.application.subdomain-view' | translate
-                        }}{{ selectedCriteria().title }}{{
-                            'inventories-footprint.application.critere.graph.title'
-                                | translate
-                        }}"
-                    >
-                        {{ footprintStore.appSubDomain() }}
-                        ({{ "common.peopleeq-min" | translate }})
-                    </h3>
-                }
-                @if (footprintStore.appGraphType() === "application") {
-                    <h3
-                        tabindex="0"
-                        attr.aria-label="{{
-                            'inventories-footprint.application.application-view'
-                                | translate
-                        }}{{ selectedCriteria().title }}{{
-                            'inventories-footprint.application.critere.graph.title'
-                                | translate
-                        }}"
-                    >
-                        {{ footprintStore.appApplication() }}
-                        ({{ "common.peopleeq-min" | translate }})
-                    </h3>
-                }
+                        <p-image
+                            src="assets/images/icons/icon-green-arrow-left.svg"
+                            alt=""
+                            styleClass="mr-2"
+                        />
+                        {{ "inventories-footprint.global.global-vision" | translate }}
+                        {{
+                            footprintStore.appGraphType() === "subdomain"
+                                ? " / " + footprintStore.appDomain()
+                                : footprintStore.appGraphType() === "application"
+                                  ? " / " +
+                                    footprintStore.appDomain() +
+                                    " / " +
+                                    footprintStore.appSubDomain()
+                                  : ""
+                        }}
+                    </h4>
+                    @if (footprintStore.appGraphType() === "domain") {
+                        <h3
+                            attr.aria-label="{{
+                                'inventories-footprint.application.domain-view'
+                                    | translate
+                            }}{{ selectedCriteria().title }}{{
+                                'inventories-footprint.application.critere.graph.title'
+                                    | translate
+                            }}"
+                        >
+                            {{ footprintStore.appDomain() }}
+                            ({{ "common.peopleeq-min" | translate }})
+                        </h3>
+                    }
+                    @if (footprintStore.appGraphType() === "subdomain") {
+                        <h3
+                            attr.aria-label="{{
+                                'inventories-footprint.application.subdomain-view'
+                                    | translate
+                            }}{{ selectedCriteria().title }}{{
+                                'inventories-footprint.application.critere.graph.title'
+                                    | translate
+                            }}"
+                        >
+                            {{ footprintStore.appSubDomain() }}
+                            ({{ "common.peopleeq-min" | translate }})
+                        </h3>
+                    }
+                    @if (footprintStore.appGraphType() === "application") {
+                        <h3
+                            attr.aria-label="{{
+                                'inventories-footprint.application.application-view'
+                                    | translate
+                            }}{{ selectedCriteria().title }}{{
+                                'inventories-footprint.application.critere.graph.title'
+                                    | translate
+                            }}"
+                        >
+                            {{ footprintStore.appApplication() }}
+                            ({{ "common.peopleeq-min" | translate }})
+                        </h3>
+                    }
+                </div>
+                <ng-template [ngTemplateOutlet]="dataConsistencyRef"></ng-template>
             }
-        </span>
-        @if (noData()) {
-            <div class="no-data-round">
-                <p tabindex="0" class="text-round-empty">
-                    {{ "common.no-data" | translate }}
-                </p>
-            </div>
+        </div>
+        @if (showInconsitencyGraph) {
+            @if (options().series && !noData()) {
+                <app-stack-bar-chart
+                    [xAxisInput]="xAxisInput"
+                    [statusCountMap]="criteriaMap"
+                    (selectedStackBarClick)="selectedStackBarClick($event)"
+                />
+            } @else {
+                <div class="no-data-bar">
+                    <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+                </div>
+            }
         } @else {
-            <div
-                tabindex="0"
-                echarts
-                class="bar-stack m-0"
-                [options]="options()"
-                style="height: 53vh"
-                (chartClick)="onChartClick($event)"
-            ></div>
+            @if (noData()) {
+                <div class="no-data-round">
+                    <p tabindex="0" class="text-round-empty">
+                        {{ "common.no-data" | translate }}
+                    </p>
+                </div>
+            } @else {
+                <div
+                    tabindex="0"
+                    echarts
+                    class="bar-stack m-0"
+                    [options]="options()"
+                    style="height: 53vh"
+                    (chartClick)="onChartClick($event)"
+                ></div>
+            }
         }
     </div>
     <div>
-        <app-criteria-stats [footprint]="footprint"> </app-criteria-stats>
+        <app-criteria-stats [footprint]="[footprint]"> </app-criteria-stats>
         <app-application-criteria-pie-chart
-            [footprint]="footprint"
+            [footprint]="[footprint]"
         ></app-application-criteria-pie-chart>
     </div>
 </div>
+
+<ng-template #dataConsistencyRef>
+    @if (showDataConsistencyBtn) {
+        <p-button
+            (click)="showInconsitencyGraph = !showInconsitencyGraph"
+            [rounded]="true"
+            [label]="'inventories-footprint.data-consistency' | translate"
+            [outlined]="!showInconsitencyGraph"
+            severity="danger"
+            class="ml-auto mt-3 mb-2"
+            [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+        />
+    }
+</ng-template>

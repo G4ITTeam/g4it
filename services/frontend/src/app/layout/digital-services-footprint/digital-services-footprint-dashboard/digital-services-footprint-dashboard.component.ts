@@ -5,12 +5,14 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
 import { takeUntil } from "rxjs";
 import {
     DigitalService,
+    DigitalServiceCloudImpact,
+    DigitalServiceCloudResponse,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
@@ -21,7 +23,9 @@ import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
+import { Constants } from "src/constants";
 import { AbstractDashboard } from "../../inventories-footprint/abstract-dashboard";
 
 @Component({
@@ -32,29 +36,22 @@ export class DigitalServicesFootprintDashboardComponent
     extends AbstractDashboard
     implements OnInit, OnDestroy
 {
-    chartType = "radial";
+    private digitalServiceStore = inject(DigitalServiceStoreService);
+
+    chartType = signal("radial");
+    showInconsitencyBtn = false;
+    constants = Constants;
     noData = true;
     selectedUnit: string = "Raw";
     selectedCriteria: string = "Global Vision";
     selectedParam: string = "";
     selectedDetailName: string = "";
     selectedDetailParam: string = "";
+    showInconsitency = false;
     // barCharChild == true => is the new bar chart generated after clicking on a bar chart
     barChartChild: boolean = false;
-
     options: EChartsOption = {};
-    digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-        criteria: [],
-        members: [],
-    };
+    digitalService: DigitalService = {} as DigitalService;
 
     title = "";
     content = "";
@@ -66,6 +63,7 @@ export class DigitalServicesFootprintDashboardComponent
     networkData: DigitalServiceNetworksImpact[] = [];
     serverData: DigitalServiceServersImpact[] = [];
     terminalData: DigitalServiceTerminalsImpact[] = [];
+    cloudData: DigitalServiceCloudImpact[] = [];
 
     calculatedCriteriaList: string[] = [];
 
@@ -89,7 +87,7 @@ export class DigitalServicesFootprintDashboardComponent
                 this.digitalService.criteria = ds.criteria;
                 if (this.impacts?.length === 1) {
                     this.selectedCriteria = this.impacts[0]?.name;
-                    this.chartType = "pie";
+                    this.chartType.set("pie");
                 }
             });
     }
@@ -114,10 +112,17 @@ export class DigitalServicesFootprintDashboardComponent
             .getFootprint(uid)
             .subscribe((footprint: DigitalServiceFootprint[]) => {
                 this.globalVisionChartData = footprint;
-                const firstTierData = footprint[0];
-                firstTierData.impacts.forEach((impact) => {
-                    this.calculatedCriteriaList.push(impact.criteria);
-                });
+                this.showInconsitencyBtn = this.globalVisionChartData
+                    .flatMap((footprint) => footprint?.impacts)
+                    .some(
+                        (footprint) =>
+                            footprint?.status === Constants.DATA_QUALITY_STATUS.error,
+                    );
+                if (footprint.length > 0) {
+                    footprint[0].impacts.forEach((impact) => {
+                        this.calculatedCriteriaList.push(impact.criteria);
+                    });
+                }
                 this.initImpacts();
                 this.setCriteriaButtons(footprint);
                 if (footprint.length > 0) {
@@ -126,6 +131,7 @@ export class DigitalServicesFootprintDashboardComponent
                     this.noData = true;
                 }
             });
+
         this.digitalServicesService
             .getNetworksIndicators(uid)
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -139,6 +145,15 @@ export class DigitalServicesFootprintDashboardComponent
                 this.serverData = serverFootprint;
             });
         this.digitalServicesService
+            .getCloudsIndicators(uid)
+            .pipe(takeUntil(this.ngUnsubscribe))
+            .subscribe((cloudFootprint: DigitalServiceCloudResponse[]) => {
+                this.cloudData = this.digitalServicesService.transformCloudData(
+                    cloudFootprint,
+                    this.digitalServiceStore.countryMap(),
+                );
+            });
+        this.digitalServicesService
             .getTerminalsIndicators(uid)
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((terminalFootprint: DigitalServiceTerminalResponse[]) => {
@@ -150,11 +165,11 @@ export class DigitalServicesFootprintDashboardComponent
     handleChartChange(criteria: string) {
         if (this.selectedCriteria === "Global Vision") {
             this.selectedCriteria = criteria;
-            this.chartType = "pie";
+            this.chartType.set("pie");
             this.barChartChild = false;
         } else if (this.selectedCriteria == criteria) {
             this.selectedCriteria = "Global Vision";
-            this.chartType = "radial";
+            this.chartType.set("radial");
             this.barChartChild = false;
         } else if (this.selectedCriteria != criteria) {
             this.selectedCriteria = criteria;
@@ -183,6 +198,7 @@ export class DigitalServicesFootprintDashboardComponent
                 }
             });
         });
+
         this.impacts.forEach((impact) => {
             const criteria = impact.name;
             impact.title = this.translate.instant(`criteria.${criteria}.title`);
@@ -195,56 +211,40 @@ export class DigitalServicesFootprintDashboardComponent
     }
 
     getTitleOrContent(textType: string) {
-        let translation: string;
         this.selectedLang = this.translate.currentLang;
-        if (this.chartType == "bar") {
-            if (this.barChartChild === true && this.selectedParam === "Server") {
-                if (textType === "digital-services-card-title") {
-                    translation = this.translate.instant(
-                        "digital-services-cards.server-lifecycle.title",
-                    );
-                } else {
-                    translation = this.translate.instant(
-                        "digital-services-cards.server-lifecycle.content",
-                    );
-                }
+        const isBarChart = this.chartType() === "bar";
+        const isServer = this.selectedParam === "Server";
+        const isCloudService = this.selectedParam === Constants.CLOUD_SERVICE;
+        const isBarChartChild = this.barChartChild === true;
+
+        let translationKey: string;
+
+        if (isBarChart) {
+            if (isBarChartChild && isServer) {
+                translationKey = "digital-services-cards.server-lifecycle.";
+            } else if (isBarChartChild && isCloudService) {
+                translationKey = "digital-services-cards.cloud-lifecycle.";
             } else {
-                if (textType === "digital-services-card-title") {
-                    translation = this.translate.instant(
-                        "digital-services-cards.server.title",
-                    );
-                } else {
-                    translation = this.translate.instant(
-                        "digital-services-cards.server.content",
-                    );
-                }
+                translationKey = `digital-services-cards.${this.selectedParam.toLowerCase().replace(/\s+/g, "-")}.`;
             }
         } else {
+            const criteriaKey = this.selectedCriteria.toLowerCase().replace(/\s+/g, "-");
             if (
                 !Object.keys(this.globalStore.criteriaList()).includes(
                     this.selectedCriteria,
                 )
             ) {
-                if (textType === "digital-services-card-title") {
-                    translation = this.translate.instant(
-                        "digital-services-cards." +
-                            this.selectedCriteria.toLowerCase().replace(/\s+/g, "-") +
-                            ".title",
-                    );
-                } else {
-                    translation = this.translate.instant(
-                        "digital-services-cards." +
-                            this.selectedCriteria.toLowerCase().replace(/\s+/g, "-") +
-                            ".content",
-                    );
-                }
+                translationKey = `digital-services-cards.${criteriaKey}.`;
             } else {
-                translation = this.translate.instant(
+                return this.translate.instant(
                     this.getTranslationKey(this.selectedCriteria, textType),
                 );
             }
         }
-        return translation;
+
+        return this.translate.instant(
+            `${translationKey}${textType === "digital-services-card-title" ? "title" : "content"}`,
+        );
     }
 
     getTranslationKey(param: string, textType: string) {
@@ -254,6 +254,10 @@ export class DigitalServicesFootprintDashboardComponent
 
     getTNSTranslation(input: string) {
         return this.translate.instant("digital-services." + input);
+    }
+
+    updateInconsistent(event: any): void {
+        this.showInconsitencyBtn = event;
     }
 
     ngOnDestroy() {

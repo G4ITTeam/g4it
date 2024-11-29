@@ -17,12 +17,14 @@ export const environment = {
         issuer: "http://localhost:8180/auth",
         realm: "g4it",
         clientId: "g4it",
+        enabled: "false",
     },
     frontEndUrl: "http://localhost:4200",
     matomo: {
         trackerUrl: "", // DO NOT COMMIT AN OTHER VALUE
         siteId: "0",
     },
+    showBetaFeatures: "true"
 };
 
 /*

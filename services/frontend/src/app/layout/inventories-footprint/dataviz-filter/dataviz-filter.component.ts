@@ -36,7 +36,7 @@ export class DatavizFilterComponent {
         const f = this.footprintStore.filters();
         f[tab] = this.filterService.getUpdateSelectedValues(
             selectedValues,
-            this.allFilters[tab] as string[],
+            this.allFilters[tab],
             selection,
         );
         this.footprintStore.setFilters(f);

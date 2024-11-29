@@ -27,6 +27,7 @@ public class SubscriberService {
     @Autowired
     SubscriberRepository subscriberRepository;
 
+
     /**
      * Find the Subscriber by id.
      *

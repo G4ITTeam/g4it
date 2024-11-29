@@ -39,7 +39,6 @@ export class DatavizFilterApplicationComponent {
 
     selectedFilters() {
         this.allUnusedFilters = JSON.parse(JSON.stringify(this.allFilters));
-        //const selectedValues = JSON.parse(JSON.stringify(this.allUnusedFilters));
         this.footprintStore.setApplicationSelectedFilters(this.allUnusedFilters);
     }
 
@@ -56,10 +55,8 @@ export class DatavizFilterApplicationComponent {
     onTreeChange(event: CheckboxChangeEvent, item: TransformedDomain) {
         if (item.label === Constants.ALL) {
             this.allUnusedFilters["domain"].forEach((domain) => {
-                (domain as TransformedDomain).checked = event.checked;
-                (domain as TransformedDomain)["children"]?.forEach(
-                    (child) => (child.checked = event.checked),
-                );
+                domain.checked = event.checked;
+                domain["children"]?.forEach((child) => (child.checked = event.checked));
             });
         } else {
             item["children"]?.forEach((child) => (child.checked = event.checked));

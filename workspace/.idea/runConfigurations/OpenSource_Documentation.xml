@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="OpenSource Documentation" type="HUGO_RUN_CONFIGURATION" factoryName="Hugo configuration factory">
+    <option name="hugo.plugin.arguments" value="-D -p1233 --navigateToChanged" />
+    <option name="hugo.plugin.run.server" value="run" />
+    <option name="hugo.plugin.custom.project.dir" value="$PROJECT_DIR$/../../g4it\services\documentation" />
+    <method v="2">
+      <option name="LaunchBrowser.Before.Run" url="http://localhost:1233" />
+    </method>
+  </configuration>
+</component>

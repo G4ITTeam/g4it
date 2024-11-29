@@ -6,9 +6,19 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 import { RouterModule, Routes } from "@angular/router";
+import { TitleResolver } from "../common/title-resolver.service";
 import { AdministrationPanelComponent } from "./administration-panel/administration-panel.component";
 import { OrganizationsComponent } from "./administration-panel/organizations/organizations.component";
 import { UsersComponent } from "./administration-panel/users/users.component";
+
+const titleResolveObject = {
+    resolve: {
+        title: TitleResolver,
+    },
+    data: {
+        titleKey: "administration.title",
+    },
+};
 
 const routes: Routes = [
     {
@@ -18,12 +28,14 @@ const routes: Routes = [
             {
                 path: "organizations",
                 component: OrganizationsComponent,
+                ...titleResolveObject,
             },
             {
-                path:"users",
-                component:UsersComponent,
-            }
-        ]
+                path: "users",
+                component: UsersComponent,
+                ...titleResolveObject,
+            },
+        ],
     },
 ];
 

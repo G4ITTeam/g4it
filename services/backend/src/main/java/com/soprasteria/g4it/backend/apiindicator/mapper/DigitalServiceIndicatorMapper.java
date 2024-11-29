@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  *
  */
@@ -33,11 +31,16 @@ public interface DigitalServiceIndicatorMapper {
     List<DigitalServiceImpactBO> toImpact(final List<DigitalServiceIndicatorView> source);
 
     default DigitalServiceImpactBO map(final DigitalServiceIndicatorView digitalServiceIndicatorView) {
+        String criterion = CriteriaUtils.transformCriteriaNameToCriteriaKey(digitalServiceIndicatorView.getCriteria());
+        if (criterion.isEmpty()) criterion = digitalServiceIndicatorView.getCriteria();
+
         return DigitalServiceImpactBO.builder()
                 .unitValue(digitalServiceIndicatorView.getUnitValue())
                 .unit(digitalServiceIndicatorView.getUnit())
                 .sipValue(digitalServiceIndicatorView.getSipValue())
-                .criteria(CriteriaUtils.transformCriteriaNameToCriteriaKey(digitalServiceIndicatorView.getCriteria()))
+                .criteria(criterion)
+                .status(digitalServiceIndicatorView.getStatus())
+                .countValue(digitalServiceIndicatorView.getCountValue())
                 .build();
     }
 
@@ -51,10 +54,10 @@ public interface DigitalServiceIndicatorMapper {
         return indicatorsByTiers
                 .entrySet()
                 .stream()
-                .map(entry -> DigitalServiceIndicatorBO.builder()
+                .<DigitalServiceIndicatorBO>map(entry -> DigitalServiceIndicatorBO.builder()
                         .tier(entry.getKey())
                         .impacts(toImpact(entry.getValue()))
                         .build()
-                ).collect(toList());
+                ).toList();
     }
 }

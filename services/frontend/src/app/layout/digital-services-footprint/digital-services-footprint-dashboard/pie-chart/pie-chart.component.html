@@ -1,7 +1,15 @@
-<div
-    echarts
-    class="pie-simple"
-    [options]="options"
-    (chartClick)="onChartClick($event)"
-    style="height: 400px; margin: 0; margin-top: 20px"
-></div>
+@if (showInconsitency()) {
+    <app-stack-bar-chart
+        [xAxisInput]="xAxisInput"
+        [statusCountMap]="criteriaMap"
+        (selectedStackBarClick)="selectedStackBarClick($event)"
+    />
+} @else {
+    <div
+        echarts
+        class="pie-simple"
+        [options]="options"
+        (chartClick)="onChartClick($event)"
+        style="height: 400px; margin: 0; margin-top: 20px"
+    ></div>
+}

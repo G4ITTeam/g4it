@@ -1,14 +1,16 @@
 <div class="lg-file-panel-margin">
-    <div class="side-panel-title">
+    <div class="side-panel-title" appAutofocus tabindex="-1">
         {{ server.name }}
     </div>
-    <div class="side-panel-subtitle">
+    <div class="side-panel-subtitle" lang="en">
         {{ server.mutualizationType }}/{{ server.type }}
     </div>
-    <form [formGroup]="serverForm" class="terminal-grid-form" (ngSubmit)="nextStep()">
-        <div class="form-flex-column form-flex-column-server">
+    <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
+        <div class="flex flex-column">
             <div class="label-input-div-full label-input-div-full-server">
-                <label>{{ "digital-services-servers.host" | translate }}</label>
+                <label for="host">{{
+                    "digital-services-servers.host" | translate
+                }}</label>
                 <p-dropdown
                     appendTo="body"
                     [options]="hostOptions"
@@ -23,7 +25,9 @@
                     filterBy="value"
                     filterPlaceholder="Search"
                     name="host"
+                    inputId="host"
                     ngDefaultControl
+                    lang="en"
                 ></p-dropdown>
                 <p
                     class="error-text"
@@ -38,8 +42,10 @@
             </div>
 
             <div class="label-input-div label-input-div-server">
-                <label>{{ "digital-services-servers.datacenter" | translate }}</label>
-                <div class="form-flex-row">
+                <label for="datacenter">{{
+                    "digital-services-servers.datacenter" | translate
+                }}</label>
+                <div class="flex flex-row">
                     <p-dropdown
                         appendTo="body"
                         [options]="datacenterOptions"
@@ -50,6 +56,7 @@
                         [(ngModel)]="server.datacenter"
                         name="datacenter"
                         ngDefaultControl
+                        inputId="datacenter"
                     ></p-dropdown>
                     <p
                         class="error-text"
@@ -61,27 +68,31 @@
                     <p-button
                         *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         (click)="addSidebarVisible = true"
-                        styleClass="black-button grey-button-add-datacenter"
+                        styleClass="black-button white-space-nowrap"
                     >
                         {{ "common.add" | translate }}
                         {{ "digital-services-servers.datacenter" | translate }}
                     </p-button>
-                    <p-sidebar
-                        [(visible)]="addSidebarVisible"
-                        position="right"
-                        styleClass="p-sidebar-lg"
-                    >
-                        <app-side-panel-datacenter
-                            [server]="server"
-                            [addSidebarVisible]="addSidebarVisible"
-                            (addSidebarVisibleChange)="addSidebarVisible = $event"
-                            (serverChange)="addDatacenter($event)"
+                    @if (addSidebarVisible) {
+                        <p-sidebar
+                            [visible]="true"
+                            position="right"
+                            styleClass="p-sidebar-lg"
+                            (onHide)="childSidePanel.close()"
                         >
-                        </app-side-panel-datacenter>
-                    </p-sidebar>
+                            <app-side-panel-datacenter
+                                #childSidePanel
+                                [server]="server"
+                                [addSidebarVisible]="addSidebarVisible"
+                                (addSidebarVisibleChange)="addSidebarVisible = $event"
+                                (serverChange)="addDatacenter($event)"
+                            >
+                            </app-side-panel-datacenter>
+                        </p-sidebar>
+                    }
                 </div>
             </div>
-            <div class="form-flex-row">
+            <div class="flex flex-row">
                 <div
                     *ngIf="server.mutualizationType === 'Dedicated'"
                     [ngClass]="
@@ -90,7 +101,9 @@
                             : 'label-input-div-medium'
                     "
                 >
-                    <label>{{ "digital-services-servers.quantity" | translate }}</label>
+                    <label for="quantity">{{
+                        "digital-services-servers.quantity" | translate
+                    }}</label>
                     <p-inputNumber
                         formControlName="quantity"
                         [required]="true"
@@ -100,6 +113,7 @@
                         name="quantity"
                         ngDefaultControl
                         locale="fr-FR"
+                        id="quantity"
                     />
                     <p
                         class="error-text"
@@ -117,7 +131,9 @@
                             : 'label-input-div-medium'
                     "
                 >
-                    <label>{{ "digital-services-servers.total.vcpu" | translate }}</label>
+                    <label for="vcpu">{{
+                        "digital-services-servers.total.vcpu" | translate
+                    }}</label>
                     <p-inputNumber
                         formControlName="vcpu"
                         [required]="true"
@@ -128,6 +144,7 @@
                         name="vcpu"
                         ngDefaultControl
                         locale="fr-FR"
+                        id="vcpu"
                     />
                     <p
                         class="error-text"
@@ -159,7 +176,7 @@
                             : 'label-input-div-medium'
                     "
                 >
-                    <label>
+                    <label for="disk">
                         {{ "digital-services-servers.total.disk" | translate }}
                     </label>
                     <p-inputNumber
@@ -171,6 +188,7 @@
                         name="disk"
                         ngDefaultControl
                         locale="fr-FR"
+                        id="disk"
                     />
                     <p
                         class="error-text"
@@ -187,7 +205,7 @@
                             : 'label-input-div-medium'
                     "
                 >
-                    <label>
+                    <label for="minmaxfraction">
                         {{ "digital-services-servers.lifespan" | translate }}
                     </label>
                     <p-inputNumber
@@ -212,9 +230,9 @@
                     </p>
                 </div>
             </div>
-            <div class="form-flex-row">
+            <div class="flex flex-row">
                 <div class="label-input-div-medium">
-                    <label>{{
+                    <label for="electricityConsumption">{{
                         "digital-services-servers.electricity" | translate
                     }}</label>
                     <p-inputNumber
@@ -226,6 +244,7 @@
                         styleClass="inputnumber-medium"
                         ngDefaultControl
                         locale="fr-FR"
+                        id="electricityConsumption"
                     />
                     <p
                         class="error-text"
@@ -241,7 +260,9 @@
                     class="label-input-div-medium"
                     *ngIf="server.mutualizationType === 'Dedicated'"
                 >
-                    <label>{{ "digital-services-servers.usage.time" | translate }}</label>
+                    <label for="operatingTime">{{
+                        "digital-services-servers.usage.time" | translate
+                    }}</label>
                     <p-inputNumber
                         formControlName="operatingTime"
                         [required]="true"
@@ -252,6 +273,7 @@
                         styleClass="inputnumber-medium"
                         ngDefaultControl
                         locale="fr-FR"
+                        id="operatingTime"
                     />
                     <p
                         class="error-text"
@@ -268,33 +290,21 @@
                 {{ "common.cancel" | translate }}
             </p-button>
 
-            <p-button styleClass="black-button" (click)="previousStep()">
-                <img
-                    alt=""
-                    src="assets/images/icons/icon-arrow-left-white.svg"
-                    class="previous-img"
-                />
-                {{ "common.previous" | translate }}
-            </p-button>
+            <p-button
+                styleClass="black-button"
+                (click)="previousStep()"
+                icon="pi pi-arrow-left"
+                [label]="'common.previous' | translate"
+            />
 
             <p-button
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 styleClass="yellow-button"
                 type="submit"
                 [disabled]="serverForm.invalid"
+                icon="pi pi-arrow-right"
+                [label]="createLabelKey | translate"
             >
-                <span
-                    *ngIf="server.mutualizationType === 'Dedicated' && server.uid === ''"
-                    >{{ "common.create" | translate }}</span
-                >
-                <span
-                    *ngIf="server.mutualizationType === 'Dedicated' && server.uid !== ''"
-                    >{{ "common.save" | translate }}</span
-                >
-                <span *ngIf="server.mutualizationType === 'Shared'"
-                    >{{ "common.next" | translate }}
-                    <img alt="" src="assets/images/icons/icon-arrow-right.svg"
-                /></span>
             </p-button>
         </div>
     </form>

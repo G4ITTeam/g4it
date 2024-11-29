@@ -81,7 +81,6 @@ public class OrganizationService {
     @Autowired
     private FileSystem fileSystem;
 
-
     /**
      * Retrieve the active Organization Entity.
      *
@@ -130,7 +129,12 @@ public class OrganizationService {
                 });
 
         // Create organization
-        final Organization organizationToCreate = organizationMapper.toEntity(organizationUpsertRest.getName(), subscriberService.getSubscriptionById(subscriberId), User.builder().id(user.getId()).build(), OrganizationStatus.ACTIVE.name());
+        final Organization organizationToCreate = organizationMapper.toEntity(
+                organizationUpsertRest.getName(),
+                subscriberService.getSubscriptionById(subscriberId),
+                User.builder().id(user.getId()).build(),
+                OrganizationStatus.ACTIVE.name()
+        );
         organizationToCreate.setIsMigrated(true);
         organizationRepository.save(organizationToCreate);
 
@@ -214,7 +218,7 @@ public class OrganizationService {
             // Handle update in organization's name
             // Check if organization with same name already exist on this subscriber.
             organizationRepository.findBySubscriberIdAndName(organizationUpsertRest.getSubscriberId(), newOrganization)
-                    .ifPresent((org) -> {
+                    .ifPresent(org -> {
                         throw new G4itRestException("409", String.format("organization '%s' already exists in subscriber '%s'", newOrganization, organizationUpsertRest.getSubscriberId()));
                     });
 

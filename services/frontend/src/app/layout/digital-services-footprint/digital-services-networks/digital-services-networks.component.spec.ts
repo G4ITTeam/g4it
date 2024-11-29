@@ -32,6 +32,7 @@ describe("DigitalServicesNetworksComponent", () => {
         digitalService$: of({
             name: "Test Digital Service",
             uid: "test-uid",
+            isNewArch: false,
             creationDate: Date.now(),
             lastUpdateDate: Date.now(),
             lastCalculationDate: null,

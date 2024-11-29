@@ -11,12 +11,14 @@ variables:
   DISABLE_AUTO_TAG: "true"
   DISABLE_PROMOTE_IMAGE: "true"
   DISABLE_DEPENDENCY_CHECK: "true"
+  ENABLE_SBOM_IMAGE_OFFLINE_MODE: "true"
+  DISABLE_LICENSE_FINDER: "true"
 
 build-application:
   image: ${CI_REGISTRY}/dep/library/project-oci-images/build-java-jdk21-maven:3.9.5
   script: |
     cd "${PROJECT_ROOT_DIR}"
-    sed -i "s|version: .*|version: \"${CI_COMMIT_REF_NAME}\"|" src/main/resources/application.yml
+    sed -i "s|^version: .*|version: \"${CI_COMMIT_REF_NAME}\"|" src/main/resources/application.yml
     mvn clean
     mvn package -Dmaven.test.skip -s settings.xml -q
   artifacts:

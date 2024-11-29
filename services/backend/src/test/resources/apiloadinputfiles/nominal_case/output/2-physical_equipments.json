@@ -1,0 +1,38 @@
+[
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "cpuCoreNumber": 4.0,
+    "datePurchase": "2020-07-08",
+    "electricityConsumption": 1.2,
+    "filters": [
+      "In use"
+    ],
+    "id": 1,
+    "location": "France",
+    "model": "Physical Server unknown",
+    "name": "physical-eq-1",
+    "quantity": 1.0,
+    "type": "Server"
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "cpuCoreNumber": 8.0,
+    "datacenterName": "default",
+    "datePurchase": "2020-07-08",
+    "dateWithdrawal": "2023-01-01",
+    "electricityConsumption": 1.2,
+    "filters": [
+      "In use"
+    ],
+    "id": 2,
+    "location": "France",
+    "model": "Physical Server unknown",
+    "name": "physical-eq-2",
+    "quantity": 2.0,
+    "type": "Server"
+  }
+]

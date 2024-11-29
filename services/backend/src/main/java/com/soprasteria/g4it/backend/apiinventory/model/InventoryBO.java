@@ -8,6 +8,7 @@
 package com.soprasteria.g4it.backend.apiinventory.model;
 
 import com.soprasteria.g4it.backend.common.model.NoteBO;
+import com.soprasteria.g4it.backend.common.task.model.TaskBO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,9 +49,13 @@ public class InventoryBO {
 
     private List<String> criteria;
 
+    private Boolean isNewArch;
+
     private List<InventoryIntegrationReportBO> integrationReports;
 
     private List<InventoryEvaluationReportBO> evaluationReports;
+
+    private List<TaskBO> tasks;
 
     private NoteBO note;
 

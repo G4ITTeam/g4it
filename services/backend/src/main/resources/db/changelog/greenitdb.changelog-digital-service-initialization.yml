@@ -603,3 +603,16 @@ databaseChangeLog:
               - column:
                   name: criteria
                   type: varchar(255) array
+
+  - changeSet:
+      id: add-column-is_new_arch-digital_service
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: digital_service
+            columns:
+              - column:
+                  name: is_new_arch
+                  type: boolean
+                  defaultValue: false
+        - sql: update digital_service set is_new_arch = false where is_new_arch is null;

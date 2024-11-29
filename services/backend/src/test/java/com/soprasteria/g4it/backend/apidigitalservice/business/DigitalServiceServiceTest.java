@@ -19,6 +19,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceL
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
@@ -32,6 +33,7 @@ import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
+import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
@@ -78,6 +80,8 @@ class DigitalServiceServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private TaskService taskService;
+    @Mock
     private SubscriberRepository subscriberRepository;
     @Mock
     private DigitalServiceLinkRepository digitalServiceLinkRepository;
@@ -95,6 +99,8 @@ class DigitalServiceServiceTest {
     private FileMapperInfo fileInfo;
     @Mock
     private NumEcoEvalRemotingService numEcoEvalRemotingService;
+    @Mock
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @InjectMocks
     private DigitalServiceService digitalServiceService;
 
@@ -189,11 +195,13 @@ class DigitalServiceServiceTest {
 
         doNothing().when(digitalServiceRepository).deleteById(DIGITAL_SERVICE_UID);
         doNothing().when(indicatorService).deleteIndicators(DIGITAL_SERVICE_UID);
+        doNothing().when(inVirtualEquipmentRepository).deleteByDigitalServiceUid(DIGITAL_SERVICE_UID);
 
         digitalServiceService.deleteDigitalService(DIGITAL_SERVICE_UID);
 
         verify(digitalServiceRepository, times(1)).deleteById(DIGITAL_SERVICE_UID);
         verify(indicatorService, times(1)).deleteIndicators(DIGITAL_SERVICE_UID);
+        verify(inVirtualEquipmentRepository, times(1)).deleteByDigitalServiceUid(DIGITAL_SERVICE_UID);
     }
 
     @Test
@@ -328,6 +336,8 @@ class DigitalServiceServiceTest {
         final String organizationName = "test";
 
         doNothing().when(indicatorService).deleteIndicators(DIGITAL_SERVICE_UID);
+        when(taskService.getTask(DIGITAL_SERVICE_UID))
+                .thenReturn(Optional.empty());
         User user = User.builder().id(1L).firstName("first").lastName("last").build();
         final DigitalService digitalService = DigitalService.builder().uid(DIGITAL_SERVICE_UID).user(user).build();
         when(digitalServiceRepository.findById(DIGITAL_SERVICE_UID)).thenReturn(Optional.of(digitalService));

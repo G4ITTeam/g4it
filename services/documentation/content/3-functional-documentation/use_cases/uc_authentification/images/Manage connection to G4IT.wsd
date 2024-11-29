@@ -1,0 +1,61 @@
+@startuml Connection to g4it
+<style>
+activityDiagram {
+  BorderColor #33668E
+  FontName arial
+
+  diamond {
+    BackgroundColor #ccf
+    LineColor #00FF00
+    FontColor green
+    FontName arial
+    FontSize 15
+  }
+  arrow {
+    FontColor gold
+    FontName arial
+    FontSize 15
+  }
+  partition {
+    LineColor red
+    FontColor green
+    RoundCorner 10
+    BackgroundColor PeachPuff
+  }
+  note {
+    FontColor Blue
+    LineColor Navy
+    BackgroundColor #ccf
+  }
+}
+document {
+   BackgroundColor white
+}
+</style>
+start
+:Connection to G4IT;
+:Check user's token;
+if (sub exists in g4it_user ?) then (yes)
+    :Update associated line in g4it_user (email adress, first_name, last_name if empty or different);
+    stop
+else (no)
+    if (email adress already exists in g4it_user) then (yes)
+        :Update associated line in g4it_user (sub, first_name, last_name if empty or different); 
+    else (no)
+        :Check user's organization in token;
+        if (Organization exists in g4it_subscriber ?) then (yes)
+            if (g4it_organization 'DEMO' related to this g4it_subscriber exists ?) then (no)
+                :Create g4it_organization 'DEMO' and link it to the subscriber;
+            else (yes)
+            endif
+            :Add user in g4it_user;
+            :Give access to the organization {g4it_subscriber}/DEMO with the following role : \nINVENTORY_READ, \nDIGITAL_SERVICE_READ, \nDIGITAL_SERVICE_WRITE;
+        else (no)
+            :Add user in g4it_user with no rights;
+            stop
+        endif
+        stop
+    endif
+endif
+stop
+@enduml

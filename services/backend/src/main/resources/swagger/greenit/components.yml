@@ -2,7 +2,7 @@ openapi: "3.0.3"
 info:
   title: Swagger GreenIT - Open API 3.0 - Components
   description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
-  version: '1.0.0'
+  version: "1.0.0"
 
 components:
   # Define Common Parameters.
@@ -89,7 +89,14 @@ components:
         type: integer
         format: int64
       required: false
-      description: The  subscriber id.
+      description: The subscriber id.
+    subscriberQueryParam:
+      in: query
+      name: subscriber
+      schema:
+        type: string
+      required: false
+      description: The subscriber.
     reqSubscriberIdQueryParam:
       in: query
       name: subscriberId
@@ -121,19 +128,32 @@ components:
         type: string
       required: true
       description: The file name.
-
+    cloudProviderQueryParam:
+      in: query
+      name: provider
+      schema:
+        type: string
+      required: true
+      description: The cloud provider name.
+    idPathParam:
+      in: path
+      name: id
+      schema:
+        type: integer
+        format: int64
+      required: true
 
   responses:
     InternalServerError:
       description: Internal Service error
       content:
-        'application/json':
+        "application/json":
           schema:
             $ref: "#/components/schemas/RestError"
     BadRequestError:
       description: Bad Request error
       content:
-        'application/json':
+        "application/json":
           schema:
             type: array
             items:
@@ -151,6 +171,8 @@ components:
         numEcoEval:
           type: string
         g4it:
+          type: string
+        boaviztapi:
           type: string
     UserRest:
       description: User information
@@ -262,6 +284,10 @@ components:
           type: array
           items:
             type: string
+        authorizedDomains:
+          type: array
+          items:
+            type: string
         organizations:
           type: array
           items:
@@ -286,7 +312,7 @@ components:
           $ref: "#/components/schemas/OrganizationStatus"
         deletionDate:
           type: string
-          format: 'date-time'
+          format: "date-time"
         criteriaIs:
           type: array
           items:
@@ -337,6 +363,8 @@ components:
           type: array
           items:
             type: string
+        isNewArch:
+          type: boolean
         integrationReports:
           type: array
           items:
@@ -345,6 +373,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/EvaluationReportRest"
+        tasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRest"
         note:
           $ref: "#/components/schemas/NoteRest"
         exportReport:
@@ -480,6 +512,8 @@ components:
         sip:
           type: number
           format: double
+        statusIndicator:
+          type: string
         countValue:
           type: number
 
@@ -519,6 +553,8 @@ components:
         sip:
           type: number
           format: double
+        statusIndicator:
+          type: string
 
     ApplicationVmIndicatorRest:
       type: object
@@ -653,6 +689,8 @@ components:
           type: array
           items:
             type: string
+        isNewArch:
+          type: boolean
         terminals:
           type: array
           items:
@@ -746,6 +784,10 @@ components:
           format: float
         unit:
           type: string
+        status:
+          type: string
+        countValue:
+          type: number
     DigitalServicesTerminalsIndicatorsRest:
       type: object
       additionalProperties:
@@ -759,7 +801,7 @@ components:
         impacts:
           type: array
           items:
-            $ref: '#/components/schemas/DigitalServiceTerminalsImpact'
+            $ref: "#/components/schemas/DigitalServiceTerminalsImpact"
     DigitalServiceTerminalsImpact:
       description: Digital service terminal impact
       type: object
@@ -780,6 +822,10 @@ components:
           type: number
         unit:
           type: string
+        status:
+          type: string
+        countValue:
+          type: number
 
     DigitalServiceNetworksIndicatorRest:
       type: object
@@ -787,15 +833,14 @@ components:
         $ref: "#/components/schemas/DigitalServiceNetworkIndicatorRest"
     DigitalServiceNetworkIndicatorRest:
       description: Digital service networks indicators object
-      type:
-        object
+      type: object
       properties:
         criteria:
           type: string
         impacts:
           type: array
           items:
-            $ref: '#/components/schemas/DigitalServiceNetworkImpactRest'
+            $ref: "#/components/schemas/DigitalServiceNetworkImpactRest"
     DigitalServiceNetworkImpactRest:
       description: Digital service network impact object
       type: object
@@ -808,6 +853,10 @@ components:
           type: number
         unit:
           type: string
+        status:
+          type: string
+        countValue:
+          type: number
 
     DigitalServiceServersIndicatorRest:
       type: object
@@ -821,20 +870,20 @@ components:
         impactsServer:
           type: array
           items:
-            $ref: '#/components/schemas/DigitalServiceServersImpactRest'
+            $ref: "#/components/schemas/DigitalServiceServersImpactRest"
     DigitalServiceServersImpactRest:
       type: object
       properties:
         serverType:
           type: string
-          $ref: '#/components/schemas/ServerHostType'
+          $ref: "#/components/schemas/ServerHostType"
         mutualizationType:
           type: string
-          $ref: '#/components/schemas/ServerType'
+          $ref: "#/components/schemas/ServerType"
         servers:
           type: array
           items:
-            $ref: '#/components/schemas/DigitalServiceServerImpactRest'
+            $ref: "#/components/schemas/DigitalServiceServerImpactRest"
 
     DigitalServiceServerImpactRest:
       type: object
@@ -848,11 +897,11 @@ components:
         impactVmDisk:
           type: array
           items:
-            $ref: '#/components/schemas/ServerIndicatorImpactVmDiskRest'
+            $ref: "#/components/schemas/ServerIndicatorImpactVmDiskRest"
         impactStep:
           type: array
           items:
-            $ref: '#/components/schemas/ServerIndicatorImpactStepRest'
+            $ref: "#/components/schemas/ServerIndicatorImpactStepRest"
 
     ServerIndicatorImpactVmDiskRest:
       type: object
@@ -867,6 +916,11 @@ components:
           type: number
         unit:
           type: string
+        status:
+          type: string
+        countValue:
+          type: number
+
     ServerIndicatorImpactStepRest:
       type: object
       properties:
@@ -878,6 +932,10 @@ components:
           type: number
         unit:
           type: string
+        status:
+          type: string
+        countValue:
+          type: number
 
     ServerDatacenterRest:
       type: object
@@ -932,10 +990,10 @@ components:
           default: Dedicated
         host:
           type: object
-          $ref: '#/components/schemas/ServerHostRefRest'
+          $ref: "#/components/schemas/ServerHostRefRest"
         datacenter:
           type: object
-          $ref: '#/components/schemas/ServerDatacenterRest'
+          $ref: "#/components/schemas/ServerDatacenterRest"
         quantity:
           type: integer
         totalVCpu:
@@ -955,7 +1013,7 @@ components:
         vm:
           type: array
           items:
-            $ref: '#/components/schemas/ServerVirtualMachineRest'
+            $ref: "#/components/schemas/ServerVirtualMachineRest"
     ServerVirtualMachineRest:
       description: Virtual machine linked to Digital Service's Server
       type: object
@@ -1017,14 +1075,14 @@ components:
         characteristic:
           type: array
           items:
-            $ref: '#/components/schemas/ServerHostRefCharacteristic'
+            $ref: "#/components/schemas/ServerHostRefCharacteristic"
     ServerHostRefCharacteristic:
       description: Server host characteristic
       properties:
         code:
           description: characteristic code
           type: string
-          enum: [ lifespan, vCPU, disk, annualElectricityConsumption ]
+          enum: [lifespan, vCPU, disk, annualElectricityConsumption]
           example: vCPU
         value:
           description: characteristic value
@@ -1081,6 +1139,9 @@ components:
           type: string
           $ref: "#/components/schemas/InventoryType"
           default: INFORMATION_SYSTEM
+        isNewArch:
+          type: boolean
+          default: false
 
     InventoryUpdateRest:
       description: Inventory Create information
@@ -1128,11 +1189,11 @@ components:
           type: integer
           format: int64
         day:
-          type: String
+          type: string
         start_time:
-          type: String
+          type: string
         end_time:
-          type: String
+          type: string
 
     SubscribertRest:
       type: object
@@ -1142,7 +1203,7 @@ components:
         impactStep:
           type: array
           items:
-            $ref: '#/components/schemas/OrganizationRest'
+            $ref: "#/components/schemas/OrganizationRest"
 
     OrganizationUpsertRest:
       description: Organization update
@@ -1186,4 +1247,47 @@ components:
           items:
             type: string
 
-
+    DigitalServiceCloudIndicatorRest:
+      description: Digital service terminals indicators object
+      type: object
+      properties:
+        criteria:
+          type: string
+        impacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/DigitalServiceCloudImpact"
+    DigitalServiceCloudImpact:
+      description: Digital service cloud impact
+      type: object
+      properties:
+        country:
+          type: string
+        description:
+          type: string
+        instanceType:
+          type: string
+        cloudProvider:
+          type: string
+        acvStep:
+          type: string
+        rawValue:
+          type: number
+          format: float
+        sipValue:
+          type: number
+          format: float
+        unit:
+          type: string
+        status:
+          type: string
+        countValue:
+          type: number
+        averageWorkLoad:
+          type: number
+          format: float
+        averageUsage :
+          type : number
+          format: float
+        quantity:
+          type: number

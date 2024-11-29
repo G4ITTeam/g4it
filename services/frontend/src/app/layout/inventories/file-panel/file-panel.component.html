@@ -1,21 +1,28 @@
 <div class="px-4">
     <div
+        appAutofocus
         class="side-panel-title"
         *ngIf="purpose === 'new'"
-        tabIndex="0"
+        tabIndex="-1"
         [attr.aria-label]="'new-inventory-choose' | translate"
     >
-        {{ "inventories.add" | translate }}
+        <h2>
+            {{ "inventories.add" | translate }}
+        </h2>
     </div>
-    <div class="side-panel-title" *ngIf="purpose === 'upload'" tabIndex="0">
-        {{ "inventories.load-files-on" | translate }}
-        {{ name }}
+    <div class="side-panel-title" *ngIf="purpose === 'upload'" appAutofocus tabIndex="-1">
+        <h2>
+            {{ "inventories.load-files-on" | translate }}
+            {{ name }}
+        </h2>
     </div>
     <div>
         <form action="" method="post">
             <div
                 class="flex flex-wrap gap-3 bg-white w-7 border-round-xl border-1 cursor-pointer"
                 *ngIf="purpose === 'new'"
+                role="group"
+                [attr.aria-label]="'inventories.type.name' | translate"
             >
                 <div
                     class="flex align-items-center p-3"
@@ -25,6 +32,7 @@
                         "inventories.type.is-version" | translate
                     }}</label>
                     <p-radioButton
+                        #firstInputElement
                         name="inventoryType"
                         value="INFORMATION_SYSTEM"
                         [(ngModel)]="selectedType"
@@ -48,7 +56,7 @@
                     ></p-radioButton>
                 </div>
             </div>
-
+          
             <br />
             <div class="flex flex-row align-items-start ml-1" *ngIf="purpose === 'new'">
                 <p-calendar
@@ -59,7 +67,10 @@
                     [class]="className"
                     [disabledDates]="invalidDates"
                     [showClear]="true"
+                    (onClear)="onClearDate()"
                     *ngIf="selectedType === inventoryType.INFORMATION_SYSTEM"
+                    id="calendar"
+                    [attr.aria-label]="'inventories.calendar' | translate"
                 ></p-calendar>
                 <div [formGroup]="inventoriesForm">
                     <input
@@ -90,16 +101,35 @@
                     {{ "common.mandatory" | translate }}
                 </p>
             </div>
+            <p
+                class="error-text"
+                *ngIf="!name && selectedType === inventoryType.INFORMATION_SYSTEM"
+            >
+                {{ "inventories.date" | translate }}
+                {{ "common.mandatory" | translate }}
+            </p>
 
-            <div class="input-loading-files">
+            @if (showBetaFeatures === 'true') {
+                <div class="flex flex-row align-items-start ml-1 mt-3" >
+                    <p-checkbox 
+                    [(ngModel)]="isNewArch"
+                    label="Use new APIs" 
+                    [binary]="true"
+                    name="isNewArch" 
+                    [disabled]="purpose==='upload'"
+                     />
+                </div>
+            }
+
+            <div class="input-loading-files overflow-auto max-h-21rem mt-4">
                 <ng-container #uploaderContainer> </ng-container>
             </div>
             <p-button
                 (click)="addComponent()"
                 label="+ {{ 'common.add' | translate }}"
-                styleClass="round-button-add p-0"
+                styleClass="px-4 py-2 bg-secondary text-xs text-gray-900 border-round-3xl font-semibold"
             />
-            <hr class="mb-2" />
+            <hr class="mb-1" />
             <div>
                 <div id="openTitle" class="text-xl">
                     {{ "inventories.templates.starter-pack" | translate }}
@@ -124,6 +154,11 @@
                                 <img
                                     src="assets/images/icons/icon-download.svg"
                                     height="24px"
+                                    [alt]="'inventories.download-alt' | translate"
+                                    ariaLabel="{{
+                                        'inventories-footprint.header.download'
+                                            | translate
+                                    }} {{ data.displayFileName }}"
                                 />
                             </button>
                         </li>
@@ -140,9 +175,7 @@
                     (click)="submitFormData()"
                     [disabled]="purpose === 'new' && (name === '' || checkForDuplicate())"
                 >
-                    <span *ngIf="purpose === 'new'">{{
-                        "common.create" | translate
-                    }}</span>
+                    <span *ngIf="purpose === 'new'">{{ "common.add" | translate }}</span>
                     <span *ngIf="purpose === 'upload'">{{
                         "common.upload" | translate
                     }}</span>

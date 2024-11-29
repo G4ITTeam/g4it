@@ -50,4 +50,15 @@ export class AbstractDashboard {
             );
         }
     }
+
+    getSelectedCriteriaData(
+        barChartData: any,
+        key: string,
+        selectedCriteria: string,
+    ): any[] {
+        const selectedData = barChartData?.find(
+            (impact: any) => impact.criteria === selectedCriteria,
+        );
+        return selectedData ? selectedData[key] : [];
+    }
 }

@@ -1,5 +1,5 @@
 <div>
-    <div style="padding-top: 25px">
+    <div class="pt-4">
         <p-dropdown
             appendTo="body"
             optionLabel="name"
@@ -13,21 +13,17 @@
         </p-dropdown>
 
         @if (subscriber) {
-            <div class="inline-block vertical-align-middle">
+            <div class="inline-block vertical-align-middle mx-2">
                 @if (!editable) {
                     <p-button
-                        styleClass="p-button-text"
-                        [attr.aria-label]="
-                            'administration.accessibility.on-edit' | translate
-                        "
-                        class="mx-1"
+                        styleClass="mx-1"
+                        [ariaLabel]="'administration.accessibility.on-edit' | translate"
                         (onClick)="editable = true"
-                    >
-                        <img
-                            src="assets/images/icons/icon-edit.svg"
-                            alt="{{ 'common.edit' | translate }}"
-                        />
-                    </p-button>
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        icon="pi pi-pencil"
+                    />
                 }
                 @if (editable) {
                     <p-button
@@ -35,38 +31,38 @@
                         (onClick)="
                             saveOrganizations(subscriber.organizations); editable = false
                         "
-                        class="mx-1"
-                    >
-                        <img
-                            src="assets/images/icons/icon-validate.svg"
-                            alt="{{ 'common.edit' | translate }}"
-                        />
-                    </p-button>
+                        styleClass="mx-1"
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        [ariaLabel]="'common.save' | translate"
+                        icon="pi pi-check"
+                    />
                     <p-button
                         styleClass="p-button-text"
                         (onClick)="editable = false"
-                        class="mx-1"
-                    >
-                        <img
-                            src="assets/images/icons/icon-close.svg"
-                            alt="{{ 'common.edit' | translate }}"
-                        />
-                    </p-button>
+                        styleClass="mx-1"
+                        icon="pi pi-times"
+                        [text]="true"
+                        [plain]="true"
+                        [rounded]="true"
+                        [ariaLabel]="'common.cancel' | translate"
+                    />
                 }
                 <p-button
-                    styleClass="p-button-text"
-                    [attr.aria-label]="
+                    [ariaLabel]="
                         'administration.accessibility.select-criteria' | translate
                     "
-                    class="mx-1"
                     styleClass="ml-1 mr-2"
                     (onClick)="displayPopupFct()"
                     icon="pi pi-cog"
                     [text]="true"
                     [plain]="true"
                     [rounded]="true"
-                    size="large"
-                    ariaLabel="choose criteria popup"
+                    [ariaLabel]="
+                        'administration.user.choose-criteria'
+                            | translate: { subscriber: subscriber.name }
+                    "
                 >
                 </p-button>
             </div>
@@ -100,10 +96,10 @@
             />
             <p-button
                 class="mx-2"
-                styleClass="grey-button-sidebar"
+                styleClass="black-button-sidebar"
                 (click)="addOrganization(newOrganization)"
                 [disabled]="newOrganization.uiStatus !== 'OK'"
-                [attr.aria-label]="
+                [ariaLabel]="
                     'administration.organization.accessibility.addAnOrganization'
                         | translate
                 "
@@ -139,7 +135,7 @@
             />
             <p-button
                 styleClass="p-button-text"
-                [attr.aria-label]="'administration.accessibility.on-deletion' | translate"
+                [ariaLabel]="'administration.accessibility.on-deletion' | translate"
                 class="mx-1"
                 *ngIf="editable && organization.status === status.ACTIVE"
                 (click)="confirmDelete($event, organization)"
@@ -150,6 +146,10 @@
                 />
             </p-button>
             <p-button
+                [ariaLabel]="
+                    'administration.cancel-deletion-accessibility'
+                        | translate: { organizationName: organization.name }
+                "
                 class="mx-2"
                 styleClass="black-button-sidebar"
                 *ngIf="organization.status === status.TO_BE_DELETED"

@@ -1,0 +1,3 @@
+nomEquipementPhysique;modele;quantite;nomCourtDatacenter;dateAchat;dateRetrait;type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite;nbCoeur
+physical-eq-1;Physical Server unknown;1;;2020-07-08;;Server;In use;France;1.2;;;Entity 1;4
+physical-eq-2;Physical Server unknown;2;default;20200708;01/01/2023;Server;In use;France;1.2;;;Entity 1;8

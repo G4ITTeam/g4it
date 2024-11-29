@@ -6,6 +6,7 @@
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
 
+import { DropdownValue } from "./generic.interfaces";
 import { Note } from "./note.interface";
 
 export interface DigitalService {
@@ -20,6 +21,7 @@ export interface DigitalService {
     note?: Note;
     userId?: number;
     criteria?: string[];
+    isNewArch: boolean;
     creator?: DigitalServiceUserInfo;
     members: DigitalServiceUserInfo[];
 }
@@ -46,6 +48,20 @@ export interface DigitalServiceServerConfig {
     annualElectricConsumption?: number;
     annualOperatingTime?: number;
     vm?: ServerVM[];
+}
+
+export interface DigitalServiceCloudServiceConfig {
+    id: number;
+    digitalServiceUid: string;
+    creationDate?: number;
+    name: string;
+    cloudProvider: string;
+    instanceType: string;
+    quantity: number;
+    location: DropdownValue;
+    annualUsage: number;
+    averageWorkload: number;
+    idFront?: number;
 }
 
 export interface DigitalServiceNetworkConfig {
@@ -77,6 +93,8 @@ export interface DigitalServiceFootprintImpact {
     sipValue: number;
     unitValue: number;
     unit: string;
+    status: string;
+    countValue: number;
 }
 
 export interface TerminalsType {
@@ -95,6 +113,11 @@ export interface DigitalServiceTerminalResponse {
     impacts: TerminalImpact[];
 }
 
+export interface DigitalServiceCloudResponse {
+    criteria: string;
+    impacts: CloudImpact[];
+}
+
 export interface TerminalImpact {
     acvStep: string;
     country: string;
@@ -104,12 +127,35 @@ export interface TerminalImpact {
     sipValue: number;
     unit: string;
     yearlyUsageTimePerUser: number;
+    status: string;
+}
+
+export interface CloudImpact {
+    acvStep: string;
+    country: string;
+    description: string;
+    rawValue: number;
+    sipValue: number;
+    unit: string;
+    status: string;
+    quantity: number;
+    countValue: number;
+    instanceType: string;
+    cloudProvider: string;
+    averageWorkLoad: number;
+    averageUsage: number;
 }
 
 export interface DigitalServiceTerminalsImpact {
     criteria: string;
     impactCountry: TerminalsImpact[];
     impactType: TerminalsImpact[];
+}
+
+export interface DigitalServiceCloudImpact {
+    criteria: string;
+    impactLocation: CloudsImpact[];
+    impactInstance: CloudsImpact[];
 }
 
 export interface TerminalsImpact {
@@ -122,6 +168,17 @@ export interface TerminalsImpact {
     impact: ImpactTerminalsACVStep[];
 }
 
+export interface CloudsImpact {
+    rawValue?: any;
+    unit?: any;
+    name: string;
+    totalSipValue: number;
+    totalQuantity: number;
+    totalAvgUsage: number;
+    totalAvgWorkLoad: number;
+    impact: ImpactCloudsACVStep[];
+}
+
 export interface DigitalServiceNetworksImpact {
     criteria: string;
     impacts: ImpactNetworkSipValue[];
@@ -131,6 +188,7 @@ export interface DigitalServiceServersImpact {
     criteria: string;
     impactsServer: ServersType[];
 }
+
 export interface ServersType {
     serverType: string;
     mutualizationType: string;
@@ -150,11 +208,32 @@ export interface ImpactACVStep {
     unit?: string;
     acvStep: string;
     sipValue: number;
+    status?: string;
+    countValue: number;
 }
 
 export interface ImpactTerminalsACVStep {
     ACVStep: string;
     sipValue: number;
+    status?: string;
+    statusCount?: {
+        ok: number;
+        error: number;
+        total: number;
+    };
+}
+
+export interface ImpactCloudsACVStep {
+    acvStep: string;
+    sipValue: number;
+    rawValue: number;
+    unit: string;
+    status?: string;
+    statusCount?: {
+        ok: number;
+        error: number;
+        total: number;
+    };
 }
 
 export interface ImpactNetworkSipValue {
@@ -162,6 +241,8 @@ export interface ImpactNetworkSipValue {
     networkType: string;
     sipValue: number;
     rawValue: number;
+    status: string;
+    countValue: number;
 }
 
 export interface ImpactSipValue {
@@ -170,6 +251,8 @@ export interface ImpactSipValue {
     name: string;
     sipValue: number;
     quantity: number;
+    status?: string;
+    countValue: number;
 }
 export interface ServerVM {
     uid: string;
@@ -212,4 +295,16 @@ export interface DSCriteriaRest {
     servers: DigitalServiceServerConfig[];
     networks: DigitalServiceNetworkConfig[];
     note?: Note;
+}
+
+export interface StatusCountMap {
+    [key: string]: {
+        status: StatusCount;
+    };
+}
+
+export interface StatusCount {
+    ok: number;
+    error: number;
+    total: number;
 }

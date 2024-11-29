@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
     DigitalService,
     DigitalServiceTerminalConfig,
@@ -15,7 +15,6 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { UserService } from "src/app/core/service/business/user.service";
-import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 
 @Component({
     selector: "app-digital-services-terminals",
@@ -23,23 +22,10 @@ import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-t
     providers: [MessageService],
 })
 export class DigitalServicesTerminalsComponent implements OnInit {
-    @ViewChild("childSidePanel", { static: false })
-    childSidePanel!: DigitalServicesTerminalsSidePanelComponent;
-
     sidebarVisible: boolean = false;
     sidebarPurpose: string = "";
     terminal: DigitalServiceTerminalConfig = {} as DigitalServiceTerminalConfig;
-    digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-        members: [],
-    };
+    digitalService: DigitalService = {} as DigitalService;
 
     constructor(
         private digitalServicesData: DigitalServicesDataService,
@@ -47,21 +33,18 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.resetTerminal();
         this.digitalServicesData.digitalService$.subscribe((res) => {
             this.digitalService = res;
         });
     }
 
-    resetTerminal() {
-        if (this.childSidePanel) {
-            this.childSidePanel.resetTerminal();
-        }
-    }
-
     setTerminal(terminal: DigitalServiceTerminalConfig, index: number) {
         this.terminal = { ...terminal };
         this.terminal.idFront = index;
+    }
+
+    resetTerminal() {
+        this.terminal = {} as DigitalServiceTerminalConfig;
     }
 
     async updateTerminals(terminal: DigitalServiceTerminalConfig) {

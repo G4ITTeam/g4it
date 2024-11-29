@@ -1,0 +1,15 @@
+project: g4it-documentation # name of the project (string)
+default_profile: dev # specify the default profile to load (string)
+workspaces: # a list of workspaces
+  # -------------------------------------------------------
+  # Windows + Chocolatey Profile
+  # The first profile is a profile working with windows and chocolatey
+  # -------------------------------------------------------
+  - profile: dev
+    platform:
+      name: windows
+      pkg_manager: chocolatey
+    requires:
+      - hugo
+    start:
+      - hugo server

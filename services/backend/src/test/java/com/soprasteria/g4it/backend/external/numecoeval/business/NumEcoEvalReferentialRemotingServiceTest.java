@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.MixElectriqueDTO;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.TypeEquipementDTO;
 import com.soprasteria.g4it.backend.external.numecoeval.client.ReferentialClient;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,14 +19,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,12 +36,8 @@ class NumEcoEvalReferentialRemotingServiceTest {
 
     @Mock
     ReferentialClient referentialClient;
-    private static final String testFolderRef = "external/numecoeval/referential";
 
-    @BeforeEach
-    void init() {
-        ReflectionTestUtils.setField(numEcoEvalReferentialRemotingService, "criterias", Set.of("C1", "C2", "C3", "C4", "C5"));
-    }
+    private static final String TESTFOLDERREF = "external/numecoeval/referential";
 
     @Test
     void shouldGetCountry() {
@@ -74,27 +68,16 @@ class NumEcoEvalReferentialRemotingServiceTest {
     @Test
     void shouldGetQuartileIndex() throws IOException {
 
-        final File mixElecCsvFile = new ClassPathResource(testFolderRef + "/mixElec.json").getFile();
+        final File mixElecCsvFile = new ClassPathResource(TESTFOLDERREF + "/mixElec.json").getFile();
         List<MixElectriqueDTO> mockMixElec = Arrays.asList(new ObjectMapper().readValue(Files.readString(mixElecCsvFile.toPath()), MixElectriqueDTO[].class));
 
         Mockito.when(referentialClient.getMixElec()).thenReturn(mockMixElec);
 
-        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("C1", "Albania")).isEqualTo(1);
-        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("C2", "Angola")).isEqualTo(2);
-        assertThat(numEcoEvalReferentialRemotingService.getMixElecQuartileIndex("C4", "Armenia")).isEqualTo(4);
+        assertThat(numEcoEvalReferentialRemotingService.getElectricityMixQuartiles()).containsEntry(Pair.of("Albania", "C1"), 1);
+        assertThat(numEcoEvalReferentialRemotingService.getElectricityMixQuartiles()).containsEntry(Pair.of("Angola", "C2"), 2);
+        assertThat(numEcoEvalReferentialRemotingService.getElectricityMixQuartiles()).containsEntry(Pair.of("Armenia", "C4"), 4);
     }
 
-    @Test
-    void shouldGetQuartileIndexForInventory() throws IOException {
-
-        final File mixElecCsvFile = new ClassPathResource(testFolderRef + "/mixElec.json").getFile();
-        List<MixElectriqueDTO> mockMixElec = Arrays.asList(new ObjectMapper().readValue(Files.readString(mixElecCsvFile.toPath()), MixElectriqueDTO[].class));
-
-        Mockito.when(referentialClient.getMixElec()).thenReturn(mockMixElec);
-
-        assertThat(numEcoEvalReferentialRemotingService.isLowImpact("France")).isTrue();
-        assertThat(numEcoEvalReferentialRemotingService.isLowImpact("Germany")).isFalse();
-    }
 
     @Test
     void shouldGetEquipmentType() {

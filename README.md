@@ -24,71 +24,16 @@ G4IT is a platform that facilitates the assessment, definition and management of
 G4IT is licensed. See [license file](LICENSE.txt) in the same directory.
 
 
-## Building
-
-
-### Overview
+## Overview
 
 **G4IT** is the service developed by **Sopra Steria** based on the **NumEcoEval calculation engine**.
 
 More information on this subject can be found in the documentation, but in this page, it will only be about its
 deployment on a developer station.
 
-### Retrieving source code
+## Getting started
 
-Proposed path : **C:\G4IT\\_repo**
-
-```shell
-# open git bash
-mkdir -p /c/G4IT/_repo
-cd /c/G4IT/_repo
-# G4IT code
-git clone https://github.com/G4ITTeam/g4it.git
-
-# NumEcoEval code
-git clone https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval.git
-```
-
-### Kafka, Postgresql, Keycloak containers
-
-- NumEcoEval needs kafka and postgresql to work.
-- G4IT needs postgresql and keycloak to work.
-
-To run these 3 containers, open a command prompt:
-```shell
-# open git bash or any prompt
-cd /c/G4IT/_repo/g4it/workspace/numecoeval
-podman-compose up -d
-podman-compose ps
-# It should start the 3 containers
-# You should see the containers in Podman Desktop > Containers
-```
-
-### First time starting Keycloak
-
-Keycloak may stop the first time starting it.
-It requires a "keycloak" database instance already created in the database.
-
-### IntelliJ Workspace 
-
-Launch IntelliJ Idea, and open the folder **C:\G4IT\\_repo\g4it\\workspace**
-
-The workspace comes with :
-
-- Launch Configurations:
-  - All (G4IT + NumEcoEval)
-  - individual launch
-
-- Folders: backend, NumEcoEval components
-
-## Further information 
-
-Feel free to read README.md files in backend and frontend folders.
-
-[Backend README](services/backend/README.md)
-
-[Frontend README](services/frontend/README.md)
-
+See the official documentation https://saas-g4it.com/documentation/
 
 ## Contact 
 

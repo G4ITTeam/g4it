@@ -12,7 +12,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.Terminal;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ObjectUtilsTest {
+class ObjectUtilsTest {
 
     @Test
     void getCsvStringShouldReturnValue() {
@@ -21,8 +21,8 @@ public class ObjectUtilsTest {
                 .build();
 
         Assertions.assertThat(ObjectUtils.getCsvString("country", terminal, Terminal.class)).isEqualTo("France");
-        Assertions.assertThat(ObjectUtils.getCsvString("lifespan", terminal, Terminal.class)).isEqualTo("");
-        Assertions.assertThat(ObjectUtils.getCsvString("lifespan", terminal, Terminal.class, null)).isEqualTo(null);
+        Assertions.assertThat(ObjectUtils.getCsvString("lifespan", terminal, Terminal.class)).isEmpty();
+        Assertions.assertThat(ObjectUtils.getCsvString("lifespan", terminal, Terminal.class, null)).isNull();
         Assertions.assertThat(ObjectUtils.getCsvString("unknown", terminal, Terminal.class)).isEqualTo("! Cannot read value by calling isUnknown !");
     }
 }

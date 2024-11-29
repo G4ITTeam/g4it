@@ -8,12 +8,19 @@ server:
     min-response-size: 2048
     mime-types: application/json
 
+cors.allowed.origins: "http://localhost:4200"
+
 # NumEcoEval configs
 num-eco-eval:
   base-url: http://localhost:18081
   import-max-memory: 128
 num-eco-eval-referential:
   base-url: http://localhost:18080
+
+#Boaviztapi configs
+boaviztapi:
+  version: 1.3
+  base-url: http://localhost:5000
 
 g4it:
   criteria: "Climate change, Particulate matter and respiratory inorganics, Ionising radiation, Acidification, Resource use (minerals and metals)"
@@ -43,6 +50,11 @@ g4it:
     deletion:
       oninit: "false"
       cron: "0 0 */12 * * *"
+  local:
+    retention:
+      ttl: PT10M
+  referential:
+    migration: true
 
 filesystem.local.path: ".\\storage"
 
@@ -50,17 +62,12 @@ local.working.folder:  ".\\storagetmp"
 
 spring:
   profiles:
-    active: dev, local
+    active: dev, local, nosecurity
   main:
     allow-bean-definition-overriding: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8180/auth/realms/g4it
   datasource:
     generate-unique-name: true
-    url: "jdbc:postgresql://localhost:5432/postgres"
+    url: "jdbc:postgresql://localhost:5432/postgres?reWriteBatchedInserts=true"
     username: postgres
     # kics-scan ignore-line
     password: postgres
@@ -74,11 +81,17 @@ spring:
     show-sql: false
     properties:
       hibernate:
+        order_inserts: true
         jdbc:
+          batch_size: 100
           time_zone: UTC
   liquibase:
     change-log: classpath:/db/changelog/greenitdb.changelog-master.yml
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/auth/realms/g4it
   batch:
     job:
       enabled: false

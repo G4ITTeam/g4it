@@ -1,0 +1,2 @@
+nomEquipementPhysique;modele;quantite;nomCourtDatacenter;dateAchat;dateRetrait;type;statut;paysDUtilisation;consoElecAnnuelle;utilisateur;nomSourceDonnee;nomEntite;nbCoeur;inputFileName;lineNumber;message
+physical-eq-2;;2;default;2099-01-01;2000-01-01;Server;In use;France;1.2;;;Entity 1;8;nominal.csv;3;The purchase date is more recent than the retrieval date.

@@ -40,6 +40,14 @@ export abstract class Constants {
         "#3e5f79",
         "#7791c4",
     ];
+    static readonly CLOUD_SERVICE = "CloudService";
+    static readonly TERMINAL = "Terminal";
+    static readonly DIGITAL_SERVICES_CHART_ORDER = [
+        this.TERMINAL,
+        "Network",
+        "Server",
+        this.CLOUD_SERVICE,
+    ];
     static readonly GREEN_COLOR_SET = ["#FFF6B0", "#ADDC6F", "#2FA255", "#006734"];
     static readonly PURPLE_COLOR_SET = [
         "#E8CBFF",
@@ -52,10 +60,14 @@ export abstract class Constants {
     static readonly YELLOW_COLOR = "#FFBD00";
     static readonly BLUE_COLOR = "#00B2FF";
     static readonly UNSPECIFIED = "(Unspecified)";
+    static readonly GRAPH_RED = "#86251e";
+    static readonly GRAPH_GREY = "#6e7079";
+    static readonly GRAPH_BLUE = "#00baff";
 
     static readonly ENDPOINTS = {
         inventories: "inventories",
         digitalServices: "digital-services",
+        referential: "referential",
         users: "users",
         subscribers: "administrator/subscribers",
         organizations: "administrator/organizations",
@@ -98,6 +110,7 @@ export abstract class Constants {
         "CALCUL_SUBMISSION_TO_NUMECOVAL",
         "CALCUL_IN_PROGRESS",
         "AGGREGATION_IN_PROGRESS",
+        "IN_PROGRESS",
     ];
 
     static readonly EVALUATION_BATCH_STATUS_MAPPING = {
@@ -189,4 +202,25 @@ export abstract class Constants {
     static readonly EMPTY: string = "!Empty"; // ! character is used for sorting Empty on top
 
     static readonly MUTLI_CRITERIA: string = "multi-criteria";
+
+    static readonly CHART_RICH = {
+        redBold: {
+            color: Constants.GRAPH_RED,
+            fontWeight: 600,
+            fontSize: 15,
+        },
+        red: {
+            color: Constants.GRAPH_RED,
+        },
+        grey: {
+            color: Constants.GRAPH_GREY,
+        },
+    };
+
+    static readonly DATA_QUALITY_STATUS = {
+        ok: "OK",
+        error: "ERREUR",
+    };
+
+    static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 10;
 }

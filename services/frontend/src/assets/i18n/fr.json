@@ -57,6 +57,7 @@
         "refresh": "Actualiser",
         "all": "Tout sélectionner",
         "empty": "Non renseigné",
+        "organization": "Organisation",
         "organization-management": "Gestion des organisations",
         "list-of": "Liste de ",
         "organizations": "organisations ",
@@ -92,7 +93,17 @@
         "fileNoLongerAvailable": "La fichier n'est plus disponible",
         "other": "Autres",
         "otherLegend": "Autres (inférieur à 1%)",
-        "mailTo": "support.g4it@soprasteria.com"
+        "mailTo": "support.g4it@soprasteria.com",
+        "active-page": "Page active",
+        "running": "En cours",
+        "pending": "En attente",
+        "completed": "Terminé",
+        "completed-with-errors": "Terminé avec erreurs",
+        "failed": "Echoué",
+        "failed-headers": "En-têtes en erreur"
+    },
+    "errors": {
+        "error-occurred": "Une erreur est survenue"
     },
     "digital-services": {
         "headerForCreatedByMe": "CRÉÉ{{plural}} PAR MOI ({{count}})",
@@ -101,13 +112,15 @@
         "not-found": "Le service numérique n'existe pas.",
         "expired": "Le lien de service numérique a expiré.",
         "linkCopied": "LIEN COPIÉ !",
-        "title": "Mes Services Numériques",
+        "title": "Mes Services Numériques - {{OrganizationName}}",
+        "page-title": "Mes Services Numériques",
         "add": "Evaluer Un Nouveau Service",
         "empty-digital-services": "Vous n'avez pas de service numérique.",
         "impacts": "IMPACTS",
         "raw": "Unité",
         "Terminal": "Terminaux",
-        "Server": "Serveurs",
+        "Server": "Serveurs hors Cloud",
+        "CloudService": "Services Cloud",
         "Network": "Réseaux",
         "visualize": "Visualiser",
         "lifecycle": "Cycle de vie",
@@ -122,7 +135,9 @@
             "delete-question-shared": "En supprimant le lien vers ce service numérique, vous n'y aurez plus accès. Êtes-vous sûr ?"
         },
         "return": "Retourner à la liste de mes services numériques",
-        "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}"
+        "choose-criteria": "Choisir les critères pour le service numérique {{digitalServiceName}}",
+        "delete-criteria": "Supprimer le service numérique {{digitalServiceName}}",
+        "unlink-digital-service": "Supprimer le lien avec le service digital {{digitalServiceName}}"
     },
     "digital-services-terminals": {
         "new": "Nouveau terminal",
@@ -161,8 +176,8 @@
         },
         "edit": "Édition Serveur",
         "new": "Nouveau Serveur",
-        "servers": "Serveurs",
-        "server": "Serveur",
+        "servers": "Serveurs hors Cloud",
+        "server": "Serveur hors Cloud",
         "add-button": "+ AJOUTER UN SERVEUR",
         "id": "#",
         "name": "Nom",
@@ -176,21 +191,21 @@
         "Good": "Bonne",
         "Medium": "Moyenne",
         "Bad": "Mauvaise",
-        "datacenter": "Datacenter",
+        "datacenter": "Centre de données",
         "total.vcpu": "Total vCPU",
         "total.disk": "Capacité totale du disque (Go)",
         "lifespan": "Durée de vie du serveur (années)",
         "electricity": "Consommation électrique à l'année (kwH)",
         "usage.time": "Temps d'utilisation annuel (heure)",
         "pue": "PUE",
-        "pue.label": "Pour en savoir plus sur l'indicateur d'efficacité énergétique et comment il est calculé, accédez à cette ",
-        "pue.label.link": " page",
+        "pue.label": "Pour en savoir plus sur l'indicateur d'efficacité énergétique et comment il est calculé, accédez à cette page sur",
+        "pue.label.link": " l'indicateur d'efficacité énergétique",
         "link": "https://fr.wikipedia.org/wiki/Indicateur_d%27efficacit%C3%A9_%C3%A9nerg%C3%A9tique",
 
         "country": "Pays",
         "additional": "Paramètres additionnels",
         "add": {
-            "datacenter": "Ajouter un Datacenter",
+            "datacenter": "Ajouter un Centre de données",
             "vm": "+ Ajouter une VM"
         },
         "vm": "Machines Virtuelles",
@@ -200,7 +215,29 @@
         "error.totalvcpu": "La somme des vCPUs des VMs ({{ totalVmvCpu }} {{totalVmvCpuUnit}}) dépasse la capacité du serveur",
         "error.disk": "La capacité de stockage des machines virtuelles dépasse les capacités du serveur",
         "error.quantity": "La quantité ne peut pas être nulle",
-        "pue.rule": "doit être >= 1"
+        "pue.rule": "doit être >= 1",
+        "error.server-already-exists": "Le serveur existe déjà"
+    },
+    "digital-services-cloud-services": {
+        "new": "Nouvelle instance Cloud",
+        "cloud-services": "Services Cloud",
+        "cloud-service": "Service Cloud",
+        "add": "+ AJOUTER UN SERVICE CLOUD",
+        "id": "#",
+        "name": "Nom",
+        "location": "Localisation",
+        "cloud-provider": "Cloud provider",
+        "instance-type": "Type d'instance",
+        "instance": "Instance",
+        "average-workload": "Charge moyenne (% d'usage du CPU)",
+        "annual-usage": "Durée d'utilisation annuelle (heures)",
+        "hours": "heures",
+        "quantity": "Quantité",
+        "usage": "Instance usage",
+        "configuration": "Instance configuration",
+        "error.service-already-exists": "Le service cloud existe déjà",
+        "tooltip_average_workload": "Charge de travail moyenne",
+        "tooltip_annual_usage": "Utilisation annuelle"
     },
     "Jan": "janv",
     "Feb": "févr",
@@ -221,6 +258,8 @@
         "duplicateSimulation": "La simulation existe déjà",
         "nameValidation": "Les caractères spéciaux ne sont pas autorisés",
         "inventory": "Inventaire",
+        "page-title": "Mon Système d'information",
+        "equipment-page-title": "Mon impact G4IT",
         "title": "Mon Système d'information - Organisation {{OrganizationName}}",
         "add": "Nouvel Inventaire",
         "created": "créé",
@@ -247,18 +286,19 @@
         "estimate-date": "Estimation du ",
         "results": "Resultats",
         "no-results": "Resultats indisponibles",
-        "dc": "Datacenters",
+        "dc": "Centres de données",
         "eq-phys": "Équipements",
         "eq-virt": "Éqts. Virtuels",
         "app": "Applications",
-        "date": "Date\nMM/YYYY",
+        "date": "La date au format MM/AAAA",
         "type": {
             "is-version": "Version du SI",
             "simulation": "Simulation",
-            "dc": "Datacenter",
+            "dc": "Centre de données",
             "eq-phys": "Équipement Physique",
             "eq-virt": "Équipement Virtuel",
-            "app": "Application"
+            "app": "Application",
+            "name": "Type d'inventaire"
         },
         "popup": {
             "delete-question": "Êtes-vous sûr de vouloir supprimer l'inventaire",
@@ -268,12 +308,13 @@
         "return": "Retourner à la liste de mes inventaires",
         "details-alt.equipment": "Accéder aux indicateurs des équipements de",
         "details-alt.application": "Accéder aux indicateurs des applications de",
-        "download-result": "Download integration result file for",
+        "download-alt": "Télécharger",
+        "download-result": "Télécharger le fichier du résultat d'intégration pour",
         "creation-successful": "Inventaire créé avec succès",
         "new-inventory-choose": "Choisissez entre une version du SI et une simulation",
         "input-simulation-aria": "Ecrivez le nom de votre simulation",
         "templates": {
-            "datacenter-template-file": "Fichier de modèle de datacenter ({{type}}, {{size}} Ko )",
+            "datacenter-template-file": "Fichier de modèle de centre de données ({{type}}, {{size}} Ko )",
             "physical-template-file": "Fichier modèle d'équipement physique ({{type}}, {{size}} Ko )",
             "virtual-template-file": "Fichier de modèle d'équipement virtuel ({{type}}, {{size}} Ko )",
             "application-template-file": "Fichier de modèle d'application ({{type}}, {{size}} Ko )",
@@ -281,7 +322,8 @@
             "data-model": "Modèle de données ({{type}}, {{size}} Ko )",
             "starter-pack": "Kit de départ"
         },
-        "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}"
+        "choose-criteria": "Choisir les critères pour l'inventaire {{inventoryName}}",
+        "calendar": "Calendrier"
     },
     "inventories-footprint": {
         "filter": "Filtrer ma visualisation",
@@ -302,6 +344,7 @@
             "export": "Exporter",
             "download": "Télécharger"
         },
+        "data-consistency": "Cohérence des données",
         "round-button": {
             "acvStep": "Cycle de vie",
             "country": "Pays",
@@ -313,8 +356,8 @@
             "global-vision": "Vision Globale",
             "info-fis-title": "Quel est la signification d'équivalent habitant ?",
             "info-fis-text": "Si chaque être humain respectait les limites planétaires, chacun d'entre nous disposerait d'un forfait individuel qui garantirait l'équilibre soutenable du système : le concept d'équivalent humain (Hab. eq.) représente le nombre de personnes respectant ce forfait individuel soutenable. Il a été obtenu en divisant la limite de la planète pour chaque critère (réf. Rapport technique du CCR - Consommation et empreinte du consommateur : méthodologie et résultats) par le nombre d'habitants de la Terre.",
-            "datacenter": "DATA CENTER",
-            "datacenters": "Datacenters",
+            "datacenter": "CENTRE DE DONNÉES",
+            "datacenters": "Centres de données",
             "ave-pue": "PUE moy.",
             "years": "années",
             "kwh": "kWh",
@@ -324,8 +367,8 @@
             "equipment": "ÉQUIPEMENT",
             "equipments": "Équipements",
             "tooltip": {
-                "nb-dc": "Nombre de datacenters",
-                "ave-pue": "PUE moyen pondéré par le nombre d'équipements physiques hébergés dans les datacenters",
+                "nb-dc": "Nombre de centre de données",
+                "ave-pue": "PUE moyen pondéré par le nombre d'équipements physiques hébergés dans les centres de données",
                 "nb-eq": "Nombre d'équipements physiques",
                 "low-impact": "% d'équipements utilisés dans un pays à faible impact multicritère sur le mix électrique (1er quartile)",
                 "ave-age": "Durée de vie moyenne des équipements",
@@ -379,6 +422,18 @@
         }
     },
     "toast-errors": {
+        "unknown": {
+            "title": "Erreur inconnue",
+            "text": "Merci de contacter le support pour avoir de l'aide"
+        },
+        "backend-unreachable": {
+            "title": "Les APIs Backend ne sont pas accessibles",
+            "text": "Please contact the support for help"
+        },
+        "payload-too-large": {
+            "title": "La taille maximum d'un fichier est dépassées",
+            "text": "La taille maximum d'un fichier est de 100Mo"
+        },
         "subscriber-or-organization-not-found": {
             "title": "Aucun souscripteur ou organisation trouvé",
             "text": "Demandez à votre administrateur de vous rattacher à une organisation"
@@ -390,28 +445,56 @@
         "insuffisant-right-organization": {
             "title": "Organisation non autorisée",
             "text": "Demandez à votre administrateur de vous rattacher à l'organisation"
+        },
+        "boavitzapi-no-country-found": {
+            "title": "Réferentiel Boavizta",
+            "text": "Aucun pays trouvé dans le référentiel Boavizta"
+        },
+        "boavitzapi-no-cloud-provider-found": {
+            "title": "Réferentiel Boavizta",
+            "text": "Aucun fournisseur cloud trouvé dans le référentiel Boavizta"
+        },
+        "boavitzapi-no-instance-found": {
+            "title": "Réferentiel Boavizta",
+            "text": "Aucune instance trouvé dans le référentiel Boavizta"
+        },
+        "boavitzapi-calculation-failed": {
+            "title": "Evaluation Boavizta",
+            "text": "L'API Boavizta a echoué à calculer des instances"
+        },
+        "task.already.running": {
+            "title": "Tâche en cours",
+            "text": "Une tâche est déjà en cours de traitement. Merci de relancer le traitement plus tard"
         }
     },
     "digital-services-cards": {
         "global-vision": {
             "title": "Vers l'écoconception de votre service",
-            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>exemple</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>ici</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>cliquez ici</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
+            "content": "Ce graphique représente les différents impacts environnementaux attribués à votre service numérique pour 1 an de fonctionnement. Il prend en compte l’ensemble du cycle de vie des équipements qui permettent à votre service de fonctionner (leur fabrication, distribution, utilisation et leur fin de vie), pour l’ensemble des critères mentionnés à gauche de l’écran. <br> <br> ​Il vous permet de déterminer par où commencer votre analyse pour réduire efficacement les impacts de votre service. Mais attention, en cherchant à réduire l'impact d'un critère, vous risquerez de transférer les impacts vers un autre critère ou une autre phase du cycle de vie (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>principes de l'éco-conception</a>). L’une des manières d’éviter cet écueil est des faire preuve de sobriété à tous les niveaux de votre service. <br> <h3 role='content'>​ Une échelle adaptée à l'analyse multicritère : l’équivalent habitant. </h3>​ L'ensemble des graphiques de l'outil sont exprimés en « habitant Eq ». Pour comprendre cette unité, imaginez que l’on définisse de manière égalitaire un forfait à chaque habitant de la planète correspondant aux limites planétaires à ne pas dépasser individuellement pour garantir l’équilibre global du système. Ce forfait théorique est obtenu en divisant la quantité maximale d’externalité négatives admise par le système Terre (définit <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>dans ce rapport sur la consommation et l'empreinte du consommateur</a>), par son nombre d’habitant. <br> <br> ​Cette unité permet de comparer les critères entre eux et de cibler votre plan d’action d’écoconception (cf. <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>définition de l'éco-conception</a>) sur ce qui compte vraiment, en évitant les transferts d’impact. <br> <br>​ Pour aller plus loin sur la compréhension des enjeux : <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>consultez ce rapport sur l'impact environnemental des TIC</a>. <br> <br>​ Pour réaliser un audit de votre application, le Référentiel Général d’Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) est un très bon point de départ."
         },
         "terminal": {
             "title": "Analyse et levier de l'écoconception",
-            "content": "Vous regardez ici l'impact des terminaux utilisant votre service numérique.​ <br> <br> La méthode de calcul qui fait actuellement référence dans les méthodes d'ACV prend en compte le type d'équipement sollicité, sa localisation et le temps de parcours utilisateurs. ​<br> <br> Le type d'équipement sur lequel le service est consommé a une influence sur l'impact à la fabrication, à la distribution et à la fin de vie du matériel : plus l'équipement est imposant et complexe, plus ses impacts sont importants. Pour réduire l'impact, vous pouvez faire en sorte que votre service tourne sur des terminaux avec de petits écrans, sur des équipements anciens (OS sup à 5 ans, …) et peu performants; vous contribuerez alors à réduire le renouvellement du matériel…et la fracture numérique. ​<br> <br> La localisation des utilisateurs influe sur l'impact du service. Il est directement lié aux modes de production de l'énergie électrique consommée lors de la phase d'utilisation du service.  (<a href='https://ourworldindata.org/electricity-mix' target='_blank'>pour en savoir plus</a>).​ <br> <br> Enfin, vous pouvez faire en sorte d'optimiser le parcours utilisateur en éliminant les fonctionnalités qui n'apportent que peu ou pas de valeur, ce qui permettra aussi d'alléger les infrastructures nécessaires."
+            "content": "Vous regardez ici l'impact des terminaux utilisant votre service numérique.​ <br> <br> La méthode de calcul qui fait actuellement référence dans les méthodes d'ACV prend en compte le type d'équipement sollicité, sa localisation et le temps de parcours utilisateurs. ​<br> <br> Le type d'équipement sur lequel le service est consommé a une influence sur l'impact à la fabrication, à la distribution et à la fin de vie du matériel : plus l'équipement est imposant et complexe, plus ses impacts sont importants. Pour réduire l'impact, vous pouvez faire en sorte que votre service tourne sur des terminaux avec de petits écrans, sur des équipements anciens (OS sup à 5 ans, …) et peu performants; vous contribuerez alors à réduire le renouvellement du matériel…et la fracture numérique. ​<br> <br> La localisation des utilisateurs influe sur l'impact du service. Il est directement lié aux modes de production de <a href='https://ourworldindata.org/electricity-mix' target='_blank'>l'énergie électrique consommée lors de la phase d'utilisation du service</a>.​ <br> <br> Enfin, vous pouvez faire en sorte d'optimiser le parcours utilisateur en éliminant les fonctionnalités qui n'apportent que peu ou pas de valeur, ce qui permettra aussi d'alléger les infrastructures nécessaires."
         },
         "network": {
             "title": "Analyse et levier de l'écoconception",
-            "content": "Ce graphique représente l'impact lié aux données échangées sur le réseau.​ <br> <br> Cet impact est proportionnel à la quantité de Go échangés sur le réseau pour le mobile, et en ce qui concerne la partie fixe, l'impact influe surtout sur le dimensionnement du réseau (fibre ou cuivre)​ <br> <br> Il est généralement préférable de favoriser la sollicitation d'un réseau fixe qui est moins impactant que le réseau mobile si on ramène l'impact au nombre de Go échangés (voir <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>ici</a> et <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>ici</a>). ​<br> <br> Pour réduire cet impact, réduisez au maximum la quantité de données échangées en :​ <br> <br> - Questionnant le besoin (la présence d'une vidéo est-elle nécessaire (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>en savoir plus</a>)? Un texte peut-il remplacer une image? La HD est-elle indispensable? ​<br> <br> - Optimisant les formats (taille et compression des images) ​<br> <br> - Respectant les bonnes pratiques (ne pas lancer automatiquement les vidéos, éviter le défilement infini des pages, utiliser des polices de caractères standard, etc.) (<a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>en savoir plus</a>)"
+            "content": "Ce graphique représente l'impact lié aux données échangées sur le réseau.​ <br> <br> Cet impact est proportionnel à la quantité de Go échangés sur le réseau pour le mobile, et en ce qui concerne la partie fixe, l'impact influe surtout sur le dimensionnement du réseau (fibre ou cuivre)​ <br> <br> Il est généralement préférable de favoriser la sollicitation d'un réseau fixe qui est moins impactant que le réseau mobile si on ramène l'impact au nombre de Go échangés (voir <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>cette étude sur les technologies numériques en Europe</a> et <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>cette enquête sur le numérique soutenable</a>). ​<br> <br> Pour réduire cet impact, réduisez au maximum la quantité de données échangées en :​ <br> <br> - Questionnant le besoin (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>la présence d'une vidéo est-elle nécessaire?</a> Un texte peut-il remplacer une image? La HD est-elle indispensable? ​<br> <br> - Optimisant les formats (taille et compression des images) ​<br> <br> - <a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>Respectant les bonnes pratiques concernant la volumétrie</a> (ne pas lancer automatiquement les vidéos, éviter le défilement infini des pages, utiliser des polices de caractères standard, etc.)"
         },
         "server": {
             "title": "Analyse et levier de l'écoconception",
-            "content": "Voici la répartition des impacts liés à l'hébergement de votre service. Ce graphique vous permet de détecter les serveurs sur lesquels vous devez focaliser votre attention.​ <br> <br>Pour réduire l'impact des serveurs, vos leviers d'actions sont relatifs à :​ <br> <br>- L'équipement physique mobilisé : remplacement du serveur dédié par l'un des VM pour mutualiser les ressources, ajuster au plus près des besoins les caractéristiques du serveur telles que sa puissance de calcul, sa RAM, sa capacité de stockage, etc. ​<br> <br>- La manière dont vous les utilisez : arrêt en dehors des plages d'utilisation, autoscaling, taux de charge (même s'il n'est pas encore pris en compte dans le calcul), durée de conservation des datas, l'utilisation de caches, etc. ​<br> <br>- La manière dont il est maintenu par les équipes de l'infrastructure : durée de vie du matériel, mutualisation des ressources, efficience du datacenter, etc. ​<br> <br>Vous pouvez cliquer sur le graphique pour préciser les leviers que vous pouvez mobiliser sur vos serveurs"
+            "content": "Voici la répartition des impacts liés à l'hébergement de votre service. Ce graphique vous permet de détecter les serveurs sur lesquels vous devez focaliser votre attention.​ <br> <br>Pour réduire l'impact des serveurs, vos leviers d'actions sont relatifs à :​ <br> <br>- L'équipement physique mobilisé : remplacement du serveur dédié par l'un des VM pour mutualiser les ressources, ajuster au plus près des besoins les caractéristiques du serveur telles que sa puissance de calcul, sa RAM, sa capacité de stockage, etc. ​<br> <br>- La manière dont vous les utilisez : arrêt en dehors des plages d'utilisation, autoscaling, taux de charge (même s'il n'est pas encore pris en compte dans le calcul), durée de conservation des datas, l'utilisation de caches, etc. ​<br> <br>- La manière dont il est maintenu par les équipes de l'infrastructure : durée de vie du matériel, mutualisation des ressources, efficience du centre de données, etc. ​<br> <br>Vous pouvez cliquer sur le graphique pour préciser les leviers que vous pouvez mobiliser sur vos serveurs"
         },
         "server-lifecycle": {
             "title": "Analyse et levier de l'écoconception",
-            "content": "Voici la répartition de l'impact de votre serveur selon l'étape de son cycle de vie. ​<br> <br>Pour réduire l'impact à l'utilisation, vous devez réduire la quantité d'énergie consommée par votre serveur ou votre VM. Pour ce faire, vous pouvez migrer vers un datacenter plus efficient (c'est-à-dire, avec un <a href='https://fr.wikipedia.org/wiki/Coefficient_d%27utilisation_énergétique' target='_blank'>PUE</a> plus bas et situé dans un pays dont le mix électrique a moins d'impact – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>voir le tableau sur l'impact des mélanges électriques</a>).​ ​<br> <br>Pour un serveur de calcul, il s'agit de réduire la quantité de calculs effectués (en sélectionnant des <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>technologies moins gourmandes</a>, en supprimant des fonctionnalités, en optimisant les traitements… <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>voir plus</a>).​ ​<br> <br>Pour un serveur de stockage, l'objectif est principalement de réduire les opérations de lecture/écriture et d'optimiser les taux de remplissage pour limiter le nombre de serveurs requis. ​<br> <br>Pour les autres impacts, les leviers dépendent des serveurs, de leur durée de vie, de leur niveau de mutualisation, et de leur type. "
+            "content": "Voici la répartition de l'impact de votre serveur selon l'étape de son cycle de vie. ​<br> <br>Pour réduire l'impact à l'utilisation, vous devez réduire la quantité d'énergie consommée par votre serveur ou votre VM. Pour ce faire, vous pouvez migrer vers un datacenter plus efficient (c'est-à-dire, avec un <a href='https://fr.wikipedia.org/wiki/Coefficient_d%27utilisation_énergétique' target='_blank'>PUE</a> plus bas et situé dans un pays dont le mix électrique a moins d'impact – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>voir le tableau sur l'impact des mélanges électriques</a>).​ ​<br> <br>Pour un serveur de calcul, il s'agit de réduire la quantité de calculs effectués (en sélectionnant des <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>technologies moins gourmandes</a>, en supprimant des fonctionnalités, en optimisant les traitements… <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>voir les bonnes pratiques en matière d'éco-conception de services numériques pour les développeurs</a>).​ ​<br> <br>Pour un serveur de stockage, l'objectif est principalement de réduire les opérations de lecture/écriture et d'optimiser les taux de remplissage pour limiter le nombre de serveurs requis. ​<br> <br>Pour les autres impacts, les leviers dépendent des serveurs, de leur durée de vie, de leur niveau de mutualisation, et de leur type. "
+        },
+        "cloudservice": {
+            "title": "Analyse et levier de l'écoconception",
+            "content": "Voici la répartition des impacts liés à l'hébergement cloud de votre service. Ce graphique vous permet de détecter les instances sur lesquelles vous devez focaliser votre attention.​ <br/> <br/> Attention : Contrairement aux serveurs on-premise, les fournisseurs de services cloud révèlent peu d'informations sur les ressources physiques allouées. Nous utilisons donc une méthode de calcul qui n'est pas celle des cloud providers. <br/><br/> Pour réduire l'impact des instances cloud, vos leviers d'actions sont relatifs à :​ <br/><br/> - La manière dont vous les utilisez : arrêt en dehors des plages d'utilisation, autoscaling, taux de charge (même s'il n'est pas encore pris en compte dans le calcul), durée de conservation des datas, l'utilisation de caches, etc. ​<br/><br/> - La localisation de vos instances : privilégier un hébergeur dont les serveurs sont situés dans un pays avec une électricité à faible impact. Dans la mesure du possible, il est également pertinent de privilégier un hébergeur qui soit proche des utilisateurs ou des activités identifiées.<br/><br/> Vous pouvez aussi suivre les guides des bonnes pratiques sustainability propres à chaque cloud provider public :<br/> - <a href='https://techcommunity.microsoft.com/blog/azurearchitectureblog/announcing-sustainability-guidance-in-the-azure-well-architected-framework/3649812' target='_blank'>Guide bonnes pratiques Azure</a> ​<br/> - <a href='https://cloud.google.com/architecture/framework/sustainability?hl=en' target='_blank'>Guide bonnes pratiques GCP</a><br/> - <a href='https://aws.amazon.com/fr/blogs/aws/sustainability-pillar-well-architected-framework/' target='_blank'>Guide bonnes pratiques AWS</a> <br/><br/> Vous pouvez cliquer sur le graphique pour préciser les leviers que vous pouvez mobiliser sur vos serveurs."
+        },
+        "cloud-lifecycle": {
+            "title": "Analyse et levier de l'écoconception",
+            "content": "Voici la répartition de l'impact de votre instance cloud selon l'étape de son cycle de vie. ​<br/><br/> Pour réduire l'impact à l'utilisation, vous devez réduire la quantité d'énergie consommée. Pour ce faire, vous pouvez migrer vers un datacenter plus efficient (c'est-à-dire, avec un <a href='https://fr.wikipedia.org/wiki/Coefficient_d%27utilisation_%C3%A9nerg%C3%A9tique' target='_blank'>PUE</a> plus bas et situé dans un pays dont le mix électrique a moins d'impact – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>voir le tableau sur l'impact des mélanges électriques</a>).​ <br/><br/> Pour un serveur de calcul, il s'agit de réduire la quantité de calculs effectués (en sélectionnant des <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>technologies moins gourmandes</a>, en supprimant des fonctionnalités, en optimisant les traitements… <a target='_blank' href='https://cnrs.hal.science/ECOINFO/hal-03977001v1'>voir plus</a>).​ ​<br/><br/> Pour un serveur de stockage, l'objectif est principalement de réduire les opérations de lecture/écriture et d'optimiser les taux de remplissage pour limiter le nombre de serveurs requis. <br/><br/> Pour les autres impacts, les leviers dépendent des serveurs, de leur durée de vie, de leur niveau de mutualisation, et de leur type. ​"
         }
     },
     "acvStep": {
@@ -436,7 +519,7 @@
             "inventory-title": "Changement climatique (kg éq. CO2)",
             "inventory-text": "Phénomène climatique mondial caractérisé par une augmentation générale des températures moyennes, modifiant de manière permanente les équilibres météorologiques et les écosystèmes.",
             "digital-services-card-title": "Pourquoi le changement climatique est-il important et comment agir ?",
-            "digital-services-card-content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Changement climatique (kg CO<sub>2</sub> éq.) :</strong> ce critère mesure le forçage radiatif en tant que potentiel de réchauffement global (PRG100) qui augmente la température globale moyenne résultant des émissions de gaz à effet de serre. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "climate"
         },
         "resource-use": {
@@ -446,7 +529,7 @@
             "inventory-title": "Épuisement des ressources naturelles (kg éq. Sb)",
             "inventory-text": "Ressources non vivantes naturellement présentes dans l'environnement. Parmi elles, les terres rares, dont l'extraction croissante entraîne la libération de polluants toxiques, sont en quantités limitées.",
             "digital-services-card-title": "Pourquoi l'utilisation des ressources est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Utilisation des ressources (kg Sb éq.) :</strong> ce critère mesure l'épuisement des ressources abiotiques par rapport à la réserve ultime. Les ressources abiotiques correspondent à toutes les matières premières qui ne proviennent pas d'organismes vivants et qui ne sont pas renouvelables. Leur épuisement prive les générations futures. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Utilisation des ressources (kg Sb éq.) :</strong> ce critère mesure l'épuisement des ressources abiotiques par rapport à la réserve ultime. Les ressources abiotiques correspondent à toutes les matières premières qui ne proviennent pas d'organismes vivants et qui ne sont pas renouvelables. Leur épuisement prive les générations futures. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "hourglass"
         },
         "ionising-radiation": {
@@ -456,7 +539,7 @@
             "inventory-title": "Radiations ionisantes (éq. kBq U235)",
             "inventory-text": "Certains rayonnements possèdent une énergie suffisante pour transformer les atomes qu'ils traversent. Même à faibles doses, elle peut entraîner des risques d'effets à long terme, comme le cancer.",
             "digital-services-card-title": "Pourquoi les radiations ionisantes sont-elles importantes et comment agir ?",
-            "digital-services-card-content": "<strong>Radiations ionisantes (kBq U<sub>235</sub> éq.) :</strong> ce critère mesure l'efficacité de l'exposition humaine par rapport à l'Uranium 235, qui produit des ionisations dans la matière à travers laquelle il passe. Même à de faibles doses, cela peut entraîner des risques d'effets à long terme tels que le cancer. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Radiations ionisantes (kBq U<sub>235</sub> éq.) :</strong> ce critère mesure l'efficacité de l'exposition humaine par rapport à l'Uranium 235, qui produit des ionisations dans la matière à travers laquelle il passe. Même à de faibles doses, cela peut entraîner des risques d'effets à long terme tels que le cancer. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "ion"
         },
         "acidification": {
@@ -466,77 +549,77 @@
             "inventory-title": "Acidification (éq. mol. H+)",
             "inventory-text": "L'émission de composés soufrés (principalement due aux processus de combustion dans la production d'électricité, le chauffage et les transports) génère l'acidification des océans, de l'atmosphère et des sols, qui perturbe les écosystèmes.",
             "digital-services-card-title": "Pourquoi l'acidification est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Acidification (mol H<sup>+</sup> éq.) :</strong> ce critère mesure l'excès cumulé d'ions H+ produits par les émissions de composés soufrés (principalement dus aux processus de combustion dans la production d'électricité, le chauffage et les transports), générant l'acidification des océans, de l'atmosphère et des sols, perturbant les écosystèmes. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Acidification (mol H<sup>+</sup> éq.) :</strong> ce critère mesure l'excès cumulé d'ions H+ produits par les émissions de composés soufrés (principalement dus aux processus de combustion dans la production d'électricité, le chauffage et les transports), générant l'acidification des océans, de l'atmosphère et des sols, perturbant les écosystèmes. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "ph"
         },
         "particulate-matter": {
             "title": "Émission de particules",
-            "name": "Particulate matter",
+            "name": "Émission de particules",
             "unite": "Occurence des maladies",
-            "inventory-title": "Émissions de particules fines",
+            "inventory-title": "Émissions de particules fines (Occurence des maladies)",
             "inventory-text": "Particules microscopiques en suspension dans l'air ambiant. Elles sont assez fines pour pénétrer dans les voies respiratoires et avoir un effet nocif sur la santé.",
             "digital-services-card-title": "Pourquoi l'émission de particules est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Émission de particules (Occurence des maladies) :</strong> ce critère mesure l'impact sur la santé humaine (occurence des maladies) causé par des particules microscopiques en suspension dans l'air ambiant (suffisamment fines pour pénétrer dans les voies respiratoires et avoir un effet nocif sur la santé) et ses précurseurs (par exemple, les oxydes de soufre et d'azote). <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Émission de particules (Occurence des maladies) :</strong> ce critère mesure l'impact sur la santé humaine (occurence des maladies) causé par des particules microscopiques en suspension dans l'air ambiant (suffisamment fines pour pénétrer dans les voies respiratoires et avoir un effet nocif sur la santé) et ses précurseurs (par exemple, les oxydes de soufre et d'azote). <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "factory"
         },
         "ozone-depletion": {
             "title": "Appauvrissement de la couche d'ozone",
             "name": "Ozone depletion",
             "unite": "kg CFC-11 eq",
-            "inventory-title": "Appauvrissement de la couche d'ozone",
+            "inventory-title": "Appauvrissement de la couche d'ozone (kg CFC-11 eq.)",
             "inventory-text": "L'appauvrissement de la couche d'ozone stratosphérique qui protège des rayonnements ultraviolets dangereux.",
             "digital-services-card-title": "Pourquoi l'appauvrissement de l'ozone est-il important et comment agir ?",
-            "digital-services-card-content": "<strong>Appauvrissement de l'ozone (kg CFC-11 eq.) :</strong> ce critère mesure l'appauvrissement de la couche d'ozone stratosphérique qui protège des rayons ultraviolets dangereux. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Appauvrissement de l'ozone (kg CFC-11 eq.) :</strong> ce critère mesure l'appauvrissement de la couche d'ozone stratosphérique qui protège des rayons ultraviolets dangereux. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "ozone"
         },
         "photochemical-ozone-formation": {
             "title": "Formation d'ozone photochimique",
             "name": "Photochemical ozone formation",
             "unite": "kg NMVOC eq",
-            "inventory-title": "Formation d'ozone photochimique",
+            "inventory-title": "Formation d'ozone photochimique (kg NMVOC eq.)",
             "inventory-text": "Potentiel de formation d'ozone troposphérique nocif ('smog estival') à partir des émissions atmosphériques.",
             "digital-services-card-title": "Pourquoi la Formation d'ozone photochimique est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Formation d'ozone photochimique (kg NMVOC eq.) :</strong> ce critère mesure le potentiel de formation d'ozone troposphérique nocif ('smog estival') à partir des émissions atmosphériques. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Formation d'ozone photochimique (kg NMVOC eq.) :</strong> ce critère mesure le potentiel de formation d'ozone troposphérique nocif ('smog estival') à partir des émissions atmosphériques. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "photochemical"
         },
         "eutrophication-terrestrial": {
             "title": "Eutrophisation terrestre",
             "name": "Eutrophication, terrestrial",
             "unite": "mol N eq",
-            "inventory-title": "Eutrophisation terrestre",
+            "inventory-title": "Eutrophisation terrestre (mol N eq.)",
             "inventory-text": "Eutrophisation et impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion et aux systèmes d'égouts.",
             "digital-services-card-title": "Pourquoi l'Eutrophisation terrestre est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Eutrophisation terrestre (mol N eq.) :</strong> ce critère mesure l'eutrophisation et l'impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion, et aux systèmes d'égouts. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Eutrophisation terrestre (mol N eq.) :</strong> ce critère mesure l'eutrophisation et l'impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion, et aux systèmes d'égouts. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "terrestrial"
         },
         "eutrophication-freshwater": {
             "title": "Eutrophisation des eaux douces",
             "name": "Eutrophication, freshwater",
             "unite": "kg P eq",
-            "inventory-title": "Eutrophisation des eaux douces",
+            "inventory-title": "Eutrophisation des eaux douces (kg P eq.)",
             "inventory-text": "Eutrophisation et impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion et aux systèmes d'égouts.",
             "digital-services-card-title": "Pourquoi l'Eutrophisation des eaux douces est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Eutrophisation des eaux douces (kg P eq.) :</strong> ce critère mesure l'eutrophisation et l'impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion, et aux systèmes d'égouts. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Eutrophisation des eaux douces (kg P eq.) :</strong> ce critère mesure l'eutrophisation et l'impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion, et aux systèmes d'égouts. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "freshwater"
         },
         "eutrophication-marine": {
             "title": "Eutrophisation marine",
             "name": "Eutrophication, marine",
             "unite": "kg N eq",
-            "inventory-title": "Eutrophisation marine",
+            "inventory-title": "Eutrophisation marine (kg N eq.)",
             "inventory-text": "Eutrophisation et impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion et aux systèmes d'égouts.",
             "digital-services-card-title": "Pourquoi l'Eutrophisation marine est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Eutrophisation marine (kg N eq.) :</strong> ce critère mesure l'eutrophisation et l'impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion, et aux systèmes d'égouts. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Eutrophisation marine (kg N eq.) :</strong> ce critère mesure l'eutrophisation et l'impact potentiel sur les écosystèmes causés par les émissions de phosphore et d'azote, principalement dues aux engrais, à la combustion, et aux systèmes d'égouts. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "marine"
         },
         "resource-use-fossils": {
             "title": "Utilisation des ressources fossiles",
             "name": "Resource use, fossils",
             "unite": "MJ",
-            "inventory-title": "Utilisation des ressources fossiles",
+            "inventory-title": "Utilisation des ressources fossiles (MJ)",
             "inventory-text": "Épuisement des ressources non renouvelables et privation pour les générations futures.",
             "digital-services-card-title": "Pourquoi l'Utilisation des ressources fossiles est-elle importante et comment agir ?",
-            "digital-services-card-content": "<strong>Utilisation des ressources fossiles (MJ) :</strong> ce critère mesure l'épuisement des ressources non renouvelables et la privation pour les générations futures. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>ici</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ici</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Utilisation des ressources fossiles (MJ) :</strong> ce critère mesure l'épuisement des ressources non renouvelables et la privation pour les générations futures. <br> <br> Les études bibliographiques (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>rapport sur l'impact environnemental des TIC</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>ce dossier sur l'empreinte environnementale du numérique</a>) montrent souvent que l'impact le plus important d'un service numérique est celui lié aux terminaux utilisateurs, suivi des serveurs et enfin des réseaux.​<br><br>Ce graphique correspond à la répartition des impacts pour votre service numérique, et constitue votre point d'entrée vers l'action concrète : en effet, selon le tiers observé, les actions que vous pouvez engager diffèrent.​<br><br>Cliquez sur le graphique pour analyser plus précisément d'où proviennent les impacts de votre service. Vous retrouverez dans ces encarts quelques leviers d'actions et pour aller plus loin voici quelques références pertinentes: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Bonnes Pratiques Web</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "fossils"
         }
     },
@@ -553,6 +636,7 @@
         "user-placeholder": "Choisissez l'organisation",
         "delete": "Supprimer",
         "cancel-deletion": "Annuler la suppression",
+        "cancel-deletion-accessibility": "Annuler la suppresion de l'organisation {{organizationName}}",
         "cancel-deletion-message": "Les données de l'organisation seront supprimées le {{date}}",
         "delete-confirmation": "Confirmation de la suppresion",
         "delete-message": "Au bout de 7 jours, toutes les données relatives à l'organisation seront supprimées. Êtes-vous sûr de vouloir supprimer cette organisation ?",
@@ -581,7 +665,9 @@
             "choose-criteria": "Choississez les critères pour le souscripteur {{subscriber}}",
             "error": "Au moins un critère doit être sélectionné",
             "is-header": "Module système d'information",
-            "ds-header": "Module service numérique"
+            "ds-header": "Module service numérique",
+            "title": "Utilisateur",
+            "unauthorized-domain": "Le domaine de l'email de l'utilisateur n'est pas autorisé pour le role Administrateur"
         },
         "role": {
             "read": "Lecture",
@@ -603,5 +689,12 @@
             "information-system-module": "Information system",
             "digital-service-module": "Digital service module"
         }
+    },
+    "error-graph": {
+        "impact-calculated": "Impacts calculés",
+        "unable-calculate": "Impossible de calculer"
+    },
+    "header": {
+        "menu": "menu principal"
     }
 }

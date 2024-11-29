@@ -69,6 +69,8 @@ public class AzureFileStorage implements FileStorage {
      */
     private final String subscriberAzureStoragePrefix;
 
+    private static final String MOVE_MESSAGE = "Moving {} to {}";
+    private static final String WRITE_MESSAGE = "Writing {}";
 
     /**
      * {@inheritDoc}
@@ -88,7 +90,7 @@ public class AzureFileStorage implements FileStorage {
     @Override
     public void writeFile(final FileFolder folder, final String fileName, final String content) throws IOException {
         final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, organization, folder.getFolderName(), fileName));
-        log.info("Writing {}", blob.getBlobUrl());
+        log.info(WRITE_MESSAGE, blob.getBlobUrl());
         blob.upload(new ByteArrayInputStream(content.getBytes()));
     }
 
@@ -98,7 +100,7 @@ public class AzureFileStorage implements FileStorage {
     @Override
     public void writeFile(final FileFolder folder, final String fileName, final InputStream content) throws IOException {
         final BlobClient blob = blobContainerClient.getBlobClient(String.join(FILE_PATH_DELIMITER, organization, folder.getFolderName(), fileName));
-        log.info("Writing {}", blob.getBlobUrl());
+        log.info(WRITE_MESSAGE, blob.getBlobUrl());
         blob.upload(content);
     }
 
@@ -133,7 +135,7 @@ public class AzureFileStorage implements FileStorage {
     public void rename(final FileFolder folder, final String currentName, final String newName) {
         final BlobClient newBlobClient = blobContainerClient.getBlobClient(filePath(folder, newName));
         final BlobClient oldBlobClient = blobContainerClient.getBlobClient(filePath(folder, currentName));
-        log.info("Renaming {} to {}", oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
+        log.info(MOVE_MESSAGE, oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
         newBlobClient.copyFromUrl(getSasUrl(oldBlobClient));
 
         oldBlobClient.delete();
@@ -146,7 +148,7 @@ public class AzureFileStorage implements FileStorage {
     public void move(final FileFolder srcFolder, final FileFolder destFolder, final String fileName) {
         final BlobClient newBlobClient = blobContainerClient.getBlobClient(filePath(destFolder, fileName));
         final BlobClient oldBlobClient = blobContainerClient.getBlobClient(filePath(srcFolder, fileName));
-        log.info("Moving {} to {}", oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
+        log.info(MOVE_MESSAGE, oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
         newBlobClient.copyFromUrl(getSasUrl(oldBlobClient));
 
         oldBlobClient.delete();
@@ -159,7 +161,7 @@ public class AzureFileStorage implements FileStorage {
     public void moveAndRename(final FileFolder srcFolder, final FileFolder destFolder, final String currentName, final String newName) {
         final BlobClient newBlobClient = blobContainerClient.getBlobClient(filePath(destFolder, newName));
         final BlobClient oldBlobClient = blobContainerClient.getBlobClient(filePath(srcFolder, currentName));
-        log.info("Moving {} to {}", oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
+        log.info(MOVE_MESSAGE, oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
         newBlobClient.copyFromUrl(getSasUrl(oldBlobClient));
 
         oldBlobClient.delete();
@@ -256,7 +258,7 @@ public class AzureFileStorage implements FileStorage {
                     final BlobClient oldBlobClient = blobContainerClient.getBlobClient(oldFilePath);
                     final String newFilePath = oldFilePath.replaceFirst(organization, newOrganization);
                     final BlobClient newBlobClient = blobContainerClient.getBlobClient(newFilePath);
-                    log.info("Moving {} to {}", oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
+                    log.info(MOVE_MESSAGE, oldBlobClient.getBlobUrl(), newBlobClient.getBlobUrl());
                     newBlobClient.copyFromUrl(getSasUrl(oldBlobClient));
                     oldBlobClient.delete();
                 });

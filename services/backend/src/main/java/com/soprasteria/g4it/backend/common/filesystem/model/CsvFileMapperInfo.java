@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @Setter
@@ -33,8 +35,12 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> datacenterDigitalService;
     private List<Header> network;
     private List<Header> server;
+    private List<Header> cloudInstance;
     private List<Header> physicalEquipmentIndicatorDigitalService;
     private List<Header> virtualMachine;
+    private List<Header> virtualEquipmentIndicatorCloudInstance;
+    private List<Header> virtualEquipmentCloudInstance;
+
 
     @Override
     public List<Header> getMapping(final FileType type) {
@@ -53,8 +59,19 @@ public class CsvFileMapperInfo implements FileMapperInfo {
                     new ArrayList<>(List.copyOf(physicalEquipmentIndicatorDigitalService));
             case NETWORK -> new ArrayList<>(List.copyOf(network));
             case SERVER -> new ArrayList<>(List.copyOf(server));
+            case CLOUD_INSTANCE -> new ArrayList<>(List.copyOf(cloudInstance));
             case TERMINAL -> new ArrayList<>(List.copyOf(terminal));
             case VIRTUAL_MACHINE -> new ArrayList<>(List.copyOf(virtualMachine));
+            case VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE ->
+                    new ArrayList<>(List.copyOf(virtualEquipmentIndicatorCloudInstance));
+            case VIRTUAL_EQUIPMENT_CLOUD_INSTANCE -> new ArrayList<>(List.copyOf(virtualEquipmentCloudInstance));
         };
+    }
+
+    public Set<String> getHeaderFields(final FileType fileType, final boolean mandatory) {
+        return getMapping(fileType).stream()
+                .filter(h -> !mandatory || !h.isOptional())
+                .map(Header::getName)
+                .collect(Collectors.toSet());
     }
 }

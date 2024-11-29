@@ -20,11 +20,96 @@ externalDocs:
   description: NumEcoEval Documentation
   url: https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/docs
 paths:
+  /referentiel/typeItem/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les impacts des types d'items sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_TypeItem </li>
+        </ul>
+      operationId: exportTypeItemCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel Type Item par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
+      operationId: importTypeItemCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
   /referentiel/typeEquipement/csv:
     get:
       tags:
         - Export Référentiels
       summary: Exporter les impacts des types d'équipements sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_TypeEquipement </li>
+        </ul>
       operationId: exportTypeEquipementCSV
       responses:
         '200':
@@ -51,6 +136,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation du référentiel Type Equipement par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importTypeEquipementCSV
       requestBody:
         content:
@@ -93,6 +185,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les impacts des mix électrique sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_MexElectriques </li>
+        </ul>
       operationId: exportImpactEquipementCSV
       responses:
         '200':
@@ -119,6 +216,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation du référentiel ImpactEquipement par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importImpactEquipementCSV
       requestBody:
         content:
@@ -161,6 +265,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les impacts réseaux sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_ImpactReseau </li>
+        </ul>
       operationId: exportImpactReseauxCSV
       responses:
         '200':
@@ -187,6 +296,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation du référentiel ImpactReseau par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importImpactReseauxCSV
       requestBody:
         content:
@@ -229,6 +345,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les impacts d'équipements sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_ImpactEquipement </li>
+        </ul>
       operationId: exportImpactEquipementCSV_1
       responses:
         '200':
@@ -255,7 +376,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation du référentiel ImpactEquipement par csv : annule et remplace.'
-      description: 'Alimentation du référentiel ImpactEquipement par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importImpactEquipementCSV_1
       requestBody:
         content:
@@ -298,6 +425,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les impacts de messagerie sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_ImpactMessagerie </li>
+        </ul>
       operationId: exportImpactMessagerieCSV
       responses:
         '200':
@@ -324,7 +456,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation du référentiel Impact Messagerie par csv : annule et remplace.'
-      description: 'Alimentation du référentiel Impact Messagerie par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importImpactMessagerieCSV
       requestBody:
         content:
@@ -367,6 +505,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les hypothèses sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_Hypotheses </li>
+        </ul>
       operationId: exportHypothesesCSV
       responses:
         '200':
@@ -393,8 +536,103 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation des Hypothèses par csv : annule et remplace.'
-      description: 'Alimentation des Hypothèses par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importHypothesesCSV
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Rapport d'import du fichier CSV
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/RapportImportDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/facteursCaracterisation/csv:
+    get:
+      tags:
+        - Export Référentiels
+      summary: Exporter les facteurs de caractérisation sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_FacteurCaracterisation </li>
+        </ul>
+      operationId: exportFacteurCaracterisationCSV
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Not Found
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+    post:
+      tags:
+        - Import Référentiels
+      summary: 'Alimentation du référentiel FacteurCaracterisation par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, on peut choisir le mode pour supprimer les données déjà présentes dans la base ou pas. Par défaut, les anciennes données sont conservées.
+        <ul>
+        <li>Entrée : Le mode d'import 'FULL' ou 'DELTA' et le fichier CSV avec les données à insérer</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
+      operationId: importFacteurCaracterisationCSV
+      parameters:
+        - name: mode
+          in: query
+          description: 'Choix du mode d''insertion FULL (purge puis insertion des nouvelles données) ou DELTA (upsert : maj de la base de données existante)'
+          required: false
+          schema:
+            type: string
+            description: 'Choix du mode d''insertion FULL (purge puis insertion des nouvelles données) ou DELTA (upsert : maj de la base de données existante)'
+            default: DELTA
       requestBody:
         content:
           multipart/form-data:
@@ -436,6 +674,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les etapes sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_EtapeACV </li>
+        </ul>
       operationId: exportEtapesCSV
       responses:
         '200':
@@ -462,7 +705,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation Etape ACV par csv : annule et remplace.'
-      description: 'Alimentation Etape ACV par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importEtapesCSV
       requestBody:
         content:
@@ -505,6 +754,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les criteres sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des Critères de ref_Critere </li>
+        </ul>
       operationId: exportCriteresCSV
       responses:
         '200':
@@ -530,8 +784,14 @@ paths:
     post:
       tags:
         - Import Référentiels
-      summary: Alimentation des Criteres par csv  (annule et remplace).
-      description: Alimentation des Criteres par csv  (annule et remplace).
+      summary: 'Alimentation des Criteres par csv : annule et remplace.'
+      description: |
+        Le référentiel est global à tout le système. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importCriteresCSV
       requestBody:
         content:
@@ -574,6 +834,11 @@ paths:
       tags:
         - Export Référentiels
       summary: Exporter les correspondances de RefEquipement sous format csv
+      description: |
+        <ul>
+        <li>Entrée : Aucune </li>
+        <li>Sortie : Renvoie la liste des étapes de ref_CorrespondanceRefEquipement </li>
+        </ul>
       operationId: exportCorrespondanceRefEquipementCSV
       responses:
         '200':
@@ -600,6 +865,13 @@ paths:
       tags:
         - Import Référentiels
       summary: 'Alimentation du référentiel des correspondances de RefEquipement par csv : annule et remplace.'
+      description: |
+        Le référentiel est lié à une organisation donnée. L’import se fait uniquement avec un fichier CSV.
+        Lors de l’import, les données précédentes sont supprimées.
+        <ul>
+        <li>Entrée : Le nom d’organisation pour laquelle les données sont établies et le fichier CSV du référentiel</li>
+        <li>Sortie : Rapport du fichier CSV (nombre de lignes totales, nombre de lignes en erreur, nombre de lignes traitées, liste des erreurs par lignes).</li>
+        </ul>
       operationId: importCorrespondanceRefEquipementCSV
       requestBody:
         content:
@@ -670,6 +942,86 @@ paths:
             application/hal+json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/typesItem:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération de tous les types d'items
+      description: |
+        Endpoint interne utilisé à la réception de données d'entrées par le module api-expositiondonneesentrees de NumEcoEval.
+        Renvoie l'intégralité des types d'items utilisables par NumEcoEval.
+
+        Les types d'items servent notamment à alimenter la durée de vie par défaut des items
+        reçues.
+      operationId: getAllTypeItem
+      responses:
+        '200':
+          description: Types Item
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeItemDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Types Item non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/typesItem/{type}:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération d'items via leur type
+      description: |
+        Endpoint interne utilisé à la réception de données d'entrées par le module api-expositiondonneesentrees de NumEcoEval. Renvoie l'intégralité des types d'items d'un certain type.
+      operationId: getTypeItem
+      parameters:
+        - name: type
+          in: path
+          description: type recherché
+          required: true
+          schema:
+            type: string
+            description: type recherché
+      responses:
+        '200':
+          description: Types Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TypeItemDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Types Item non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
   /referentiel/typesEquipement:
     get:
       tags:
@@ -715,7 +1067,7 @@ paths:
         - Interne NumEcoEval
       summary: Endpoint interne à NumEcoEval - Récupération d'un type d'équipement via son type
       description: |
-        V2 - Endpoint interne utilisé à l'enrichissement données pour un équipement physique.
+        Endpoint interne utilisé à la réception de données d'entrées par le module api-expositiondonneesentrees de NumEcoEval. Renvoie l'intégralité des types d'équipements d'un certain type.
       operationId: getTypeEquipement
       parameters:
         - name: type
@@ -1096,6 +1448,86 @@ paths:
             application/hal+json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
+  /referentiel/facteursCaracterisation:
+    get:
+      tags:
+        - Interne NumEcoEval
+      summary: Endpoint interne à NumEcoEval - Récupération des Facteurs de Caractérisation
+      description: |
+        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Récupération des Facteurs de Caractérisation en fonction de 5 paramètres:
+        <ul>
+            <li>Le nom du critère d'impact écologique: critere</li>
+            <li>Le code de l'étape ACV: etapeacv</li>
+            <li>Le nom du facteur de caractérisation recherché: nom</li>
+            <li>La localisation: localisation</li>
+            <li>La catégorie: categorie</li>
+        </ul>
+        .
+      operationId: getFacteurCaracterisation
+      parameters:
+        - name: critere
+          in: query
+          description: Nom du critère d'impact écologique
+          required: false
+          schema:
+            type: string
+            description: Nom du critère d'impact écologique
+        - name: etapeacv
+          in: query
+          description: Code de l'étape ACV
+          required: false
+          schema:
+            type: string
+            description: Code de l'étape ACV
+        - name: nom
+          in: query
+          description: Nom du facteur de caractérisation recherché
+          required: false
+          schema:
+            type: string
+            description: Nom du facteur de caractérisation recherché
+        - name: localisation
+          in: query
+          description: Nom de la localisation
+          required: false
+          schema:
+            type: string
+            description: Nom de la localisation
+        - name: categorie
+          in: query
+          description: Nom de la catégorie
+          required: false
+          schema:
+            type: string
+            description: Nom de la catégorie
+      responses:
+        '200':
+          description: Liste des Facteurs de Caractérisation trouvés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacteurCaracterisationDTO'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: Facteur Caractérisation non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: Internal Server Error
+          content:
+            application/hal+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
   /referentiel/etapes:
     get:
       tags:
@@ -1138,7 +1570,7 @@ paths:
         - Interne NumEcoEval
       summary: Endpoint interne à NumEcoEval - Récupération de tous les critères d'impacts écologiques
       description: |
-        Endpoint interne utilisé dans la génération des indicateurs par le module api-calcul de NumEcoEval.
+        Renvoie l'intégralité des types des critères d'impacts écologiques utilisés dans NumEcoEval.
       operationId: getAllCriteres
       responses:
         '200':
@@ -1172,9 +1604,9 @@ paths:
       tags:
         - Interne NumEcoEval
       summary: Endpoint interne à NumEcoEval - Récupération d'une correspondance de refEquipement à partir d'un modèle d'équipement.
-      description: |
-        Endpoint interne utilisé dans l'import de données d'entrées dans NumEcoEval
-        pour déterminer la référence d'équipement à utiliser dans les référentiels'.
+
+
+
       operationId: getCorrespondanceRefEquipement
       parameters:
         - name: modele
@@ -1316,6 +1748,35 @@ components:
           type: string
           description: La version
       description: Version applicative
+    TypeItemDTO:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type d'item, clé du référentiel
+        categorie:
+          type: string
+          description: Catégorie de l'item
+        serveur:
+          type: boolean
+          description: Flag indiquant si l'item est un serveur
+        commentaire:
+          type: string
+          description: Commentaire de l'entrée dans le référentiel
+        dureeVieDefaut:
+          type: number
+          description: Durée de vie par défaut de ce type d'item
+          format: double
+        refHypothese:
+          type: string
+          description: Référence vers l'hypothèse nécessaire pour le calcul d'impact de cet item
+        source:
+          type: string
+          description: Source de l'information du référentiel
+        refItemParDefaut:
+          type: string
+          description: Référence de l'item par défaut, permet des correspondances en cas d'absence de correspondance directe
+      description: Référentiel des types d'items utilisables dans le système. La clé du référentiel est le champ type.
     TypeEquipementDTO:
       type: object
       properties:
@@ -1447,7 +1908,52 @@ components:
         source:
           type: string
           description: Source de l'hypothèse
+        description:
+          type: string
+          description: Description de l'hypothèse
       description: Référentiel des hypothèses utilisées pour les calculs
+    FacteurCaracterisationDTO:
+      type: object
+      properties:
+        nom:
+          type: string
+          description: Nom du facteur de caractérisation, fait partie de la clé dans le référentiel
+        etape:
+          type: string
+          description: Étape ACV concernée, fait partie de la clé dans le référentiel
+        critere:
+          type: string
+          description: Critère d'impact écologique concerné, fait partie de la clé dans le référentiel
+        description:
+          type: string
+          description: Description de l'entrée dans le référentiel
+        niveau:
+          type: string
+          description: Niveau du facteur de caractérisation concerné
+        tiers:
+          type: string
+          description: Tiers du facteur de caractérisation concerné
+        categorie:
+          type: string
+          description: Catégorie du facteur de caractérisation concerné
+        consoElecMoyenne:
+          type: number
+          description: Consommation électrique moyenne
+          format: double
+        localisation:
+          type: string
+          description: Localisation du facteur de caractérisation concerné
+        valeur:
+          type: number
+          description: Valeur de l'impact écologique
+          format: double
+        unite:
+          type: string
+          description: Unité du critère d'impact écologique
+        source:
+          type: string
+          description: Source de l'impact écologique pour ce facteur de caractérisation
+      description: Référentiel de l'impact écologique d'un facteur de caractérisation. La clé est composé des champs nom, etape et critere.
     EtapeDTO:
       type: object
       properties:

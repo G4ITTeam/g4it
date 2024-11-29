@@ -16,6 +16,7 @@ import {
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { Constants } from "src/constants";
+import { StatusCount, StatusCountMap } from "../../interfaces/digital-service.interfaces";
 import {
     ConstantApplicationFilter,
     Filter,
@@ -67,10 +68,18 @@ export class FootprintService {
         return footprint;
     }
 
-    addImpact(i1: SumImpact, i2: SumImpact) {
+    addImpact(i1: SumImpact, i2: SumImpact): SumImpact {
         return {
             impact: i1.impact + i2.impact,
             sip: i1.sip + i2.sip,
+        };
+    }
+
+    addStatus(i1: StatusCount, i2: StatusCount): StatusCount {
+        return {
+            ok: i1.ok + i2.ok,
+            error: i1.error + i2.error,
+            total: i1.total + i2.total,
         };
     }
 
@@ -79,10 +88,12 @@ export class FootprintService {
         filters: Filter,
         selectedView: string,
         filterFields: string[],
-    ): FootprintCalculated[] {
-        if (footprint === undefined) return [];
+    ): { footprintCalculated: FootprintCalculated[]; criteriaCountMap: StatusCountMap } {
+        if (footprint === undefined)
+            return { footprintCalculated: [], criteriaCountMap: {} };
 
         const footprintCalculated: FootprintCalculated[] = [];
+        const criteriaCountMap: StatusCountMap = {};
 
         const order = LifeCycleUtils.getLifeCycleList();
         const lifeCycleMap = LifeCycleUtils.getLifeCycleMap();
@@ -113,11 +124,28 @@ export class FootprintService {
                       return isPresent;
                   });
 
+            criteriaCountMap[criteria] = {
+                status: {
+                    ok: filteredImpacts.filter(
+                        (i) => i.statusIndicator === Constants.DATA_QUALITY_STATUS.ok,
+                    ).length,
+                    error: filteredImpacts.filter(
+                        (i) => i.statusIndicator !== Constants.DATA_QUALITY_STATUS.ok,
+                    ).length,
+                    total: filteredImpacts.length,
+                },
+            };
             const groupedSumImpacts = new Map<string, SumImpact>();
 
             for (const impact of filteredImpacts) {
                 let key = this.valueImpact(impact, selectedView)!;
                 if (key == null) key = Constants.EMPTY;
+
+                if (!impact.impact) {
+                    impact.impact = 0;
+                    impact.sip = 0;
+                }
+
                 groupedSumImpacts.set(
                     key,
                     this.addImpact(
@@ -137,11 +165,26 @@ export class FootprintService {
                 const translated = lifeCycleMap.get(dimension);
 
                 const view: FootprintCalculated = {
-                    data: translated ? translated : dimension,
+                    data: translated ?? dimension,
                     impacts: [impact],
                     total: {
                         impact: impact.sumImpact,
                         sip: impact.sumSip,
+                    },
+                    status: {
+                        ok: filteredImpacts.filter(
+                            (i) =>
+                                this.valueImpact(i, selectedView) === dimension &&
+                                i.statusIndicator === "OK",
+                        ).length,
+                        error: filteredImpacts.filter(
+                            (i) =>
+                                this.valueImpact(i, selectedView) === dimension &&
+                                i.statusIndicator !== "OK",
+                        ).length,
+                        total: filteredImpacts.filter(
+                            (i) => this.valueImpact(i, selectedView) === dimension,
+                        ).length,
                     },
                 };
 
@@ -151,6 +194,7 @@ export class FootprintService {
                 if (viewExist) {
                     viewExist.impacts.push(impact);
                     viewExist.total = this.addImpact(viewExist.total, view.total);
+                    viewExist.status = this.addStatus(viewExist.status, view.status);
                 } else {
                     footprintCalculated.push(view);
                 }
@@ -166,7 +210,7 @@ export class FootprintService {
             footprintCalculated.sort((a: any, b: any) => a.data.localeCompare(b.data));
         }
 
-        return footprintCalculated;
+        return { footprintCalculated, criteriaCountMap };
     }
 
     valueImpact(v: Impact, dimension: string) {
@@ -184,15 +228,6 @@ export class FootprintService {
             default:
                 return null;
         }
-    }
-
-    calculateTotal(footprintCalculated: FootprintCalculated[], unit: string) {
-        return footprintCalculated.reduce(
-            (sum, current) =>
-                sum +
-                (unit === Constants.PEOPLEEQ ? current.total.sip : current.total.impact),
-            0,
-        );
     }
 
     getUniqueValues(

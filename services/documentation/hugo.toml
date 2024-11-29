@@ -1,0 +1,24 @@
+languageCode = 'en-us'
+title = 'G4IT Documentation'
+baseURL = '/'
+relativeURLs = true
+enableEmoji = true
+
+theme = 'hugo-theme-relearn'
+
+[outputs]
+home = ['html', 'rss', 'search', 'searchpage']
+
+[params]
+# Change default color scheme with a variant one. Can be "red", "blue", "green".
+themeVariant = "green"
+mermaidInitialize = '{ "theme": "forest" }'
+mermaidZoom = true
+collapsibleMenu = true
+alwaysopen = false
+
+[[menu.shortcuts]]
+name = "<i class='fab fa-github'></i> G4IT repository"
+identifier = "ds"
+url = "https://github.com/G4ITTeam/g4it"
+weight = 10

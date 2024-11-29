@@ -36,6 +36,7 @@ export class AddOrganizationComponent {
     isModuleValues: RoleValue[] = [] as RoleValue[];
 
     isAdmin: boolean = false;
+    isAdminRoleDisabled: boolean = false;
 
     constructor(
         public administrationService: AdministrationService,
@@ -56,6 +57,8 @@ export class AddOrganizationComponent {
                 value: this.translate.instant("administration.role.admin"),
             },
         ];
+
+        this.restrictAdminRoleByDomain();
     }
 
     ngOnChanges() {
@@ -125,15 +128,7 @@ export class AddOrganizationComponent {
         };
     }
 
-    addToOrg() {
-        this.administrationService
-            .postUserToOrganizationAndAddRoles(this.getOrganizationBody())
-            .subscribe(() => {
-                this.close.emit(false);
-            });
-    }
-
-    updateOrg() {
+    addUpdateOrg() {
         this.administrationService
             .postUserToOrganizationAndAddRoles(this.getOrganizationBody())
             .subscribe(() => {
@@ -170,5 +165,19 @@ export class AddOrganizationComponent {
         this.adminModule = {} as RoleValue;
         this.dsModule = {} as RoleValue;
         this.isModule = {} as RoleValue;
+        this.isAdminRoleDisabled = false;
+    }
+
+    restrictAdminRoleByDomain() {
+        if (this.organization.authorizedDomains) {
+            this.isAdminRoleDisabled = !this.organization.authorizedDomains.includes(
+                this.userDetail.email.split("@")[1],
+            );
+            if (this.isAdminRoleDisabled) {
+                this.adminModuleValues = this.adminModuleValues.filter(
+                    (role) => role.code !== Role.OrganizationAdmin,
+                );
+            }
+        }
     }
 }

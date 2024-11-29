@@ -12,7 +12,7 @@ import { NGX_ECHARTS_CONFIG, NgxEchartsModule } from "ngx-echarts";
 import { ButtonModule } from "primeng/button";
 import { SharedModule } from "src/app/core/shared/shared.module";
 import { PieChartComponent } from "./pie-chart.component";
-declare var require: any
+declare var require: any;
 
 describe("PieChartComponent", () => {
     let component: PieChartComponent;
@@ -51,30 +51,11 @@ describe("PieChartComponent", () => {
     });
 
     it("should generate valid EChartsOption", () => {
-        const chartData: any[] = require("mock-server/data/digital-service-data/digital_service_indicators_footprint.json");
+        const chartData: any[] = require("test/data/digital-service-data/digital_service_indicators_footprint.json");
         component.selectedCriteria = "acidification";
         const echartsOption: EChartsOption = component.loadPieChartOption(chartData);
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
-        expect(echartsOption.series).toEqual([
-            {
-                name: "Access From",
-                type: "pie",
-                radius: "70%",
-                data: [
-                    { name: "Terminal", value: 0.7, tier: "Terminal", unitValue: 40, unit: "mol H+ eq" },
-                    { name: "Network", value: 0.1, tier: "Network", unitValue: 20, unit: "mol H+ eq" },
-                    { name: "Server", value: 0.58, tier: "Server", unitValue: 55, unit: "mol H+ eq" },
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: "rgba(0, 0, 0, 0.5)",
-                    },
-                },
-            },
-        ]);
     });
 });

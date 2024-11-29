@@ -8,65 +8,39 @@
 package com.soprasteria.g4it.backend.external.numecoeval.business;
 
 import com.google.common.math.Quantiles;
-import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.MixElectriqueDTO;
-import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.TypeEquipementDTO;
+import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.dto.*;
 import com.soprasteria.g4it.backend.external.numecoeval.client.ReferentialClient;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Referential Remoting Service.
  */
 @Service
-@AllArgsConstructor
 @Slf4j
 public class NumEcoEvalReferentialRemotingService {
 
     /**
      * ReferentialClient
      */
+    @Autowired
     private ReferentialClient referentialClient;
 
-    /**
-     * Map containing max double value and associated quartile number.
-     */
-    private Map<String, Map<Integer, Double>> quartileValues;
-
-    /**
-     * Map containing <country/criteria> in key and quartile index in value.
-     */
-    private Map<Pair<String, String>, Integer> mixElecWithQuartile;
-
-    /**
-     * Set containing the criteria.
-     */
-    @Value("${g4it.criteria}")
-    private Set<String> criterias;
-
-    /**
-     * Map containing index in key and calculated value for index in value.
-     */
-    private Map<Integer, Double> computeSum;
-
-    /**
-     * Map containing country in key and sum of all the impacts  in value.
-     */
-    private Map<String, Integer> countrySumImpactMap;
 
     /**
      * Get NumEcoEval country.
      *
      * @return country list (string).
      */
+    @Cacheable("getCountryList")
     public List<String> getCountryList() {
         return referentialClient.getMixElec().stream()
                 .filter(Objects::nonNull)
@@ -76,82 +50,49 @@ public class NumEcoEvalReferentialRemotingService {
     }
 
     /**
-     * Get quartile index.
+     * Get electricity mix map quartiles : ([country, criteria], quartile)
      *
-     * @param criteria mix elec criteria.
-     * @param country  mix elec country.
-     * @return the quartile index.
+     * @return the map of quartiles
      */
-    public Integer getMixElecQuartileIndex(final String criteria, final String country) {
-        if (this.mixElecWithQuartile == null || this.mixElecWithQuartile.isEmpty()) {
-            final var mixElecs = referentialClient.getMixElec();
-            this.mixElecWithQuartile = mixElecs.stream().collect(Collectors.toMap(
-                    mix -> Pair.of(mix.getPays(), mix.getCritere()),
-                    this::calculateQuartileIndex));
-        }
-        return mixElecWithQuartile.get(Pair.of(country, criteria));
-    }
+    @Cacheable("getElectricityMixQuartiles")
+    public Map<Pair<String, String>, Integer> getElectricityMixQuartiles() {
+        var allMixElec = referentialClient.getMixElec().stream()
+                .filter(mix -> {
+                    var hasNullValue = mix.getCritere() == null || mix.getValeur() == null;
+                    if (hasNullValue) {
+                        log.error("Electricity mix of country: {} has null criteria or value", mix.getPays());
+                    }
+                    return !hasNullValue;
+                }).toList();
 
-    /**
-     * For a country, estimate the environment impact regarding electricity mix and returns true if the country has a low impact
-     * A low impact means:
-     * - getting all countries quartile position for each criterias and sum them
-     * - checking if the country is in the first quartile of these countries
-     *
-     * @param country the country.
-     * @return if country has a low impact.
-     */
-    public boolean isLowImpact(final String country) {
-        if (this.countrySumImpactMap == null || this.countrySumImpactMap.isEmpty()) {
-            this.countrySumImpactMap = this.getCountryList().stream()
-                    .collect(Collectors.toMap(
-                            refCountry -> refCountry,
-                            refCountry -> criterias.stream()
-                                    .mapToInt(criteria -> getMixElecQuartileIndex(criteria, refCountry))
-                                    .filter(Objects::nonNull)
-                                    .sum()
-                    ));
+        var quartileValues = allMixElec.stream()
+                .collect(Collectors.groupingBy(MixElectriqueDTO::getCritere))
+                .entrySet().stream().collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> Quantiles
+                                .quartiles()
+                                .indexes(1, 2, 3, 4)
+                                .compute(entry.getValue().stream().map(MixElectriqueDTO::getValeur).sorted().toList())));
 
-            this.computeSum = Quantiles
-                    .quartiles()
-                    .indexes(1, 2, 3, 4)
-                    .compute(countrySumImpactMap.values());
-        }
+        return allMixElec.stream().collect(Collectors.toMap(
+                mix -> Pair.of(mix.getPays(), mix.getCritere()),
+                mix -> {
 
-        int firstQuartileValue = computeSum.get(1).intValue();
-        Integer totalImpact = this.countrySumImpactMap.get(country);
-
-        return totalImpact != null && totalImpact < firstQuartileValue;
-    }
-
-    /**
-     * Calculate quartile index for each mixElec.
-     *
-     * @param mix the mix elec on which to calculate the quartile index.
-     * @return the quartile index.
-     */
-    private Integer calculateQuartileIndex(final MixElectriqueDTO mix) {
-        if (this.quartileValues == null || this.quartileValues.isEmpty()) {
-            this.quartileValues = referentialClient.getMixElec().stream().collect(Collectors.groupingBy(MixElectriqueDTO::getCritere))
-                    .entrySet().stream().collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            entry -> Quantiles
-                                    .quartiles()
-                                    .indexes(1, 2, 3, 4)
-                                    .compute(entry.getValue().stream().map(MixElectriqueDTO::getValeur).sorted().toList())
-                    ));
-        }
-        int quartileIndex;
-        if (mix.getValeur() <= quartileValues.get(mix.getCritere()).get(1)) {
-            quartileIndex = 1;
-        } else if (mix.getValeur() <= quartileValues.get(mix.getCritere()).get(2)) {
-            quartileIndex = 2;
-        } else if (mix.getValeur() <= quartileValues.get(mix.getCritere()).get(3)) {
-            quartileIndex = 3;
-        } else {
-            quartileIndex = 4;
-        }
-        return quartileIndex;
+                    int quartileIndex;
+                    if (mix.getValeur() == null) {
+                        log.error("Electricity mix of country: {} and criteria: {} has null value", mix.getPays(), mix.getCritere());
+                        quartileIndex = 4;
+                    } else if (mix.getValeur() <= quartileValues.get(mix.getCritere()).get(1)) {
+                        quartileIndex = 1;
+                    } else if (mix.getValeur() <= quartileValues.get(mix.getCritere()).get(2)) {
+                        quartileIndex = 2;
+                    } else if (mix.getValeur() <= quartileValues.get(mix.getCritere()).get(3)) {
+                        quartileIndex = 3;
+                    } else {
+                        quartileIndex = 4;
+                    }
+                    return quartileIndex;
+                }));
     }
 
     /**
@@ -165,6 +106,18 @@ public class NumEcoEvalReferentialRemotingService {
                 .map(TypeEquipementDTO::getType)
                 .distinct()
                 .toList();
+    }
+
+    public List<CritereDTO> getCriteriaList() {
+        return referentialClient.getAllCriteria();
+    }
+
+    public List<EtapeDTO> getLifecycleSteps() {
+        return referentialClient.getAllLifecycleSteps();
+    }
+
+    public List<TypeItemDTO> getItemTypes() {
+        return referentialClient.getAllItemTypes();
     }
 
 }

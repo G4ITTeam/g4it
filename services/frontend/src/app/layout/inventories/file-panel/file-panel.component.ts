@@ -20,7 +20,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { saveAs } from "file-saver";
 import { MessageService } from "primeng/api";
-import { Subject, firstValueFrom, takeUntil } from "rxjs";
+import { RadioButton } from "primeng/radiobutton";
+import { firstValueFrom, Subject, takeUntil } from "rxjs";
 import {
     FileDescription,
     FileType,
@@ -34,6 +35,7 @@ import { TemplateFileService } from "src/app/core/service/data/template-file.ser
 import { extractFileName } from "src/app/core/utils/path";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
+import { environment } from "src/environments/environment";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
 @Component({
@@ -48,12 +50,17 @@ export class FilePanelComponent implements OnInit {
     @Input() purpose: string = "";
     @Input() name: string = ""; // inventoryDate (for IS Type)
     @Input() inventoryId?: number = 0;
+    @Input() isNewArch: boolean = false;
     @Input() allSimulations: Inventory[] = [];
     @Input() inventories: Inventory[] = [];
 
     @Output() sidebarPurposeChange: EventEmitter<any> = new EventEmitter();
     @Output() sidebarVisibleChange: EventEmitter<any> = new EventEmitter();
     @Output() reloadInventoriesAndLoop = new EventEmitter<number>();
+
+    @ViewChild("firstInputElement", { static: false }) firstInputElement:
+        | RadioButton
+        | undefined;
 
     public fileTypes: FileType[] = [];
     invalidDates: Date[] = [];
@@ -62,6 +69,8 @@ export class FilePanelComponent implements OnInit {
     simulationNames: string[] = [];
     inventoriesForm!: FormGroup;
     inventoryType = Constants.INVENTORY_TYPE;
+    showBetaFeatures: string = environment.showBetaFeatures;
+
     ngUnsubscribe = new Subject<void>();
 
     private readonly uploaderOutpoutHandlerReset$ = new Subject<void>();
@@ -102,8 +111,11 @@ export class FilePanelComponent implements OnInit {
             name: ["", [Validators.pattern(/^[^<>]+$/), Validators.maxLength(255)]],
         });
 
-        await delay(700); // allow backend to use cached user when browsing to /inventories
         this.getTemplateFiles();
+    }
+
+    ngAfterViewInit(): void {
+        this.fileTypes.forEach((type) => this.addComponent(type));
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -199,12 +211,6 @@ export class FilePanelComponent implements OnInit {
         );
     }
 
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-            this.fileTypes.forEach((type) => this.addComponent(type));
-        }, 500);
-    }
-
     get inventoriesFormControls() {
         return this.inventoriesForm.controls;
     }
@@ -255,6 +261,7 @@ export class FilePanelComponent implements OnInit {
             const creationObj: CreateInventory = {
                 name: this.name,
                 type: this.selectedType,
+                isNewArch: this.isNewArch,
             };
             this.inventoryService.createInventory(creationObj).subscribe({
                 next: (response) => {
@@ -274,13 +281,11 @@ export class FilePanelComponent implements OnInit {
                         this.close();
                     }
                 },
-                error: (error) => {
-                },
+                error: (error) => {},
             });
         } else {
             if (bodyLoading.length !== 0) {
                 this.uploadAndLaunchLoading(formData, bodyLoading, this.inventoryId);
-            } else {
             }
         }
     }
@@ -291,30 +296,48 @@ export class FilePanelComponent implements OnInit {
         this.className = "default-calendar";
     }
 
+    onClearDate() {
+        this.name = "";
+        this.className = "default-calendar";
+    }
+
     uploadAndLaunchLoading(
         formData: FormData,
         bodyLaunchLoading: FileDescription[],
         inventoryId: number = 0,
     ) {
-        this.filesSystemService.postFileSystemUploadCSV(inventoryId, formData).subscribe({
-            next: async () => {
-                this.loadingService
-                    .launchLoading(bodyLaunchLoading, inventoryId)
-                    .subscribe({
-                        next: async () => {
-                            await delay(1000);
-                            this.sidebarVisibleChange.emit(false);
-                            this.reloadInventoriesAndLoop.emit(inventoryId);
-                            this.close();
-                        },
-                        error: () => {
-                        },
-                    });
-            },
-            error: () => {
-                this.sidebarPurposeChange.emit("upload");
-            },
-        });
+        if (this.isNewArch) {
+            this.loadingService.launchLoadInputFiles(inventoryId, formData).subscribe({
+                next: async () => {
+                    await delay(500);
+                    this.sidebarVisibleChange.emit(false);
+                    this.reloadInventoriesAndLoop.emit(inventoryId);
+                    this.close();
+                },
+                error: () => {},
+            });
+        } else {
+            this.filesSystemService
+                .postFileSystemUploadCSV(inventoryId, formData)
+                .subscribe({
+                    next: async () => {
+                        this.loadingService
+                            .launchLoading(bodyLaunchLoading, inventoryId)
+                            .subscribe({
+                                next: async () => {
+                                    await delay(1000);
+                                    this.sidebarVisibleChange.emit(false);
+                                    this.reloadInventoriesAndLoop.emit(inventoryId);
+                                    this.close();
+                                },
+                                error: () => {},
+                            });
+                    },
+                    error: () => {
+                        this.sidebarPurposeChange.emit("upload");
+                    },
+                });
+        }
     }
 
     clearSidePanel() {

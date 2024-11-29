@@ -32,6 +32,7 @@ import java.io.IOException;
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private static final String[] AUTH_WHITELIST = {
+            "\\/",
             "\\/v3\\/api-docs(\\/.*)?",
             "\\/swagger-ui\\/.*",
             "\\/api\\/v3/api-docs(\\/.*)?",
@@ -40,7 +41,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             "\\/users\\/me",
             "\\/version",
             "\\/administrator\\/.*",
-            "\\/business-hours"
+            "\\/business-hours",
+            "\\/referential\\/boaviztapi\\/.*"
     };
 
     /**
@@ -69,10 +71,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             final String[] urlSplit = request.getRequestURI().split("/");
             final Pair<String, String> subOrg = authService.getSubscriberAndOrganization(urlSplit);
 
-            JwtAuthenticationToken newAuth = authService.getJwtToken(userInfo, subOrg.getFirst(), Long.parseLong(subOrg.getSecond()));
+            String subscriber = subOrg == null ? null : subOrg.getFirst();
+            Long organizationId = subOrg == null ? null : Long.parseLong(subOrg.getSecond());
+
+            if (subscriber == null) subscriber = request.getParameter("subscriber");
+
+            JwtAuthenticationToken newAuth = authService.getJwtToken(userInfo, subscriber, organizationId);
             SecurityContextHolder.getContext().setAuthentication(newAuth);
 
             authService.checkUserRightForDigitalService(urlSplit);
+            authService.checkUserRightForInventory(urlSplit);
         } catch (AuthorizationException e) {
             log.error(e.getMessage());
             response.sendError(e.getStatusCode(), e.getMessage());

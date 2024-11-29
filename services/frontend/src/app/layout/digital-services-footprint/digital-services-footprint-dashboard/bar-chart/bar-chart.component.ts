@@ -5,9 +5,17 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    input,
+    Input,
+    Output,
+    SimpleChanges,
+} from "@angular/core";
 import { EChartsOption } from "echarts";
 import {
+    DigitalServiceCloudImpact,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalsImpact,
@@ -16,7 +24,7 @@ import {
     ImpactSipValue,
     ServerImpact,
     ServersType,
-    TerminalsImpact,
+    StatusCountMap,
 } from "src/app/core/interfaces/digital-service.interfaces";
 import * as LifeCycleUtils from "src/app/core/utils/lifecycle";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
@@ -36,12 +44,16 @@ export class BarChartComponent extends AbstractDashboard {
     @Input() networkData: DigitalServiceNetworksImpact[] = [];
     @Input() serverData: DigitalServiceServersImpact[] = [];
     @Input() terminalData: DigitalServiceTerminalsImpact[] = [];
+    @Input() cloudData: DigitalServiceCloudImpact[] = [];
 
     @Output() barChartChildChange: EventEmitter<any> = new EventEmitter();
     @Output() selectedDetailParamChange: EventEmitter<any> = new EventEmitter();
     @Output() selectedDetailNameChange: EventEmitter<any> = new EventEmitter();
-
+    showInconsitency = input<boolean>();
     options: EChartsOption = {};
+
+    criteriaMap: StatusCountMap = {};
+    xAxisInput: string[] = [];
 
     terminalsOptions = [
         {
@@ -55,7 +67,20 @@ export class BarChartComponent extends AbstractDashboard {
             name: this.translate.instant("digital-services.country"),
         },
     ];
+    cloudOptions = [
+        {
+            key: "instance",
+            value: "instance",
+            name: this.translate.instant("digital-services-cloud-services.instance"),
+        },
+        {
+            key: "location",
+            value: "location",
+            name: this.translate.instant("digital-services-cloud-services.location"),
+        },
+    ];
     terminalsRadioButtonSelected: string = "type";
+    cloudRadioButtonSelected: string = "instance";
     serversOptions = [
         {
             key: "lifecycle",
@@ -76,6 +101,8 @@ export class BarChartComponent extends AbstractDashboard {
                 this.options = this.loadStackBarOptionNetwork(this.networkData);
             } else if (this.selectedParam === "Terminal") {
                 this.options = this.loadStackBarOptionTerminal(this.terminalData);
+            } else if (this.selectedParam === Constants.CLOUD_SERVICE) {
+                this.options = this.loadStackBarOptionCloud(this.cloudData);
             } else if (this.selectedParam === "Server" && !this.barChartChild) {
                 this.options = this.loadStackBarOptionServer(this.serverData);
             } else if (this.selectedParam === "Server" && this.barChartChild) {
@@ -86,7 +113,9 @@ export class BarChartComponent extends AbstractDashboard {
 
     onChartClick(params: any) {
         if (
-            (this.selectedParam == "Terminal" || this.selectedParam == "Server") &&
+            (this.selectedParam == "Terminal" ||
+                this.selectedParam == "Server" ||
+                this.selectedParam === Constants.CLOUD_SERVICE) &&
             !this.barChartChild
         ) {
             this.barChartChildChange.emit(true);
@@ -98,18 +127,46 @@ export class BarChartComponent extends AbstractDashboard {
     loadStackBarOptionNetwork(
         barChartData: DigitalServiceNetworksImpact[],
     ): EChartsOption {
-        const seriesData = this.getSelectedCriteriaData(barChartData, "impacts");
-        const xAxis: any[] = [];
+        const networkMap: { [key: string]: any } = {};
+        const seriesData = this.getSelectedCriteriaData(
+            barChartData,
+            "impacts",
+            this.selectedCriteria,
+        );
+        let xAxis: any[] = [];
         const yAxis: any[] = [];
-
         seriesData.forEach((impact: ImpactNetworkSipValue) => {
-            xAxis.push(impact.networkType);
+            networkMap[impact.networkType] = {
+                ...impact,
+                status: {
+                    ok:
+                        (networkMap[impact.networkType]?.status?.ok ?? 0) +
+                        (impact.status === Constants.DATA_QUALITY_STATUS.ok
+                            ? impact.countValue
+                            : 0),
+                    error:
+                        (networkMap[impact.networkType]?.status?.error ?? 0) +
+                        (impact.status !== Constants.DATA_QUALITY_STATUS.ok
+                            ? impact.countValue
+                            : 0),
+                    total:
+                        (networkMap[impact.networkType]?.status?.total ?? 0) +
+                        impact.countValue,
+                },
+            };
+        });
+        xAxis = Object.keys(networkMap);
+        xAxis.forEach((key) => {
+            const impact = networkMap[key];
             yAxis.push({
                 value: impact.sipValue < 1 ? impact.sipValue : impact.sipValue.toFixed(0),
                 rawValue: impact.rawValue,
                 unit: impact.unit,
             });
         });
+
+        this.xAxisInput = xAxis;
+        this.criteriaMap = networkMap;
         return {
             tooltip: {
                 show: true,
@@ -118,7 +175,7 @@ export class BarChartComponent extends AbstractDashboard {
                         <div>
                             ${this.integerPipe.transform(params.value)}
                             ${this.translate.instant("common.peopleeq-min")}<br>
-                            ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit}  
+                            ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit}
                         </div>
                     `;
                 },
@@ -133,6 +190,20 @@ export class BarChartComponent extends AbstractDashboard {
                 {
                     type: "category",
                     data: xAxis,
+                    axisLabel: {
+                        rotate: 30, // Rotate labels if they overlap
+                        color: function (value: any) {
+                            return !networkMap[value].status.error
+                                ? Constants.GRAPH_GREY
+                                : Constants.GRAPH_RED;
+                        },
+                        formatter: function (value: any) {
+                            return !networkMap[value].status.error
+                                ? `{grey| ${value}}`
+                                : `{redBold| \u24d8} {red|${value}}`;
+                        },
+                        rich: Constants.CHART_RICH as any,
+                    },
                 },
             ],
             yAxis: [
@@ -151,53 +222,41 @@ export class BarChartComponent extends AbstractDashboard {
         };
     }
 
-    loadStackBarOptionTerminal(barChartData: any): EChartsOption {
-        let seriesData: any[] = [];
+    private loadStackBarOption(
+        barChartData: any[],
+        radioButtonSelected: string,
+        impactType: string,
+        impactLocation: string,
+        type: string,
+    ): EChartsOption {
+        const isTerminal = type === Constants.TERMINAL;
         const xAxis: any[] = [];
         const yAxis: any[] = [];
+        const seriesData = this.extractSelectedData(
+            barChartData,
+            radioButtonSelected,
+            impactType,
+            impactLocation,
+            isTerminal,
+        );
+        let okMap = this.processParentOrChildData(seriesData, xAxis, yAxis, type);
 
-        // Extract the selected data based on radio button
-        if (this.terminalsRadioButtonSelected === "type") {
-            seriesData = this.getSelectedCriteriaData(barChartData, "impactType");
-        } else if (this.terminalsRadioButtonSelected === "country") {
-            seriesData = this.getSelectedCriteriaData(barChartData, "impactCountry");
-        }
+        this.xAxisInput = xAxis;
+        this.criteriaMap = okMap;
 
-        // Process the data based on whether it's a child chart or not
-        this.processParentOrChildTerminalsData(seriesData, xAxis, yAxis);
+        return this.createChartOption(xAxis, yAxis, okMap, isTerminal);
+    }
 
+    private createChartOption(
+        xAxis: any[],
+        yAxis: any[],
+        okMap: StatusCountMap,
+        isTerminal: boolean,
+    ): EChartsOption {
         return {
             tooltip: {
                 show: true,
-                formatter: (params: any) => {
-                    const showedHtml = `
-                            <div> 
-                                ${this.integerPipe.transform(params.value)}
-                                ${this.translate.instant("common.peopleeq-min")} <br>
-                                ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit}
-                            </div>
-                            `;
-
-                    let otherHtml = "";
-
-                    if (!this.barChartChild) {
-                        otherHtml = `
-                            <div>
-                                ${this.translate.instant(
-                                    "digital-services-terminals.nb-user",
-                                )}: ${this.decimalsPipe.transform(params.data.nbUsers)}
-                            </div>
-                            <div>
-                                ${this.translate.instant(
-                                    "digital-services-terminals.yearly-usage",
-                                )}: ${this.decimalsPipe.transform(params.data.usageTime)}
-                                ${this.translate.instant("digital-services-terminals.hours")}
-                            </div>
-                      `;
-                    }
-
-                    return showedHtml + otherHtml;
-                },
+                formatter: this.createTooltipFormatter(isTerminal),
             },
             grid: {
                 left: "3%",
@@ -209,6 +268,20 @@ export class BarChartComponent extends AbstractDashboard {
                 {
                     type: "category",
                     data: xAxis,
+                    axisLabel: {
+                        rotate: 30, // Rotate labels if they overlap
+                        color: (value: any) => {
+                            return !okMap[value].status.error
+                                ? Constants.GRAPH_GREY
+                                : Constants.GRAPH_RED;
+                        },
+                        formatter: (value: any) => {
+                            return !okMap[value].status.error
+                                ? `{grey| ${value}}`
+                                : `{redBold| \u24d8} {red|${value}}`;
+                        },
+                        rich: Constants.CHART_RICH as any,
+                    },
                 },
             ],
             yAxis: [
@@ -218,69 +291,227 @@ export class BarChartComponent extends AbstractDashboard {
             ],
             series: [
                 {
-                    name: "terminals",
+                    name: isTerminal ? "terminals" : "Cloud Services",
                     type: "bar",
                     data: yAxis,
                 },
             ],
             color: Constants.BLUE_COLOR,
+        } as any;
+    }
+
+    private createTooltipFormatter(isTerminal: boolean): (params: any) => string {
+        return (params: any) => {
+            if (params.value === undefined) {
+                return "";
+            }
+            const showedHtml = `
+                <div>
+                    ${this.integerPipe.transform(params.value)}
+                    ${this.translate.instant("common.peopleeq-min")} <br>
+                    ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit}
+                </div>
+            `;
+
+            let otherHtml = "";
+
+            if (!this.barChartChild) {
+                otherHtml = `
+                    <div>
+                        ${this.translate.instant(
+                            isTerminal
+                                ? "digital-services-terminals.nb-user"
+                                : "digital-services-cloud-services.tooltip_average_workload",
+                        )}: ${this.decimalsPipe.transform(params.data[isTerminal ? "nbUsers" : "averageWorkLoad"])}${isTerminal ? "" : "%"}
+                    </div>
+                    <div>
+                        ${this.translate.instant(
+                            isTerminal
+                                ? "digital-services-terminals.yearly-usage"
+                                : "digital-services-cloud-services.tooltip_annual_usage",
+                        )}: ${this.decimalsPipe.transform(params.data[isTerminal ? "usageTime" : "averageUsage"])}
+                        ${this.translate.instant("digital-services-terminals.hours")}
+                    </div>
+                `;
+            }
+
+            return showedHtml + otherHtml;
         };
     }
 
-    getSelectedCriteriaData(barChartData: any, key: string): any[] {
-        const selectedData = barChartData.find(
-            (impact: any) => impact.criteria === this.selectedCriteria,
-        );
-        return selectedData ? selectedData[key] : [];
+    private extractSelectedData(
+        barChartData: any[],
+        radioButtonSelected: string,
+        impactType: string,
+        impactLocation: string,
+        isTerminal: boolean,
+    ): any[] {
+        if (
+            radioButtonSelected ===
+            (isTerminal ? this.terminalsOptions[0].value : this.cloudOptions[0].value)
+        ) {
+            return this.getSelectedCriteriaData(
+                barChartData,
+                impactType,
+                this.selectedCriteria,
+            );
+        } else if (
+            radioButtonSelected ===
+            (isTerminal ? this.terminalsOptions[1].value : this.cloudOptions[1].value)
+        ) {
+            return this.getSelectedCriteriaData(
+                barChartData,
+                impactLocation,
+                this.selectedCriteria,
+            );
+        }
+        return [];
     }
 
-    processParentOrChildTerminalsData(seriesData: any[], xAxis: any[], yAxis: any[]) {
+    loadStackBarOptionTerminal(barChartData: any): EChartsOption {
+        return this.loadStackBarOption(
+            barChartData,
+            this.terminalsRadioButtonSelected,
+            "impactType",
+            "impactCountry",
+            Constants.TERMINAL,
+        );
+    }
+
+    loadStackBarOptionCloud(barChartData: DigitalServiceCloudImpact[]): EChartsOption {
+        return this.loadStackBarOption(
+            barChartData,
+            this.cloudRadioButtonSelected,
+            "impactInstance",
+            "impactLocation",
+            Constants.CLOUD_SERVICE,
+        );
+    }
+
+    processParentOrChildData(
+        seriesData: any[],
+        xAxis: string[],
+        yAxis: any[],
+        type: string,
+    ): StatusCountMap {
+        let okMap = {};
+        const isTerminals = type === Constants.TERMINAL;
+        const stepKey = isTerminals ? "ACVStep" : "acvStep";
+
         if (!this.barChartChild) {
-            seriesData.forEach((impact: TerminalsImpact) => {
-                xAxis.push(impact.name);
+            return this.processParentData(seriesData, xAxis, yAxis, okMap, isTerminals);
+        } else {
+            return this.processChildData(
+                seriesData,
+                xAxis,
+                yAxis,
+                okMap,
+                stepKey,
+                isTerminals,
+            );
+        }
+    }
+
+    private processParentData(
+        seriesData: any[],
+        xAxis: string[],
+        yAxis: any[],
+        okMap: StatusCountMap,
+        isTerminals: boolean,
+    ): StatusCountMap {
+        seriesData.forEach((impact: any) => {
+            okMap[impact.name] = {
+                status: {
+                    ok: impact.impact.reduce(
+                        (acc: number, i: any) => acc + (i.statusCount?.ok ?? 0),
+                        0,
+                    ),
+                    error: impact.impact.reduce(
+                        (acc: number, i: any) => acc + (i.statusCount?.error ?? 0),
+                        0,
+                    ),
+                    total: impact.impact.reduce(
+                        (acc: number, i: any) => acc + (i.statusCount?.total ?? 0),
+                        0,
+                    ),
+                },
+            };
+            xAxis.push(impact.name);
+            yAxis.push({
+                value:
+                    impact.totalSipValue < 1
+                        ? impact.totalSipValue
+                        : impact.totalSipValue.toFixed(0),
+                name: impact.name,
+                ...(isTerminals
+                    ? {
+                          nbUsers: impact.totalNbUsers,
+                          usageTime: impact.avgUsageTime,
+                      }
+                    : {
+                          averageUsage: impact.totalAvgUsage,
+                          averageWorkLoad: impact.totalAvgWorkLoad,
+                      }),
+                rawValue: impact.rawValue,
+                unit: impact.unit,
+            });
+        });
+        return okMap;
+    }
+
+    private processChildData(
+        seriesData: any[],
+        xAxis: string[],
+        yAxis: any[],
+        okMap: StatusCountMap,
+        stepKey: string,
+        isTerminals: boolean,
+    ): StatusCountMap {
+        const childData = seriesData.find(
+            (item: any) => item.name === this.selectedDetailParam,
+        );
+
+        if (childData) {
+            const order = LifeCycleUtils.getLifeCycleList();
+
+            childData.impact.forEach((impact: any) => {
+                impact[stepKey] =
+                    LifeCycleUtils.getLifeCycleMap().get(impact[stepKey]) ||
+                    impact[stepKey];
+            });
+
+            childData.impact.sort((a: any, b: any) => {
+                return order.indexOf(a[stepKey]) - order.indexOf(b[stepKey]);
+            });
+
+            childData.impact.forEach((impact: any) => {
+                okMap[this.existingTranslation(impact[stepKey], "acvStep")] = {
+                    status: {
+                        ok: impact.statusCount?.ok ?? 0,
+                        error: impact.statusCount?.error ?? 0,
+                        total: impact.statusCount?.total ?? 0,
+                    },
+                };
+                xAxis.push(this.existingTranslation(impact[stepKey], "acvStep"));
                 yAxis.push({
-                    value:
-                        impact.totalSipValue < 1
-                            ? impact.totalSipValue
-                            : impact.totalSipValue.toFixed(0),
-                    name: impact.name,
-                    nbUsers: impact.totalNbUsers,
-                    usageTime: impact.avgUsageTime,
+                    value: impact.sipValue,
+                    name: impact[stepKey],
+                    ...(isTerminals
+                        ? {
+                              nbUsers: impact.totalNbUsers,
+                              usageTime: impact.avgUsageTime,
+                          }
+                        : {
+                              averageUsage: impact.totalAvgUsage,
+                              averageWorkLoad: impact.totalAvgWorkLoad,
+                          }),
                     rawValue: impact.rawValue,
                     unit: impact.unit,
+                    statusCount: impact.statusCount,
                 });
             });
-        } else {
-            const childData = seriesData.find(
-                (item: any) => item.name === this.selectedDetailParam,
-            );
-
-            if (childData) {
-                const order = LifeCycleUtils.getLifeCycleList();
-
-                childData.impact.forEach((impact: any) => {
-                    impact.ACVStep =
-                        LifeCycleUtils.getLifeCycleMap().get(impact.ACVStep) ||
-                        impact.ACVStep;
-                });
-
-                childData.impact.sort((a: any, b: any) => {
-                    return order.indexOf(a.ACVStep) - order.indexOf(b.ACVStep);
-                });
-
-                childData.impact.forEach((impact: any) => {
-                    xAxis.push(this.existingTranslation(impact.ACVStep, "acvStep"));
-                    yAxis.push({
-                        value: impact.sipValue,
-                        name: impact.name,
-                        nbUsers: impact.totalNbUsers,
-                        usageTime: impact.avgUsageTime,
-                        rawValue: impact.rawValue,
-                        unit: impact.unit,
-                    });
-                });
-            }
         }
+        return okMap;
     }
 
     loadStackBarOptionServer(barChartData: any): EChartsOption {
@@ -288,12 +519,39 @@ export class BarChartComponent extends AbstractDashboard {
         const seriesData: any[] = [];
         let detailServers: any[] = [];
 
-        const data4Criteria = this.getSelectedCriteriaData(barChartData, "impactsServer");
-
+        const data4Criteria = this.getSelectedCriteriaData(
+            barChartData,
+            "impactsServer",
+            this.selectedCriteria,
+        );
+        let serverOkmap: StatusCountMap = {};
         data4Criteria.forEach((impact: ServersType) => {
-            let serverType = `digital-services-servers.server-type.${impact.mutualizationType}-${impact.serverType}`;
+            let serverType = this.translate.instant(
+                `digital-services-servers.server-type.${impact.mutualizationType}-${impact.serverType}`,
+            );
             xAxisData.push(serverType);
-
+            const impactVmDisk = impact.servers.flatMap((server) => server.impactVmDisk);
+            serverOkmap[serverType] = {
+                status: {
+                    ok: impactVmDisk.reduce(
+                        (acc, i) =>
+                            acc +
+                            (i.status === Constants.DATA_QUALITY_STATUS.ok
+                                ? i.countValue
+                                : 0),
+                        0,
+                    ),
+                    error: impactVmDisk.reduce(
+                        (acc, i) =>
+                            acc +
+                            (i.status !== Constants.DATA_QUALITY_STATUS.ok
+                                ? i.countValue
+                                : 0),
+                        0,
+                    ),
+                    total: impactVmDisk.reduce((acc, i) => acc + i.countValue, 0),
+                },
+            };
             impact.servers.forEach((server: ServerImpact, index: any) => {
                 detailServers.push({
                     name: server.name,
@@ -308,7 +566,10 @@ export class BarChartComponent extends AbstractDashboard {
                             server.totalSipValue < 1
                                 ? server.totalSipValue
                                 : server.totalSipValue.toFixed(0),
-                            server.impactVmDisk[0].rawValue,
+                            server.impactVmDisk.find(
+                                (impact) =>
+                                    impact.status === Constants.DATA_QUALITY_STATUS.ok,
+                            )?.rawValue ?? 0,
                             server.impactVmDisk[0].unit,
                         ],
                     ],
@@ -326,6 +587,9 @@ export class BarChartComponent extends AbstractDashboard {
                 });
             });
         });
+
+        this.xAxisInput = xAxisData;
+        this.criteriaMap = serverOkmap;
         return {
             tooltip: {
                 show: true,
@@ -352,7 +616,7 @@ export class BarChartComponent extends AbstractDashboard {
                         </div>
                         <div>Impact: ${this.integerPipe.transform(params.data[1])}
                             ${this.translate.instant("common.peopleeq-min")} <br>
-                            ${this.decimalsPipe.transform(params.data[2])} ${params.data[3]} 
+                            ${this.decimalsPipe.transform(params.data[2])} ${params.data[3]}
                         </div>
                         <div>
                             ${this.translate.instant(
@@ -373,8 +637,18 @@ export class BarChartComponent extends AbstractDashboard {
                 type: "category",
                 data: xAxisData,
                 axisLabel: {
-                    formatter: (value) => this.translate.instant(value) || value,
+                    rotate: 30, // Rotate labels if they overlap
+                    formatter: (value) =>
+                        !serverOkmap[value].status.error
+                            ? `{grey| ${this.translate.instant(value) || value}}`
+                            : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,
                     interval: 0, // Display all labels
+                    color: function (value: any) {
+                        return !serverOkmap[value].status.error
+                            ? Constants.GRAPH_GREY
+                            : Constants.GRAPH_RED;
+                    },
+                    rich: Constants.CHART_RICH as any,
                 },
             },
             yAxis: {
@@ -387,13 +661,18 @@ export class BarChartComponent extends AbstractDashboard {
     loadStackBarOptionServerChild(barChartData: any): EChartsOption {
         const xAxis: any[] = [];
         const seriesData: any[] = [];
-
-        const selectedServer =
-            this.getSelectedCriteriaData(barChartData, "impactsServer")
+        let serverChildOkmap: StatusCountMap = {};
+        const selectedServer: ServerImpact =
+            this.getSelectedCriteriaData(
+                barChartData,
+                "impactsServer",
+                this.selectedCriteria,
+            )
                 .find(
                     (data: ServersType) =>
-                        `digital-services-servers.server-type.${data.mutualizationType}-${data.serverType}` ===
-                        this.selectedDetailParam,
+                        this.translate.instant(
+                            `digital-services-servers.server-type.${data.mutualizationType}-${data.serverType}`,
+                        ) === this.selectedDetailParam,
                 )
                 .servers.find(
                     (data: ServerImpact) => data.name === this.selectedDetailName,
@@ -402,18 +681,37 @@ export class BarChartComponent extends AbstractDashboard {
         if (this.serversRadioButtonSelected === "lifecycle") {
             const order = LifeCycleUtils.getLifeCycleList();
             const lifecycleMap = LifeCycleUtils.getLifeCycleMap();
-
             selectedServer.impactStep.forEach(
-                (impact: any) =>
+                (impact) =>
                     (impact.acvStep = lifecycleMap.get(impact.acvStep) || impact.acvStep),
             );
 
-            selectedServer.impactStep.sort((a: any, b: any) => {
+            selectedServer.impactStep.sort((a, b) => {
                 return order.indexOf(a.acvStep) - order.indexOf(b.acvStep);
             });
+            serverChildOkmap = {};
 
             selectedServer.impactStep.forEach((lifecycle: ImpactACVStep) => {
-                xAxis.push(`acvStep.${lifecycle.acvStep}`);
+                const acvStep = this.existingTranslation(lifecycle.acvStep, "acvStep");
+                xAxis.push(acvStep);
+                serverChildOkmap[acvStep] = {
+                    status: {
+                        ok: selectedServer.impactStep.filter(
+                            (i) =>
+                                i.acvStep === lifecycle.acvStep &&
+                                i.status === Constants.DATA_QUALITY_STATUS.ok,
+                        ).length,
+                        error: selectedServer.impactStep.filter(
+                            (i) =>
+                                i.acvStep === lifecycle.acvStep &&
+                                i.status !== Constants.DATA_QUALITY_STATUS.ok,
+                        ).length,
+                        total: selectedServer.impactStep.filter(
+                            (i) => i.acvStep === lifecycle.acvStep,
+                        ).length,
+                    },
+                };
+
                 seriesData.push({
                     value: lifecycle.sipValue,
                     rawValue: lifecycle.rawValue,
@@ -421,11 +719,26 @@ export class BarChartComponent extends AbstractDashboard {
                 });
             });
         } else if (this.serversRadioButtonSelected === "vm") {
-            selectedServer.impactVmDisk.sort((a: any, b: any) =>
-                a.name.localeCompare(b.name),
-            );
+            selectedServer.impactVmDisk.sort((a, b) => a.name.localeCompare(b.name));
+            serverChildOkmap = {};
             selectedServer.impactVmDisk.forEach((vm: ImpactSipValue) => {
                 xAxis.push(vm.name);
+                serverChildOkmap[vm.name] = {
+                    status: {
+                        ok: selectedServer.impactVmDisk.filter(
+                            (i) => i.status === Constants.DATA_QUALITY_STATUS.ok,
+                        ).length,
+                        error: selectedServer.impactVmDisk.filter(
+                            (i) => i.status !== Constants.DATA_QUALITY_STATUS.ok,
+                        ).length,
+                        total: selectedServer.impactVmDisk.length,
+                    },
+                };
+
+                selectedServer.impactVmDisk.every(
+                    (impact: any) => impact.status === Constants.DATA_QUALITY_STATUS.ok,
+                );
+
                 seriesData.push({
                     value: vm.sipValue < 1 ? vm.sipValue : vm.sipValue.toFixed(0),
                     rawValue: vm.rawValue,
@@ -434,15 +747,17 @@ export class BarChartComponent extends AbstractDashboard {
                 });
             });
         }
+        this.xAxisInput = xAxis;
+        this.criteriaMap = serverChildOkmap;
         return {
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
                     const showedHtml = `
-                        <div> 
+                        <div>
                             ${this.integerPipe.transform(params.value)}
                             ${this.translate.instant("common.peopleeq-min")}<br>
-                            ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit} 
+                            ${this.decimalsPipe.transform(params.data.rawValue)} ${params.data.unit}
                         </div>
                     `;
 
@@ -474,8 +789,18 @@ export class BarChartComponent extends AbstractDashboard {
                     type: "category",
                     data: xAxis,
                     axisLabel: {
-                        formatter: (value) => this.translate.instant(value) || value,
+                        rotate: 30, // Rotate labels if they overlap
+                        formatter: (value) =>
+                            !serverChildOkmap[value].status.error
+                                ? `{grey| ${this.translate.instant(value) || value}}`
+                                : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,
                         interval: 0, // Display all labels
+                        color: function (value: any) {
+                            return !serverChildOkmap[value].status.error
+                                ? Constants.GRAPH_GREY
+                                : Constants.GRAPH_RED;
+                        },
+                        rich: Constants.CHART_RICH as any,
                     },
                 },
             ],
@@ -499,6 +824,10 @@ export class BarChartComponent extends AbstractDashboard {
         this.options = this.loadStackBarOptionTerminal(this.terminalData);
     }
 
+    changeCloudsRadioButtonSelected() {
+        this.options = this.loadStackBarOptionCloud(this.cloudData);
+    }
+
     changeServersRadioButtonSelected() {
         this.options = this.loadStackBarOptionServerChild(this.serverData);
     }
@@ -520,5 +849,17 @@ export class BarChartComponent extends AbstractDashboard {
         const g = Math.round((1 - t) * startG + t * endG);
         const b = Math.round((1 - t) * startB + t * endB);
         return `rgb(${r},${g},${b})`;
+    }
+
+    selectedStackBarClick(event: string): void {
+        if (
+            (this.selectedParam == "Terminal" ||
+                this.selectedParam === Constants.CLOUD_SERVICE) &&
+            !this.barChartChild
+        ) {
+            this.barChartChildChange.emit(true);
+            this.selectedDetailNameChange.emit("terminals");
+            this.selectedDetailParamChange.emit(event);
+        }
     }
 }

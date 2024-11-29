@@ -2,6 +2,7 @@
     tabStyleClass="bg-white shadow-none px-3"
     [selected]="open"
     (selectedChange)="onSelectedChange(inventory.id, $event)"
+    [headerAriaLevel]="3"
 >
     <ng-template pTemplate="header">
         <div
@@ -10,6 +11,9 @@
         >
             <div class="flex align-items-center text-lg">
                 {{ inventory.name | monthYear }}
+                @if (inventory.isNewArch) {
+                    <span class="ml-2 text-green-600"> [Beta APIs] </span>
+                }
             </div>
             <div class="flex align-items-center"></div>
             <div class="flex align-items-center">
@@ -18,8 +22,9 @@
                         !inventory.note && (userService.isAllowedInventoryWrite$ | async)
                     "
                     (click)="$event.stopPropagation(); openSidebarNote()"
+                    (keydown.enter)="$event.stopPropagation(); openSidebarNote()"
                     styleClass="inventory-add-button-small mx-2"
-                    [attr.aria-label]="'common.accessibility.addNote' | translate"
+                    [ariaLabel]="'common.accessibility.addNote' | translate"
                     icon="pi pi-plus-circle"
                     [label]="'common.note.add' | translate"
                 />
@@ -27,8 +32,9 @@
                 <p-button
                     *ngIf="inventory.note"
                     (click)="$event.stopPropagation(); openSidebarNote()"
+                    (keydown.enter)="$event.stopPropagation(); openSidebarNote()"
                     styleClass="inventory-attached-button-small mx-2"
-                    [attr.aria-label]="'common.accessibility.attachedNote' | translate"
+                    [ariaLabel]="'common.accessibility.attachedNote' | translate"
                     icon="pi pi-clipboard"
                     [label]="'common.note.attached' | translate"
                 />
@@ -93,7 +99,6 @@
                 </div>
                 <p-button
                     *ngIf="userService.isAllowedInventoryWrite$ | async"
-                    [tabindex]="0"
                     styleClass="bg-transparent text-black-alpha-90 border-1 border-solid border-black-alpha-90 mt-2 pt-1 px-2 pb-1 hover:bg-green-50"
                     (click)="confirmDelete($event)"
                     (keypress)="confirmDelete($event)"
@@ -108,49 +113,64 @@
                     {{ "common.delete" | translate | uppercase }}
                     <p-confirmPopup
                         [style]="{ width: '500px' }"
-                        tabindex="0"
                         closeOnEscape="true"
                     ></p-confirmPopup>
                 </p-button>
             </div>
 
             <div class="col-12 lg:col-4">
-                <span id="loading-history" class="mr-3">
+                <span id="loading-history" class="mr-3" role="heading" [ariaLevel]="4">
                     {{ "inventories.history.loadings" | translate }}
                 </span>
                 <p-button
                     *ngIf="userService.isAllowedInventoryWrite$ | async"
-                    tabindex="0"
                     styleClass="black-button-small vertical-align-top uppercase"
                     (onClick)="openSidebarUploadFile()"
                     >{{ "inventories.load-files-button" | translate }}</p-button
                 >
                 <br />
                 <ul aria-labelledby="loading-history" style="padding: 0">
-                    <div
-                        class="loading-data-container"
-                        *ngFor="let job of inventory.integrationReports"
-                    >
-                        <app-batch-status
-                            [batchStatusCode]="job.batchStatusCode"
-                            [createTime]="job.createTime"
-                            [batchLoading]="true"
-                            [batchName]="job.batchName"
-                            [type]="'loading'"
-                            [inventoryId]="inventory.id"
-                            [inventoryName]="inventory.name"
-                            [fileUrl]="job.resultFileUrl"
-                        ></app-batch-status>
-                    </div>
+                    @if (inventory.isNewArch) {
+                        <li
+                            class="loading-data-container"
+                            *ngFor="let task of inventory.tasks"
+                        >
+                            <app-batch-status
+                                [batchStatusCode]="task.status"
+                                [createTime]="task.creationDate"
+                                [batchLoading]="true"
+                                [type]="'loading'"
+                                [inventoryId]="inventory.id"
+                                [inventoryName]="inventory.name"
+                                [fileUrl]="task.resultFileUrl"
+                                [batchName]="task.id.toString()"
+                            ></app-batch-status>
+                        </li>
+                    } @else {
+                        <li
+                            class="loading-data-container"
+                            *ngFor="let job of inventory.integrationReports"
+                        >
+                            <app-batch-status
+                                [batchStatusCode]="job.batchStatusCode"
+                                [createTime]="job.createTime"
+                                [batchLoading]="true"
+                                [batchName]="job.batchName"
+                                [type]="'loading'"
+                                [inventoryId]="inventory.id"
+                                [inventoryName]="inventory.name"
+                                [fileUrl]="job.resultFileUrl"
+                            ></app-batch-status>
+                        </li>
+                    }
                 </ul>
             </div>
             <div class="col-12 lg:col-4">
-                <span id="estimate-history" class="mr-3">
+                <span id="estimate-history" class="mr-3" role="heading" [ariaLevel]="4">
                     {{ "inventories.history.estimations" | translate }}
                 </span>
                 <p-button
                     *ngIf="userService.isAllowedInventoryWrite$ | async"
-                    tabindex="0"
                     [disabled]="isEstimationDisabled()"
                     styleClass="black-button-small vertical-align-top uppercase"
                     class="disabled-text-black"
@@ -166,7 +186,6 @@
                 <div *ngIf="inventory.lastEvaluationReport">
                     <div
                         *ngIf="isRunning()"
-                        tabindex="0"
                         [attr.aria-label]="
                             'common.accessibility.updateInProgress'
                                 | translate
@@ -193,7 +212,7 @@
                     </div>
 
                     <ul aria-labelledby="estimate-history" class="p-0">
-                        <div
+                        <li
                             class="loading-data-container"
                             *ngFor="let eval of inventory.evaluationReports"
                         >
@@ -202,11 +221,11 @@
                                 [createTime]="eval.createTime"
                                 [type]="'estimation'"
                             ></app-batch-status>
-                        </div>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <div class="right-aligned-button">
+            <div class="flex justify-content-end ml-auto">
                 <p-button
                     styleClass="white-button"
                     styleClass="ml-2"
@@ -216,7 +235,10 @@
                     [plain]="true"
                     (click)="displayPopupFct()"
                     icon="pi pi-cog"
-                    ariaLabel="choose criteria popup"
+                    [ariaLabel]="
+                        'inventories.choose-criteria'
+                            | translate: { inventoryName: (inventory.name | monthYear) }
+                    "
                 >
                 </p-button>
             </div>

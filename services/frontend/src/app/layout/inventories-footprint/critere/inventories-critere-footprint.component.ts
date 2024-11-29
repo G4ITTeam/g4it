@@ -5,14 +5,27 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input, Signal, computed, inject, signal } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    Input,
+    Signal,
+    signal,
+    SimpleChanges,
+} from "@angular/core";
 
 import { EChartsOption } from "echarts";
+import { StatusCountMap } from "src/app/core/interfaces/digital-service.interfaces";
 import {
     Criteria,
+    CriteriaCalculated,
     Criterias,
+    Datacenter,
     EchartPieDataItem,
-    FootprintCalculated,
+    PhysicalEquipmentAvgAge,
+    PhysicalEquipmentLowImpact,
+    PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
@@ -27,35 +40,62 @@ import { AbstractDashboard } from "../abstract-dashboard";
 export class InventoriesCritereFootprintComponent extends AbstractDashboard {
     protected footprintStore = inject(FootprintStoreService);
     private footprintService = inject(FootprintService);
-
-    @Input() footprint: Criteria = {} as Criteria;
+    @Input() footprint: Criterias = {} as Criterias;
+    @Input() criteriaFootprint: Criteria = {} as Criteria;
     @Input() filterFields: string[] = [];
+    @Input() datacenters: Datacenter[] = [];
+    @Input() equipments: [
+        PhysicalEquipmentAvgAge[],
+        PhysicalEquipmentLowImpact[],
+        PhysicalEquipmentsElecConsumption[],
+    ] = [[], [], []];
+    showInconsitencyGraph = false;
 
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
+    peopleeq = Constants.PEOPLEEQ;
     selectedDimension = signal(this.dimensions[0]);
-
     totalValue = 0;
+    criteriaMap: StatusCountMap = {};
+    xAxisInput: string[] = [];
 
-    options: Signal<EChartsOption> = computed(() => {
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes) {
+            this.showInconsitencyGraph = false;
+        }
+    }
+
+    criteriaCalculated: Signal<CriteriaCalculated> = computed(() => {
         const criteria = this.footprintStore.criteria();
 
         const footprint: Criterias = {};
-        footprint[criteria] = this.footprint;
+        footprint[criteria] = this.criteriaFootprint;
 
-        const footprintCalculated = this.footprintService.calculate(
+        const { footprintCalculated } = this.footprintService.calculate(
             footprint,
             this.footprintStore.filters(),
             this.selectedDimension(),
             this.filterFields,
         );
 
-        this.totalValue = this.footprintService.calculateTotal(
-            footprintCalculated,
-            this.footprintStore.unit(),
-        );
+        return {
+            footprints: footprintCalculated,
+            hasError: footprintCalculated.some((f) => f.status.error),
+            total: {
+                impact: footprintCalculated.reduce(
+                    (sum, current) => sum + current.total.impact,
+                    0,
+                ),
+                sip: footprintCalculated.reduce(
+                    (sum, current) => sum + current.total.sip,
+                    0,
+                ),
+            },
+        };
+    });
 
+    options: Signal<EChartsOption> = computed(() => {
         return this.renderChart(
-            footprintCalculated,
+            this.criteriaCalculated(),
             this.selectedDimension(),
             this.footprintStore.unit(),
         );
@@ -81,11 +121,13 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
     });
 
     renderChart(
-        footprintCalculated: FootprintCalculated[],
+        criteriaCalculated: CriteriaCalculated,
         selectedView: string,
         unit: string,
     ): EChartsOption {
-        if (footprintCalculated.length === 0) {
+        this.xAxisInput = [];
+        this.criteriaMap = {};
+        if (criteriaCalculated.footprints.length === 0) {
             return {};
         }
 
@@ -93,32 +135,48 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
         const echartsData: EchartPieDataItem[] = [];
         const otherData: any = [];
 
-        const total = footprintCalculated.reduce(
-            (sum, current) =>
-                sum +
-                (unit === Constants.PEOPLEEQ ? current.total.sip : current.total.impact),
-            0,
-        );
-        footprintCalculated.forEach((item) => {
+        const total =
+            unit === Constants.PEOPLEEQ
+                ? criteriaCalculated.total.sip
+                : criteriaCalculated.total.impact;
+
+        criteriaCalculated.footprints.forEach((item) => {
             const sumValue =
                 unit === Constants.PEOPLEEQ ? item.total.sip : item.total.impact;
             const translated = lifecycleMap.get(item.data);
             const v: any = {
                 value: sumValue,
-                name: translated ? translated : item.data,
+                name: translated ?? item.data,
+                status: item.status,
             };
-            var percent = (sumValue / total) * 100;
+            let percent = (sumValue / total) * 100;
             if (percent < 1) v.percent = percent;
             percent < 1 ? otherData.push(v) : echartsData.push(v);
         });
 
         // Push the single data entry for multiple entities with impact less than 1%.
         if (otherData.length > 0) {
+            const otherValue = otherData
+                .map((data: any) => data.value)
+                .reduce((sum: number, current: number) => sum + current, 0);
+            const otherOk = otherData
+                .map((data: any) => data.status.ok)
+                .reduce((sum: number, current: number) => sum + current, 0);
+            const otherError = otherData
+                .map((data: any) => data.status.error)
+                .reduce((sum: number, current: number) => sum + current, 0);
+            const otherTotal = otherData
+                .map((data: any) => data.status.total)
+                .reduce((sum: number, current: number) => sum + current, 0);
+
             echartsData.push({
-                name: "other",
-                value: otherData
-                    .map((data: any) => data.value)
-                    .reduce((sum: number, current: number) => sum + current, 0),
+                name: this.translate.instant("common.other"),
+                value: otherValue,
+                status: {
+                    ok: otherOk,
+                    error: otherError,
+                    total: otherTotal,
+                },
                 otherData: otherData.sort((a: any, b: any) => a.value < b.value),
             });
         }
@@ -134,6 +192,20 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
             echartsData.sort((a: any, b: any) => a.name.localeCompare(b.name));
         }
 
+        const errorEchartsData = echartsData.filter((e) => e.status?.error > 0);
+        // sort descending of error percentage
+        errorEchartsData.sort(
+            (a: any, b: any) =>
+                b.status?.error! / b.status.total - a.status?.error! / a.status.total,
+        );
+        this.xAxisInput = errorEchartsData.map(
+            (data: any) => this.translate.instant("acvStep")[data.name] ?? data.name,
+        );
+        errorEchartsData.forEach((data) => {
+            if (data.status) {
+                this.criteriaMap[data.name] = { status: data.status };
+            }
+        });
         return {
             height: 700,
             tooltip: {
@@ -173,11 +245,17 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
                         show: true,
                         formatter: (param: any) => {
                             // correct the percentage
-                            return `${this.existingTranslation(
+                            const translatedLabel = this.existingTranslation(
                                 param.name,
                                 selectedView,
-                            )} ${param.percent.toFixed(1)}%`;
+                            );
+                            if (param.data.status.error) {
+                                return `{redBold|\u24d8} {red|${translatedLabel}} {grey|${param.percent.toFixed(1)}%}`;
+                            } else {
+                                return `{grey|${translatedLabel} ${param.percent.toFixed(1)}%}`;
+                            }
                         },
+                        rich: Constants.CHART_RICH as any,
                     },
                     data: echartsData,
                 },

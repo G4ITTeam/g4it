@@ -21,6 +21,8 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceL
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
@@ -29,9 +31,15 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.ModeRest;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
+import com.soprasteria.g4it.backend.common.evaluating.business.EvaluateBoaviztaService;
+import com.soprasteria.g4it.backend.common.evaluating.business.ExportZipService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
+import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.task.business.TaskService;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.exception.UnableToGenerateFileException;
@@ -91,9 +99,18 @@ public class DigitalServiceService {
     private CriteriaService criteriaService;
     @Autowired
     private FileMapperInfo fileInfo;
-
+    @Autowired
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private EvaluateBoaviztaService evaluateBoaviztaService;
+    @Autowired
+    private ExportZipService exportZipService;
+    @Autowired
+    private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
 
     /**
      * Create a new digital service.
@@ -196,7 +213,12 @@ public class DigitalServiceService {
      */
     public void deleteDigitalService(final String digitalServiceUid) {
         indicatorService.deleteIndicators(digitalServiceUid);
+        inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         digitalServiceRepository.deleteById(digitalServiceUid);
+    }
+
+    public void updateLastUpdateDate(final String digitalServiceUid) {
+        digitalServiceRepository.updateLastUpdateDate(LocalDateTime.now(), digitalServiceUid);
     }
 
     /**
@@ -264,7 +286,6 @@ public class DigitalServiceService {
         return digitalServiceBO;
     }
 
-
     /**
      * Get the existing data centers linked to digital service.
      *
@@ -283,8 +304,11 @@ public class DigitalServiceService {
      */
     public void runCalculations(final String subscriber, final Long organizationId, final String digitalServiceUid) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+
         // Remove indicators.
         indicatorService.deleteIndicators(digitalServiceUid);
+        taskService.getTask(digitalServiceUid)
+                .ifPresent(value -> outVirtualEquipmentRepository.deleteByTaskId(value.getId()));
 
         final DigitalServiceBO digitalService = getDigitalService(digitalServiceUid);
 
@@ -333,6 +357,26 @@ public class DigitalServiceService {
             final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalServiceUid);
             digitalServiceToUpdate.setLastCalculationDate(LocalDateTime.now());
             digitalServiceRepository.save(digitalServiceToUpdate);
+
+            if (inVirtualEquipmentRepository.countByDigitalServiceUid(digitalServiceUid) == 0) return;
+
+            Task task = taskService.createDigitalServiceTask(digitalServiceToUpdate, criteriaKeyList);
+
+            Context context = Context.builder()
+                    .subscriber(subscriber)
+                    .organizationId(organizationId)
+                    .digitalServiceUid(digitalServiceUid)
+                    .digitalServiceName(digitalService.getName())
+                    .datetime(LocalDateTime.now())
+                    .build();
+
+            evaluateBoaviztaService.doEvaluate(context, task);
+            exportZipService.uploadZip(task.getId(), context.getSubscriber(), context.getOrganizationId().toString());
+
+            task.setProgressPercentage("100%");
+            task.setStatus(TaskStatus.COMPLETED.toString());
+            task.setLastUpdateDate(LocalDateTime.now());
+            taskService.saveTask(task);
         } else {
             log.error("Unable to write in folder {}.", dir.getAbsolutePath());
             throw new UnableToGenerateFileException();
@@ -584,6 +628,6 @@ public class DigitalServiceService {
 
         Optional<DigitalServiceShared> optDigitalServiceShared = digitalServiceSharedRepository.findByDigitalServiceUidAndUserId(digitalServiceUid, userId);
         optDigitalServiceShared.ifPresent(digitalServiceShared -> digitalServiceSharedRepository.delete(digitalServiceShared));
-
     }
+
 }

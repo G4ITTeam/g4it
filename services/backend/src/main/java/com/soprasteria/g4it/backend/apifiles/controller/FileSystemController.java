@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
+import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.FileSystemApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.FileDescriptionRest;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * FileSystem service to access file storage.
@@ -105,20 +105,22 @@ public class FileSystemController implements FileSystemApiDelegate {
                                                         @PathVariable final String batchName) {
 
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organization, inventoryId);
-        final Optional<String> filename = inventory.getIntegrationReports().stream()
-                .filter(integrationReportBO -> batchName.equals(integrationReportBO.getBatchName()) && integrationReportBO.getResultFileUrl() != null)
-                .map(integrationReportBO -> fileSystemService.getFilenameFromUrl(integrationReportBO.getResultFileUrl(), 1))
-                .findFirst();
 
-        if (filename.isEmpty()) {
-            throw new G4itRestException("404", String.format("integration report is not found in inventory %s on %s/%s",
-                    inventoryId, subscriber, organization));
+        String filename = String.join("/", batchName, Constants.REJECTED_FILES_ZIP);
+
+        if (!inventory.getIsNewArch()) {
+            filename = inventory.getIntegrationReports().stream()
+                    .filter(integrationReportBO -> batchName.equals(integrationReportBO.getBatchName()) && integrationReportBO.getResultFileUrl() != null)
+                    .map(integrationReportBO -> fileSystemService.getFilenameFromUrl(integrationReportBO.getResultFileUrl(), 1))
+                    .findFirst()
+                    .orElseThrow(() -> new G4itRestException("404", String.format("integration report is not found in inventory %s on %s/%s",
+                            inventoryId, subscriber, organization)));
         }
 
-        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.OUTPUT.getFolderName(), filename.get());
+        final String filePath = String.join("/", subscriber, organization.toString(), FileFolder.OUTPUT.getFolderName(), filename);
 
         try {
-            InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.OUTPUT, filename.get());
+            InputStream inputStream = fileSystemService.downloadFile(subscriber, organization, FileFolder.OUTPUT, filename);
             return ResponseEntity.ok(new InputStreamResource(inputStream));
         } catch (BlobStorageException e) {
             if (e.getErrorCode().equals(BlobErrorCode.BLOB_NOT_FOUND)) {

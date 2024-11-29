@@ -33,4 +33,4 @@ child:
         - services/$COMPONENT/**/*
   parallel:
     matrix:
-    - COMPONENT: [ backend, frontend, keycloak ]
+    - COMPONENT: [ backend, frontend, keycloak, documentation ]

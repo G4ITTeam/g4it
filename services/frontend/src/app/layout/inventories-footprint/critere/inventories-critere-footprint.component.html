@@ -4,6 +4,17 @@
             <h3>
                 {{ "inventories-footprint.critere.repartition" | translate }}
             </h3>
+            @if (criteriaCalculated().hasError) {
+                <p-button
+                    (click)="showInconsitencyGraph = !showInconsitencyGraph"
+                    [rounded]="true"
+                    [label]="'inventories-footprint.data-consistency' | translate"
+                    [outlined]="!showInconsitencyGraph"
+                    severity="danger"
+                    class="ml-auto mt-3 mb-2 pr-3"
+                    [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+                />
+            }
             <p-card class="rmv-padding-card">
                 <div class="round-button-container">
                     <button
@@ -19,18 +30,40 @@
                 </div>
             </p-card>
         </div>
-        @if (options().series) {
-            <div echarts class="m-0" [options]="options()" style="height: 480px"></div>
+        @if (showInconsitencyGraph) {
+            @if (options().series && xAxisInput.length) {
+                <app-stack-bar-chart
+                    [xAxisInput]="xAxisInput"
+                    [statusCountMap]="criteriaMap"
+                />
+            } @else {
+                <div class="no-data-bar">
+                    <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+                </div>
+            }
         } @else {
-            <div class="no-data-half">
-                <p class="text-half-empty">{{ "common.no-data" | translate }}</p>
-            </div>
+            @if (options().series) {
+                <div
+                    echarts
+                    class="m-0"
+                    [options]="options()"
+                    style="height: 480px"
+                ></div>
+            } @else {
+                <div class="no-data-half">
+                    <p class="text-half-empty">{{ "common.no-data" | translate }}</p>
+                </div>
+            }
         }
     </div>
     <div>
         <p-card>
             <app-impact-aggregate-infos
-                [displayValue]="totalValue"
+                [displayValue]="
+                    footprintStore.unit() === peopleeq
+                        ? criteriaCalculated().total.sip
+                        : criteriaCalculated().total.impact
+                "
                 [criteria]="footprintStore.criteria()"
                 [unit]="footprintStore.unit()"
                 (changeUnit)="changeUnitInStore($event)"
@@ -40,5 +73,11 @@
                 [content]="infocard().text"
             ></app-information-card>
         </p-card>
+        <app-datacenter-equipment-stats
+            [footprint]="footprint"
+            [filterFields]="filterFields"
+            [datacenters]="datacenters"
+            [equipments]="equipments"
+        />
     </div>
 </div>

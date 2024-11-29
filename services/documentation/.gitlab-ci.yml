@@ -1,0 +1,39 @@
+include:
+  - project: "dep/library/ci-library"
+    ref: production
+    file: "main.yml"
+
+variables:
+  PROJECT_ROOT_DIR: "services/documentation"
+  DISABLE_DEPENDENCY_CHECK: "true"
+  DISABLE_LICENSE_FINDER: "true"
+  DISABLE_SONARQUBE: "true"
+  DISABLE_CHECKMARX: "true"
+  DISABLE_PROMOTE_IMAGE: "true"
+  # disabled by default, to avoid issues when not defined
+  ENABLE_OAUTH_PROXY: "false"
+
+build-application:
+  image: ${CI_REGISTRY}/dep/library/project-oci-images/build-hugo-v0:0.132.2
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    GIT_SUBMODULE_UPDATE_FLAGS: --depth 1
+  script:
+    - cd "${PROJECT_ROOT_DIR}"
+    - hugo -d public/
+  artifacts:
+    paths:
+      - $PROJECT_ROOT_DIR/public/
+
+test-application:
+  extends: .test-application
+  image: !reference [build-application, image]
+  script:
+    - cd "${PROJECT_ROOT_DIR}"
+    - htmltest public/ -c .htmltest.yml --skip-external
+
+build-image:
+  stage: build-image
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME =~ $MAIN_BRANCH_REGEX || $CI_COMMIT_REF_NAME =~ $FEATURE_BRANCH_REGEX'
+      when: always

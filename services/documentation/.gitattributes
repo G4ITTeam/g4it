@@ -1,0 +1,92 @@
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+
+# By default, all text files should have the "lf" (Unix) line endings
+* text eol=lf
+
+# Common files
+*.yml text
+*.xml text
+*.yaml text
+*.md text
+*.txt text
+*.json text
+*.editorconfig text
+*.config text
+*.mustache text
+*.helmignore text
+*.tpl text
+*.sh text
+*.gitmodules text
+*.toml text
+*.conf text
+
+# Java
+*.java text
+*.gradle text
+*.properties text
+*.kts text
+*.snippet text
+*.adoc text
+*.sql text
+
+# front technology
+*.css text
+*.html text
+*.js text
+*.ts text
+*.stylelintrc text
+*.scss text
+*.webmanifest text
+
+# dotnet
+*.sln text
+*.csproj text
+*.user text
+*.cs text
+*.manifest text
+*.resx text
+*.nuspec text
+*.p text
+
+# Windows text files that should be normalized to crlf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary files that should not be normalized or diffed
+*.jar binary
+*.exe binary
+*.dll binary
+*.pdb binary
+*.pfx binary
+*.snk binary
+
+*.chm binary
+*.7z  binary
+*.zip binary
+
+*.pptx binary
+*.xlsx binary
+*.ttf binary
+*.eot binary
+*.mp3 binary
+*.mp4 binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+
+# images can be diff on gitlab, but they are not text
+*.png -text
+*.PNG -text
+*.gif -text
+*.jpg -text
+*.JPG -text
+*.jpeg -text
+*.bmp -text
+*.ico -text
+*.svg -text
+
+# To list all file extensions present in the repo in ps1:
+# Get-Childitem -Recurse | Select-Object Extension -Unique
+

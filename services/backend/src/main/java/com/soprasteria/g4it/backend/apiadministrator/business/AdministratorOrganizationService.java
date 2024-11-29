@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -141,7 +140,7 @@ public class AdministratorOrganizationService {
 
 
         List<UserInfoBO> users = new ArrayList<>(userSubscriberRepository.findBySubscriber(organization.getSubscriber())).stream()
-                .map(userSubscriber -> {
+                .<UserInfoBO>map(userSubscriber -> {
                     List<Role> roles = userSubscriber.getRoles();
                     if (roles.stream().noneMatch(role -> role.getName().equals(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))) {
                         return null;
@@ -160,7 +159,7 @@ public class AdministratorOrganizationService {
                             .build();
                 })
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
         List<Long> adminIds = users.stream()
                 .map(UserInfoBO::getId)
@@ -168,7 +167,7 @@ public class AdministratorOrganizationService {
 
         List<UserInfoBO> usersByOrganization = userOrganizationRepository.findByOrganization(organization).stream()
                 .filter(userOrganization -> !adminIds.contains(userOrganization.getUser().getId()))
-                .map(userOrganization -> {
+                .<UserInfoBO>map(userOrganization -> {
                     User u = userOrganization.getUser();
                     return UserInfoBO.builder()
                             .id(u.getId())
@@ -178,7 +177,7 @@ public class AdministratorOrganizationService {
                             .roles(userOrganization.getRoles().stream().map(Role::getName).toList())
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         return Stream.concat(users.stream(), usersByOrganization.stream()).toList();
     }
@@ -232,13 +231,13 @@ public class AdministratorOrganizationService {
                             .toList();
 
             List<UserRoleOrganization> userRoleOrganizations = userRolesToAdd.stream()
-                    .map(role -> {
-                        return UserRoleOrganization.builder()
-                                .userOrganizations(userOrganization)
-                                .roles(role)
-                                .build();
-                    })
-                    .collect(Collectors.toList());
+                    .<UserRoleOrganization>map(role ->
+                            UserRoleOrganization.builder()
+                                    .userOrganizations(userOrganization)
+                                    .roles(role)
+                                    .build()
+                    )
+                    .toList();
 
             userRoleOrganizationRepository.saveAll(userRoleOrganizations);
 
@@ -284,6 +283,5 @@ public class AdministratorOrganizationService {
             userService.clearUserCache(userRestMapper.toBusinessObject(userOrgEntity.getUser()), subscriber.getName(), organizationId);
         }
     }
-
 
 }

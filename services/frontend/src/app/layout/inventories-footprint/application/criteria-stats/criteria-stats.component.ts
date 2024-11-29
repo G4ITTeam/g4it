@@ -129,9 +129,6 @@ export class CriteriaStatsComponent {
         if (appCount !== 0) {
             averageImpactSip = sipAvgImpact / appCount;
             averageImpactUnit = unitAvgImpact / appCount;
-        } else {
-            averageImpactSip = 0;
-            averageImpactUnit = 0;
         }
 
         return {

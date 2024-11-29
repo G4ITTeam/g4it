@@ -24,4 +24,5 @@ class CriteriaUtilsTest {
         Assertions.assertEquals("Climate change", CriteriaUtils.transformCriteriaKeyToCriteriaName("climate-change"));
         Assertions.assertEquals("", CriteriaUtils.transformCriteriaNameToCriteriaKey("Unknown"));
     }
+
 }

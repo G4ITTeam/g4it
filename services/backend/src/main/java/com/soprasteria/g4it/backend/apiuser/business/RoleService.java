@@ -43,6 +43,7 @@ public class RoleService {
      * @return boolean
      */
     public boolean hasAdminRightsOnAnySubscriber(final UserBO user) {
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getSubscribers().stream()
                 .anyMatch(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR));
     }
@@ -53,6 +54,7 @@ public class RoleService {
      * @param user the user.
      */
     public boolean hasAdminRightsOnAnyOrganization(final UserBO user) {
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getSubscribers().stream()
                 .anyMatch(subscriberBO -> subscriberBO.getOrganizations().stream()
                         .anyMatch(organizationBO -> organizationBO.getRoles().contains(Constants.ROLE_ORGANIZATION_ADMINISTRATOR)));
@@ -67,6 +69,7 @@ public class RoleService {
      * @return boolean
      */
     public boolean hasAdminRightsOnSubscriber(final UserBO user, final Long subscriberId) {
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getSubscribers().stream()
                 .filter(subscriberBO -> Objects.equals(subscriberBO.getId(), subscriberId))
                 .anyMatch(subscriberBO -> subscriberBO.getRoles().contains(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR));
@@ -80,6 +83,7 @@ public class RoleService {
      * @return boolean
      */
     public boolean hasAdminRightsOnOrganization(UserBO user, Long organizationId) {
+        if (Constants.SUPER_ADMIN_EMAIL.equals(user.getEmail())) return true;
         return user.getSubscribers().stream()
                 .anyMatch(subscriberBO -> subscriberBO.getOrganizations().stream()
                         .filter(organizationBO -> Objects.equals(organizationBO.getId(), organizationId))

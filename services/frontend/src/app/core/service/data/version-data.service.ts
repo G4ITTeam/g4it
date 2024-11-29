@@ -10,7 +10,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
 import { Constants } from "src/constants";
-import { Version } from "../../interfaces/version.interfaces";
+import { VersionRest } from "../../interfaces/version.interfaces";
 
 const endpoint = Constants.ENDPOINTS.version;
 
@@ -20,7 +20,7 @@ const endpoint = Constants.ENDPOINTS.version;
 export class VersionDataService {
     constructor(private http: HttpClient) {}
 
-    getVersion(): Observable<Version> {
-        return this.http.get<Version>(`${endpoint}`);
+    getVersion(): Observable<VersionRest> {
+        return this.http.get<VersionRest>(`${endpoint}`);
     }
 }

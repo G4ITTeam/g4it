@@ -58,6 +58,7 @@
         "details-alt": "Access footprint data of",
         "all": "All",
         "empty": "Empty",
+        "organization": "Organization",
         "organization-management": "Organization Management",
         "list-of": "List of ",
         "organizations": "organizations ",
@@ -93,7 +94,17 @@
         "fileNoLongerAvailable": "The file is no longer available",
         "other": "Other",
         "otherLegend": "Other (less than 1%)",
-        "mailTo": "support.g4it@soprasteria.com"
+        "mailTo": "support.g4it@soprasteria.com",
+        "active-page": "Active page",
+        "running": "Running",
+        "pending": "Pending",
+        "completed": "Completed",
+        "completed-with-errors": "Completed with errors",
+        "failed": "Failed",
+        "failed-headers": "Failed headers"
+    },
+    "errors": {
+        "error-occurred": "An error occurred"
     },
     "digital-services": {
         "headerForCreatedByMe": "CREATED BY ME ({{count}})",
@@ -102,14 +113,16 @@
         "not-found": "Digital service does not exist.",
         "expired": "Digital service link is expired.",
         "linkCopied": "LINK COPIED !",
-        "title": "My Digital Services",
+        "title": "My Digital Services - {{OrganizationName}}",
+        "page-title": "My Digital Services",
         "add": "Evaluate New Service",
         "empty-digital-services": "You do not have any digital service.",
         "impacts": "IMPACTS",
         "raw": "Raw value",
         "peopleeq": "People eq.",
         "Terminal": "Terminals",
-        "Server": "Servers",
+        "Server": "Non-Cloud Servers",
+        "CloudService": "Cloud Services",
         "Network": "Networks",
         "visualize": "Visualize",
         "lifecycle": "Lifecycle",
@@ -124,7 +137,9 @@
             "delete-question-shared": "By removing the link to this digital service, you will no longer have access to it. Are you sure ?"
         },
         "return": "Return to my digital services list",
-        "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}"
+        "choose-criteria": "Choose criteria for digital service {{digitalServiceName}}",
+        "delete-criteria": "Delete digital service {{digitalServiceName}}",
+        "unlink-digital-service": "Delete link with digital service {{digitalServiceName}}"
     },
     "digital-services-terminals": {
         "new": "New Device",
@@ -163,8 +178,8 @@
         },
         "edit": "Edit Server",
         "new": "New Server",
-        "servers": "Servers",
-        "server": "Server",
+        "servers": "Non-Cloud Servers",
+        "server": "Non-Cloud Server",
         "add-button": "+ ADD SERVER",
         "id": "#",
         "name": "Name",
@@ -185,8 +200,8 @@
         "electricity": "Annual electricity consumption (kwH)",
         "usage.time": "Annual Operating time (hour)",
         "pue": "PUE",
-        "pue.label": "To learn more about the Power Usage Effectiveness and how it is calculated, see ",
-        "pue.label.link": " here",
+        "pue.label": "To learn more about the Power Usage Effectiveness and how it is calculated, check this page related to",
+        "pue.label.link": " Power Usage Effectiveness",
         "link": "https://en.wikipedia.org/wiki/Power_usage_effectiveness",
         "country": "country",
         "additional": "Additional Parameters",
@@ -201,7 +216,29 @@
         "error.totalvcpu": "The sum of the vCPUs of the VMs ({{ totalVmvCpu }} {{totalVmvCpuUnit}}) exceeds the capacities of the server",
         "error.disk": "The storage capacity of the VMs exceeds the capacities of the server",
         "error.quantity": "Quantity cannot be zero",
-        "pue.rule": "must be >= 1"
+        "pue.rule": "must be >= 1",
+        "error.server-already-exists": "Server already exists"
+    },
+    "digital-services-cloud-services": {
+        "new": "New Cloud Instance",
+        "cloud-services": "Cloud Services",
+        "cloud-service": "Cloud Service",
+        "add": "+ ADD CLOUD SERVICE",
+        "id": "#",
+        "name": "Name",
+        "location": "Location",
+        "cloud-provider": "Cloud provider",
+        "instance-type": "Instance type",
+        "instance": "Instance",
+        "average-workload": "Average workload (% CPU usage)",
+        "annual-usage": "Annual usage duration (hours)",
+        "hours": "hours",
+        "quantity": "Quantity",
+        "usage": "Instance usage",
+        "configuration": "Instance configuration",
+        "error.service-already-exists": "Cloud service already exists",
+        "tooltip_average_workload": "Average workload",
+        "tooltip_annual_usage": "Annual usage"
     },
     "Jan": "Jan",
     "Feb": "Feb",
@@ -222,6 +259,8 @@
         "duplicateSimulation": "Simulation already exist",
         "nameValidation": "Special characters are not allowed",
         "inventory": "Inventory",
+        "page-title": "My Information System",
+        "equipment-page-title": "My impact G4IT",
         "title": "My Information System - Organization {{OrganizationName}}",
         "add": "New inventory",
         "created": "created",
@@ -252,14 +291,15 @@
         "eq-phys": "Equipment",
         "eq-virt": "Virtual Eq.",
         "app": "Application",
-        "date": "Date\nMM/YYYY",
+        "date": "Date in MM/YYYY format",
         "type": {
             "is-version": "IS version",
             "simulation": "Simulation",
             "dc": "Datacenter",
             "eq-phys": "Physical Equipment",
             "eq-virt": "Virtual Equipment",
-            "app": "Application"
+            "app": "Application",
+            "name": "Type of inventories"
         },
         "popup": {
             "delete-question": "Are you sure you want to delete the inventory",
@@ -269,6 +309,7 @@
         "return": "Return to my inventories list",
         "details-alt.equipment": "Access equipment footprint data of",
         "details-alt.application": "Access application footprint data of",
+        "download-alt": "Download",
         "download-result": "Download integration result file for",
         "creation-successful": "Inventory created successfully",
         "new-inventory-choose": "Choose between IS version and simulation",
@@ -282,7 +323,8 @@
             "data-model": "DataModel ({{type}}, {{size}} KB)",
             "starter-pack": "Starter pack"
         },
-        "choose-criteria": "Choose criteria for inventory {{inventoryName}}"
+        "choose-criteria": "Choose criteria for inventory {{inventoryName}}",
+        "calendar": "Calendar"
     },
     "inventories-footprint": {
         "filter": "Filter your visualisation",
@@ -303,6 +345,7 @@
             "export": "Export",
             "download": "Download"
         },
+        "data-consistency": "Data consistency",
         "round-button": {
             "acvStep": "Lifecycle",
             "country": "Country",
@@ -380,6 +423,18 @@
         }
     },
     "toast-errors": {
+        "unknown": {
+            "title": "Unknown error",
+            "text": "Please contact the support for help"
+        },
+        "backend-unreachable": {
+            "title": "Backend APIs are not reachable",
+            "text": "Please contact the support for help"
+        },
+        "payload-too-large": {
+            "title": "Maximum file size exceeded",
+            "text": "The maximum file size for import is 100MB"
+        },
         "subscriber-or-organization-not-found": {
             "title": "No souscripteur or organisation found",
             "text": "Please ask your administrator to attach you to an organization"
@@ -391,20 +446,40 @@
         "insuffisant-right-organization": {
             "title": "Organization not authorized",
             "text": "Please ask your administrator to attach you to the organization"
+        },
+        "boavitzapi-no-country-found": {
+            "title": "Boavizta referential",
+            "text": "Countries not found in boavizta referential"
+        },
+        "boavitzapi-no-cloud-provider-found": {
+            "title": "Boavizta referential",
+            "text": "Cloud providers not found in boavizta referential"
+        },
+        "boavitzapi-no-instance-found": {
+            "title": "Boavizta referential",
+            "text": "Instances not found in boavizta referential"
+        },
+        "boavitzapi-calculation-failed": {
+            "title": "Boavizta calculation",
+            "text": "API Boavizta failed evaluating instances"
+        },
+        "task.already.running": {
+            "title": "Task already in progress",
+            "text": "A running task is already started. Please try again later"
         }
     },
     "digital-services-cards": {
         "global-vision": {
             "title": "Towards the eco-design of your service",
-            "content": "This graph represents the various environmental impacts attributed to your digital service for 1 year of operation. It takes into account the entire lifecycle of the equipments that enables your service to operate (from manufacturing to end of life) for all the criteria listed on the left side of the screen. <br> <br> ​It helps you understand where to start your analysis in order to effectively reduce the impact of your service. But beware: by seeking to reduce the impact of one criterion, you run the risk of transferring the impact to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>example</a>). One way of avoiding this pitfall is to demonstrate sobriety at all levels of your service. <br> <h3>​ A scale suited to multi-criteria analysis: the people equivalent. </h3>​ All graphs are expressed in 'people Eq': to understand this unit, imagine defining a fixed amount for each resident of the planet, corresponding to the planetary limits that must not be exceeded individually to guarantee the overall balance of the system. This theoretical fixed amount is obtained by dividing the maximum quantity of negative externalities allowed by the Earth system (as defined <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>here</a>) by the number of people. <br> <br> ​This unit makes it possible to compare the criteria and target your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>definition</a>) on what really matters. <br> <br>​ To find out more about what's at stake: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>click here</a>. <br> <br>​ To carry out an audit of your application, the Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a great starting point."
+            "content": "This graph represents the various environmental impacts attributed to your digital service for 1 year of operation. It takes into account the entire lifecycle of the equipments that enables your service to operate (from manufacturing to end of life) for all the criteria listed on the left side of the screen. <br> <br> ​It helps you understand where to start your analysis in order to effectively reduce the impact of your service. But beware: by seeking to reduce the impact of one criterion, you run the risk of transferring the impact to another criterion or another phase of the life cycle (<a href='https://www.eco-conception.fr/static/leco-conception-les-concepts.html' target='_blank'>eco-design principles</a>). One way of avoiding this pitfall is to demonstrate sobriety at all levels of your service. <br> <h3>​ A scale suited to multi-criteria analysis: the people equivalent. </h3>​ All graphs are expressed in 'people Eq': to understand this unit, imagine defining a fixed amount for each resident of the planet, corresponding to the planetary limits that must not be exceeded individually to guarantee the overall balance of the system. This theoretical fixed amount is obtained by dividing the maximum quantity of negative externalities allowed by the Earth system (as defined <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/JRC_Technical_Report_Consumption_and_Consumer_Footprint_methodology_and_results_p26.png' target='_blank'>in this technical report about consumption and consumer footprint</a>) by the number of people. <br> <br> ​This unit makes it possible to compare the criteria and target your eco-design action plan (see <a href='https://learninglab.gitlabpages.inria.fr/mooc-impacts-num/mooc-impacts-num-ressources/en/Partie3/FichesConcept/FC3.4.1-EcoconceptionPilierEconomieCirculaire-MoocImpactNum.html?lang=en' target='_blank'>eco-design definition</a>) on what really matters. <br> <br>​ To find out more about what's at stake: <a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='blank'>check this report on the environmental impact of ICT</a>. <br> <br>​ To carry out an audit of your application, the Référentiel Général d'Ecoconception de Services Numériques (<a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>) is a great starting point."
         },
         "terminal": {
             "title": "Analysis and ecoconception leverage",
-            "content": "Here you are looking at the impact of the terminals using your digital service.​ <br> <br> The calculation method currently used as the reference in <a href='https://en.wikipedia.org/wiki/Life-cycle_assessment' target='_blank'>LCA</a> methods takes into account the type of equipment used, its location, and user journey times. ​<br> <br> The type of equipment on which the service is consumed has an influence on the impact at the manufacturing, distribution, and end-of-life stages: the larger and more complex the equipment, the greater its impact. To reduce the impact, you can make sure that your service runs on terminals with small screens, on older equipment (OS more than 5 years old, etc.) and with low performance; you will then be helping to reduce the renewal of equipment... and the digital divide. ​<br> <br> The location of users influences the impact of the service. It is directly linked to the methods used to produce the electrical energy consumed when the service is in use (<a href='https://ourworldindata.org/electricity-mix' target='_blank'>find out more here</a>).​ <br> <br> Finally, you can optimise the user experience by eliminating functions that provide little or no value, which will also reduce the infrastructure required."
+            "content": "Here you are looking at the impact of the terminals using your digital service.​ <br> <br> The calculation method currently used as the reference in <a href='https://en.wikipedia.org/wiki/Life-cycle_assessment' target='_blank'>LCA</a> methods takes into account the type of equipment used, its location, and user journey times. ​<br> <br> The type of equipment on which the service is consumed has an influence on the impact at the manufacturing, distribution, and end-of-life stages: the larger and more complex the equipment, the greater its impact. To reduce the impact, you can make sure that your service runs on terminals with small screens, on older equipment (OS more than 5 years old, etc.) and with low performance; you will then be helping to reduce the renewal of equipment... and the digital divide. ​<br> <br> The location of users influences the impact of the service. It is directly linked to the methods used to produce the <a href='https://ourworldindata.org/electricity-mix' target='_blank'>electrical energy consumed when the service is in use</a>.​ <br> <br> Finally, you can optimise the user experience by eliminating functions that provide little or no value, which will also reduce the infrastructure required."
         },
         "network": {
             "title": "Analysis and ecoconception leverage",
-            "content": "This graph shows the impact of data exchanged on the network.​ <br> <br> This impact is proportional to the quantity of GB exchanged on the mobile network, and for the fixed network, the impact mainly depends on the size of the network (optical fiber or copper cables).​ <br> <br> It is generally preferable to use a fixed network, which has less impact than the mobile network if you reduce the impact to the number of GB exchanged (see <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>here</a> and <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>here</a>). ​<br> <br> To reduce this impact, reduce the amount of data exchanged as much as possible by:​ <br> <br> - Questioning the need (is the presence of a video necessary (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>learn more</a>)? Can text replace an image? Is HD essential? ​<br> <br> - Optimizing formats (image size and compression) ​<br> <br> - Respecting best practice (not automatically launching videos, avoiding infinite page scrolling, using standard fonts, etc.) (<a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>learn more</a>)"
+            "content": "This graph shows the impact of data exchanged on the network.​ <br> <br> This impact is proportional to the quantity of GB exchanged on the mobile network, and for the fixed network, the impact mainly depends on the size of the network (optical fiber or copper cables).​ <br> <br> It is generally preferable to use a fixed network, which has less impact than the mobile network if you reduce the impact to the number of GB exchanged (see <a href='https://www.greenit.fr/wp-content/uploads/2021/12/EU-Study-LCA-7-DEC-EN.pdf' target='_blank'>this study on digital technologies in Europe</a> and <a href='https://www.arcep.fr/uploads/tx_gspublication/enquete-PNS-edition2022-infographie_avril2022.pdf' target='_blank'>this survey on sustainable digital</a>). ​<br> <br> To reduce this impact, reduce the amount of data exchanged as much as possible by:​ <br> <br> - Questioning the need (<a href='https://theshiftproject.org/article/climat-insoutenable-usage-video/' target='_blank'>is the presence of a video necessary?</a> Can text replace an image? Is HD essential?) ​<br> <br> - Optimizing formats (image size and compression) ​<br> <br> - <a href='https://gr491.isit-europe.org/en/?tag=VOL&famille=contents' target='_blank'>Respecting best practice about volumetry</a> (not automatically launching videos, avoiding infinite page scrolling, using standard fonts, etc.)"
         },
         "server": {
             "title": "Analysis and ecoconception leverage",
@@ -412,7 +487,15 @@
         },
         "server-lifecycle": {
             "title": "Analysis and ecoconception leverage",
-            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use’s impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
+            "content": "Here is the distribution of your server impact according to its lifecycle step. ​<br> <br>In order to reduce the use’s impact, you need to reduce the amount of energy consumed by your server or VM. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a href='https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiSivi34pqBAxWAVaQEHUXMCAkQFnoECA8QAQ&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPower_usage_effectiveness&usg=AOvVaw2-B8wi_Zi1A27IGSjPYaEQ&opi=89978449' target='_blank'>PUE</a> and in a country with a less impacting electric mix – <a href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md' target='_blank'>see table on the impact of electricity mixes</a>).​ ​<br> <br>For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/' target='_blank'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see good practices in digital service ecodesign for software developers</a>).​ ​<br> <br>For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. ​​<br> <br>For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level. "
+        },
+        "cloudservice": {
+            "title": "Analysis and ecoconception leverage",
+            "content": "Here's a breakdown of the impact of hosting your service in the cloud. This chart will help you identify the instances you need to focus on. <br/> <br/>Please note: unlike on-premises servers, cloud service providers provide little information about the physical resources allocated. We therefore use a calculation method that is not used by cloud providers. <br/> <br/>To reduce the impact of cloud instances, your levers of action relate to : <br/> <br/>-How you use them: shutdowns outside windows of use, autoscaling, load rate (even if not yet included in the calculation), data retention time, use of caches, etc.<br/><br/> -The location of your instances: choose a hosting provider whose servers are located in a country with low power consumption. Wherever possible, it's also a good idea to choose a host that's close to your users or identified activities. <br/> <br/>You can also follow the sustainability best practice guides specific to each public cloud provider: <br/>- <a href='https://techcommunity.microsoft.com/blog/azurearchitectureblog/announcing-sustainability-guidance-in-the-azure-well-architected-framework/3649812' target='_blank'>Azure best practice guide</a> <br/>  - <a href='https://cloud.google.com/architecture/framework/sustainability?hl=en' target='_blank'>GCP best practice guide</a> <br/> - <a href='https://aws.amazon.com/fr/blogs/aws/sustainability-pillar-well-architected-framework/' target='_blank'>AWS best practice guide </a> <br/> <br/> You can click on the graphic to specify the levers you can mobilise on your servers."
+        },
+        "cloud-lifecycle": {
+            "title": "Analysis and ecoconception leverage",
+            "content": "Here is the distribution of your instance type impact according to its lifecycle step. ​<br/><br/> In order to reduce the use’s impact, you need to reduce the amount of energy consumed. To do so, you can transfer to a more efficient datacenter (it means, with a lower <a target='_blank' href='https://en.wikipedia.org/wiki/Power_usage_effectiveness'>PUE</a> and in a country with a less impacting electric mix – <a target='_blank' href='https://innersource.soprasteria.com/g4it/docs/-/blob/main/Hosting%20Efficiency.md'>see table on the impact of electricity mixes</a>). <br/><br/> For a compute server, the aim is to reduce the calculation’s quantity (by selecting <a target='_blank' href='https://thenewstack.io/which-programming-languages-use-the-least-electricity/'>less greedy</a> technologies, by deleting functionalities, by optimizing treatments … <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>see more</a>).​ <br/><br/> For a storage server, the aim is to especially reduce the reading/writing operations and optimize the fill rates to limit the number of servers required. <br/><br/> For other impacts, the levers depends on the servers, their lifespan, their mutualization type and level."
         }
     },
     "acvStep": {
@@ -437,7 +520,7 @@
             "inventory-title": "Climate change (kg eq. CO2)",
             "inventory-text": "Global phenomenon of climate change characterized by a general increase in average temperatures, permanently modifying meteorological balances and ecosystems",
             "digital-services-card-title": "Why Climate Change matters and how engage action ?",
-            "digital-services-card-content": "<strong>Climate Change (kg CO<sub>2</sub> eq.):</strong> this criteria measures radiative forcing as global warming potential (GWP100) that increase in the average global temperature resulting from greenhouse gas emission. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Climate Change (kg CO<sub>2</sub> eq.):</strong> this criteria measures radiative forcing as global warming potential (GWP100) that increase in the average global temperature resulting from greenhouse gas emission. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "climate"
         },
         "resource-use": {
@@ -447,7 +530,7 @@
             "inventory-title": "Depletion of natural resources (kg eq. Sb)",
             "inventory-text": "Non-living resources naturally present in the environment. Among them, the rare earths, the increasing extraction of which causes the release of toxic pollutants, are in limited quantities.",
             "digital-services-card-title": "Why Resource Use matters and how engage action ?",
-            "digital-services-card-content": "<strong>Resource Use (kg Sb eq.):</strong> this criteria measures abiotic resource depletion relative to ultimate reserve. Abiotic resource correspond to all raw materials that are not derived from living organisms, which are non-renewable. Their depletion depriving for future generations. <br> <br>Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Resource Use (kg Sb eq.):</strong> this criteria measures abiotic resource depletion relative to ultimate reserve. Abiotic resource correspond to all raw materials that are not derived from living organisms, which are non-renewable. Their depletion depriving for future generations. <br> <br>Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "hourglass"
         },
         "ionising-radiation": {
@@ -456,7 +539,7 @@
             "inventory-title": "Ionizing radiation (eq. kBq U235)",
             "inventory-text": "Radiation that produces ionizations in the material it passes through. Even in low doses, it can lead to risks of long-term effects like cancer.",
             "digital-services-card-title": "Why Ionizing Radiation matters and how engage action ?",
-            "digital-services-card-content": "<strong>Ionizing Radiation (kBq U<sub>235</sub> eq.):</strong> this criteria measures Human exposure efficiency relative to Uranium 235, that produces ionizations in the material it passes through. Even in low doses, it can lead to risks of long-term effects like cancer. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Ionizing Radiation (kBq U<sub>235</sub> eq.):</strong> this criteria measures Human exposure efficiency relative to Uranium 235, that produces ionizations in the material it passes through. Even in low doses, it can lead to risks of long-term effects like cancer. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "ion",
             "unite": "KBq U<sub>235</sub> eq."
         },
@@ -467,77 +550,77 @@
             "inventory-title": "Acidification (mol eq. H+)",
             "inventory-text": "Emission of sulfur compounds (mainly due to combustion processes in the production of electricity, heating and transport) generates a global acidification of the oceans, atmosphere and soils which disturbs the ecosystems.",
             "digital-services-card-title": "Why Acidification matters and how engage action ?",
-            "digital-services-card-content": "<strong>Acidification (mol H<sup>+</sup> eq.):</strong> this criteria measures accumulated exceedance of H+ ions produce by emission of sulfur compounds (mainly due to combustion processes in the production of electricity, heating and transport) generates a global acidification of the oceans, atmosphere and soils which disturbs the ecosystems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Acidification (mol H<sup>+</sup> eq.):</strong> this criteria measures accumulated exceedance of H+ ions produce by emission of sulfur compounds (mainly due to combustion processes in the production of electricity, heating and transport) generates a global acidification of the oceans, atmosphere and soils which disturbs the ecosystems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "ph"
         },
         "particulate-matter": {
             "title": "Particulate matter",
             "name": "Particulate matter",
             "unite": "Disease incidence",
-            "inventory-title": "Fine particle emissions",
+            "inventory-title": "Fine particle emissions (Disease incidence)",
             "inventory-text": "Microscopic particles suspended in the ambient air. They are fine enough to enter the respiratory tract causing a harmful effect on health.",
             "digital-services-card-title": "Why Particulate Matter matters and how engage action ?",
-            "digital-services-card-content": "<strong>Particulate Matter (Disease incidence):</strong> this criteria measures impact on human health (disease incidence) caused by Microscopic particles suspended in the ambient air (fine enough to enter the respiratory tract causing a harmful effect on health) and its precursors (e.g. sulfur and nitrogen oxides). <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Particulate Matter (Disease incidence):</strong> this criteria measures impact on human health (disease incidence) caused by Microscopic particles suspended in the ambient air (fine enough to enter the respiratory tract causing a harmful effect on health) and its precursors (e.g. sulfur and nitrogen oxides). <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "factory"
         },
         "ozone-depletion": {
             "title": "Ozone depletion",
             "name": "Ozone depletion",
             "unite": "kg CFC-11 eq",
-            "inventory-title": "Ozone depletion",
+            "inventory-title": "Ozone depletion (kg CFC-11 eq.)",
             "inventory-text": "Depletion of the stratospheric ozone layer protecting from hazardous ultraviolet radiation.",
             "digital-services-card-title": "Why Ozone Depletion matters and how to engage action ?",
-            "digital-services-card-content": "<strong>Ozone depletion (kg CFC-11 eq.) :</strong> this criteria measures the depletion of the stratospheric ozone layer protecting from hazardous ultraviolet radiation.<br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Ozone depletion (kg CFC-11 eq.) :</strong> this criteria measures the depletion of the stratospheric ozone layer protecting from hazardous ultraviolet radiation.<br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "ozone"
         },
         "photochemical-ozone-formation": {
             "title": "Photochemical ozone formation",
             "name": "Photochemical ozone formation",
             "unite": "kg NMVOC eq",
-            "inventory-title": "Photochemical ozone formation",
+            "inventory-title": "Photochemical ozone formation (kg NMVOC eq.)",
             "inventory-text": "Potential of harmful tropospheric ozone formation ('summer smog') from air emissions.",
             "digital-services-card-title": "Why Photochemical ozone formation matters and how to engage action ?",
-            "digital-services-card-content": "<strong>Photochemical ozone formation (kg NMVOC eq.) :</strong> this criteria measures the otential of harmful tropospheric ozone formation ('summer smog') from air emissions. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Photochemical ozone formation (kg NMVOC eq.) :</strong> this criteria measures the otential of harmful tropospheric ozone formation ('summer smog') from air emissions. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "photochemical"
         },
         "eutrophication-terrestrial": {
             "title": "Eutrophication, terrestrial",
             "name": "Eutrophication, terrestrial",
             "unite": "mol N eq",
-            "inventory-title": "Eutrophication, terrestrial",
+            "inventory-title": "Eutrophication, terrestrial (mol N eq.)",
             "inventory-text": "Eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems.",
             "digital-services-card-title": "Why the terrestrial Eutrophication matters and how to engage action ?",
-            "digital-services-card-content": "<strong>Euthrophication, terrestrial (mol N eq.) :</strong> this criteria measures the eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Euthrophication, terrestrial (mol N eq.) :</strong> this criteria measures the eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "terrestrial"
         },
         "eutrophication-freshwater": {
             "title": "Eutrophication, freshwater",
             "name": "Eutrophication, freshwater",
             "unite": "kg P eq",
-            "inventory-title": "Eutrophication, freshwater",
+            "inventory-title": "Eutrophication, freshwater (kg P eq.)",
             "inventory-text": "Eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems.",
             "digital-services-card-title": "Why the freshwater Eutrophication matters and how to engage action ?",
-            "digital-services-card-content": "<strong>Euthrophication, freshwater kg P eq.) :</strong> this criteria measures the eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Euthrophication, freshwater (kg P eq.) :</strong> this criteria measures the eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "freshwater"
         },
         "eutrophication-marine": {
             "title": "Eutrophication, marine",
             "name": "Eutrophication, marine",
             "unite": "kg N eq",
-            "inventory-title": "Eutrophication, marine",
+            "inventory-title": "Eutrophication, marine (kg N eq.)",
             "inventory-text": "Eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems.",
             "digital-services-card-title": "Why the marine Eutrophication matters and how to engage action ?",
-            "digital-services-card-content": "<strong>Euthrophication, marine (kg N eq.) :</strong> this criteria measures the eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Euthrophication, marine (kg N eq.) :</strong> this criteria measures the eutrophication and potential impact on ecosystems caused by nitrogen and phosphorous emissions mainly due to fertilizers, combustion, sewage systems. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "marine"
         },
         "resource-use-fossils": {
             "title": "Resource use, fossils",
             "name": "Resource use, fossils",
             "unite": "MJ",
-            "inventory-title": "Resource use, fossils",
+            "inventory-title": "Resource use, fossils (MJ)",
             "inventory-text": "Depletion of non-renewable resources and deprivation for future generations.",
             "digital-services-card-title": "Why the Resource use of fossils matters and how to engage action ?",
-            "digital-services-card-content": "<strong>Resource use, fossils (MJ) :</strong> this criteria measures the depletion of non-renewable resources and deprivation for future generations. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>here</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>here</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
+            "digital-services-card-content": "<strong>Resource use, fossils (MJ) :</strong> this criteria measures the depletion of non-renewable resources and deprivation for future generations. <br> <br> Bibliographic studies (<a href='https://theshiftproject.org/en/article/lean-ict-our-new-report/' target='_blank'>report on the environmental impact of ICT</a> + <a href='https://www.arcep.fr/la-regulation/grands-dossiers-thematiques-transverses/lempreinte-environnementale-du-numerique.html' target='_blank'>brief on digital technology's environmental footprint</a>) often show that the most significant impact of a digital service is linked to the user terminals, followed by the servers and finally the networks.<br><br>This graph shows the distribution of impacts for your digital service, and is your entry point for concrete action: depending on the third party observed, the actions you can take will differ.<br><br>Click on the graph to analyze more precisely where the impacts of your service come from. In these inserts, you will find a number of levers for action, and here are a few relevant references to take you further: <a href='https://ecoresponsable.numerique.gouv.fr/publications/referentiel-general-ecoconception/' target='_blank'>RGESN</a>, <a href='https://github.com/cnumr/best-practices' target='_blank'>115 Web Ecodesign Best Practices</a>, <a href='https://eco-conception.designersethiques.org/guide/en/' target='_blank'>Designers Ethiques</a>, <a href='https://cnrs.hal.science/ECOINFO/hal-03977001v1' target='_blank'>EcoInfo</a>, <a href='https://github.com/cnumr/GreenIT-Analysis/blob/master/README.md' target='_blank'>GreenIT Analysis</a>.",
             "icon": "fossils"
         }
     },
@@ -555,6 +638,7 @@
         "user-placeholder": "Choose organisation",
         "delete": "DELETE",
         "cancel-deletion": "Cancel delete",
+        "cancel-deletion-accessibility": "Cancel deletion of {{organizationName}} organization",
         "cancel-deletion-message": "Your organization's data will be deleted on {{date}}",
         "delete-confirmation": "Deletion confirmation",
         "delete-message": "After 7 days, all your organization's data will be deleted. Are you sure you want to delete this organization ?",
@@ -583,7 +667,9 @@
             "choose-criteria": "Choose criteria for subscriber {{subscriber}}",
             "error": "At least one criteria must be selected",
             "is-header": "Information system module",
-            "ds-header": "Digital service module"
+            "ds-header": "Digital service module",
+            "title": "User",
+            "unauthorized-domain": "User email domain is not authorized for Administrator"
         },
         "role": {
             "read": "Read",
@@ -605,5 +691,12 @@
             "information-system-module": "Module système d'information",
             "digital-service-module": "Module de services numériques"
         }
+    },
+    "error-graph": {
+        "impact-calculated": "Impacts Calculated",
+        "unable-calculate": "Unable to calculate"
+    },
+    "header": {
+        "menu": "main menu"
     }
 }

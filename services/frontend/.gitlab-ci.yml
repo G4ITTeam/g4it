@@ -9,15 +9,14 @@ variables:
   DISABLE_PROMOTE_IMAGE: "true"
   DISABLE_DEPENDENCY_CHECK: "true"
   PROJ_FILE_PATH: "package.json"
-  ANGULAR_CLI_VERSION: "17.0.9"
 
 build-application:
   extends: .job-with-web-requests
-  image: ${CI_REGISTRY}/dep/library/project-oci-images/build-angular-node-v20:update3
+  image: ${CI_REGISTRY}/dep/library/project-oci-images/build-angular-node-v20:20.18.0
   script: |
     cd "${PROJECT_ROOT_DIR}"
     npm ci
-    npm run build
+    npm run build:overgreen
   cache:
     # cache node_modules & dist folders for pipeline performances
     policy: pull-push
@@ -37,7 +36,6 @@ test-application:
   image: !reference [build-application, image]
   script:
     - cd "${PROJECT_ROOT_DIR}"
-    - npm link @angular/cli@${ANGULAR_CLI_VERSION}
     - npm run test:ci
   coverage: '/Statements\s+:\s(\d+.?\d+)%/'
   # need to explicitly set the same paths: as for the build-application (and same dependencies) for it to work

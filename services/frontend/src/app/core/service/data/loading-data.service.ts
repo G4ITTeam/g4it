@@ -11,6 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
 import { FileDescription, LoadingBody } from "../../interfaces/file-system.interfaces";
+import { TaskIdRest } from "../../interfaces/task.interfaces";
 
 const endpoint = Constants.ENDPOINTS.inventories;
 
@@ -32,7 +33,23 @@ export class LoadingDataService {
         });
         const body = JSON.stringify(fileList);
         return this.http.post<number>(`${endpoint}/${inventoryId}/loading`, body, {
-            headers: headers,
+            headers,
         });
+    }
+
+    launchLoadInputFiles(
+        inventoryId: number,
+        formData: FormData,
+    ): Observable<TaskIdRest> {
+        const headers = new HttpHeaders({
+            "Accept-Language": this.translate.currentLang,
+        });
+        return this.http.post<TaskIdRest>(
+            `${endpoint}/${inventoryId}/load-input-files`,
+            formData,
+            {
+                headers,
+            },
+        );
     }
 }

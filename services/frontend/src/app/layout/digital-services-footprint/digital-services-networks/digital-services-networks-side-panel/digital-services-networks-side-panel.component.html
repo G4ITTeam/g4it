@@ -1,9 +1,15 @@
 <div class="lg-file-panel-margin">
-    <div class="side-panel-title" *ngIf="network.idFront; else new">
+    <div
+        class="side-panel-title"
+        *ngIf="network.idFront; else new"
+        role="heading"
+        appAutofocus
+        tabindex="-1"
+    >
         {{ "digital-services-networks.network" | translate }} #{{ network.idFront }}
     </div>
     <ng-template #new>
-        <div class="side-panel-title">
+        <div class="side-panel-title" role="heading" appAutofocus tabindex="-1">
             {{ "digital-services-networks.new" | translate }}
         </div>
     </ng-template>
@@ -13,7 +19,7 @@
         (ngSubmit)="submitFormData()"
     >
         <div class="label-input-div">
-            <label>{{ "digital-services-networks.type" | translate }}</label>
+            <label for="type">{{ "digital-services-networks.type" | translate }}</label>
             <p-dropdown
                 appendTo="body"
                 [options]="networkTypes"
@@ -23,7 +29,9 @@
                 [required]="true"
                 [(ngModel)]="network.type"
                 name="type"
+                inputId="type"
                 ngDefaultControl
+                lang="en"
             ></p-dropdown>
             <p class="error-text" *ngIf="networksForm.get('type')?.hasError('required')">
                 {{ "digital-services-networks.type" | translate }}
@@ -31,7 +39,9 @@
             </p>
         </div>
         <div class="label-input-div">
-            <label>{{ "digital-services-networks.yearly-go" | translate }}</label>
+            <label for="yearlyQuantityOfGbExchanged">{{
+                "digital-services-networks.yearly-go" | translate
+            }}</label>
             <p-inputNumber
                 formControlName="yearlyQuantityOfGbExchanged"
                 inputId="minmaxfraction"
@@ -44,6 +54,7 @@
                 name="yearlyQuantityOfGbExchanged"
                 ngDefaultControl
                 locale="fr-FR"
+                id="yearlyQuantityOfGbExchanged"
             />
             <p
                 class="error-text"
@@ -75,7 +86,7 @@
                 type="submit"
             >
                 <span *ngIf="!network.idFront">
-                    {{ "common.create" | translate }}
+                    {{ "common.add" | translate }}
                 </span>
                 <span *ngIf="network.idFront">
                     {{ "common.save" | translate }}

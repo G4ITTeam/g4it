@@ -1,0 +1,5 @@
+management.security.enabled: false
+spring:
+  security:
+    enabled: false
+security.basic.enabled: false

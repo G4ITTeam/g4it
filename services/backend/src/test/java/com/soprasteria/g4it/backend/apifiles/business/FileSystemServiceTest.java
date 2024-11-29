@@ -19,8 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class FileSystemServiceTest {
@@ -41,7 +40,7 @@ class FileSystemServiceTest {
                 "text/csv",
                 "goodFile!".getBytes()
         ));
-        ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", okFiles);
+        assertDoesNotThrow(() -> ReflectionTestUtils.invokeMethod(fileSystemService, "checkFiles", okFiles));
     }
 
     @Test

@@ -12,6 +12,10 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ObjectUtils {
 
+    private ObjectUtils() {
+
+    }
+    
     /**
      * Get String value from field name, object instance and instance class
      * In case of NullPointerException, returns ""

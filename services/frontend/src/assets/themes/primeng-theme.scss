@@ -280,7 +280,9 @@ p-autocomplete.ng-dirty.ng-invalid > .p-autocomplete > .p-inputtext {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-autocomplete-panel .p-autocomplete-items {
@@ -339,7 +341,9 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
 .p-datepicker:not(.p-datepicker-inline) {
     background: #fff;
     border: 0 none;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-datepicker:not(.p-datepicker-inline) .p-datepicker-header {
@@ -363,7 +367,10 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-datepicker .p-datepicker-header .p-datepicker-prev:enabled:hover,
 .p-datepicker .p-datepicker-header .p-datepicker-next:enabled:hover {
@@ -383,7 +390,10 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
 .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year,
 .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
     color: rgba(0, 0, 0, 0.87);
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     font-weight: 500;
     padding: 0.5rem;
 }
@@ -451,7 +461,10 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-datepicker .p-timepicker button:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -563,7 +576,11 @@ p-calendar.p-calendar-clearable.p-calendar-w-btn .p-calendar-clear-icon {
 .p-cascadeselect {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.38);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
@@ -600,7 +617,9 @@ p-calendar.p-calendar-clearable.p-calendar-w-btn .p-calendar-clear-icon {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-cascadeselect-panel .p-cascadeselect-items {
@@ -689,7 +708,11 @@ p-cascadeselect.p-cascadeselect-clearable .p-cascadeselect-clear-icon {
     height: 18px;
     color: rgba(0, 0, 0, 0.87);
     border-radius: 4px;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-checkbox .p-checkbox-box .p-checkbox-icon {
@@ -793,13 +816,19 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
     border-color: #fff;
 }
 .p-colorpicker-overlay-panel {
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-dropdown {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.38);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
@@ -842,7 +871,9 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-dropdown-panel .p-dropdown-header {
@@ -965,7 +996,9 @@ p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
 .p-editor-container .p-editor-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
     background: #fff;
     border: 0 none;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border-radius: 4px;
     padding: 0;
@@ -1139,7 +1172,11 @@ p-inputnumber.p-inputnumber-clearable
 }
 .p-inputswitch .p-inputswitch-slider {
     background: rgba(0, 0, 0, 0.38);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 0.5rem;
 }
@@ -1182,7 +1219,11 @@ p-inputswitch.ng-dirty.ng-invalid > .p-inputswitch {
     background: #fff;
     padding: 1rem 1rem;
     border: 1px solid rgba(0, 0, 0, 0.38);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     appearance: none;
     border-radius: 4px;
@@ -1333,7 +1374,11 @@ p-listbox.ng-dirty.ng-invalid > .p-listbox {
 .p-multiselect {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.38);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
@@ -1348,7 +1393,11 @@ p-listbox.ng-dirty.ng-invalid > .p-listbox {
 }
 .p-multiselect .p-multiselect-label {
     padding: 1rem 1rem;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-multiselect .p-multiselect-label.p-placeholder {
@@ -1381,7 +1430,9 @@ p-listbox.ng-dirty.ng-invalid > .p-listbox {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-multiselect-panel .p-multiselect-header {
@@ -1414,7 +1465,10 @@ p-listbox.ng-dirty.ng-invalid > .p-listbox {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-multiselect-panel .p-multiselect-header .p-multiselect-close:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -1491,7 +1545,9 @@ p-password.ng-invalid.ng-dirty > .p-password > .p-inputtext {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
@@ -1532,7 +1588,11 @@ p-password.p-password-clearable.p-password-mask .p-password-clear-icon {
     height: 20px;
     color: var(--black-color);
     border-radius: 50%;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
@@ -1567,7 +1627,11 @@ p-radiobutton.ng-dirty.ng-invalid > .p-radiobutton > .p-radiobutton-box {
 .p-rating .p-rating-icon {
     color: var(--tertiary-color);
     margin-left: 0.5rem;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     font-size: 1.143rem;
 }
@@ -1599,7 +1663,11 @@ p-radiobutton.ng-dirty.ng-invalid > .p-radiobutton > .p-radiobutton-box {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: rgba(0, 0, 0, 0.87);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-selectbutton .p-button .p-button-icon-left,
@@ -1661,7 +1729,11 @@ p-selectbutton.ng-dirty.ng-invalid > .p-selectbutton > .p-button {
     background: var(--tertiary-color);
     border: 0 none;
     border-radius: 50%;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-slider .p-slider-handle:focus {
@@ -1677,15 +1749,25 @@ p-selectbutton.ng-dirty.ng-invalid > .p-selectbutton > .p-button {
     border-color: 0 none;
 }
 .p-slider.p-slider-animate.p-slider-horizontal .p-slider-handle {
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
-        background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1), left 0.2s;
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
+        background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1),
+        left 0.2s;
 }
 .p-slider.p-slider-animate.p-slider-horizontal .p-slider-range {
     transition: width 0.2s;
 }
 .p-slider.p-slider-animate.p-slider-vertical .p-slider-handle {
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
-        background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1), bottom 0.2s;
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
+        background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1),
+        bottom 0.2s;
 }
 .p-slider.p-slider-animate.p-slider-vertical .p-slider-range {
     transition: height 0.2s;
@@ -1694,7 +1776,11 @@ p-selectbutton.ng-dirty.ng-invalid > .p-selectbutton > .p-button {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: rgba(0, 0, 0, 0.87);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-togglebutton.p-button .p-button-icon-left,
@@ -1734,7 +1820,11 @@ p-togglebutton.ng-dirty.ng-invalid > .p-togglebutton.p-button {
 .p-treeselect {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.38);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
@@ -1749,7 +1839,11 @@ p-togglebutton.ng-dirty.ng-invalid > .p-togglebutton.p-button {
 }
 .p-treeselect .p-treeselect-label {
     padding: 1rem 1rem;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-treeselect .p-treeselect-label.p-placeholder {
@@ -1780,7 +1874,9 @@ p-treeselect.ng-invalid.ng-dirty > .p-treeselect {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 .p-treeselect-panel .p-treeselect-header {
@@ -1827,7 +1923,10 @@ p-treeselect.ng-invalid.ng-dirty > .p-treeselect {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-treeselect-panel .p-treeselect-header .p-treeselect-close:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -1869,12 +1968,16 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     padding: 0.714rem 1rem;
     font-size: 14px;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
 .p-button:enabled:hover {
-    background: rgba(0, 186, 0, 0.92);
+    background: var(--tertiary-color);
     color: #fff;
     border-color: transparent;
 }
@@ -1916,7 +2019,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border-color: transparent;
 }
 .p-button.p-button-text:enabled:hover {
-    background: rgba(0, 186, 0, 0.04);
+    background: rgba(0, 186, 0, 0.1);
     color: var(--tertiary-color);
     border-color: transparent;
 }
@@ -1963,7 +2066,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background-color: #fff;
 }
 .p-button.p-button-raised {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 .p-button.p-button-rounded {
@@ -2358,13 +2463,13 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-buttonset.p-button-danger > .p-button,
 .p-splitbutton.p-button-danger > .p-button {
     color: #fff;
-    background: #d32f2f;
+    background: var(--dark-red-color);
     border: 0 none;
 }
 .p-button.p-button-danger:enabled:hover,
 .p-buttonset.p-button-danger > .p-button:enabled:hover,
 .p-splitbutton.p-button-danger > .p-button:enabled:hover {
-    background: rgba(211, 47, 47, 0.92);
+    background: var(--dark-red-color);
     color: #fff;
     border-color: transparent;
 }
@@ -2376,7 +2481,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-button.p-button-danger:enabled:active,
 .p-buttonset.p-button-danger > .p-button:enabled:active,
 .p-splitbutton.p-button-danger > .p-button:enabled:active {
-    background: rgba(211, 47, 47, 0.68);
+    background: var(--dark-red-color);
     color: #fff;
     border-color: transparent;
 }
@@ -2384,21 +2489,21 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-buttonset.p-button-danger > .p-button.p-button-outlined,
 .p-splitbutton.p-button-danger > .p-button.p-button-outlined {
     background-color: transparent;
-    color: #d32f2f;
+    color: var(--dark-red-color);
     border: 0 none;
 }
 .p-button.p-button-danger.p-button-outlined:enabled:hover,
 .p-buttonset.p-button-danger > .p-button.p-button-outlined:enabled:hover,
 .p-splitbutton.p-button-danger > .p-button.p-button-outlined:enabled:hover {
     background: rgba(211, 47, 47, 0.04);
-    color: #d32f2f;
+    color: var(--dark-red-color);
     border: 0 none;
 }
 .p-button.p-button-danger.p-button-outlined:enabled:active,
 .p-buttonset.p-button-danger > .p-button.p-button-outlined:enabled:active,
 .p-splitbutton.p-button-danger > .p-button.p-button-outlined:enabled:active {
     background: rgba(211, 47, 47, 0.16);
-    color: #d32f2f;
+    color: var(--dark-red-color);
     border: 0 none;
 }
 .p-button.p-button-danger.p-button-text,
@@ -2575,7 +2680,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(0, 0, 0, 0.6);
 }
 .p-splitbutton.p-button-raised {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 .p-splitbutton.p-button-rounded {
@@ -2822,7 +2929,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     margin: 0.5rem;
 }
 .p-carousel .p-carousel-content .p-carousel-prev:enabled:hover,
@@ -2848,7 +2958,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background-color: #dcdcdc;
     width: 2rem;
     height: 0.5rem;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     border-radius: 0;
 }
 .p-carousel .p-carousel-indicators .p-carousel-indicator button:hover {
@@ -2865,7 +2978,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-datatable .p-paginator-bottom {
     border-width: 0 0 1px 0;
     border-radius: 0 0 6px 6px;
-    box-shadow: 0 2px 1px -1px rgb(0 0 0 / 0%), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 1px -1px rgb(0 0 0 / 0%),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
     margin-top: 5px;
     margin-bottom: 10px;
@@ -2879,7 +2994,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border-radius: 6px 6px 0 0;
     margin-bottom: 5px;
     font-size: 18px;
-    box-shadow: 0 2px 1px -1px rgb(0 0 0 / 0%), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 1px -1px rgb(0 0 0 / 0%),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 .p-datatable .p-datatable-footer {
@@ -2951,7 +3068,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-datatable .p-datatable-tbody > tr > td .p-row-toggler:enabled:hover,
 .p-datatable .p-datatable-tbody > tr > td .p-row-editor-init:enabled:hover,
@@ -3194,7 +3314,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-column-filter-menu-button:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -3223,7 +3346,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-column-filter-clear-button:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -3240,7 +3366,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     min-width: 12.5rem;
 }
@@ -3337,7 +3465,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: var(--tertiary-color);
     border: 0 none;
     font-size: 1rem;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
     display: flex;
@@ -3385,7 +3517,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: rgba(0, 0, 0, 0.87);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .fc.fc-unthemed .fc-toolbar .fc-button.fc-dayGridMonth-button:hover,
@@ -3467,7 +3603,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .fc.fc-theme-standard
     .fc-view-harness
@@ -3528,7 +3667,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: var(--tertiary-color);
     border: 0 none;
     font-size: 1rem;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
     border-radius: 4px;
 }
@@ -3580,7 +3723,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.12);
     color: rgba(0, 0, 0, 0.87);
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .fc.fc-theme-standard .fc-toolbar .fc-button.fc-dayGridMonth-button:hover,
@@ -3712,7 +3859,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-orderlist-item.cdk-drag-preview {
     padding: 1rem 1rem;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border: 0 none;
     color: rgba(0, 0, 0, 0.87);
@@ -3913,7 +4062,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-picklist-item.cdk-drag-preview {
     padding: 1rem 1rem;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border: 0 none;
     color: rgba(0, 0, 0, 0.87);
@@ -3967,7 +4118,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -4185,7 +4339,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     margin-right: 0.5rem;
 }
 .p-treetable .p-treetable-tbody > tr > td .p-treetable-toggler:enabled:hover {
@@ -4416,7 +4573,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-card {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
@@ -4475,7 +4634,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-fieldset.p-fieldset-toggleable .p-fieldset-legend {
     padding: 0;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-fieldset.p-fieldset-toggleable .p-fieldset-legend a {
     padding: 1rem;
@@ -4517,7 +4679,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-panel .p-panel-header .p-panel-header-icon:enabled:hover {
     color: rgba(0, 0, 0, 0.6);
@@ -4572,7 +4737,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(0, 0, 0, 0.87);
 }
 .p-splitter .p-splitter-gutter {
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     background: rgba(0, 0, 0, 0.04);
 }
 .p-splitter .p-splitter-gutter .p-splitter-gutter-handle {
@@ -4635,7 +4803,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     color: var(--tertiary-color);
     width: 3rem;
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
     border-radius: 0;
 }
@@ -4667,8 +4837,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-        0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 2px 1px -1px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
+        0 1px 3px 0 rgba(0, 0, 0, 0.12),
+        0 2px 1px -1px rgba(0, 0, 0, 0.2);
 }
 .p-confirm-popup .p-confirm-popup-content {
     padding: 1rem;
@@ -4712,7 +4885,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-dialog {
     border-radius: 4px;
-    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 11px 15px -7px rgba(0, 0, 0, 0.2),
+        0 24px 38px 3px rgba(0, 0, 0, 0.14),
         0 9px 46px 8px rgba(0, 0, 0, 0.12);
     border: 0 none;
 }
@@ -4735,7 +4910,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     margin-right: 0.5rem;
 }
 .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
@@ -4788,7 +4966,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
     border-radius: 4px;
-    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 11px 15px -7px rgba(0, 0, 0, 0.2),
+        0 24px 38px 3px rgba(0, 0, 0, 0.14),
         0 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
 .p-overlaypanel .p-overlaypanel-content {
@@ -4799,7 +4979,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: #fff;
     width: 2.5rem;
     height: 2.5rem;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     border-radius: 50%;
     position: absolute;
     top: -1.25rem;
@@ -4829,7 +5012,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: var(--light-grey-color);
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
-    box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 11px 15px -7px rgba(0, 0, 0, 0.2),
+        0 24px 38px 3px rgba(0, 0, 0, 0.14),
         0 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
 .p-sidebar-left {
@@ -4844,7 +5029,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     border: 0 none;
     background: transparent;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-sidebar .p-sidebar-header .p-sidebar-close:enabled:hover,
 .p-sidebar .p-sidebar-header .p-sidebar-icon:enabled:hover {
@@ -4872,7 +5060,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: rgba(97, 97, 97, 0.9);
     color: #fff;
     padding: 0.5rem;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
@@ -4968,7 +5158,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
     border-radius: 4px;
     width: 12.5rem;
@@ -5011,7 +5203,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     padding: 0.5rem 0;
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
@@ -5262,7 +5456,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background: #fff;
     color: rgba(0, 0, 0, 0.87);
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .p-megamenu .p-megamenu-submenu-header {
@@ -5366,7 +5562,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-menu.p-menu-overlay {
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .p-menu .p-submenu-header {
@@ -5536,7 +5734,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     padding: 0.5rem 0;
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
     width: 12.5rem;
 }
@@ -5590,7 +5790,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
         height: 2.5rem;
         color: rgba(0, 0, 0, 0.6);
         border-radius: 50%;
-        transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+        transition:
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s;
     }
     .p-menubar .p-menubar-button:hover {
         color: rgba(0, 0, 0, 0.6);
@@ -5607,7 +5810,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
         padding: 0.5rem 0;
         background: #fff;
         border: 0 none;
-        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+        box-shadow:
+            0 2px 4px -1px rgba(0, 0, 0, 0.2),
+            0 4px 5px 0 rgba(0, 0, 0, 0.14),
             0 1px 10px 0 rgba(0, 0, 0, 0.12);
         width: 100%;
     }
@@ -5923,14 +6128,18 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-slidemenu.p-slidemenu-overlay {
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .p-slidemenu .p-slidemenu-list {
     padding: 0.5rem 0;
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .p-slidemenu .p-slidemenu.p-slidemenu-active > .p-slidemenu-link {
@@ -6120,14 +6329,18 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-tieredmenu.p-tieredmenu-overlay {
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .p-tieredmenu .p-submenu-list {
     padding: 0.5rem 0;
     background: #fff;
     border: 0 none;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 4px -1px rgba(0, 0, 0, 0.2),
+        0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .p-tieredmenu .p-menuitem {
@@ -6237,7 +6450,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     height: 2.5rem;
     border-radius: 50%;
     background: transparent;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-message .p-message-close:hover {
     background: rgba(255, 255, 255, 0.3);
@@ -6319,7 +6535,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-toast .p-toast-message {
     margin: 0 0 1rem 0;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border-radius: 4px;
 }
@@ -6329,6 +6547,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text {
     margin: 0 0 0 1rem;
+    white-space: pre-line;
 }
 .p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon {
     font-size: 2rem;
@@ -6350,7 +6569,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     height: 2rem;
     border-radius: 50%;
     background: transparent;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     color: var(----black-color);
 }
 .p-toast .p-toast-message .p-toast-icon-close:hover {
@@ -6415,7 +6637,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(255, 255, 255, 0.87);
     width: 4rem;
     height: 4rem;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     border-radius: 50%;
 }
 .p-galleria .p-galleria-close .p-galleria-close-icon {
@@ -6434,7 +6659,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: #f6f6f6;
     width: 4rem;
     height: 4rem;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     border-radius: 50%;
     margin: 0 0.5rem;
 }
@@ -6462,7 +6690,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     background-color: #dcdcdc;
     width: 1.25rem;
     height: 1.25rem;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     border-radius: 50%;
 }
 .p-galleria .p-galleria-indicators .p-galleria-indicator button:hover {
@@ -6513,7 +6744,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     color: rgba(255, 255, 255, 0.87);
     width: 2rem;
     height: 2rem;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     border-radius: 50%;
 }
 .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev:hover,
@@ -6530,7 +6764,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-image-preview-indicator {
     background-color: transparent;
     color: #f8f9fa;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-image-preview-container:hover > .p-image-preview-indicator {
     background-color: rgba(0, 0, 0, 0.5);
@@ -6544,7 +6781,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
     margin-right: 0.5rem;
 }
 .p-image-action.p-link:last-child {
@@ -6650,7 +6890,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-chip .pi-chip-remove-icon {
     border-radius: 4px;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-chip .pi-chip-remove-icon:focus {
     outline: 0 none;
@@ -6660,7 +6903,11 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 .p-inplace .p-inplace-display {
     padding: 1rem 1rem;
     border-radius: 4px;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-inplace .p-inplace-display:not(.p-disabled):hover {
@@ -6691,9 +6938,14 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+        background-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
 }
 .p-scrolltop.p-link {
     background: #ffbd00;
@@ -6761,11 +7013,19 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-terminal .p-terminal-input {
     font-size: 1rem;
-    font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
-        Lucida Grande, sans-serif;
+    font-family:
+        Roboto,
+        Helvetica Neue Light,
+        Helvetica Neue,
+        Helvetica,
+        Arial,
+        Lucida Grande,
+        sans-serif;
 }
 .p-accordion .p-accordion-tab {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
     margin-bottom: 0;
     border-radius: 0;
@@ -6805,8 +7065,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     opacity: 0.38;
 }
 .p-autocomplete .p-autocomplete-multiple-container:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-input-filled .p-autocomplete .p-autocomplete-multiple-container {
@@ -6820,8 +7082,12 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-autocomplete .p-autocomplete-multiple-container .p-inputtext {
@@ -6849,7 +7115,9 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled
     .p-autocomplete
@@ -6928,13 +7196,19 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
         linear-gradient(to bottom, #b00020, #b00020);
 }
 p-autocomplete.ng-dirty.ng-invalid .p-autocomplete > .p-inputtext:enabled:focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 p-autocomplete.ng-dirty.ng-invalid
     .p-autocomplete
     .p-autocomplete-multiple-container:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-breadcrumb .p-menuitem-link {
@@ -6991,7 +7265,9 @@ p-autocomplete.ng-dirty.ng-invalid
     border-color: rgba(0, 0, 0, 0.38) !important;
 }
 .p-button.p-button-raised:enabled:focus {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 .p-button.p-button-secondary:enabled:focus,
@@ -7167,12 +7443,12 @@ p-autocomplete.ng-dirty.ng-invalid
 .p-button.p-button-danger:enabled:focus,
 .p-buttonset.p-button-danger > .p-button:enabled:focus,
 .p-splitbutton.p-button-danger > .p-button:enabled:focus {
-    background: rgba(211, 47, 47, 0.76);
+    background: var(--dark-red-color);
 }
 .p-button.p-button-danger:enabled:active,
 .p-buttonset.p-button-danger > .p-button:enabled:active,
 .p-splitbutton.p-button-danger > .p-button:enabled:active {
-    background: rgba(211, 47, 47, 0.68);
+    background: var(--dark-red-color);
 }
 .p-button.p-button-danger.p-button-text:enabled:focus,
 .p-button.p-button-danger.p-button-outlined:enabled:focus,
@@ -7202,7 +7478,11 @@ p-autocomplete.ng-dirty.ng-invalid
     border: 1px solid rgba(0, 0, 0, 0.38);
     background: #fff;
     border-radius: 4px;
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s,
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        box-shadow 0.2s,
         background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
 }
 .p-calendar-w-btn .p-inputtext {
@@ -7235,8 +7515,10 @@ p-autocomplete.ng-dirty.ng-invalid
 }
 .p-calendar-w-btn:not(.p-calendar-disabled).p-focus {
     border-color: var(--tertiary-color);
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-calendar-w-btn.p-calendar-disabled {
@@ -7271,7 +7553,10 @@ p-autocomplete.ng-dirty.ng-invalid
     box-shadow: 0 0 0 1px rgba(0, 186, 0, 0.12);
 }
 p-calendar.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn {
@@ -7281,7 +7566,10 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn .p-inputtext:enabled:focus {
     box-shadow: none;
 }
 p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-input-filled .p-calendar-w-btn {
@@ -7295,8 +7583,12 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-calendar-w-btn .p-inputtext {
@@ -7319,7 +7611,9 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-calendar-w-btn:not(.p-calendar-disabled) .p-inputtext:enabled:hover,
 .p-input-filled .p-calendar-w-btn:not(.p-calendar-disabled) .p-inputtext:enabled:focus {
@@ -7368,8 +7662,10 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
     border: 0 none;
 }
 .p-cascadeselect:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-cascadeselect-item .p-ink {
@@ -7386,8 +7682,12 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-cascadeselect .p-inputtext {
@@ -7409,7 +7709,9 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-cascadeselect .p-inputtext:enabled:hover,
 .p-input-filled .p-cascadeselect .p-inputtext:enabled:focus {
@@ -7472,7 +7774,10 @@ p-calendar.ng-dirty.ng-invalid .p-calendar-w-btn:not(.p-disabled).p-focus {
         linear-gradient(to bottom, #b00020, #b00020);
 }
 p-cascadeselect.ng-dirty.ng-invalid .p-cascadeselect:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
@@ -7546,8 +7851,10 @@ p-cascadeselect.ng-dirty.ng-invalid .p-cascadeselect:not(.p-disabled).p-focus {
     }
 }
 .p-chips .p-chips-multiple-container:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-input-filled .p-chips-multiple-container {
@@ -7561,8 +7868,12 @@ p-cascadeselect.ng-dirty.ng-invalid .p-cascadeselect:not(.p-disabled).p-focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-chips-multiple-container .p-inputtext {
@@ -7584,7 +7895,9 @@ p-cascadeselect.ng-dirty.ng-invalid .p-cascadeselect:not(.p-disabled).p-focus {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-chips-multiple-container .p-inputtext:enabled:hover,
 .p-input-filled .p-chips-multiple-container .p-inputtext:enabled:focus {
@@ -7636,7 +7949,10 @@ p-cascadeselect.ng-dirty.ng-invalid .p-cascadeselect:not(.p-disabled).p-focus {
 p-chips.ng-dirty.ng-invalid
     .p-chips
     .p-chips-multiple-container:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-datatable .p-sortable-column {
@@ -7663,8 +7979,10 @@ p-chips.ng-dirty.ng-invalid
     border: 0 none;
 }
 .p-dropdown:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-dropdown-item .p-ink {
@@ -7681,8 +7999,12 @@ p-chips.ng-dirty.ng-invalid
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-dropdown .p-inputtext {
@@ -7704,7 +8026,9 @@ p-chips.ng-dirty.ng-invalid
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-dropdown .p-inputtext:enabled:hover,
 .p-input-filled .p-dropdown .p-inputtext:enabled:focus {
@@ -7732,7 +8056,10 @@ p-chips.ng-dirty.ng-invalid
         linear-gradient(to bottom, #b00020, #b00020);
 }
 p-dropdown.ng-dirty.ng-invalid .p-dropdown:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-galleria .p-galleria-indicators {
@@ -7750,12 +8077,17 @@ p-dropdown.ng-dirty.ng-invalid .p-dropdown:not(.p-disabled).p-focus {
     color: #fff;
 }
 .p-inputtext:enabled:focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-inputtext:enabled:focus.ng-invalid.ng-dirty {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-input-filled .p-inputtext {
@@ -7769,8 +8101,12 @@ p-dropdown.ng-dirty.ng-invalid .p-dropdown:not(.p-disabled).p-focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-inputtext:enabled:hover {
@@ -7787,7 +8123,9 @@ p-dropdown.ng-dirty.ng-invalid .p-dropdown:not(.p-disabled).p-focus {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-inputtext.ng-invalid.ng-dirty {
     border-color: transparent;
@@ -7809,8 +8147,12 @@ p-dropdown.ng-dirty.ng-invalid .p-dropdown:not(.p-disabled).p-focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-inputgroup .p-inputgroup-addon:last-child {
@@ -7833,7 +8175,10 @@ p-dropdown.ng-dirty.ng-invalid .p-dropdown:not(.p-disabled).p-focus {
     border-bottom-right-radius: 0;
 }
 p-inputmask.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-input-filled p-inputmask.ng-dirty.ng-invalid .p-inputtext {
@@ -7846,7 +8191,10 @@ p-inputmask.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
     border-color: transparent;
 }
 p-inputnumber.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-input-filled p-inputnumber.ng-dirty.ng-invalid .p-inputtext {
@@ -7860,27 +8208,41 @@ p-inputnumber.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
 }
 .p-inputswitch .p-inputswitch-slider:before {
     transition-property: box-shadow transform;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14),
         0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 .p-inputswitch:not(.p-disabled):hover .p-inputswitch-slider:before {
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-        0px 1px 5px 0px rgba(0, 0, 0, 0.12), 0 0 1px 10px rgba(0, 0, 0, 0.04);
+    box-shadow:
+        0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 5px 0px rgba(0, 0, 0, 0.12),
+        0 0 1px 10px rgba(0, 0, 0, 0.04);
 }
 .p-inputswitch.p-focus .p-inputswitch-slider:before,
 .p-inputswitch.p-focus:not(.p-disabled):hover .p-inputswitch-slider:before {
-    box-shadow: 0 0 1px 10px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-        0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow:
+        0 0 1px 10px rgba(0, 0, 0, 0.12),
+        0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 .p-inputswitch.p-inputswitch-checked:not(.p-disabled):hover .p-inputswitch-slider:before {
-    box-shadow: 0 0 1px 10px rgba(0, 186, 0, 0.04), 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-        0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow:
+        0 0 1px 10px rgba(0, 186, 0, 0.04),
+        0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 .p-inputswitch.p-inputswitch-checked.p-focus .p-inputswitch-slider:before,
 .p-inputswitch.p-inputswitch-checked.p-focus:not(.p-disabled):hover
     .p-inputswitch-slider:before {
-    box-shadow: 0 0 1px 10px rgba(0, 186, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-        0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    box-shadow:
+        0 0 1px 10px rgba(0, 186, 0, 0.12),
+        0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 .p-fieldset .p-fieldset-legend {
     border: 0 none;
@@ -8023,8 +8385,10 @@ p-inputnumber.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
     border: 0 none;
 }
 .p-multiselect:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-multiselect-panel .p-multiselect-items .p-multiselect-item .p-ink {
@@ -8044,8 +8408,12 @@ p-inputnumber.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-multiselect .p-inputtext {
@@ -8067,7 +8435,9 @@ p-inputnumber.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-multiselect .p-inputtext:enabled:hover,
 .p-input-filled .p-multiselect .p-inputtext:enabled:focus {
@@ -8131,7 +8501,10 @@ p-inputnumber.ng-dirty.ng-invalid .p-inputtext:enabled:focus {
         linear-gradient(to bottom, #b00020, #b00020);
 }
 p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-orderlist .p-orderlist-list .p-orderlist-item:focus {
@@ -8151,7 +8524,9 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
 }
 .p-panel {
     border-radius: 4px;
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 .p-panel .p-panel-header,
@@ -8169,7 +8544,9 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
     background: rgba(0, 0, 0, 0.12);
 }
 .p-panelmenu .p-panelmenu-panel {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
     margin-bottom: 0;
     border-radius: 0;
@@ -8263,7 +8640,9 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
     background: rgba(0, 0, 0, 0.12);
 }
 .p-slider .p-slider-handle {
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
     transform: scale(0.7);
 }
 .p-slider .p-slider-handle:focus {
@@ -8362,8 +8741,10 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
     border: 0 none;
 }
 .p-treeselect:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px var(--tertiary-color),
-        inset 0 0 0 1px var(--tertiary-color), inset 0 0 0 1px var(--tertiary-color),
+    box-shadow:
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
+        inset 0 0 0 1px var(--tertiary-color),
         inset 0 0 0 1px var(--tertiary-color);
 }
 .p-treeselect-item .p-ink {
@@ -8380,8 +8761,12 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
             var(--tertiary-color)
         ),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38));
-    background-size: 0 2px, 100% 1px;
-    background-position: 50% 100%, 50% 100%;
+    background-size:
+        0 2px,
+        100% 1px;
+    background-position:
+        50% 100%,
+        50% 100%;
     background-origin: border-box;
 }
 .p-input-filled .p-treeselect .p-inputtext {
@@ -8403,7 +8788,9 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
     box-shadow: none;
     background-color: #dcdcdc;
     border-color: transparent;
-    background-size: 100% 2px, 100% 1px;
+    background-size:
+        100% 2px,
+        100% 1px;
 }
 .p-input-filled .p-treeselect .p-inputtext:enabled:hover,
 .p-input-filled .p-treeselect .p-inputtext:enabled:focus {
@@ -8461,7 +8848,10 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
         linear-gradient(to bottom, #b00020, #b00020);
 }
 .p-treeselect.p-invalid:not(.p-disabled).p-focus {
-    box-shadow: inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020, inset 0 0 0 1px #b00020,
+    box-shadow:
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
+        inset 0 0 0 1px #b00020,
         inset 0 0 0 1px #b00020;
 }
 .p-tree .p-tree-container .p-treenode .p-treenode-content:focus {
@@ -8550,7 +8940,9 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
 }
 .p-splitbutton.p-button-raised > .p-button:enabled:focus,
 .p-splitbutton.p-button-raised > .p-button:not(button):not(a):not(.p-disabled):focus {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    box-shadow:
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 .p-splitbutton.p-button-secondary.p-button-text > .p-button:enabled:focus,
@@ -8659,7 +9051,10 @@ p-multiselect.ng-dirty.ng-invalid .p-multiselect:not(.p-disabled).p-focus {
 }
 
 .shadow-2 {
-    box-shadow: 0 4px 10px #00000008, 0 0 2px #0000000f, 0 2px 6px #0000001f !important;
+    box-shadow:
+        0 4px 10px #00000008,
+        0 0 2px #0000000f,
+        0 2px 6px #0000001f !important;
 }
 
 .p-4 {

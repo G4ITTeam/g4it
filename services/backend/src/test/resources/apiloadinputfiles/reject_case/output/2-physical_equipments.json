@@ -1,0 +1,18 @@
+[
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "cpuCoreNumber": 4.0,
+    "datePurchase": "2020-07-08",
+    "electricityConsumption": 1.2,
+    "filters": [
+      "In use"
+    ],
+    "id": 3,
+    "location": "France",
+    "name": "physical-eq-1",
+    "quantity": 1.0,
+    "type": "Server"
+  }
+]

@@ -25,4 +25,8 @@ public class DigitalServiceNetworkImpactBO {
     private Float rawValue;
 
     private String unit;
+
+    private String status;
+
+    private Long countValue;
 }

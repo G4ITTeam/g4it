@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Sql("/sql/indicatorview.sql")
 @ActiveProfiles({"test"})
-public class PhysicalEquipmentElecConsumptionViewRepositoryTest {
+class PhysicalEquipmentElecConsumptionViewRepositoryTest {
 
     @Autowired
     private PhysicalEquipmentElecConsumptionViewRepository physicalEquipmentElecConsumptionViewRepository;

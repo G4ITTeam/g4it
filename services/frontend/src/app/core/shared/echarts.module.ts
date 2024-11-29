@@ -4,15 +4,16 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
-import * as echarts from "echarts/core";
-import { PieChart, BarChart } from "echarts/charts";
+ */
+import { BarChart, PieChart } from "echarts/charts";
 import {
+    DataZoomComponent,
     GridComponent,
-    TooltipComponent,
     LegendComponent,
     PolarComponent,
+    TooltipComponent,
 } from "echarts/components";
+import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 
 echarts.use([
@@ -23,6 +24,7 @@ echarts.use([
     PolarComponent,
     LegendComponent,
     CanvasRenderer,
+    DataZoomComponent,
 ]);
 
 export default echarts;

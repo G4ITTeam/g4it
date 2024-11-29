@@ -52,5 +52,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             (u.firstName ILIKE %:searchedName% OR u.lastName ILIKE %:searchedName% OR u.email ILIKE %:searchedName%)
             """)
     List<User> findBySearchedName(@Param("searchedName") String searchedName, @Param("domains") Set<String> domains);
-
+    
 }

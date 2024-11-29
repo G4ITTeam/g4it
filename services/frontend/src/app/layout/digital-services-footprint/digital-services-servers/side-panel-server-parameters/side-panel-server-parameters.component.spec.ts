@@ -1125,6 +1125,7 @@ describe("SidePanelServerParametersComponent", () => {
             of({
                 name: "name",
                 uid: "uid",
+                isNewArch: false,
                 creationDate: Date.now(),
                 lastUpdateDate: Date.now(),
                 lastCalculationDate: null,
@@ -1159,6 +1160,7 @@ describe("SidePanelServerParametersComponent", () => {
             of({
                 name: "name",
                 uid: "uid",
+                isNewArch: false,
                 creationDate: Date.now(),
                 lastUpdateDate: Date.now(),
                 lastCalculationDate: null,

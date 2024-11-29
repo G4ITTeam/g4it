@@ -1,0 +1,8 @@
+@if (optionStackBar().series) {
+    <div
+        echarts
+        class="bar-chart-height m-0 mt-4 h-28rem"
+        [options]="optionStackBar()"
+        (chartClick)="onChartClick($event)"
+    ></div>
+}

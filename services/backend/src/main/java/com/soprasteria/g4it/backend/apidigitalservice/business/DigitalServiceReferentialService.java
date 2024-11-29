@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialMapper;
@@ -18,11 +18,13 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRe
 import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRepository;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Digital Service Referential Service.
@@ -59,6 +61,9 @@ public class DigitalServiceReferentialService {
      */
     @Autowired
     private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
+
+    @Autowired
+    private BoaviztapiService boaviztapiService;
 
 
     /**
@@ -128,4 +133,30 @@ public class DigitalServiceReferentialService {
                 .orElseThrow(() -> new InvalidReferentialException("server.host.code"));
     }
 
+    /**
+     * Get BoaviztAPI countries.
+     *
+     * @return country list (string).
+     */
+    public Map<String, String> getBoaviztaCountryMap() {
+        return boaviztapiService.getCountryMap();
+    }
+
+    /**
+     * Get BoaviztAPI cloud providers.
+     *
+     * @return providers name list (string).
+     */
+    public List<String> getCloudProviders() {
+        return boaviztapiService.getProviderList();
+    }
+
+    /**
+     * Get BoaviztAPI instances for one specific cloud provider.
+     *
+     * @return instances name list (string).
+     */
+    public List<String> getCloudInstances(String cloudProviderName) {
+        return boaviztapiService.getInstanceList(cloudProviderName);
+    }
 }

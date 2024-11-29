@@ -5,9 +5,19 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output, SimpleChanges } from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    input,
+    Input,
+    Output,
+    SimpleChanges,
+} from "@angular/core";
 import { EChartsOption } from "echarts";
-import { DigitalServiceFootprint } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    DigitalServiceFootprint,
+    StatusCountMap,
+} from "src/app/core/interfaces/digital-service.interfaces";
 import { AbstractDashboard } from "src/app/layout/inventories-footprint/abstract-dashboard";
 import { Constants } from "src/constants";
 @Component({
@@ -19,6 +29,11 @@ export class PieChartComponent extends AbstractDashboard {
     @Input() selectedCriteria: string = "acidification";
     @Output() selectedParamChange: EventEmitter<any> = new EventEmitter();
     @Output() chartTypeChange: EventEmitter<any> = new EventEmitter();
+
+    criteriaMap: StatusCountMap = {};
+    xAxisInput: string[] = [];
+
+    showInconsitency = input<boolean>();
 
     options: EChartsOption = {};
 
@@ -33,26 +48,62 @@ export class PieChartComponent extends AbstractDashboard {
         this.selectedParamChange.emit(params.data.tier);
     }
 
-    loadPieChartOption(chartData: any[]): EChartsOption {
-        const order = ["Terminal", "Network", "Server"];
+    loadPieChartOption(chartData: DigitalServiceFootprint[]): EChartsOption {
+        const order = Constants.DIGITAL_SERVICES_CHART_ORDER;
+        const dsTierOkmap: StatusCountMap = {};
+        chartData.forEach((chart) => {
+            dsTierOkmap[this.existingTranslation(chart.tier, "digital-services")] = {
+                status: {
+                    ok: chart.impacts
+                        .filter(
+                            (i) =>
+                                i.status === Constants.DATA_QUALITY_STATUS.ok &&
+                                i.criteria === this.selectedCriteria,
+                        )
+                        .reduce((sum, item) => sum + item.countValue, 0),
+                    error: chart.impacts
+                        .filter(
+                            (i) =>
+                                i.status !== Constants.DATA_QUALITY_STATUS.ok &&
+                                i.criteria === this.selectedCriteria,
+                        )
+                        .reduce((sum, item) => sum + item.countValue, 0),
+                    total: chart.impacts
+                        .filter((i) => i.criteria === this.selectedCriteria)
+                        .reduce((sum, item) => sum + item.countValue, 0),
+                },
+            };
+            chart.impacts
+                .filter((i) => i.criteria === this.selectedCriteria)
+                .every((impact) => impact.status === Constants.DATA_QUALITY_STATUS.ok);
+        });
         const seriesData = chartData.map((item) => {
             const selectedImpact = item.impacts.find(
                 (impact: any) =>
                     impact.criteria.split(" ").slice(0, 2).join(" ") ===
-                    this.selectedCriteria,
+                        this.selectedCriteria &&
+                    impact.status === Constants.DATA_QUALITY_STATUS.ok,
             );
             const value = selectedImpact ? selectedImpact.sipValue : 0;
+            const nameValue = this.existingTranslation(item.tier, "digital-services");
             return {
-                name: this.existingTranslation(item.tier, "digital-services"),
+                name: nameValue,
                 value: value,
                 tier: item.tier,
-                unitValue: selectedImpact.unitValue,
-                unit: selectedImpact.unit,
+                unitValue: selectedImpact?.unitValue,
+                unit: selectedImpact?.unit,
+                label: {
+                    color: !dsTierOkmap[nameValue]?.status.error
+                        ? Constants.GRAPH_GREY
+                        : Constants.GRAPH_RED,
+                },
             };
         });
         seriesData.sort((a: any, b: any) => {
             return order.indexOf(a.tier) - order.indexOf(b.tier);
         });
+        this.xAxisInput = seriesData.map((item) => item.name);
+        this.criteriaMap = dsTierOkmap;
         return {
             tooltip: {
                 show: true,
@@ -88,6 +139,7 @@ export class PieChartComponent extends AbstractDashboard {
                     type: "pie",
                     radius: "70%",
                     data: seriesData,
+
                     emphasis: {
                         itemStyle: {
                             shadowBlur: 10,
@@ -97,7 +149,26 @@ export class PieChartComponent extends AbstractDashboard {
                     },
                 },
             ],
+            label: {
+                formatter: (value: any) => {
+                    return !dsTierOkmap[value.name]?.status?.error
+                        ? `{grey| ${value.name}}`
+                        : `{redBold| \u24d8} {red| ${value.name}}`;
+                },
+                rich: Constants.CHART_RICH as any,
+            },
+
             color: Constants.COLOR,
         };
+    }
+
+    selectedStackBarClick(event: string): void {
+        const keyTier = Object.keys(this.translate.instant("digital-services")).find(
+            (key) => this.translate.instant("digital-services")[key] === event,
+        );
+        if (keyTier) {
+            this.chartTypeChange.emit("bar");
+            this.selectedParamChange.emit(keyTier);
+        }
     }
 }

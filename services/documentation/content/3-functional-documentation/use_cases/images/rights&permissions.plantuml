@@ -1,0 +1,71 @@
+@startuml Rights and permissions
+left to right direction
+skinparam actorstyle awesome
+"INVENTORY_WRITE" as SDR
+"DIGITAL_SERVICE_WRITE" as PM
+"INVENTORY_READ" as is_user
+"DIGITAL_SERVICE_READ" as ds_user
+"ORGANIZATION_ADMINISTRATOR" as admin_orga
+"SUBSCRIBER_ADMINISTRATOR" as admin_sub
+
+rectangle Subscriber {
+    package "Organization 1" {
+        rectangle "UC IS inventory" {
+            usecase is_manager_create as "Create inventories"
+            usecase is_manager_delete as "Delete inventories"
+            usecase is_manager_load as "Load files"
+            usecase is_manager_estimate as "Launch estimation"
+            "Visualize footprint and data details" as (is_viewer_visualize)
+            usecase is_manager_export as "Export inventories"
+        }
+        rectangle  "UC Digital services" {
+            usecase ds_manager_create as "Create digital services"
+            usecase ds_manager_delete as "Delete digital services"
+            usecase ds_manager_load as "Add equipments"
+            usecase ds_manager_estimate as "Launch estimation"
+            "Visualize footprint and data details" as (ds_viewer_visualize)
+        }
+    }
+
+    package "Administration" {
+        rectangle "Manage users" {
+            usecase ad_add_user as "Grant a user access rights to an organization"
+            usecase ad_edit_user as "Edit a user access rights to an organization"
+            usecase ad_delete_user as "Delete a user access rights to an organization"
+        }
+        rectangle "Manage organizations" {
+            usecase ad_add_organization as "Create organization"
+            usecase ad_edit_organization as "Edit organization name"
+            usecase ad_delete_organization as "Delete organization"
+        }
+    }
+}
+
+SDR --> is_manager_create
+SDR --> is_manager_delete
+SDR --> is_manager_load
+SDR --> is_manager_estimate
+SDR -|> is_user
+SDR --> is_manager_export
+is_user ---> is_viewer_visualize
+
+
+PM --> ds_manager_create
+PM --> ds_manager_delete
+PM --> ds_manager_load
+PM --> ds_manager_estimate
+PM -|> ds_user
+ds_user ---> ds_viewer_visualize
+
+admin_orga ---> ad_add_user
+admin_orga ---> ad_edit_user
+admin_orga ---> ad_delete_user
+PM <|- admin_orga
+SDR <|- admin_orga
+
+admin_sub --> ad_add_organization
+admin_sub --> ad_edit_organization
+admin_sub --> ad_delete_organization
+admin_orga <|- admin_sub
+
+@enduml

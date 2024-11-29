@@ -110,3 +110,65 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
+  /referential/boaviztapi/countries:
+    get:
+      tags:
+        - digital-service referential
+      summary: Get a map of available countries in Boaviztapi
+      operationId: getBoaviztaCountries
+      responses:
+        '200':
+          description: The country map as strings
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /referential/boaviztapi/cloud/providers:
+    get:
+      tags:
+        - digital-service referential
+      summary: Get list of available cloud providers in Boaviztapi
+      operationId: getAllCloudProviders
+      responses:
+        '200':
+          description: The provider name list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /referential/boaviztapi/cloud/providers/instances:
+    parameters:
+      - $ref: '#/components/parameters/cloudProviderQueryParam'
+    get:
+      tags:
+        - digital-service referential
+      summary: Get list of available instances in Boaviztapi
+      operationId: getAllCloudInstances
+      responses:
+        '200':
+          description: The instance name list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

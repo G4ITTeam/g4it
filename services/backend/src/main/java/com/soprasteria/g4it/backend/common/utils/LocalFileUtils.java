@@ -17,7 +17,7 @@ import java.nio.file.Path;
 
 @Slf4j
 public class LocalFileUtils {
-    
+
     private LocalFileUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
@@ -42,6 +42,7 @@ public class LocalFileUtils {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignored) {
+                        log.error("Error occurred in deleting folder {}, error: {}", path, ignored.getMessage());
                     }
                     e = ex;
                 }

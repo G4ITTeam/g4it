@@ -50,6 +50,8 @@ public class UserService {
     @Autowired
     private UserSubscriberRepository userSubscriberRepository;
 
+    private static final String USER = "getUserByName";
+    private static final String TOKEN = "getJwtToken";
 
     /**
      * Create a UserBo object from jwt token
@@ -92,37 +94,60 @@ public class UserService {
         if (userReturned == null) {
             Optional<User> userOptional = userRepository.findByEmail(email);
 
-            if (userOptional.isPresent()) {
-                // sub not present but has email address: user info in g4it_user with new values
-                userReturned = updateUserWithNewUserinfo(userOptional.get(), userInfo);
-            } else {
-                List<Role> accessRoles = List.of(
-                        roleRepository.findByName(Constants.ROLE_INVENTORY_READ),
-                        roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_READ),
-                        roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_WRITE)
-                );
-
-                User newUser = createNewUserWithDomain(accessRoles, userInfo);
-
-                if (newUser == null) {
-                    // user's domain doesn't exist in g4it_subscriber authorized domain, add new user to g4it_user with no rights
-                    newUserService.createNewUser(userInfo);
-
-                    return null;
-                } else
-                    userReturned = userRepository.findById(newUser.getId()).orElseThrow();
-            }
-
+            // sub not present but has email address: user info in g4it_user with new values
+            userReturned = userOptional
+                    .map(user -> updateUserWithNewUserinfo(user, userInfo))
+                    .orElseGet(() -> createUser(userInfo));
         }
+
+        if (userReturned == null) {
+            return null;
+        }
+
+        List<SubscriberBO> subscriberBOList = Constants.SUPER_ADMIN_EMAIL.equals(email) ?
+                buildSubscribersForSuperAdmin() :
+                buildSubscribers(userReturned, userInfo.isAdminMode());
 
         return UserBO.builder()
                 .id(userReturned.getId())
                 .firstName(userReturned.getFirstName())
                 .lastName(userReturned.getLastName())
                 .email(userReturned.getEmail())
-                .subscribers(buildSubscribers(userReturned, userInfo.isAdminMode()))
+                .subscribers(subscriberBOList)
                 .adminMode(userInfo.isAdminMode())
                 .build();
+    }
+
+    /**
+     * Create the user depending on its email
+     *
+     * @param userInfo the userinfo
+     * @return the user created
+     */
+    private User createUser(final UserBO userInfo) {
+        User userReturned = null;
+        if (Constants.SUPER_ADMIN_EMAIL.equals(userInfo.getEmail())) {
+            User newUser = createNewUserWithDomain(null, userInfo);
+            if (newUser != null) {
+                userReturned = userRepository.findById(newUser.getId()).orElseThrow();
+
+            }
+        } else {
+            List<Role> accessRoles = List.of(
+                    roleRepository.findByName(Constants.ROLE_INVENTORY_READ),
+                    roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_READ),
+                    roleRepository.findByName(Constants.ROLE_DIGITAL_SERVICE_WRITE)
+            );
+
+            User newUser = createNewUserWithDomain(accessRoles, userInfo);
+
+            if (newUser == null) {
+                // user's domain doesn't exist in g4it_subscriber authorized domain, add new user to g4it_user with no rights
+                newUserService.createNewUser(userInfo);
+            } else
+                userReturned = userRepository.findById(newUser.getId()).orElseThrow();
+        }
+        return userReturned;
     }
 
     /**
@@ -165,6 +190,67 @@ public class UserService {
         user.setDomain(userInfo.getDomain());
         userRepository.save(user);
         return user;
+    }
+
+    /**
+     * Create an admin user in 'nosecurity' mode
+     *
+     * @param withSubscribers include subscribers
+     * @return the userBO
+     */
+    @Transactional
+    public UserBO getNoSecurityUser(boolean withSubscribers) {
+        User user = userRepository.findByEmail(Constants.SUPER_ADMIN_EMAIL).orElseThrow();
+
+        return UserBO.builder()
+                .id(user.getId())
+                .firstName("Admin")
+                .lastName("No Security Mode")
+                .email(Constants.SUPER_ADMIN_EMAIL)
+                .subscribers(withSubscribers ? buildSubscribersForSuperAdmin() : null)
+                .adminMode(true)
+                .domain(Constants.SUPER_ADMIN_EMAIL.split("@")[1])
+                .build();
+    }
+
+    /**
+     * Build subscriber list.
+     *
+     * @return the user's subscriber list.
+     */
+    public List<SubscriberBO> buildSubscribersForSuperAdmin() {
+
+        // Get the subscribers and subObjects on which the user has ROLE_SUBSCRIBER_ADMINISTRATOR
+        return subscriberRepository.findAll().stream()
+                .map(subscriber -> {
+                    var subscriberBO = SubscriberBO.builder()
+                            .defaultFlag(false)
+                            .name(subscriber.getName())
+                            .organizations(subscriber.getOrganizations().stream()
+                                    .map(organization -> {
+                                        OrganizationBO organizationBO = OrganizationBO.builder()
+                                                .roles(List.of())
+                                                .defaultFlag(false)
+                                                .name(organization.getName())
+                                                .id(organization.getId())
+                                                .status(organization.getStatus())
+                                                .deletionDate(organization.getDeletionDate())
+                                                .criteriaIs(organization.getCriteriaIs())
+                                                .criteriaDs(organization.getCriteriaDs())
+                                                .build();
+                                        return organizationBO;
+                                    })
+                                    .sorted(Comparator.comparing(OrganizationBO::getName))
+                                    .toList())
+                            .roles(List.of(Constants.ROLE_SUBSCRIBER_ADMINISTRATOR))
+                            .criteria(subscriber.getCriteria())
+                            .authorizedDomains(subscriber.getAuthorizedDomains())
+                            .id(subscriber.getId())
+                            .build();
+                    return subscriberBO;
+                })
+                .sorted(Comparator.comparing(SubscriberBO::getName))
+                .toList();
     }
 
     /**
@@ -221,23 +307,23 @@ public class UserService {
                 .name(userSubscriber.getSubscriber().getName())
                 .organizations(userSubscriber.getSubscriber().getOrganizations().stream()
                         .filter(organization -> status.contains(organization.getStatus()))
-                        .map(organization -> {
-                            OrganizationBO organizationBO = OrganizationBO.builder()
-                                    .roles(List.of())
-                                    .defaultFlag(false)
-                                    .name(organization.getName())
-                                    .id(organization.getId())
-                                    .status(organization.getStatus())
-                                    .deletionDate(organization.getDeletionDate())
-                                    .criteriaIs(organization.getCriteriaIs())
-                                    .criteriaDs(organization.getCriteriaDs())
-                                    .build();
-                            return organizationBO;
-                        })
+                        .<OrganizationBO>map(organization ->
+                                OrganizationBO.builder()
+                                        .roles(List.of())
+                                        .defaultFlag(false)
+                                        .name(organization.getName())
+                                        .id(organization.getId())
+                                        .status(organization.getStatus())
+                                        .deletionDate(organization.getDeletionDate())
+                                        .criteriaIs(organization.getCriteriaIs())
+                                        .criteriaDs(organization.getCriteriaDs())
+                                        .build()
+                        )
                         .sorted(Comparator.comparing(OrganizationBO::getName))
                         .toList())
                 .roles(roles.stream().map(Role::getName).toList())
                 .criteria(userSubscriber.getSubscriber().getCriteria())
+                .authorizedDomains(userSubscriber.getSubscriber().getAuthorizedDomains())
                 .id(userSubscriber.getSubscriber().getId())
                 .build();
     }
@@ -269,6 +355,7 @@ public class UserService {
                 .roles(List.of())
                 .id(subscriber.getId())
                 .criteria(subscriber.getCriteria())
+                .authorizedDomains(subscriber.getAuthorizedDomains())
                 .build();
     }
 
@@ -293,16 +380,15 @@ public class UserService {
                 .build();
     }
 
+
     /**
      * Clear user cache
      *
      * @param user the user.
      */
     public void clearUserCache(final UserBO user) {
-        List.of(false, true).forEach(isAdmin -> {
-            Objects.requireNonNull(cacheManager.getCache("getUserByName"))
-                    .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build());
-        });
+        List.of(false, true).forEach(isAdmin -> Objects.requireNonNull(cacheManager.getCache(USER))
+                .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build()));
 
     }
 
@@ -312,11 +398,9 @@ public class UserService {
      * @param user the user.
      */
     public void clearUserCache(final UserBO user, final String subscriber, Long organization) {
-        List.of(false, true).forEach(isAdmin -> {
-            Objects.requireNonNull(cacheManager.getCache("getUserByName"))
-                    .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build());
-        });
-        Objects.requireNonNull(cacheManager.getCache("getJwtToken"))
+        List.of(false, true).forEach(isAdmin -> Objects.requireNonNull(cacheManager.getCache(USER))
+                .evict(UserBO.builder().email(user.getEmail()).adminMode(isAdmin).build()));
+        Objects.requireNonNull(cacheManager.getCache(TOKEN))
                 .evict(user.getEmail() + subscriber + organization);
     }
 
@@ -324,8 +408,8 @@ public class UserService {
      * Clear user cache
      */
     public void clearUserAllCache() {
-        Objects.requireNonNull(cacheManager.getCache("getUserByName")).clear();
-        Objects.requireNonNull(cacheManager.getCache("getJwtToken")).clear();
+        Objects.requireNonNull(cacheManager.getCache(USER)).clear();
+        Objects.requireNonNull(cacheManager.getCache(TOKEN)).clear();
     }
 
 }

@@ -14,12 +14,16 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.Networ
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DatacenterDigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
+import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceExportService;
 import com.soprasteria.g4it.backend.apiindicator.repository.numecoeval.PhysicalEquipmentIndicatorRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,27 +49,27 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceExportServiceTest {
 
+    final static Long ORGANIZATION_ID = 1L;
+    final static String SUBSCRIBER = "SOPRA-STERIA-TEST";
     @Mock
     private DigitalServiceRepository digitalServiceRepository;
-
     @Mock
     private PhysicalEquipmentIndicatorRepository physicalEquipmentIndicatorRepository;
-
     @Mock
     private DatacenterDigitalServiceRepository datacenterDigitalServiceRepository;
-
+    @Mock
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @InjectMocks
     private DigitalServiceExportService exportService;
-
     @Mock
     private LocalFileService localFileService;
-
+    @Mock
+    private FileSystemService fileSystemService;
     @Mock
     private FileMapperInfo fileInfo;
 
-    final static Long ORGANIZATION_ID = 1L;
-
-    final static String SUBSCRIBER = "SOPRA-STERIA-TEST";
+    @Mock
+    private TaskRepository taskRepository;
 
     @Test
     void shouldCreateFile() throws Exception {
@@ -76,15 +80,18 @@ class DigitalServiceExportServiceTest {
         Mockito.lenient().when(datacenterDigitalServiceRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(List.of(DatacenterDigitalService.builder().name("datacenter1").pue(BigDecimal.valueOf(1.75)).location("France").digitalService(getDigitalService()).build()));
         Mockito.lenient().when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(digitalService);
         Mockito.lenient().when(physicalEquipmentIndicatorRepository.findByBatchName(any(), any())).thenReturn(Page.empty());
+        Mockito.lenient().when(inVirtualEquipmentRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(List.of());
         Mockito.lenient().when(fileInfo.getMapping(FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE)).thenReturn(List.of(Header.builder().build()));
         Mockito.lenient().when(fileInfo.getMapping(FileType.DATACENTER_DIGITAL_SERVICE)).thenReturn(List.of(Header.builder().build()));
         Mockito.lenient().when(fileInfo.getMapping(FileType.NETWORK)).thenReturn(List.of(Header.builder().build()));
         Mockito.lenient().when(fileInfo.getMapping(FileType.SERVER)).thenReturn(List.of(Header.builder().build()));
         Mockito.lenient().when(fileInfo.getMapping(FileType.TERMINAL)).thenReturn(List.of(Header.builder().build()));
-        Mockito.lenient().when(fileInfo.getMapping(FileType.VIRTUAL_MACHINE)).thenReturn(List.of(Header.builder().build()));
+        Mockito.lenient().when(fileInfo.getMapping(FileType.CLOUD_INSTANCE)).thenReturn(List.of(Header.builder().build()));
         Mockito.doCallRealMethod().when(localFileService).writeFile(any(), any());
         Mockito.when(localFileService.createZipFile(any(), any())).thenCallRealMethod();
-
+//        Mockito.when(fileSystemService.downloadFile(eq(SUBSCRIBER), eq(ORGANIZATION_ID), any(), any()))
+//                .thenReturn(null);
+        Mockito.lenient().when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.of(Task.builder().id(1L).digitalServiceUid(digitalServiceUid).build()));
         ReflectionTestUtils.setField(exportService, "localWorkingFolder", "target");
 
         final InputStream result = exportService.createFiles(digitalServiceUid, SUBSCRIBER, ORGANIZATION_ID);

@@ -16,14 +16,15 @@ import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Class used for local file management, regarding any deployed environment
@@ -60,6 +61,55 @@ public class LocalFileService {
             lines.forEach(pw::println);
         } catch (FileNotFoundException e) {
             throw new G4itRestException("500", "File not found to write " + filePath.getFileName());
+        }
+    }
+
+    /**
+     * Returns true if directory with path is empty
+     *
+     * @param path the directory path
+     * @return true if dir empty
+     * @throws IOException io exception
+     */
+    public boolean isEmpty(Path path) throws IOException {
+        if (Files.isDirectory(path)) {
+            try (Stream<Path> entries = Files.list(path)) {
+                return entries.findFirst().isEmpty();
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Extract the zip file in temporary directory
+     *
+     * @param zipInputStream the inputStream
+     * @param tempDir        the temporary directory
+     */
+    public void unzipFile(InputStream zipInputStream, Path tempDir) throws IOException {
+        try (ZipInputStream zis = new ZipInputStream(zipInputStream)) {
+            ZipEntry zipEntry;
+            byte[] buffer = new byte[1024];
+
+            while ((zipEntry = zis.getNextEntry()) != null) {
+                Path newPath = tempDir.resolve(zipEntry.getName());
+
+                // Create parent directories if they don't exist
+                Files.createDirectories(newPath.getParent());
+
+                // Extract file
+                if (!zipEntry.isDirectory()) {
+                    try (FileOutputStream fos = new FileOutputStream(newPath.toFile())) {
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                    }
+                }
+                zis.closeEntry();
+            }
         }
     }
 

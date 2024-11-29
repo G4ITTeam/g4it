@@ -1,0 +1,453 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Components in out
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+components:
+  schemas:
+    InDatacenterRest:
+      description: Version
+      type: object
+      required: [ name, location, pue ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          maxLength: 255
+        inventoryId:
+          type: integer
+          format: int64
+        digitalServiceUid:
+          type: string
+          maxLength: 255
+        fullName:
+          type: string
+          maxLength: 255
+        location:
+          type: string
+          maxLength: 255
+        pue:
+          type: number
+          format: double
+          minimum: 0
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+    InPhysicalEquipmentRest:
+      description: Version
+      type: object
+      required: [ name, quantity ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          maxLength: 255
+        inventoryId:
+          type: integer
+          format: int64
+        digitalServiceUid:
+          type: string
+          maxLength: 255
+        datacenterName:
+          type: string
+          maxLength: 255
+        location:
+          type: string
+          maxLength: 255
+        quantity:
+          type: number
+          format: double
+          minimum: 0
+        type:
+          type: string
+          maxLength: 255
+        model:
+          type: string
+          maxLength: 255
+        manufacturer:
+          type: string
+          maxLength: 255
+        datePurchase:
+          type: string
+          format: date
+        dateWithdrawal:
+          type: string
+          format: date
+        cpuType:
+          type: string
+          maxLength: 255
+        cpuCoreNumber:
+          type: number
+          format: double
+          minimum: 0
+        sizeMemoryGb:
+          type: number
+          format: double
+          minimum: 0
+        sizeDiskGb:
+          type: number
+          format: double
+          minimum: 0
+        source:
+          type: string
+          maxLength: 255
+        quality:
+          type: string
+          maxLength: 255
+        electricityConsumption:
+          type: number
+          format: double
+          minimum: 0
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+    InVirtualEquipmentRest:
+      description: Version
+      type: object
+      required: [ name, quantity, infrastructureType ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          maxLength: 255
+        inventoryId:
+          type: integer
+          format: int64
+        digitalServiceUid:
+          type: string
+          maxLength: 255
+        datacenterName:
+          type: string
+          maxLength: 255
+        physicalEquipmentName:
+          type: string
+          maxLength: 255
+        quantity:
+          type: number
+          format: double
+          minimum: 0
+        infrastructureType:
+          type: string
+          maxLength: 255
+        instanceType:
+          type: string
+          maxLength: 255
+        type:
+          type: string
+          maxLength: 255
+        provider:
+          type: string
+          maxLength: 255
+        location:
+          type: string
+          maxLength: 255
+        durationHour:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 8784
+        workload:
+          type: number
+          format: double
+          minimum: 0
+        electricityConsumption:
+          type: number
+          format: double
+          minimum: 0
+        vcpuCoreNumber:
+          type: number
+          format: double
+          minimum: 0
+        sizeMemoryGb:
+          type: number
+          format: double
+          minimum: 0
+        sizeDiskGb:
+          type: number
+          format: double
+          minimum: 0
+        allocationFactor:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+    InApplicationRest:
+      description: Version
+      type: object
+      required: [ name, environment ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        inventoryId:
+          type: integer
+          format: int64
+        digitalServiceUid:
+          type: string
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 255
+        environment:
+          type: string
+          maxLength: 255
+        datacenterName:
+          type: string
+          maxLength: 255
+        physicalEquipmentName:
+          type: string
+          maxLength: 255
+        virtualEquipmentName:
+          type: string
+          maxLength: 255
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 255
+        creationDate:
+          type: string
+          format: date-time
+        lastUpdateDate:
+          type: string
+          format: date-time
+    OutPhysicalEquipmentRest:
+      description: Out virtual equipment rest
+      type: object
+      properties:
+        name:
+          type: string
+        criterion:
+          type: string
+        lifecycleStep:
+          type: string
+        statusIndicator:
+          type: string
+        datacenterName:
+          type: string
+        location:
+          type: string
+        equipmentType:
+          type: string
+        engineName:
+          type: string
+        engineVersion:
+          type: string
+        referentialVersion:
+          type: string
+        unit:
+          type: string
+        unitImpact:
+          type: number
+          format: double
+        peopleEqImpact:
+          type: number
+          format: double
+        electricityConsumption:
+          type: number
+          format: double
+        quantity:
+          type: number
+          format: double
+        lifespan:
+          type: number
+          format: double
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string
+    OutVirtualEquipmentRest:
+      description: Out virtual equipment rest
+      type: object
+      properties:
+        name:
+          type: string
+        criterion:
+          type: string
+        lifecycleStep:
+          type: string
+        datacenterName:
+          type: string
+        physicalEquipmentName:
+          type: string
+        infrastructureType:
+          type: string
+        instanceType:
+          type: string
+        type:
+          type: string
+        provider:
+          type: string
+        equipmentType:
+          type: string
+        location:
+          type: string
+        engineName:
+          type: string
+        engineVersion:
+          type: string
+        referentialVersion:
+          type: string
+        statusIndicator:
+          type: string
+        quantity:
+          type: number
+          format: double
+        unitImpact:
+          type: number
+          format: double
+        peopleEqImpact:
+          type: number
+          format: double
+        electricityConsumption:
+          type: number
+          format: double
+        unit:
+          type: string
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filtersPhysicalEquipment:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string
+    OutApplicationRest:
+      description: Out virtual equipment rest
+      type: object
+      properties:
+        name:
+          type: string
+        environment:
+          type: string
+        criterion:
+          type: string
+        lifecycleStep:
+          type: string
+        location:
+          type: string
+        equipmentType:
+          type: string
+        engineName:
+          type: string
+        engineVersion:
+          type: string
+        referentialVersion:
+          type: string
+        statusIndicator:
+          type: string
+        unit:
+          type: string
+        unitImpact:
+          type: number
+          format: double
+        peopleEqImpact:
+          type: number
+          format: double
+        electricityConsumption:
+          type: number
+          format: double
+        quantity:
+          type: number
+          format: double
+        commonFilters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filters:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filtersPhysicalEquipment:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        filtersVirtualEquipment:
+          type: array
+          maxItems: 5
+          items:
+            type: string
+        errors:
+          type: array
+          items:
+            type: string

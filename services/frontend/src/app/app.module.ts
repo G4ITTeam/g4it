@@ -74,12 +74,14 @@ const useMatomo = environment.matomo.trackerUrl !== "";
         KeycloakAngularModule,
     ],
     providers: [
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initializeKeycloak,
-            multi: true,
-            deps: [KeycloakService],
-        },
+        environment.keycloak.enabled === "true"
+            ? {
+                  provide: APP_INITIALIZER,
+                  useFactory: initializeKeycloak,
+                  multi: true,
+                  deps: [KeycloakService],
+              }
+            : [],
         MessageService,
         {
             provide: HTTP_INTERCEPTORS,

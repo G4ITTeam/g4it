@@ -33,4 +33,8 @@ public class DigitalServiceTerminalImpactBO {
     private Float sipValue;
 
     private String unit;
+
+    private String status;
+
+    private Long countValue;
 }

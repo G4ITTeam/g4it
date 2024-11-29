@@ -2,7 +2,6 @@
     <div class="chart-container">
         <div>
             <h3
-                tabindex="0"
                 attr.aria-label="{{
                     'inventories-footprint.application.graph-title-global' | translate
                 }}"
@@ -10,26 +9,51 @@
                 {{ "inventories-footprint.global.global-vision" | translate }}
                 ({{ "common.peopleeq-min" | translate }})
             </h3>
+            @if (showDataConsistencyBtn) {
+                <p-button
+                    (click)="showInconsitencyGraph = !showInconsitencyGraph"
+                    [rounded]="true"
+                    [label]="'inventories-footprint.data-consistency' | translate"
+                    [outlined]="!showInconsitencyGraph"
+                    severity="danger"
+                    class="ml-auto mt-3 mb-2 pr-3"
+                    [ariaLabel]="'inventories-footprint.data-consistency' | translate"
+                />
+            }
         </div>
-        @if (applicationStats()[0].value) {
-            <div
-                tabindex="0"
-                echarts
-                class="bar-stack m-0"
-                [options]="options()"
-                style="height: 53vh"
-                (chartClick)="onChartClick($event)"
-            ></div>
+        @if (showInconsitencyGraph) {
+            @if (options().series && applicationStats()[0].value) {
+                <app-stack-bar-chart
+                    [xAxisInput]="xAxisInput"
+                    [statusCountMap]="criteriaMap"
+                    (selectedStackBarClick)="selectedStackBarClick($event)"
+                />
+            } @else {
+                <div class="no-data-bar">
+                    <p class="text-round-empty">{{ "common.no-data" | translate }}</p>
+                </div>
+            }
         } @else {
-            <div class="no-data-round">
-                <p
-                    class="text-round-empty"
+            @if (applicationStats()[0].value) {
+                <div
                     tabindex="0"
-                    attr.aria-label="{{ 'common.no-data' | translate }}"
-                >
-                    {{ "common.no-data" | translate }}
-                </p>
-            </div>
+                    echarts
+                    class="bar-stack m-0"
+                    [options]="options()"
+                    style="height: 53vh"
+                    (chartClick)="onChartClick($event)"
+                ></div>
+            } @else {
+                <div class="no-data-round">
+                    <p
+                        class="text-round-empty"
+                        tabindex="0"
+                        attr.aria-label="{{ 'common.no-data' | translate }}"
+                    >
+                        {{ "common.no-data" | translate }}
+                    </p>
+                </div>
+            }
         }
     </div>
     <div>

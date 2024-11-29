@@ -1,0 +1,47 @@
+[
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "environment": "Test",
+    "filters": [
+      "Domain 1",
+      "Sub Domain 1"
+    ],
+    "id": 5,
+    "inventoryId": 1,
+    "name": "application-1",
+    "physicalEquipmentName": "physical-eq-1",
+    "virtualEquipmentName": "virtual-eq-1-1"
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "environment": "Developpement",
+    "filters": [
+      "Domain 1",
+      "Sub Domain 1"
+    ],
+    "id": 6,
+    "inventoryId": 1,
+    "name": "application-1",
+    "physicalEquipmentName": "physical-eq-1",
+    "virtualEquipmentName": "virtual-eq-1-2"
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "environment": "Test",
+    "filters": [
+      "Domain 1",
+      "Sub Domain 2"
+    ],
+    "id": 7,
+    "inventoryId": 1,
+    "name": "application-2",
+    "physicalEquipmentName": "physical-eq-2",
+    "virtualEquipmentName": "virtual-eq-2-1"
+  }
+]

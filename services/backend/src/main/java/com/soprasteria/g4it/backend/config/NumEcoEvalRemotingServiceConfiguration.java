@@ -4,12 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.config;
 
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.CalculsApi;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.ImportsApi;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.invoker.ApiClient;
+import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.ImportRfrentielsApi;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.InterneNumEcoEvalApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -71,4 +72,18 @@ public class NumEcoEvalRemotingServiceConfiguration {
 
         return new InterneNumEcoEvalApi(apiClient);
     }
+
+    /**
+     * Creates a Bean for NumEcoEval import API referential
+     *
+     * @return InterneNumEcoEvalApi invoker
+     */
+    @Bean
+    public ImportRfrentielsApi clientReferentialImportApi() {
+        final var apiClient = new com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.invoker.ApiClient(WebClient.builder().baseUrl(numEcoEvalReferentialBaseUrl).build());
+        apiClient.setBasePath(numEcoEvalReferentialBaseUrl);
+
+        return new ImportRfrentielsApi(apiClient);
+    }
+
 }

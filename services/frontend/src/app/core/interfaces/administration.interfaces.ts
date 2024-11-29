@@ -7,6 +7,7 @@ export interface Subscriber {
     organizations?: Organization[];
     roles?: Role[];
     criteria?: string[];
+    authorizedDomains?: string[];
 }
 
 export interface Organization {
@@ -39,6 +40,7 @@ export interface OrganizationWithSubscriber {
     displayLabel: string;
     criteriaDs: string[];
     criteriaIs: string[];
+    authorizedDomains?: string[];
 }
 
 export interface SubscriberCriteriaRest {

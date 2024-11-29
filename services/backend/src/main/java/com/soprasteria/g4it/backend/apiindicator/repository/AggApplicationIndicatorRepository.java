@@ -29,7 +29,7 @@ public interface AggApplicationIndicatorRepository extends JpaRepository<AggAppl
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = """
-              INSERT INTO agg_application_indicator (criteria, life_cycle, domain, sub_domain, environment, equipment_type, application_name, batch_name, impact, unit, virtual_equipment_name, cluster, sip)
+              INSERT INTO agg_application_indicator (criteria, life_cycle, domain, sub_domain, environment, equipment_type, application_name, batch_name, impact, unit, virtual_equipment_name, cluster, sip, status_indicator)
               SELECT
                  ia.critere AS criteria,
                  ia.etapeacv AS life_cycle,
@@ -43,15 +43,15 @@ public interface AggApplicationIndicatorRepository extends JpaRepository<AggAppl
                  ia.unite AS unit,
                  ia.nom_equipement_virtuel as virtual_equipment_name,
                  ev.cluster as cluster,
-                 SUM(ia.impact_unitaire / ref_sip.individual_sustainable_package) AS sip
+                 SUM(ia.impact_unitaire / ref_sip.individual_sustainable_package) AS sip,
+                 ia.statut_indicateur as status_indicator
               FROM
                  ind_indicateur_impact_application ia
                  INNER JOIN ref_sustainable_individual_package ref_sip ON ref_sip.criteria = ia.critere
                  INNER JOIN en_equipement_physique ep ON ep.nom_equipement_physique  = ia.nom_equipement_physique
                  INNER JOIN en_equipement_virtuel ev ON ev.nom_equipement_virtuel = ia.nom_equipement_virtuel
-              WHERE
-                 ia.statut_indicateur = 'OK'
-                 AND ia.nom_lot = :batchName
+              WHERE               
+                 ia.nom_lot = :batchName
                  AND ep.nom_lot = :batchName
                  AND ev.nom_lot = :batchName
                  GROUP BY
@@ -65,7 +65,8 @@ public interface AggApplicationIndicatorRepository extends JpaRepository<AggAppl
                  ia.nom_lot,
                  ia.unite,
                  ia.nom_equipement_virtuel,
-                 ev.cluster
+                 ev.cluster,
+                 ia.statut_indicateur
             """)
     void insertIntoAggApplicationIndicators(@Param("batchName") String batchName);
 

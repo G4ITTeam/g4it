@@ -7,8 +7,12 @@
  */
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { environment } from "src/environments/environment";
 import { AuthGuard } from "./guard/auth.gard";
 import { ErrorComponent } from "./layout/common/error/error.component";
+
+const canActivate = [];
+if (environment.keycloak.enabled === "true") canActivate.push(AuthGuard);
 
 const routes: Routes = [
     {
@@ -21,13 +25,13 @@ const routes: Routes = [
             import("./layout/administration/administration.module").then(
                 (modules) => modules.AdministrationModule,
             ),
-        canActivate: [AuthGuard],
+        canActivate,
     },
     {
         path: "subscribers/:subscriber/organizations/:organization",
         loadChildren: () =>
             import("./layout/layout.module").then((modules) => modules.LayoutModule),
-        canActivate: [AuthGuard],
+        canActivate,
     },
     {
         path: "**",

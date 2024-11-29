@@ -105,6 +105,7 @@ export class UsersComponent {
                             displayLabel: `${org.name} - (${subscriber.name})`,
                             criteriaDs: org.criteriaDs,
                             criteriaIs: org.criteriaIs,
+                            authorizedDomains: subscriber.authorizedDomains,
                         });
                     }
                 });

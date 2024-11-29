@@ -29,6 +29,17 @@ public interface SubscriberRestMapper {
     SubscriberRest toDto(final SubscriberBO businessObject);
 
     /**
+     * Map a comma-separated string of authorized domains to a list of strings.
+     *
+     * @param authorizedDomains the comma-separated string of authorized domains.
+     * @return a list of authorized domains, or null if the input is null.
+     */
+    default List<String> mapAuthorizedDomains(String authorizedDomains) {
+        if (authorizedDomains == null) return List.of();
+        return List.of(authorizedDomains.split(","));
+    }
+
+    /**
      * Map a business object list to dto object list.
      *
      * @param businessObject the source.

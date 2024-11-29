@@ -27,6 +27,7 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -57,6 +58,7 @@ public class InventoryService {
      */
     @Autowired
     private InventoryMapper inventoryMapper;
+
     @Autowired
     private InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
 
@@ -124,6 +126,24 @@ public class InventoryService {
     }
 
     /**
+     * Returns true if the inventory exists and linked to subscriber, organizationId and inventoryId
+     *
+     * @param subscriberName subscriberName
+     * @param organizationId organizationId
+     * @param inventoryId    inventoryId
+     * @return InventoryBO
+     */
+    @Cacheable("inventoryExists")
+    public boolean inventoryExists(final String subscriberName, final Long organizationId, final Long inventoryId) {
+        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
+        if (!Objects.equals(subscriberName, linkedOrganization.getSubscriber().getName())) {
+            return false;
+        }
+
+        return inventoryRepository.findByOrganizationAndId(linkedOrganization, inventoryId).isPresent();
+    }
+
+    /**
      * Create an inventory.
      *
      * @param subscriberName      the client subscriber name.
@@ -138,7 +158,7 @@ public class InventoryService {
             throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationId));
         }
 
-        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest.getName(), inventoryCreateRest.getType().name());
+        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest.getName(), inventoryCreateRest.getType().name(), inventoryCreateRest.getIsNewArch());
 
         // Deprecated inventoryDate, used to better revert if needed
         if (InventoryType.INFORMATION_SYSTEM.name().equals(inventoryCreateRest.getType().name())) {

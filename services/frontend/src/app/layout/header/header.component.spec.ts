@@ -50,7 +50,7 @@ describe("HeaderComponent", () => {
             get: () => "/subscribers/sub1/organizations/org1/inventories",
         });
         component.ngOnInit();
-        expect(component.selectedPage).toEqual("inventories");
+        expect(component.selectedPage()).toEqual("inventories");
     });
 
     it('should set selectedPage to "digital-services" when URL has "/digital-services"', () => {
@@ -58,7 +58,7 @@ describe("HeaderComponent", () => {
             get: () => "/subscribers/sub1/organizations/org1/digital-services",
         });
         component.ngOnInit();
-        expect(component.selectedPage).toEqual("digital-services");
+        expect(component.selectedPage()).toEqual("digital-services");
     });
 
     it('should set selectedPage to "administration" when URL starts has "/administration"', () => {
@@ -66,7 +66,7 @@ describe("HeaderComponent", () => {
             get: () => "/administration/organizations",
         });
         component.ngOnInit();
-        expect(component.selectedPage).toEqual("administration");
+        expect(component.selectedPage()).toEqual("administration");
     });
 
     it("should unsubscribe on component destruction", () => {

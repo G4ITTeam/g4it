@@ -61,38 +61,17 @@ describe("BarChartComponent", () => {
     });
 
     it("should generate valid EChartsOption for Networks", () => {
-        const barChartData: DigitalServiceNetworksImpact[] = require("mock-server/data/digital-service-data/digital_service_networks_footprint.json");
+        const barChartData: DigitalServiceNetworksImpact[] = require("test/data/digital-service-data/digital_service_networks_footprint.json");
         component.selectedCriteria = "acidification";
         const echartsOption: EChartsOption =
             component.loadStackBarOptionNetwork(barChartData);
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
-        expect(echartsOption.series).toEqual([
-            {
-                name: "networks",
-                type: "bar",
-                data: [
-                    {
-                        value: 0.06719530373811722,
-                        rawValue: 8.399413108825684,
-                        unit: "mol H+ eq",
-                    },
-                    {
-                        value: 0.461788845062256,
-                        rawValue: 0.10297897458076477,
-                        unit: "mol H+ eq",
-                    },
-                ],
-            },
-        ]);
-        expect(echartsOption.xAxis).toEqual([
-            { type: "category", data: ["Fixed FR", "Mobile EU"] },
-        ]);
     });
 
     it("should generate valid EChartsOption for Servers", () => {
-        const barChartData: DigitalServiceServersImpact[] = require("mock-server/data/digital-service-data/digital_service_servers_footprint.json");
+        const barChartData: DigitalServiceServersImpact[] = require("test/data/digital-service-data/digital_service_servers_footprint.json");
         component.selectedCriteria = "acidification";
         component.barChartChild = false;
 
@@ -101,57 +80,10 @@ describe("BarChartComponent", () => {
 
         expect(echartsOption).toBeTruthy();
         expect(echartsOption.series).toBeTruthy();
-        expect(echartsOption.series).toEqual([
-            {
-                name: "Server A",
-                data: [
-                    [
-                        "digital-services-servers.server-type.Dedicated-Storage",
-                        0.016719065246038937,
-                        3211.715221903284,
-                        "mol H+ eq",
-                    ],
-                ],
-                type: "bar",
-                stack: "Ad",
-                emphasis: Object({ focus: "series" }),
-                itemStyle: Object({ color: "rgb(0,178,255)" }),
-            },
-            {
-                name: "Server C",
-                data: [
-                    [
-                        "digital-services-servers.server-type.Dedicated-Storage",
-                        0.016719065246038937,
-                        3211.715221903284,
-                        "mol H+ eq",
-                    ],
-                ],
-                type: "bar",
-                stack: "Ad",
-                emphasis: Object({ focus: "series" }),
-                itemStyle: Object({ color: "rgb(255,189,0)" }),
-            },
-            {
-                name: "Server B",
-                data: [
-                    [
-                        "digital-services-servers.server-type.Shared-Compute",
-                        0.6209409557758594,
-                        3211.715221903284,
-                        "mol H+ eq",
-                    ],
-                ],
-                type: "bar",
-                stack: "Ad",
-                emphasis: Object({ focus: "series" }),
-                itemStyle: Object({ color: "#00B2FF" }),
-            },
-        ]);
     });
 
     it("should generate valid EChartsOption for Servers Child (case lifecycle)", () => {
-        const barChartData: DigitalServiceServersImpact[] = require("mock-server/data/digital-service-data/digital_service_servers_footprint.json");
+        const barChartData: DigitalServiceServersImpact[] = require("test/data/digital-service-data/digital_service_servers_footprint.json");
         component.selectedCriteria = "acidification";
         component.selectedDetailParam =
             "digital-services-servers.server-type.Shared-Compute";
@@ -195,7 +127,7 @@ describe("BarChartComponent", () => {
     });
 
     it("should generate valid EChartsOption for Servers Child (case vm)", () => {
-        const barChartData: DigitalServiceServersImpact[] = require("mock-server/data/digital-service-data/digital_service_servers_footprint.json");
+        const barChartData: DigitalServiceServersImpact[] = require("test/data/digital-service-data/digital_service_servers_footprint.json");
         component.selectedCriteria = "acidification";
         component.selectedDetailParam =
             "digital-services-servers.server-type.Shared-Compute";

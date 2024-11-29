@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiversion.business;
 
 
@@ -26,6 +26,9 @@ public class VersionService {
     @Value("${version}")
     private String version;
 
+    @Value("${boaviztapi.version}")
+    private String boaviztaVersion;
+
     @Autowired
     private ReferentialClient referentialClient;
 
@@ -46,6 +49,7 @@ public class VersionService {
 
         return VersionRest.builder()
                 .numEcoEval(numEcoEvalVersion)
+                .boaviztapi(boaviztaVersion)
                 .g4it(version)
                 .build();
     }

@@ -1,6 +1,7 @@
 <div
     class="filter-component"
     (click)="overlayVisible = !overlayVisible"
+    (keydown.enter)="overlayVisible = !overlayVisible"
     label="Show Overlay"
     tabindex="0"
     role="button"
@@ -10,7 +11,7 @@
         <img src="assets/images/icons/icon-filter.svg" alt="" />
         <span>{{ "inventories-footprint.filter" | translate }}</span>
     </div>
-    <img src="assets/images/icons/icon-accordion-fold.svg" alt="" />
+    <i class="pi pi-chevron-down font-bold mx-3"></i>
 </div>
 <p-overlay
     [(visible)]="overlayVisible"

@@ -1,21 +1,14 @@
 <div>
     <p-card>
-        <div class="footprint-data-application">
+        <div class="footprint-data-application flex flex-row justify-content-evenly mt-4">
             <div>
-                <p
-                    tabindex="0"
-                    class="p-bold"
-                    *ngIf="criteriaSignal().appCount !== 0; else zeroTitle"
-                >
+                <p class="p-bold" *ngIf="criteriaSignal().appCount !== 0; else zeroTitle">
                     {{
                         "inventories-footprint.application.applications.title" | translate
                     }}
                 </p>
                 <ng-template #zeroTitle>
-                    <p
-                        tabindex="0"
-                        [ngClass]="{ 'grey-text': criteriaSignal().appCount == 0 }"
-                    >
+                    <p [ngClass]="{ 'grey-text': criteriaSignal().appCount == 0 }">
                         {{
                             "inventories-footprint.application.applications.title"
                                 | translate
@@ -23,14 +16,11 @@
                     </p>
                 </ng-template>
                 <div class="flex flex-row justify-content-center text-2xl mt-2">
-                    <span
-                        tabindex="0"
-                        *ngIf="criteriaSignal().appCount !== 0; else zeroApp"
-                        >{{ criteriaSignal().appCount.toFixed(0) }}</span
-                    >
+                    <span *ngIf="criteriaSignal().appCount !== 0; else zeroApp">{{
+                        criteriaSignal().appCount.toFixed(0)
+                    }}</span>
                     <ng-template #zeroApp>
                         <span
-                            tabindex="0"
                             role="application"
                             attr.aria-label="{{ 'common.no-data' | translate }}"
                             class="text-no-data-global"
@@ -59,7 +49,6 @@
                         *ngIf="footprintStore.appGraphType() !== 'application'; else app"
                     >
                         <p
-                            tabindex="0"
                             class="p-bold"
                             *ngIf="
                                 criteriaSignal().averageImpactSip !== 0;
@@ -73,7 +62,6 @@
                         </p>
                         <ng-template #zeroTitle>
                             <p
-                                tabindex="0"
                                 [ngClass]="{
                                     'grey-text': criteriaSignal().appCount == 0,
                                 }"
@@ -87,7 +75,6 @@
                     </div>
                     <ng-template #app>
                         <p
-                            tabindex="0"
                             class="p-bold"
                             *ngIf="
                                 criteriaSignal().averageImpactSip !== 0;
@@ -100,7 +87,6 @@
                         </p>
                         <ng-template #zeroTitle>
                             <p
-                                tabindex="0"
                                 [ngClass]="{
                                     'grey-text': criteriaSignal().averageImpactSip == 0,
                                 }"
@@ -118,7 +104,6 @@
                         *ngIf="footprintStore.appGraphType() !== 'application'; else app"
                     >
                         <p
-                            tabindex="0"
                             class="p-bold"
                             *ngIf="
                                 criteriaSignal().averageImpactUnit !== 0;
@@ -132,7 +117,6 @@
                         </p>
                         <ng-template #zeroTitle>
                             <p
-                                tabindex="0"
                                 [ngClass]="{
                                     'grey-text': criteriaSignal().averageImpactUnit == 0,
                                 }"
@@ -146,7 +130,6 @@
                     </div>
                     <ng-template #app>
                         <p
-                            tabindex="0"
                             class="p-bold"
                             *ngIf="
                                 criteriaSignal().averageImpactUnit !== 0;
@@ -159,7 +142,6 @@
                         </p>
                         <ng-template #zeroTitle>
                             <p
-                                tabindex="0"
                                 [ngClass]="{
                                     'grey-text': criteriaSignal().averageImpactUnit == 0,
                                 }"
@@ -176,7 +158,6 @@
                 <div class="flex flex-row justify-content-center text-2xl mt-2">
                     <div *ngIf="isSip; else unit">
                         <span
-                            tabindex="0"
                             role="application"
                             attr.aria-label="{{ 'common.no-data' | translate }}"
                             *ngIf="
@@ -188,7 +169,6 @@
                         >
                         <ng-template #notZeroAvg>
                             <span
-                                tabindex="0"
                                 *ngIf="
                                     criteriaSignal().averageImpactSip !== 0 &&
                                         criteriaSignal().averageImpactSip < 1;
@@ -198,7 +178,7 @@
                                 &lt; 1
                             </span>
                             <ng-template #sup>
-                                <span tabindex="0">{{
+                                <span>{{
                                     criteriaSignal().averageImpactSip.toFixed(0)
                                 }}</span>
                             </ng-template>
@@ -206,7 +186,6 @@
                     </div>
                     <ng-template #unit>
                         <span
-                            tabindex="0"
                             role="application"
                             attr.aria-label="{{ 'common.no-data' | translate }}"
                             *ngIf="
@@ -218,7 +197,6 @@
                         >
                         <ng-template #notZeroAvgUnit>
                             <span
-                                tabindex="0"
                                 *ngIf="
                                     criteriaSignal().averageImpactUnit !== 0 &&
                                         criteriaSignal().averageImpactUnit < 1;
@@ -228,7 +206,7 @@
                                 &lt; 1
                             </span>
                             <ng-template #supUnit>
-                                <span tabindex="0">{{
+                                <span>{{
                                     criteriaSignal().averageImpactUnit.toFixed(0)
                                 }}</span>
                             </ng-template>
@@ -249,7 +227,6 @@
                         }}"
                         tooltipEvent="focus"
                         tooltipPosition="right"
-                        tabindex="0"
                     />
                     <ng-template #appTooltip>
                         <img
@@ -265,7 +242,6 @@
                             }}"
                             tooltipEvent="focus"
                             tooltipPosition="right"
-                            tabindex="0"
                         />
                     </ng-template>
                 </div>

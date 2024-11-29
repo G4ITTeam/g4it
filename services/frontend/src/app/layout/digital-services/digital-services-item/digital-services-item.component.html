@@ -11,6 +11,8 @@
                 [label]="digitalService.name"
                 [text]="true"
                 [plain]="true"
+                role="heading"
+                [ariaLevel]="3"
             />
         </span>
         @if (digitalService.members.length) {
@@ -33,7 +35,7 @@
             icon="pi pi-link"
             (click)="copyUrl()"
             [label]="'digital-services.copyLink' | translate"
-            [attr.aria-label]="'digital-services.copyLink' | translate"
+            [ariaLabel]="'digital-services.copyLink' | translate"
         />
 
         <p-button
@@ -41,7 +43,7 @@
             styleClass="black-button-small font-bold mx-1"
             [disabled]="true"
             class="disabled-text-black"
-            attr.aria-label="{{ 'digital-services.linkCopied' | translate }}"
+            [ariaLabel]="'digital-services.linkCopied' | translate"
             [label]="'digital-services.linkCopied' | translate"
         />
 
@@ -73,6 +75,10 @@
                 [text]="true"
                 [plain]="true"
                 icon="pi pi-trash"
+                [ariaLabel]="
+                    'digital-services.delete-criteria'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
             />
         } @else {
             <p-button
@@ -83,6 +89,10 @@
                 [text]="true"
                 [plain]="true"
                 icon="pi pi-eye-slash"
+                [ariaLabel]="
+                    'digital-services.unlink-digital-service'
+                        | translate: { digitalServiceName: digitalService.name }
+                "
             />
         }
         <p-confirmPopup [style]="{ width: '450px' }"> </p-confirmPopup>

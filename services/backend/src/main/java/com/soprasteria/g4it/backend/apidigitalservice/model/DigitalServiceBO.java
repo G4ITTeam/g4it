@@ -57,6 +57,11 @@ public class DigitalServiceBO {
     private List<String> criteria;
 
     /**
+     * is new arch
+     */
+    private Boolean isNewArch;
+
+    /**
      * Creation date.
      */
     @EqualsAndHashCode.Exclude

@@ -21,6 +21,7 @@ export class CommonEditorComponent {
     @Input() content: string | undefined = undefined;
     @Input() showButtons: boolean | null = false;
     @Input() title = "Note";
+    escape: boolean = false;
 
     @Output() close: EventEmitter<any> = new EventEmitter();
     @Output() delete: EventEmitter<any> = new EventEmitter();

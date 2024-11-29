@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: in-out-create-in-table-datacenter
+      author: G4IT Dev Team
+      changes:
+        - createTable:
+            tableName: in_datacenter
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: in_datacenter_pk
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: inventory_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: in_datacenter_inventory_id_fk
+                    references: inventory(id)
+                    deleteCascade: true
+              - column:
+                  name: digital_service_uid
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+                    foreignKeyName: in_datacenter_digital_service_fk
+                    references: digital_service(uid)
+              - column:
+                  name: full_name
+                  type: varchar(255)
+              - column:
+                  name: location
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pue
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+              - column:
+                  name: last_update_date
+                  type: timestamp
+              - column:
+                  name: common_filters
+                  type: varchar(255) array
+              - addUniqueConstraint:
+                  columnNames: name, digital_service_uid, inventory_id
+                  constraintName: in_datacenter_unique
+                  tableName: in_datacenter
+
+  - changeSet:
+      id: in-out-add-index-datacenter
+      author: G4IT Dev Team
+      changes:
+        - createIndex:
+            tableName: in_datacenter
+            indexName: idx_in_datacenter_inventory_id
+            columns:
+              - column:
+                  name: inventory_id

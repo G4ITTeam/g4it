@@ -11,7 +11,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
 import { lastValueFrom } from "rxjs";
 import { DigitalService } from "src/app/core/interfaces/digital-service.interfaces";
+import { MapString } from "src/app/core/interfaces/generic.interfaces";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 
 @Component({
@@ -20,18 +22,9 @@ import { GlobalStoreService } from "src/app/core/store/global.store";
 })
 export class DigitalServicesFootprintComponent implements OnInit {
     private global = inject(GlobalStoreService);
+    private digitalServiceStore = inject(DigitalServiceStoreService);
 
-    digitalService: DigitalService = {
-        name: "...",
-        uid: "",
-        creationDate: Date.now(),
-        lastUpdateDate: Date.now(),
-        lastCalculationDate: null,
-        terminals: [],
-        servers: [],
-        networks: [],
-        members: [],
-    };
+    digitalService: DigitalService = {} as DigitalService;
     tabItems: MenuItem[] | undefined;
 
     constructor(
@@ -49,6 +42,7 @@ export class DigitalServicesFootprintComponent implements OnInit {
         this.digitalService = digitalService;
         this.global.setLoading(false);
         this.updateTabItems();
+        this.initCountryMap();
     }
 
     updateTabItems() {
@@ -66,9 +60,14 @@ export class DigitalServicesFootprintComponent implements OnInit {
                 routerLink: "servers",
             },
             {
+                label: this.translate.instant("digital-services.CloudService"),
+                routerLink: "cloudServices",
+            },
+            {
                 label: "Filler",
                 separator: true,
-                style: { visibility: "hidden", flex: 1 },
+                style: { flex: 1 },
+                id: "separator",
             },
             {
                 label: this.translate.instant("digital-services.visualize"),
@@ -84,5 +83,18 @@ export class DigitalServicesFootprintComponent implements OnInit {
             this.digitalServicesData.update(this.digitalService),
         );
         this.updateTabItems();
+    }
+
+    async initCountryMap() {
+        if (this.digitalServiceStore.countryMap.length > 0) return;
+
+        const boaviztaCountryMap = await lastValueFrom(
+            this.digitalServicesData.getBoaviztapiCountryMap(),
+        );
+        const countryMap: MapString = {};
+        for (const key in boaviztaCountryMap) {
+            countryMap[boaviztaCountryMap[key]] = key;
+        }
+        this.digitalServiceStore.setCountryMap(countryMap);
     }
 }

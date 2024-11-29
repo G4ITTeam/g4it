@@ -7,6 +7,7 @@
  */
 import { NgModule } from "@angular/core";
 import { NgxEchartsModule } from "ngx-echarts";
+import { ImageModule } from "primeng/image";
 import { OverlayModule } from "primeng/overlay";
 import { TabMenuModule } from "primeng/tabmenu";
 import { TreeSelectModule } from "primeng/treeselect";
@@ -33,6 +34,7 @@ import { ApplicationMulticriteriaFootprintComponent } from "./multicriteria/appl
         TabMenuModule,
         OverlayModule,
         TreeSelectModule,
+        ImageModule,
         NgxEchartsModule.forRoot({
             echarts: () => import("echarts"),
         }),

@@ -35,11 +35,17 @@ public enum FileType {
 
     SERVER("SERVER"),
 
+    CLOUD_INSTANCE("CLOUD_INSTANCE"),
+
     VIRTUAL_MACHINE("VIRTUAL_MACHINE"),
 
     DATACENTER_DIGITAL_SERVICE("DATACENTER_DIGITAL_SERVICE"),
 
     PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE("PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE"),
+
+    VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE("VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE"),
+
+    VIRTUAL_EQUIPMENT_CLOUD_INSTANCE("VIRTUAL_EQUIPMENT_CLOUD_INSTANCE"),
 
     UNKNOWN("UNKNOWN");
 
@@ -52,5 +58,17 @@ public enum FileType {
             }
         }
         throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+
+    public String getFileName() {
+        return switch (this.getValue()) {
+            case "DATACENTER" -> "datacenter";
+            case "EQUIPEMENT_PHYSIQUE" -> "physical_equipment";
+            case "EQUIPEMENT_VIRTUEL" -> "virtual_equipment";
+            case "APPLICATION" -> "application";
+            case "VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE" -> "ind_cloud_instances";
+            case "VIRTUAL_EQUIPMENT_CLOUD_INSTANCE" -> "cloud_instances";
+            default -> this.getValue();
+        };
     }
 }

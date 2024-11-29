@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, Input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
@@ -13,13 +13,19 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
     templateUrl: "./information-card.component.html",
 })
 export class InformationCardComponent {
-    @Input() title: string = "";
-    @Input() content: string = "";
-    @Input() isLong = false;
+    title = input<string>();
+    content = input<string>();
+    isLong = input<boolean>();
+
+    safeContent = computed(() => this.renderHTML(this.content()));
+    safeTitle = computed(() => this.renderHTML(this.title()));
 
     constructor(private sanitizer: DomSanitizer) {}
 
-    renderHTML(html: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(html);
+    renderHTML(html: string | undefined): SafeHtml {
+        if (html) {
+            return this.sanitizer.bypassSecurityTrustHtml(html);
+        }
+        return "";
     }
 }

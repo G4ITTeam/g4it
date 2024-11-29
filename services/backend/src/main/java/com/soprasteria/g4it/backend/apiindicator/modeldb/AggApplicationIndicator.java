@@ -57,4 +57,8 @@ public class AggApplicationIndicator implements Serializable {
     private String cluster;
 
     private Double sip;
+    
+    private String statusIndicator;
+
+
 }

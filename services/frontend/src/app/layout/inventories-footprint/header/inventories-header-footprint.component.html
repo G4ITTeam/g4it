@@ -5,7 +5,7 @@
             styleClass="color-tertiary text-2xl font-semibold p-2"
             [routerLink]="changePageToInventories()"
             [text]="true"
-            [attr.aria-label]="'inventories.return' | translate"
+            [ariaLabel]="'inventories.return' | translate"
             icon="pi pi-arrow-left"
             [label]="
                 'inventories.title'
@@ -13,12 +13,12 @@
             "
         />
 
-        <h2 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2" tabIndex="0">
-            {{ inventory.name | monthYear }}
-        </h2>
-        <h2 *ngIf="inventory.type === types.SIMULATION" class="px-2" tabIndex="0">
-            {{ inventory.name }}
-        </h2>
+        <h1 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2">
+            {{ (inventory.name | monthYear) + " - " + indicatorType }}
+        </h1>
+        <h1 *ngIf="inventory.type === types.SIMULATION" class="px-2">
+            {{ inventory.name + " - " + indicatorType }}
+        </h1>
     </div>
     <div>
         <p-button
@@ -27,7 +27,7 @@
             styleClass="text-gray-900 header-button"
             [text]="true"
             [plain]="true"
-            attr.aria-label="{{ 'common.accessibility.addNote' | translate }}"
+            [ariaLabel]="'common.accessibility.addNote' | translate"
             [label]="'common.note.add' | translate"
             icon="pi pi-plus-circle"
         />
@@ -38,7 +38,7 @@
             styleClass="text-gray-900 header-button"
             [text]="true"
             [plain]="true"
-            attr.aria-label="{{ 'common.accessibility.attachedNote' | translate }}"
+            [ariaLabel]="'common.accessibility.attachedNote' | translate"
             [label]="'common.note.attached' | translate"
             icon="pi pi-clipboard"
         />
@@ -56,7 +56,7 @@
         />
 
         <p-button
-            attr.aria-label="{{ 'common.accessibility.download' | translate }}"
+            [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="download($event)"
             [disabled]="downloadInProgress"
@@ -69,7 +69,7 @@
         />
 
         <p-button
-            attr.aria-label="{{ 'common.accessibility.download' | translate }}"
+            [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-gray-400 text-gray-900  header-button"
             *ngIf="
                 batchStatusCode &&
@@ -80,22 +80,25 @@
             icon="pi pi-refresh"
         />
     </div>
-    <p-sidebar
-        *ngIf="sidebarVisible"
-        [(visible)]="sidebarVisible"
-        position="right"
-        styleClass="p-sidebar-md w-7"
-    >
-        <app-common-editor
-            [content]="inventory.note?.content"
-            [title]="'Note - ' + inventory.name"
-            [showButtons]="userService.isAllowedInventoryWrite$ | async"
-            (saveValue)="noteSaveValue($event)"
-            (close)="sidebarVisible = $event"
-            (delete)="noteDelete($event); sidebarVisible = $event"
-            styleClass="mx-7"
+    @if (sidebarVisible) {
+        <p-sidebar
+            [visible]="true"
+            position="right"
+            tabIndex="0"
+            styleClass="p-sidebar-md w-7"
+            (onHide)="sidebarVisible = false"
         >
-        </app-common-editor>
-    </p-sidebar>
+            <app-common-editor
+                [content]="inventory.note?.content"
+                [title]="'Note - ' + inventory.name"
+                [showButtons]="userService.isAllowedInventoryWrite$ | async"
+                (saveValue)="noteSaveValue($event)"
+                (close)="sidebarVisible = $event"
+                (delete)="noteDelete($event); sidebarVisible = $event"
+                styleClass="mx-7"
+            >
+            </app-common-editor>
+        </p-sidebar>
+    }
 </div>
 <p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>

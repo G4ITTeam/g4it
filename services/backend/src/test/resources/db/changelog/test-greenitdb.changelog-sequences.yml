@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: test-create-sequences
+      author: G4IT Dev Team
+      changes:
+        - createSequence:
+            incrementBy: 100
+            sequenceName: ref_item_impact_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: in_physical_equipment_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: in_virtual_equipment_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: in_application_id_seq

@@ -7,12 +7,19 @@
  */
 import { RouterModule, Routes } from "@angular/router";
 import { FootprintRedirectGuard } from "src/app/guard/footprint-redirect.guard";
+import { TitleResolver } from "../common/title-resolver.service";
 import { InventoriesFootprintComponent } from "./inventories-footprint.component";
 
 const routes: Routes = [
     {
         path: ":criteria",
         component: InventoriesFootprintComponent,
+        resolve: {
+            title: TitleResolver,
+        },
+        data: {
+            titleKey: "inventories.page-title",
+        },
         canActivate: [FootprintRedirectGuard],
     },
 ];

@@ -1,0 +1,10 @@
+[
+  {
+    "fullName": "Long name",
+    "id": 3,
+    "inventoryId": 1,
+    "location": "France",
+    "name": "default",
+    "pue": 1.75
+  }
+]

@@ -1,5 +1,5 @@
 <div class="lg-file-panel-margin">
-    <div class="side-panel-title">
+    <div class="side-panel-title" appAutofocus tabindex="-1">
         {{ server.name }}
     </div>
     <div class="side-panel-subtitle">
@@ -18,7 +18,11 @@
                     <div class="table-head">
                         {{ "digital-services-servers.vm" | translate }}
                     </div>
-                    <p-button (click)="resetIndex()" styleClass="inventory-button-small" *ngIf="userService.isAllowedDigitalServiceWrite$ | async">
+                    <p-button
+                        (click)="resetIndex()"
+                        styleClass="inventory-button-small"
+                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                    >
                         {{ "digital-services-servers.add.vm" | translate }}
                     </p-button>
                 </div>
@@ -59,27 +63,29 @@
             <ng-template pTemplate="body" let-vm let-rowIndex="rowIndex">
                 <tr>
                     <td>{{ vm.name }}</td>
-                    <td>{{ vm.quantity | decimals}}</td>
+                    <td>{{ vm.quantity | decimals }}</td>
                     <td *ngIf="server.type === 'Compute'">
-                        {{ vm.vCpu | decimals}}
+                        {{ vm.vCpu | decimals }}
                     </td>
                     <td *ngIf="server.type === 'Storage'">
-                        {{ vm.disk | decimals}}
+                        {{ vm.disk | decimals }}
                     </td>
-                    <td>{{ vm.annualOperatingTime | decimals}}</td>
+                    <td>{{ vm.annualOperatingTime | decimals }}</td>
                     <td style="text-align: right">
-                        <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                             (click)="setIndex(rowIndex)"
-                            styleClass="p-button-text edit-button"
+                            styleClass="p-button-text"
                         >
                             <img
                                 src="assets/images/icons/icon-edit.svg"
                                 alt="{{ 'common.edit' | translate }} {{ vm.name }}"
                             />
                         </p-button>
-                        <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                             (click)="deleteVm(rowIndex)"
-                            styleClass="p-button-text edit-button"
+                            styleClass="p-button-text"
                         >
                             <img
                                 src="assets/images/icons/icon-bin.svg"
@@ -95,15 +101,18 @@
         <p-button styleClass="white-button" (click)="close()">{{
             "common.cancel" | translate
         }}</p-button>
-        <p-button styleClass="black-button" (click)="previousStep()">
-            <img
-                alt=""
-                src="assets/images/icons/icon-arrow-left-white.svg"
-                class="previous-img"
-            />
-            {{ "common.previous" | translate }}
+        <p-button
+            styleClass="black-button"
+            (click)="previousStep()"
+            icon="pi pi-arrow-left"
+            [label]="'common.previous' | translate"
+        >
         </p-button>
-        <p-button styleClass="yellow-button" type="submit" (click)="submitServer()" *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+        <p-button
+            styleClass="yellow-button"
+            type="submit"
+            (click)="submitServer()"
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             ><span *ngIf="server.uid === ''">
                 {{ "common.create" | translate }}
             </span>
@@ -113,13 +122,21 @@
         </p-button>
     </div>
 </div>
-<p-sidebar [(visible)]="addVMPanelVisible" position="right" styleClass="p-sidebar-lg">
-    <app-side-panel-add-vm
-        *ngIf="addVMPanelVisible"
-        [server]="server"
-        [index]="index"
-        [addVMPanelVisible]="addVMPanelVisible"
-        (addVMPanelVisibleChange)="addVMPanelVisible = $event"
+@if (addVMPanelVisible) {
+    <p-sidebar
+        [visible]="true"
+        position="right"
+        styleClass="p-sidebar-lg"
+        (onHide)="vmSidePanel.close()"
     >
-    </app-side-panel-add-vm>
-</p-sidebar>
+        <app-side-panel-add-vm
+            #vmSidePanel
+            *ngIf="addVMPanelVisible"
+            [server]="server"
+            [index]="index"
+            [addVMPanelVisible]="addVMPanelVisible"
+            (addVMPanelVisibleChange)="addVMPanelVisible = $event"
+        >
+        </app-side-panel-add-vm>
+    </p-sidebar>
+}

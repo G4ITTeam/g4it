@@ -332,6 +332,23 @@ filesystem.config.headers:
     - name: "associatedVM"
       dbName: "serverCharacteristicType"
       optional: false
+  cloudInstance:
+    - name: "digitalServiceName"
+      optional: true
+    - name: "name"
+      optional: true
+    - name: "cloudProvider"
+      optional: true
+    - name: "instanceType"
+      optional: true
+    - name: "quantity"
+      optional: true
+    - name: "location"
+      optional: true
+    - name: "usageDuration"
+      optional: true
+    - name: "averageWorkload"
+      optional: true
   virtualMachine:
     - name: "digitalServiceName"
       optional: false
@@ -405,5 +422,62 @@ filesystem.config.headers:
     - name: "sipImpact"
       dbName: "commonSipImpact"
       optional: false
-
-
+  virtualEquipmentIndicatorCloudInstance:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "calculationDate"
+      optional: false
+    - name: "organizationId"
+      optional: false
+    - name: "taskId"
+      optional: false
+    - name: "lifecycleStep"
+      optional: false
+    - name: "criterion"
+      optional: false
+    - name: "source"
+      optional: false
+    - name: "name"
+      optional: false
+    - name: "instanceType"
+      optional: false
+    - name: "provider"
+      optional: false
+    - name: "location"
+      optional: false
+    - name: "engineName"
+      optional: false
+    - name: "engineVersion"
+      optional: false
+    - name: "referential"
+      dbName: "referentialVersion"
+      optional: false
+    - name: "statusIndicator"
+      optional: false
+    - name: "unit"
+      optional: false
+    - name: "unitImpact"
+      optional: false
+    - name: "peopleEqImpact"
+      optional: false
+    - name: "quantity"
+      optional: false
+    - name: "errors"
+      optional: false
+  virtualEquipmentCloudInstance:
+    - name: "digitalServiceName"
+      optional: false
+    - name: "name"
+      optional: false
+    - name: "cloudProvider"
+      optional: false
+    - name: "instanceType"
+      optional: false
+    - name: "quantity"
+      optional: false
+    - name: "location"
+      optional: false
+    - name: "usageDuration"
+      optional: false
+    - name: "averageWorkload"
+      optional: false

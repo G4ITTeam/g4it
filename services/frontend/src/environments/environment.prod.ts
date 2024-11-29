@@ -14,10 +14,12 @@ export const environment = {
         issuer: "${KEYCLOAK_URL}",
         realm: "g4it",
         clientId: "g4it",
+        enabled: "${KEYCLOAK_ENABLED}",
     },
     frontEndUrl: "${FRONTEND_URL}",
     matomo: {
         trackerUrl: "${MATOMO_URL}",
         siteId: "${MATOMO_SITE_ID}",
     },
+    showBetaFeatures: "${SHOW_BETA_FEATURES}"
 };

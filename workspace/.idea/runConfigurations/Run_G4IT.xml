@@ -1,6 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run G4IT" type="CompoundRunConfigurationType">
-    <toRun name="G4IT Backend" type="Application" />
-    <method v="2" />
-  </configuration>
-</component>

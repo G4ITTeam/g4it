@@ -1,0 +1,468 @@
+openapi: 3.0.3
+info:
+  title: Swagger GreenIT - Open API 3.0 - Inventory Input items
+  description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
+  version: 1.0.0
+
+tags:
+  - name: inventory-inputs-datacenter
+    description: Endpoint for inventory inputs - datacenter
+  - name: inventory-inputs-physical-equipment
+    description: Endpoint for inventory inputs - physical-equipment
+  - name: inventory-inputs-virtual-equipment
+    description: Endpoint for inventory inputs - virtual-equipment
+  - name: inventory-inputs-application
+    description: Endpoint for inventory inputs - application
+
+paths:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/datacenters:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      tags:
+        - inventory-inputs-datacenter
+      summary: Get datacenters from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsDatacentersRest
+      responses:
+        '200':
+          description: return inventory input datacenters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InDatacenterRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - inventory-inputs-datacenter
+      summary: Post datacenters from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: postInventoryInputsDatacentersRest
+      requestBody:
+        description: physical equipment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InDatacenterRest"
+      responses:
+        '200':
+          description: return datacenters created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InDatacenterRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/datacenters/{id}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - $ref: '#/components/parameters/idPathParam'
+    get:
+      tags:
+        - inventory-inputs-datacenter
+      summary: Get datacenter from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsDatacenterRest
+      responses:
+        '200':
+          description: return inventory in datacenter with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InDatacenterRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - inventory-inputs-datacenter
+      summary: Update the datacenter from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: putInventoryInputsDatacenterRest
+      requestBody:
+        description: datacenter
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InDatacenterRest"
+      responses:
+        '200':
+          description: return inventory in datacenter with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InDatacenterRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - inventory-inputs-datacenter
+      summary: delete datacenter from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: deleteInventoryInputsDatacenterRest
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/physical-equipments:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      tags:
+        - inventory-inputs-physical-equipment
+      summary: Get physical equipments from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsPhysicalEquipmentsRest
+      responses:
+        '200':
+          description: return inventory input physical equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InPhysicalEquipmentRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - inventory-inputs-physical-equipment
+      summary: Post physical equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: postInventoryInputsPhysicalEquipmentsRest
+      requestBody:
+        description: physical equipment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InPhysicalEquipmentRest"
+      responses:
+        '200':
+          description: return physical equipment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InPhysicalEquipmentRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/physical-equipments/{id}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - $ref: '#/components/parameters/idPathParam'
+    get:
+      tags:
+        - inventory-inputs-physical-equipment
+      summary: Get physical equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsPhysicalEquipmentRest
+      responses:
+        '200':
+          description: return inventory in physical equipment with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InPhysicalEquipmentRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - inventory-inputs-physical-equipment
+      summary: Update the physical equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: putInventoryInputsPhysicalEquipmentRest
+      requestBody:
+        description: physical equipment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InPhysicalEquipmentRest"
+      responses:
+        '200':
+          description: return inventory in physical equipment with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InPhysicalEquipmentRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - inventory-inputs-physical-equipment
+      summary: delete physical equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: deleteInventoryInputsPhysicalEquipmentRest
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/virtual-equipments:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      tags:
+        - inventory-inputs-virtual-equipment
+      summary: Get virtual equipments from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsVirtualEquipmentsRest
+      responses:
+        '200':
+          description: return inventory input virtual equipments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InVirtualEquipmentRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - inventory-inputs-virtual-equipment
+      summary: Post virtual equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: postInventoryInputsVirtualEquipmentsRest
+      requestBody:
+        description: virtual equipment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InVirtualEquipmentRest"
+      responses:
+        '200':
+          description: return virtual equipment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InVirtualEquipmentRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/virtual-equipments/{id}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - $ref: '#/components/parameters/idPathParam'
+    get:
+      tags:
+        - inventory-inputs-virtual-equipment
+      summary: Get virtual equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsVirtualEquipmentRest
+      responses:
+        '200':
+          description: return inventory in virtual equipment with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InVirtualEquipmentRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - inventory-inputs-virtual-equipment
+      summary: Update the virtual equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: putInventoryInputsVirtualEquipmentRest
+      requestBody:
+        description: virtual equipment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InVirtualEquipmentRest"
+      responses:
+        '200':
+          description: return inventory in virtual equipment with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InVirtualEquipmentRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - inventory-inputs-virtual-equipment
+      summary: delete virtual equipment from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: deleteInventoryInputsVirtualEquipmentRest
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/applications:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      tags:
+        - inventory-inputs-application
+      summary: Get applications from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsApplicationsRest
+      responses:
+        '200':
+          description: return inventory input applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InApplicationRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - inventory-inputs-application
+      summary: Post applications from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: postInventoryInputsApplicationsRest
+      requestBody:
+        description: applications
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InApplicationRest"
+      responses:
+        '200':
+          description: return applications created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InApplicationRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/inputs/applications/{id}:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - $ref: '#/components/parameters/idPathParam'
+    get:
+      tags:
+        - inventory-inputs-application
+      summary: Get applications from one inventory
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      operationId: getInventoryInputsApplicationRest
+      responses:
+        '200':
+          description: return inventory in applications with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InApplicationRest"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - inventory-inputs-application
+      summary: Update the applications from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: putInventoryInputsApplicationRest
+      requestBody:
+        description: application
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InApplicationRest"
+      responses:
+        '200':
+          description: return inventory in application with id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InApplicationRest"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - inventory-inputs-application
+      summary: delete application from one inventory
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      operationId: deleteInventoryInputsApplicationRest
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

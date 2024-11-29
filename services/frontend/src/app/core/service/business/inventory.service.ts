@@ -51,34 +51,46 @@ export class InventoryService {
         }
 
         inventories.forEach((inventory: Inventory) => {
-            if (inventory.evaluationReports && inventory.evaluationReports.length > 0) {
-                inventory.evaluationReports.sort(sortByProperty("createTime", "desc"));
-                inventory.evaluationReports = inventory.evaluationReports
-                    ? inventory.evaluationReports.slice(0, this.maxReportsSize)
-                    : [];
-                inventory.lastEvaluationReport = inventory.evaluationReports[0];
-                inventory.lastEvaluationReport.progress = parseFloat(
-                    inventory.lastEvaluationReport.progressPercentage,
-                );
-            }
-            if (inventory.integrationReports && inventory.integrationReports.length > 0) {
-                inventory.integrationReports.sort(sortByProperty("createTime", "desc"));
-                inventory.integrationReports = inventory.integrationReports
-                    ? inventory.integrationReports.slice(0, this.maxReportsSize)
-                    : [];
-                inventory.lastIntegrationReport = inventory.integrationReports[0];
-            }
-            // Format date
-            if (inventory.type == Constants.INVENTORY_TYPE.INFORMATION_SYSTEM) {
-                const elementsOfDate = inventory.name.split("-");
-                inventory.date = new Date(
-                    parseInt(elementsOfDate[1]),
-                    parseInt(elementsOfDate[0]) - 1,
-                );
-            }
+            this.enrichInventory(inventory);
         });
         this.inventoryRepo.setInventories(inventories);
         return inventories;
+    }
+
+    enrichInventory(inventory: Inventory) {
+        if (inventory.evaluationReports && inventory.evaluationReports.length > 0) {
+            inventory.evaluationReports.sort(sortByProperty("createTime", "desc"));
+            inventory.evaluationReports = inventory.evaluationReports
+                ? inventory.evaluationReports.slice(0, this.maxReportsSize)
+                : [];
+            inventory.lastEvaluationReport = inventory.evaluationReports[0];
+            inventory.lastEvaluationReport.progress = parseFloat(
+                inventory.lastEvaluationReport.progressPercentage,
+            );
+        }
+        if (inventory.integrationReports && inventory.integrationReports.length > 0) {
+            inventory.integrationReports.sort(sortByProperty("createTime", "desc"));
+            inventory.integrationReports = inventory.integrationReports
+                ? inventory.integrationReports.slice(0, this.maxReportsSize)
+                : [];
+            inventory.lastIntegrationReport = inventory.integrationReports[0];
+        }
+        if (inventory.tasks && inventory.tasks.length > 0) {
+            inventory.tasks.sort(sortByProperty("creationDate", "desc"));
+            inventory.tasks = inventory.tasks
+                ? inventory.tasks.slice(0, this.maxReportsSize)
+                : [];
+            inventory.lastTask = inventory.tasks[0];
+        }
+
+        // Format date
+        if (inventory.type == Constants.INVENTORY_TYPE.INFORMATION_SYSTEM) {
+            const elementsOfDate = inventory.name.split("-");
+            inventory.date = new Date(
+                parseInt(elementsOfDate[1]),
+                parseInt(elementsOfDate[0]) - 1,
+            );
+        }
     }
 
     deleteInventory(id: number): Observable<Inventory[]> {

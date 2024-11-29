@@ -1,11 +1,21 @@
+@if (showInconsitency()) {
+    <app-stack-bar-chart
+        [xAxisInput]="xAxisInput"
+        [statusCountMap]="criteriaMap"
+        (selectedStackBarClick)="selectedStackBarClick($event)"
+    />
+} @else {
+    <div
+        echarts
+        class="bar-stack m-0 mt-4 h-28rem"
+        [options]="options"
+        (chartClick)="onChartClick($event)"
+    ></div>
+}
 <div
-    echarts
-    class="bar-stack"
-    [options]="options"
-    (chartClick)="onChartClick($event)"
-    style="height: 400px; margin: 0; margin-top: 20px"
-></div>
-<div *ngIf="selectedParam == 'Terminal' && !barChartChild" class="radio-buttons-graph">
+    *ngIf="selectedParam == 'Terminal' && !barChartChild"
+    class="flex justify-content-center"
+>
     <div *ngFor="let option of terminalsOptions">
         <p-radioButton
             [inputId]="option.key"
@@ -14,7 +24,26 @@
             [(ngModel)]="terminalsRadioButtonSelected"
             (onClick)="changeTerminalsRadioButtonSelected()"
         ></p-radioButton>
-        <label [for]="option.key" class="ml-2">{{ option.name }}</label>
+        <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
+            option.name
+        }}</label>
+    </div>
+</div>
+<div
+    *ngIf="selectedParam == 'CloudService' && !barChartChild"
+    class="flex justify-content-center"
+>
+    <div *ngFor="let option of cloudOptions">
+        <p-radioButton
+            [inputId]="option.key"
+            name="option"
+            [value]="option.value"
+            [(ngModel)]="cloudRadioButtonSelected"
+            (onClick)="changeCloudsRadioButtonSelected()"
+        ></p-radioButton>
+        <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
+            option.name
+        }}</label>
     </div>
 </div>
 <div
@@ -23,7 +52,7 @@
         barChartChild &&
         !selectedDetailParam.includes('Dedicated')
     "
-    class="radio-buttons-graph"
+    class="flex justify-content-center"
 >
     <div *ngFor="let option of serversOptions">
         <p-radioButton
@@ -33,6 +62,8 @@
             [(ngModel)]="serversRadioButtonSelected"
             (onClick)="changeServersRadioButtonSelected()"
         ></p-radioButton>
-        <label [for]="option.key" class="ml-2">{{ option.name }}</label>
+        <label [for]="option.key" class="ml-2 mr-4 cursor-pointer">{{
+            option.name
+        }}</label>
     </div>
 </div>

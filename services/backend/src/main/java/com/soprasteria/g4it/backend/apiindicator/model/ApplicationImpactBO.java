@@ -71,4 +71,10 @@ public class ApplicationImpactBO {
      */
     private Double sip;
 
+    /**
+     * The status of the indicator(OK or ERREUR)
+     */
+    private String statusIndicator;
+
+
 }

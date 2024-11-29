@@ -1,32 +1,53 @@
 <div class="lg-file-panel-margin">
-    <div class="side-panel-title" *ngIf="server.uid === ''">
+    <div
+        class="side-panel-title"
+        *ngIf="server.uid === ''"
+        role="heading"
+        appAutofocus
+        tabindex="-1"
+    >
         {{ "digital-services-servers.new" | translate }}
     </div>
-    <div class="side-panel-title" *ngIf="server.uid !== ''">
+    <div
+        class="side-panel-title"
+        *ngIf="server.uid !== ''"
+        role="heading"
+        appAutofocus
+        tabindex="-1"
+    >
         {{ "digital-services-servers.edit" | translate }}
     </div>
     <form [formGroup]="serverForm" (ngSubmit)="nextStep()">
         <div class="label-input-div-full">
-            <label>{{ "digital-services-servers.name" | translate }}</label>
+            <label for="name">{{ "digital-services-servers.name" | translate }}</label>
             <input
                 pInputText
                 type="text"
                 formControlName="name"
                 [(ngModel)]="server.name"
                 [required]="true"
+                id="name"
             />
             <p class="error-text" *ngIf="serverForm.get('name')?.hasError('required')">
                 {{ "digital-services-servers.name" | translate }}
                 {{ "common.mandatory" | translate }}
             </p>
+            <p class="error-text" *ngIf="serverForm.get('name')?.hasError('uniqueName')">
+                {{ "digital-services-servers.error.server-already-exists" | translate }}
+            </p>
         </div>
         <div style="display: flex; margin-top: 25px">
             <div>
-                <div class="radio-button-selection">
-                    <label for="Dedicated" class="ml-2">{{
+                <div
+                    class="radio-button-selection flex border-1 border-solid border-300 border-round-xl align-items-center bg-white cursor-pointer"
+                    role="group"
+                    [attr.aria-label]="'digital-services-servers.allocation' | translate"
+                >
+                    <label for="Dedicated" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
                         "digital-services-servers.Dedicated" | translate
                     }}</label>
                     <p-radioButton
+                        class="relative radio-button-right"
                         name="mutualizationType"
                         formControlName="mutualizationType"
                         value="Dedicated"
@@ -34,10 +55,11 @@
                         [(ngModel)]="server.mutualizationType"
                     ></p-radioButton>
                     <p-divider layout="vertical"></p-divider>
-                    <label for="Shared" class="ml-2">{{
+                    <label for="Shared" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
                         "digital-services-servers.Shared" | translate
                     }}</label>
                     <p-radioButton
+                        class="relative radio-button-right"
                         name="mutualizationType"
                         formControlName="mutualizationType"
                         value="Shared"
@@ -55,11 +77,16 @@
             </div>
             <p-divider layout="vertical"></p-divider>
             <div>
-                <div class="radio-button-selection">
-                    <label for="Compute" class="ml-2">{{
+                <div
+                    class="radio-button-selection flex border-1 border-solid border-300 border-round-xl align-items-center bg-white cursor-pointer"
+                    role="group"
+                    [attr.aria-label]="'digital-services-servers.type' | translate"
+                >
+                    <label for="Compute" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
                         "digital-services-servers.Compute" | translate
                     }}</label>
                     <p-radioButton
+                        class="relative radio-button-right"
                         name="type"
                         [(ngModel)]="server.type"
                         formControlName="type"
@@ -67,10 +94,11 @@
                         inputId="Compute"
                     ></p-radioButton>
                     <p-divider layout="vertical"></p-divider>
-                    <label for="Storage" class="ml-2">{{
+                    <label for="Storage" class="ml-2 cursor-pointer py-2 pl-2 pr-4">{{
                         "digital-services-servers.Storage" | translate
                     }}</label>
                     <p-radioButton
+                        class="relative radio-button-right"
                         name="type"
                         [(ngModel)]="server.type"
                         formControlName="type"
@@ -92,18 +120,15 @@
             <p-button styleClass="white-button" (click)="close()">
                 {{ "common.cancel" | translate }}
             </p-button>
-            <p-button *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            <p-button
+                *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 styleClass="black-button"
                 [disabled]="serverForm.invalid"
                 type="submit"
-            >
-                {{ "common.next" | translate }}
-                <img
-                    alt=""
-                    src="assets/images/icons/icon-arrow-right-white.svg"
-                    class="next-img"
-                />
-            </p-button>
+                icon="pi pi-arrow-right"
+                [label]="'common.next' | translate"
+                iconPos="right"
+            />
         </div>
     </form>
 </div>

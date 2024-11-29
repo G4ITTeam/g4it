@@ -58,139 +58,165 @@ export class UserService {
     );
 
     constructor(
-        private router: Router,
-        private userDataService: UserDataService,
-        private messageService: MessageService,
-        private translate: TranslateService,
+        private readonly router: Router,
+        private readonly userDataService: UserDataService,
+        private readonly messageService: MessageService,
+        private readonly translate: TranslateService,
     ) {
+        this.checkRouterEvents();
+    }
+
+    checkRouterEvents(): void {
         if (this.router?.events) {
             this.router.events
                 .pipe(filter((event) => event instanceof NavigationEnd))
                 .subscribe(() => {
                     this.userDataService.userSubject.subscribe((currentUser) => {
-                        const [
-                            _,
+                        const [_, subscribers, subscriberName, _1, organizationId, page] =
+                            this.router.url.split("/");
+                        this.handleRoutingEvents(
                             subscribers,
+                            currentUser,
                             subscriberName,
-                            organizations,
                             organizationId,
                             page,
-                        ] = this.router.url.split("/");
-                        if (subscribers === "something-went-wrong") {
-                            return;
-                        }
-
-                        if (currentUser.subscribers.length === 0) {
-                            this.errorMessage("subscriber-or-organization-not-found");
-                            this.router.navigateByUrl(`something-went-wrong/403`);
-                        }
-
-                        if (
-                            page !== undefined &&
-                            ["inventories", "digital-services"].includes(page)
-                        ) {
-                            const subscriber = currentUser?.subscribers.find(
-                                (sub: any) => sub.name == subscriberName,
-                            );
-
-                            const organization = subscriber?.organizations.find(
-                                (org: any) => org.id === Number(organizationId),
-                            );
-
-                            if (subscriber === undefined) {
-                                this.errorMessage("insuffisant-right-subscriber");
-                                this.router.navigateByUrl("/");
-                                return;
-                            }
-                            if (organization === undefined) {
-                                this.errorMessage("insuffisant-right-organization");
-                                this.router.navigateByUrl("/");
-                                return;
-                            }
-
-                            if (this.checkIfAllowed(subscriber!, organization!, page)) {
-                                this.setSubscriberAndOrganization(
-                                    subscriber!,
-                                    organization!,
-                                );
-                                return;
-                            } else {
-                                this.router.navigateByUrl(`something-went-wrong/403`);
-                                return;
-                            }
-                        }
-
-                        // If the url is unknown, we set the default subscriber and the default organization
-                        let subscriber: Subscriber | undefined;
-                        let organization: Organization | undefined;
-
-                        const subscriberNameLS =
-                            localStorage.getItem("currentSubscriber") || undefined;
-
-                        if (subscriberNameLS) {
-                            const tmpSubs = currentUser.subscribers.filter(
-                                (s) => s.name === subscriberNameLS,
-                            );
-                            if (tmpSubs.length === 0) {
-                                subscriber = currentUser.subscribers[0];
-                            } else {
-                                subscriber = tmpSubs[0];
-                            }
-                        } else {
-                            subscriber = currentUser.subscribers[0];
-                        }
-
-                        if (subscriber) {
-                            let organizationNameLS =
-                                localStorage.getItem("currentOrganization") || undefined;
-
-                            if (organizationNameLS && Number.isNaN(organizationNameLS)) {
-                                localStorage.removeItem("currentOrganization");
-                                organizationNameLS = undefined;
-                            }
-
-                            if (organizationNameLS) {
-                                const tmpOrgs = subscriber.organizations.filter(
-                                    (o) => o.id === Number(organizationNameLS),
-                                );
-                                if (tmpOrgs.length > 0) {
-                                    organization = tmpOrgs[0];
-                                }
-                            }
-                            if (organization === undefined)
-                                organization = subscriber.organizations[0];
-                        }
-
-                        if (subscribers === "administration") {
-                            if (this.hasAnyAdminRole(currentUser)) {
-                                this.setSubscriberAndOrganization(
-                                    subscriber,
-                                    organization!,
-                                );
-                                return;
-                            } else this.router.navigateByUrl(`something-went-wrong/403`);
-                        }
-
-                        if (subscriber && organization) {
-                            for (const type of ["inventories", "digital-services"]) {
-                                if (this.checkIfAllowed(subscriber, organization, type)) {
-                                    this.setSubscriberAndOrganization(
-                                        subscriber,
-                                        organization,
-                                    );
-                                    this.router.navigateByUrl(
-                                        `subscribers/${subscriber.name}/organizations/${organization.id}/${type}`,
-                                    );
-                                    break;
-                                }
-                            }
-                        }
+                        );
                     });
                 });
         }
     }
 
-    errorMessage(key: string) {
+    handleRoutingEvents(
+        subscribers: string,
+        currentUser: User,
+        subscriberName: string,
+        organizationId: string,
+        page: string,
+    ): void {
+        if (subscribers === "something-went-wrong") {
+            return;
+        }
+
+        if (currentUser.subscribers.length === 0) {
+            this.errorMessage("subscriber-or-organization-not-found");
+            this.router.navigateByUrl(`something-went-wrong/403`);
+            return;
+        }
+
+        if (page !== undefined && ["inventories", "digital-services"].includes(page)) {
+            return this.handlePageRouting(
+                currentUser,
+                subscriberName,
+                organizationId,
+                page,
+            );
+        }
+
+        return this.subscriberOrganizationHandling(currentUser, subscribers);
+    }
+
+    handlePageRouting(
+        currentUser: User,
+        subscriberName: string,
+        organizationId: string,
+        page: string,
+    ): void {
+        const subscriber = currentUser?.subscribers.find(
+            (sub: any) => sub.name == subscriberName,
+        );
+
+        const organization = subscriber?.organizations.find(
+            (org: any) => org.id === Number(organizationId),
+        );
+
+        if (subscriber === undefined) {
+            this.errorMessage("insuffisant-right-subscriber");
+            this.router.navigateByUrl("/");
+            return;
+        }
+        if (organization === undefined) {
+            this.errorMessage("insuffisant-right-organization");
+            this.router.navigateByUrl("/");
+            return;
+        }
+
+        if (this.checkIfAllowed(subscriber, organization, page)) {
+            this.setSubscriberAndOrganization(subscriber, organization);
+        } else {
+            this.router.navigateByUrl(`something-went-wrong/403`);
+        }
+    }
+
+    subscriberOrganizationHandling(currentUser: User, subscribers: string): void {
+        // If the url is unknown, we set the default subscriber and the default organization
+        let subscriber: Subscriber | undefined = this.getSubscriber(currentUser);
+        let organization: Organization | undefined;
+
+        if (subscriber) {
+            organization = this.getOrganization(subscriber);
+        }
+
+        if (subscribers === "administration") {
+            if (this.hasAnyAdminRole(currentUser)) {
+                this.setSubscriberAndOrganization(subscriber, organization!);
+                return;
+            } else this.router.navigateByUrl(`something-went-wrong/403`);
+        }
+
+        if (subscriber && organization) {
+            for (const type of ["inventories", "digital-services"]) {
+                if (this.checkIfAllowed(subscriber, organization, type)) {
+                    this.setSubscriberAndOrganization(subscriber, organization);
+                    this.router.navigateByUrl(
+                        `subscribers/${subscriber.name}/organizations/${organization.id}/${type}`,
+                    );
+                    break;
+                }
+            }
+        }
+    }
+
+    getOrganization(subscriber: Subscriber): Organization {
+        let organization: Organization | undefined;
+        let organizationNameLS = localStorage.getItem("currentOrganization") ?? undefined;
+
+        if (organizationNameLS && Number.isNaN(organizationNameLS)) {
+            localStorage.removeItem("currentOrganization");
+            organizationNameLS = undefined;
+        }
+
+        if (organizationNameLS) {
+            const tmpOrgs = subscriber.organizations.filter(
+                (o) => o.id === Number(organizationNameLS),
+            );
+            if (tmpOrgs.length > 0) {
+                organization = tmpOrgs[0];
+            }
+        }
+        if (organization === undefined) organization = subscriber.organizations[0];
+        return organization;
+    }
+
+    getSubscriber(currentUser: User): Subscriber {
+        let subscriber: Subscriber | undefined;
+        const subscriberNameLS = localStorage.getItem("currentSubscriber") ?? undefined;
+
+        if (subscriberNameLS) {
+            const tmpSubs = currentUser.subscribers.filter(
+                (s) => s.name === subscriberNameLS,
+            );
+            if (tmpSubs.length === 0) {
+                subscriber = currentUser.subscribers[0];
+            } else {
+                subscriber = tmpSubs[0];
+            }
+        } else {
+            subscriber = currentUser.subscribers[0];
+        }
+        return subscriber;
+    }
+
+    errorMessage(key: string): void {
         this.messageService.add({
             severity: "warn",
             summary: this.translate.instant(`toast-errors.${key}.title`),
@@ -198,19 +224,19 @@ export class UserService {
         });
     }
 
-    hasAnyAdminRole(user: User) {
+    hasAnyAdminRole(user: User): boolean {
         return (
             this.hasAnyOrganizationAdminRole(user) || this.hasAnySubscriberAdminRole(user)
         );
     }
 
-    hasAnySubscriberAdminRole(user: User) {
+    hasAnySubscriberAdminRole(user: User): boolean {
         return user.subscribers.some((subscriber) =>
             subscriber.roles.includes(Role.SubscriberAdmin),
         );
     }
 
-    hasAnyOrganizationAdminRole(user: User) {
+    hasAnyOrganizationAdminRole(user: User): boolean {
         return user.subscribers.some((subscriber) =>
             subscriber.organizations.some((organization) =>
                 organization.roles.includes(Role.OrganizationAdmin),
@@ -266,7 +292,10 @@ export class UserService {
         return false;
     }
 
-    setSubscriberAndOrganization(subscriber: Subscriber, organization: Organization) {
+    setSubscriberAndOrganization(
+        subscriber: Subscriber,
+        organization: Organization,
+    ): void {
         this.subscriberSubject.next(subscriber);
         this.organizationSubject.next(organization);
         localStorage.setItem("currentSubscriber", subscriber.name);
@@ -274,7 +303,11 @@ export class UserService {
         this.rolesSubject.next(this.getRoles(subscriber, organization));
     }
 
-    checkAndRedirect(subscriber: Subscriber, organization: Organization, page: string) {
+    checkAndRedirect(
+        subscriber: Subscriber,
+        organization: Organization,
+        page: string,
+    ): void {
         if (this.checkIfAllowed(subscriber, organization, page)) {
             this.setSubscriberAndOrganization(subscriber, organization);
             this.router.navigateByUrl(

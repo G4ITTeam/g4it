@@ -64,9 +64,9 @@ public class AdministratorService {
     @Autowired
     private SubscriberService subscriberService;
 
-   /**
-    * The User Service
-    */
+    /**
+     * The User Service
+     */
     @Autowired
     private UserService userService;
 
@@ -99,7 +99,6 @@ public class AdministratorService {
         return subscriberRestMapper.toBusinessObject(subscriberToUpdate);
     }
 
-
     /**
      * Get all the users (filtered by authorized_domains of subscriber)
      *
@@ -122,11 +121,19 @@ public class AdministratorService {
         Set<String> domains = Arrays.stream(subscriber.getAuthorizedDomains().replaceAll("\\s+", "").split(","))
                 .collect(Collectors.toSet());
 
-        List<User> searchedList = userRepository.findBySearchedName(searchedName, domains);
+        final List<User> searchedList = new ArrayList<>();
+        if (searchedName.contains("@")) {
+            userRepository.findByEmail(searchedName).ifPresent(searchedList::add);
+        }
+
+        if (searchedList.isEmpty()) {
+            searchedList.addAll(userRepository.findBySearchedName(searchedName, domains));
+        }
+
         if (searchedList.isEmpty()) return List.of();
 
         return searchedList.stream()
-                .map(searchedUser -> {
+                .<UserSearchBO>map(searchedUser -> {
 
                     List<String> userRoles = new ArrayList<>();
                     if (searchedUser.getUserOrganizations() != null) {
@@ -161,7 +168,7 @@ public class AdministratorService {
                             .roles(userRoles)
                             .build();
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { MessageService } from "primeng/api";
 import { firstValueFrom } from "rxjs";
 import {
@@ -15,6 +15,7 @@ import {
 } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 
 @Component({
     selector: "app-digital-services-networks",
@@ -22,6 +23,8 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
     providers: [MessageService],
 })
 export class DigitalServicesNetworksComponent {
+    @ViewChild("networkSidePanel", { static: false })
+    networkSidePanel!: DigitalServicesNetworksSidePanelComponent;
     digitalService: DigitalService = {} as DigitalService;
     networkTypes: NetworkType[] = [];
     network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;

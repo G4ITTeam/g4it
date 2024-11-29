@@ -5,12 +5,9 @@
 To start the project, follow these steps:
 
 ```
-npm run init
 npm i
 npm start
 ```
-
-The command `npm run init` will create this environment.local.ts based on environment.ts and environment variables (uses AZURE_CLIENT_ID).
 
 Open your browser on `http://localhost:4200/`. The app will automatically reload if you
 change any of the source files.
@@ -43,10 +40,10 @@ To activate mocked mode, launch this command :
 npm run start:mockserver
 ```
 
-*Note:*
+_Note:_
 
-- *This will use the mock server defined in the file `mock-server/server.js` to simulate
-  data.*
+-   _This will use the mock server defined in the file `mock-server/server.js` to simulate
+    data._
 
 The best way to develop is to have end to end project locally.
 
@@ -98,7 +95,7 @@ icons and designs.
 
 List of tools to be installed:
 
-- Node.js 20
+-   Node.js 20
 
 #### End-to-end tests
 
@@ -111,57 +108,6 @@ capabilities.
 To get more help on the Angular CLI use `ng help` or go check out
 the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-## Recommended development workflow
-
-See documentation website.
-
-## How does the pipeline work
-
-In this project, there is a CI/CD pipeline that covers code quality, unit testing,
-security scans and also deployment to Openshift. We briefly introduce the role of each
-stages in pipeline below,
-
-- init: does some initial checks before going further in the pipeline.
-- build-application: builds (or promotes) the application artifacts (e.g. .war, .jar,
-  .exe...).
-- test-application: tests the application (this stage is optional as the tests can also be
-  executed during the build-application stage).
-- build-image: builds (or promotes) the application image from the Dockerfile present in
-  the repo and the artifacts generated previously.
-- analysis: runs some static analysis on the application (both security and lint/best
-  practices).
-- security-check: serves as a security gate based on the results of the static analysis
-  done previously.
-- deploy: deploys the application on an environment (test or production).
-- pre-acceptance: prepares for the acceptance tests (for instance load some test data in a
-  database).
-- acceptance: executes the acceptance tests that will validate the application.
-- performance: executes the performance tests that will validate the application.
-- release: runs a set of actions when the application is released (i.e. merged to a
-  production branch).
-- destroy: defines a manual job that can be run to destroy a deployed environment (see
-  deploy stage).
-- .post: runs some specific actions at the end of the pipeline
-
-## Security concerns
-
-The DEP updates the original template regularly but you can not benefit automatically from
-the updates.
-
-In all cases, the project is responsible for assessing and mitigating security issues on
-their repositories.
-
-The OCI images used in [.gitlab-ci.yml](.gitlab-ci.yml) file are built from
-the [dep/library/project-oci-images](dep/library/project-oci-images) repository. You can
-check periodically for potential updates of these images.
-
-## How to improve this template
-
-This GitLab project template has been generated dynamically
-using [mustache templating](https://mustache.github.io/). If you want to help the DEP team
-improve this template, please open an issue or a merge request
-at [dep/library/dynamic-project-templates](dep/library/dynamic-project-templates).
-
 ## Env variable injection for urls
 
 For production, we inject url values as env variable in the nginx container, and replace
@@ -172,10 +118,9 @@ startup.
 /!\ You need to inject at least the `$BASE_HREF` env var:
 
 ```html
-
-<base href="$BASE_HREF/">
+<base href="$BASE_HREF/" />
 <!-- Inject /overgreen -->
-<base href="/overgreen/">
+<base href="/overgreen/" />
 ```
 
 For instance, if you want to start the image locally:

@@ -12,6 +12,7 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import {
     DigitalService,
+    DigitalServiceCloudResponse,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
@@ -22,6 +23,7 @@ import {
     ServerDC,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
+import { MapString } from "../../interfaces/generic.interfaces";
 
 const endpoint = Constants.ENDPOINTS.digitalServices;
 
@@ -97,6 +99,17 @@ export class DigitalServicesDataService {
     getDatacenterServerReferential(uid: string): Observable<ServerDC[]> {
         return this.http.get<ServerDC[]>(`${endpoint}/${uid}/datacenters`);
     }
+    getBoaviztapiCountryMap(): Observable<MapString> {
+        return this.http.get<MapString>(`referential/boaviztapi/countries`);
+    }
+    getBoaviztapiCloudProviders(): Observable<string[]> {
+        return this.http.get<string[]>(`referential/boaviztapi/cloud/providers`);
+    }
+    getBoaviztapiInstanceTypes(providerName: string): Observable<string[]> {
+        return this.http.get<string[]>(
+            `referential/boaviztapi/cloud/providers/instances?provider=${providerName}`,
+        );
+    }
 
     launchCalcul(uid: DigitalService["uid"]): Observable<string> {
         return this.http.post<string>(`${endpoint}/${uid}/evaluation`, {});
@@ -123,6 +136,14 @@ export class DigitalServicesDataService {
     ): Observable<DigitalServiceServersImpact[]> {
         return this.http.get<DigitalServiceServersImpact[]>(
             `${endpoint}/${uid}/servers/indicators`,
+        );
+    }
+
+    getCloudsIndicators(
+        uid: DigitalService["uid"],
+    ): Observable<DigitalServiceCloudResponse[]> {
+        return this.http.get<DigitalServiceCloudResponse[]>(
+            `${endpoint}/${uid}/cloud/indicators`,
         );
     }
 
