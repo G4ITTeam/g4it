@@ -16,10 +16,11 @@ podman cp keycloak:/tmp/dev-realm-export.json services/keycloak/imports/dev-real
 ## Upgrade Keycloak version
 
 For upgrading the Keycloak version:
+
 - Update the image tag in :
-    - services/keycloak/Dockerfile
-    - services/keycloak/.gitlab-ci.yml
-    - workspace/numecoeval/docker-compose.yml
+  - services/keycloak/Dockerfile
+  - services/keycloak/.gitlab-ci.yml
+  - workspace/numecoeval/docker-compose.yml
 - Commit and push -> it will generate the new docker image
 
 The new docker image can then be used in the deployment phase.
