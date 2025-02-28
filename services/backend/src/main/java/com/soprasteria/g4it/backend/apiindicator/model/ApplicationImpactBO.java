@@ -76,5 +76,6 @@ public class ApplicationImpactBO {
      */
     private String statusIndicator;
 
+    private String provider;
 
 }

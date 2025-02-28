@@ -9,6 +9,8 @@ package com.soprasteria.g4it.backend.config;
 
 import com.soprasteria.g4it.backend.apibatchloading.listener.InventoryJobExecutionListener;
 import com.soprasteria.g4it.backend.apibatchloading.steps.common.decider.WriteValidFileDecider;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.repository.ApplicationRepository;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiinventory.repository.PhysicalEquipmentRepository;
@@ -135,8 +137,10 @@ public class LoadingBatchConfiguration {
     @Bean
     public JobExecutionListener jobCompletionNotificationListener(final InventoryRepository inventoryRepository,
                                                                   final PhysicalEquipmentRepository physicalEquipmentRepository,
-                                                                  final ApplicationRepository applicationRepository) {
-        return new InventoryJobExecutionListener(inventoryRepository, physicalEquipmentRepository, applicationRepository);
+                                                                  final ApplicationRepository applicationRepository,
+                                                                  final InVirtualEquipmentRepository inVirtualEquipmentRepository,
+                                                                  final InApplicationRepository inApplicationRepository) {
+        return new InventoryJobExecutionListener(inventoryRepository, physicalEquipmentRepository, applicationRepository, inVirtualEquipmentRepository, inApplicationRepository);
     }
 
     /**

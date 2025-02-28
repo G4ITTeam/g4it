@@ -4,6 +4,7 @@ export interface Stat {
     unit?: string;
     title: string;
     description: string;
+    lang?: string;
 }
 
 export interface CriteriaCalculated {
@@ -100,6 +101,7 @@ export interface Impact {
     sip: number;
     statusIndicator: string;
     countValue: number;
+    quantity?: number;
 }
 
 export interface ImpactEntity extends Impact {
@@ -188,6 +190,7 @@ export interface ApplicationImpact {
     impact: number;
     sip: number;
     statusIndicator: string;
+    criteria?: string;
 }
 
 export interface ImpactGraph {

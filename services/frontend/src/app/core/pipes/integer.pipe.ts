@@ -5,15 +5,18 @@ import { Pipe, PipeTransform } from "@angular/core";
 })
 export class IntegerPipe implements PipeTransform {
     transform(value: number): string {
-        if(value === undefined) return '';
+        if (value === undefined) return "";
 
-        if(typeof value === 'string'){
-            value = parseFloat(value)
+        if (typeof value === "string") {
+            value = parseFloat(value);
+        }
+        if (value === 0) {
+            return "0";
         }
         if (value < 1) {
             return "< 1";
         } else {
-            return value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            return Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(value);
         }
     }
 }

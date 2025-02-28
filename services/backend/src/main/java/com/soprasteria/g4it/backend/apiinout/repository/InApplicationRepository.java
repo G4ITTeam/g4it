@@ -59,13 +59,13 @@ public interface InApplicationRepository extends JpaRepository<InApplication, Lo
      */
     List<InApplication> findByInventoryId(Long inventoryId);
 
-    @Transactional
-    @Modifying
-    void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
+    List<InApplication> findByInventoryIdAndPhysicalEquipmentNameAndVirtualEquipmentName(Long inventoryId,
+                                                                                         String physicalEquipmentName,
+                                                                                         String virtualEquipmentName);
 
     @Transactional
     @Modifying
-    void deleteByInventoryIdAndVirtualEquipmentNameIn(Long inventoryId, Set<String> names);
+    void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
 
     /**
      * Count distinct application name by inventory id.

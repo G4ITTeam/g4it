@@ -19,11 +19,15 @@ public enum FileType {
 
     EQUIPEMENT_VIRTUEL("EQUIPEMENT_VIRTUEL"),
 
+    INVENTORY_VIRTUAL_EQUIPMENT_CLOUD("INVENTORY_VIRTUAL_EQUIPMENT_CLOUD"),
+
     APPLICATION("APPLICATION"),
 
     INVENTORY("INVENTORY"),
 
     PHYSICAL_EQUIPMENT_INDICATOR("PHYSICAL_EQUIPMENT_INDICATOR"),
+
+    VIRTUAL_EQUIPMENT("VIRTUAL_EQUIPMENT"),
 
     VIRTUAL_EQUIPMENT_INDICATOR("VIRTUAL_EQUIPMENT_INDICATOR"),
 
@@ -64,8 +68,11 @@ public enum FileType {
         return switch (this.getValue()) {
             case "DATACENTER" -> "datacenter";
             case "EQUIPEMENT_PHYSIQUE" -> "physical_equipment";
-            case "EQUIPEMENT_VIRTUEL" -> "virtual_equipment";
+            case "EQUIPEMENT_VIRTUEL", "VIRTUAL_EQUIPMENT" -> "virtual_equipment";
             case "APPLICATION" -> "application";
+            case "PHYSICAL_EQUIPMENT_INDICATOR" -> "ind_physical_equipment";
+            case "VIRTUAL_EQUIPMENT_INDICATOR" -> "ind_virtual_equipment";
+            case "APPLICATION_INDICATOR" -> "ind_application";
             case "VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE" -> "ind_cloud_instances";
             case "VIRTUAL_EQUIPMENT_CLOUD_INSTANCE" -> "cloud_instances";
             default -> this.getValue();

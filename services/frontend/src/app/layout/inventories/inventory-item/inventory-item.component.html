@@ -13,6 +13,12 @@
                 {{ inventory.name | monthYear }}
                 @if (inventory.isNewArch) {
                     <span class="ml-2 text-green-600"> [Beta APIs] </span>
+                    @if (inventory.doExport) {
+                        <span class="ml-2 text-green-600"> [Export] </span>
+                    }
+                    @if (inventory.doExportVerbose) {
+                        <span class="ml-2 text-green-600"> [Verbose] </span>
+                    }
                 }
             </div>
             <div class="flex align-items-center"></div>
@@ -57,6 +63,7 @@
                     "
                     icon="pi pi-arrow-right"
                     [label]="'inventories.details.equipment' | translate"
+                    id="inventory-equipment-button"
                 />
 
                 <p-button
@@ -69,6 +76,7 @@
                     "
                     icon="pi pi-arrow-right"
                     [label]="'inventories.details.application' | translate"
+                    id="inventory-application-button"
                 />
             </div>
         </div>
@@ -102,6 +110,7 @@
                     styleClass="bg-transparent text-black-alpha-90 border-1 border-solid border-black-alpha-90 mt-2 pt-1 px-2 pb-1 hover:bg-green-50"
                     (click)="confirmDelete($event)"
                     (keypress)="confirmDelete($event)"
+                    id="delete-inventory"
                 >
                     <img
                         class="mb-1"
@@ -133,7 +142,7 @@
                     @if (inventory.isNewArch) {
                         <li
                             class="loading-data-container"
-                            *ngFor="let task of inventory.tasks"
+                            *ngFor="let task of taskLoading"
                         >
                             <app-batch-status
                                 [batchStatusCode]="task.status"
@@ -149,7 +158,7 @@
                     } @else {
                         <li
                             class="loading-data-container"
-                            *ngFor="let job of inventory.integrationReports"
+                            *ngFor="let job of integrationReports"
                         >
                             <app-batch-status
                                 [batchStatusCode]="job.batchStatusCode"
@@ -175,6 +184,7 @@
                     styleClass="black-button-small vertical-align-top uppercase"
                     class="disabled-text-black"
                     (onClick)="launchEstimate($event)"
+                    id="launch-estimate"
                     ><span *ngIf="inventory.lastEvaluationReport">
                         {{ "inventories.update-estimate" | translate }}
                     </span>
@@ -183,47 +193,98 @@
                     </span>
                 </p-button>
                 <br />
-                <div *ngIf="inventory.lastEvaluationReport">
-                    <div
-                        *ngIf="isRunning()"
-                        [attr.aria-label]="
-                            'common.accessibility.updateInProgress'
-                                | translate
-                                    : {
-                                          value: inventory.lastEvaluationReport.progress,
-                                      }
-                        "
-                    >
-                        <div class="font-bold mt-2">
-                            {{
-                                "inventories.evaluation_batch_status." +
-                                    batchStatusMapping[
-                                        inventory.lastEvaluationReport.batchStatusCode
-                                    ] | translate
-                            }}
-                            {{ inventory.lastEvaluationReport.progress }}%
+                @if (inventory.isNewArch) {
+                    <div *ngIf="inventory.lastTaskEvaluating">
+                        <div
+                            *ngIf="isTaskRunning()"
+                            [attr.aria-label]="
+                                'common.accessibility.updateInProgress'
+                                    | translate
+                                        : {
+                                              value: inventory.lastTaskEvaluating
+                                                  .progress,
+                                          }
+                            "
+                        >
+                            <div class="font-bold mt-2">
+                                {{
+                                    "inventories.evaluation_batch_status." +
+                                        batchStatusMapping[
+                                            inventory.lastTaskEvaluating.status
+                                        ] | translate
+                                }}
+                                {{ inventory.lastTaskEvaluating.progress }}%
+                            </div>
+
+                            <p-progressBar
+                                [value]="inventory.lastTaskEvaluating.progress"
+                                [showValue]="false"
+                                >{{ inventory.lastTaskEvaluating.progress }}
+                            </p-progressBar>
                         </div>
 
-                        <p-progressBar
-                            [value]="inventory.lastEvaluationReport.progress"
-                            [showValue]="false"
-                            >{{ inventory.lastEvaluationReport.progress }}
-                        </p-progressBar>
+                        <ul aria-labelledby="estimate-history" class="p-0">
+                            <li
+                                class="loading-data-container"
+                                *ngFor="let task of taskEvaluating"
+                            >
+                                <app-batch-status
+                                    [batchStatusCode]="task.status"
+                                    [createTime]="task.creationDate"
+                                    [batchLoading]="true"
+                                    [type]="'estimation'"
+                                    [inventoryId]="inventory.id"
+                                    [inventoryName]="inventory.name"
+                                    [fileUrl]="task.resultFileUrl"
+                                    [batchName]="task.id.toString()"
+                                ></app-batch-status>
+                            </li>
+                        </ul>
                     </div>
-
-                    <ul aria-labelledby="estimate-history" class="p-0">
-                        <li
-                            class="loading-data-container"
-                            *ngFor="let eval of inventory.evaluationReports"
+                } @else {
+                    <div *ngIf="inventory.lastEvaluationReport">
+                        <div
+                            *ngIf="isRunning()"
+                            [attr.aria-label]="
+                                'common.accessibility.updateInProgress'
+                                    | translate
+                                        : {
+                                              value: inventory.lastEvaluationReport
+                                                  .progress,
+                                          }
+                            "
                         >
-                            <app-batch-status
-                                [batchStatusCode]="eval.batchStatusCode"
-                                [createTime]="eval.createTime"
-                                [type]="'estimation'"
-                            ></app-batch-status>
-                        </li>
-                    </ul>
-                </div>
+                            <div class="font-bold mt-2">
+                                {{
+                                    "inventories.evaluation_batch_status." +
+                                        batchStatusMapping[
+                                            inventory.lastEvaluationReport.batchStatusCode
+                                        ] | translate
+                                }}
+                                {{ inventory.lastEvaluationReport.progress }}%
+                            </div>
+
+                            <p-progressBar
+                                [value]="inventory.lastEvaluationReport.progress"
+                                [showValue]="false"
+                                >{{ inventory.lastEvaluationReport.progress }}
+                            </p-progressBar>
+                        </div>
+
+                        <ul aria-labelledby="estimate-history" class="p-0">
+                            <li
+                                class="loading-data-container"
+                                *ngFor="let eval of inventory.evaluationReports"
+                            >
+                                <app-batch-status
+                                    [batchStatusCode]="eval.batchStatusCode"
+                                    [createTime]="eval.createTime"
+                                    [type]="'estimation'"
+                                ></app-batch-status>
+                            </li>
+                        </ul>
+                    </div>
+                }
             </div>
             <div class="flex justify-content-end ml-auto">
                 <p-button

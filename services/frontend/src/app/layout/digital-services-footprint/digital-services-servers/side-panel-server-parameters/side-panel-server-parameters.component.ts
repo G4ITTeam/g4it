@@ -67,7 +67,8 @@ export class SidePanelServerParametersComponent implements OnInit {
     indexDatacenter: number = 0;
     dataInitialized: boolean = false;
     createLabelKey = "common.add";
-
+    callReferentialHostDatacenter = true;
+    serverSubmitInprogress = false;
     constructor(
         private digitalDataService: DigitalServicesDataService,
         private digitalServiceBusiness: DigitalServiceBusinessService,
@@ -84,16 +85,22 @@ export class SidePanelServerParametersComponent implements OnInit {
                 .pipe(takeUntil(this.ngUnsubscribe))
                 .subscribe(async (res: DigitalServiceServerConfig) => {
                     this.server = { ...res };
-                    await this.setHostReferential(res.type);
+                    if (this.callReferentialHostDatacenter) {
+                        await this.setHostReferential(res.type);
+                    }
                     this.server = { ...res };
-                    await this.setDatacenterReferential(res.datacenter);
+                    if (this.callReferentialHostDatacenter) {
+                        await this.setDatacenterReferential(res.datacenter);
+                    }
+                    this.callReferentialHostDatacenter = false;
                     const serverSaved = this.digitalService.servers.find(
                         (r) => r.uid === res.uid,
                     );
                     const typeValueChanged = serverSaved?.type !== res.type;
                     if (
-                        (this.server.uid === "" && !this.dataInitialized) ||
-                        typeValueChanged
+                        ((this.server.uid === "" && !this.dataInitialized) ||
+                            typeValueChanged) &&
+                        !this.serverSubmitInprogress
                     ) {
                         this.initializeDefaultValue();
                     }
@@ -303,6 +310,7 @@ export class SidePanelServerParametersComponent implements OnInit {
     }
 
     async nextStep() {
+        this.serverSubmitInprogress = true;
         this.digitalServiceBusiness.setServerForm(this.server);
         if (this.server.mutualizationType === "Dedicated") {
             this.digitalServiceBusiness.submitServerForm(
@@ -314,6 +322,7 @@ export class SidePanelServerParametersComponent implements OnInit {
             this.digitalServiceBusiness.setDataInitialized(true);
             this.router.navigate(["../vm"], { relativeTo: this.route });
         }
+        this.serverSubmitInprogress = false;
     }
 
     close() {

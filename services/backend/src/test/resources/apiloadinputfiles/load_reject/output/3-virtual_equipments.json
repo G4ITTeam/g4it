@@ -1,0 +1,34 @@
+[
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "filters": [
+      "Cluster 1"
+    ],
+    "id": 5,
+    "infrastructureType": "NON_CLOUD_SERVERS",
+    "inventoryId": 1,
+    "name": "virtual-eq-1-1",
+    "physicalEquipmentName": "physical-eq-1",
+    "quantity": 1.0,
+    "type": "calcul",
+    "vcpuCoreNumber": 4.0
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "filters": [
+      "Cluster 1"
+    ],
+    "id": 6,
+    "infrastructureType": "NON_CLOUD_SERVERS",
+    "inventoryId": 1,
+    "name": "virtual-eq-1-2",
+    "physicalEquipmentName": "physical-eq-1",
+    "quantity": 1.0,
+    "type": "calcul",
+    "vcpuCoreNumber": 2.0
+  }
+]

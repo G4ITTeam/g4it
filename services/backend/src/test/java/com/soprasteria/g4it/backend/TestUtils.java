@@ -18,10 +18,15 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.model.OrganizationBO;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.*;
+import com.soprasteria.g4it.backend.common.model.Context;
+import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
+import com.soprasteria.g4it.backend.common.task.model.TaskType;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.OrganizationStatus;
 import com.soprasteria.g4it.backend.server.gen.api.dto.LinkUserRoleRest;
@@ -32,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -279,6 +285,20 @@ public class TestUtils {
             log.error("Cannot parse object: {}", json, e);
             return json;
         }
+    }
+
+    public static Task createTask(Context context, List<String> filenames, TaskType type, List<String> criteria, Inventory inventory) {
+        return Task.builder()
+                .creationDate(context.getDatetime())
+                .details(new ArrayList<>())
+                .lastUpdateDate(context.getDatetime())
+                .progressPercentage("0%")
+                .status(TaskStatus.TO_START.toString())
+                .type(type.toString())
+                .inventory(inventory)
+                .filenames(filenames)
+                .criteria(criteria)
+                .build();
     }
 
 }

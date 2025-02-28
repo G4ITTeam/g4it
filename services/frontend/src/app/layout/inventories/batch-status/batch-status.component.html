@@ -12,12 +12,12 @@
         </div>
         <p *ngIf="type == 'estimation'; else loading">
             {{ "inventories.estimate-date" | translate }}
-            {{ createTime | date: "dd/MM/yyyy HH:mm" }}
+            {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
         </p>
         <ng-template #loading>
             <p>
                 {{ "inventories.loading-date" | translate }}
-                {{ createTime | date: "dd/MM/yyyy HH:mm" }}
+                {{ localCreateTime | date: "dd/MM/yyyy HH:mm" }}
             </p>
         </ng-template>
         <span
@@ -34,7 +34,7 @@
                 src="assets/images/icons/icon-download.svg"
                 class="mx-3"
                 alt="{{ 'inventories.download-result' | translate }} {{
-                    createTime | date: 'dd/MM/yyyy HH:mm'
+                    localCreateTime | date: 'dd/MM/yyyy HH:mm'
                 }}"
             />
         </span>
@@ -51,7 +51,7 @@
                     src="assets/images/icons/icon-download.svg"
                     class="mx-3"
                     alt="{{ 'inventories.download-result' | translate }} {{
-                        createTime | date: 'dd/MM/yyyy HH:mm'
+                        localCreateTime | date: 'dd/MM/yyyy HH:mm'
                     }}"
                 />
             </span>

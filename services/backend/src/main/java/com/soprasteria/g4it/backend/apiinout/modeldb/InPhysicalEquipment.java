@@ -7,6 +7,7 @@ package com.soprasteria.g4it.backend.apiinout.modeldb;/*
  */
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -53,6 +54,9 @@ public class InPhysicalEquipment {
     @Min(0)
     private Double quantity;
 
+    @Column(name = "nb_user")
+    private Double numberOfUsers;
+
     private String type;
     private String model;
     private String manufacturer;
@@ -70,9 +74,14 @@ public class InPhysicalEquipment {
 
     private String source;
     private String quality;
+    private String description;
 
     @Min(0)
     private Double electricityConsumption;
+
+    @Min(0)
+    @Max(8760)
+    private Long durationHour;
 
     private List<String> commonFilters;
 

@@ -8,5 +8,5 @@
 package com.soprasteria.g4it.backend.common.utils;
 
 public enum InfrastructureType {
-    CLOUD_SERVICES
+    NON_CLOUD_SERVERS, CLOUD_SERVICES
 }

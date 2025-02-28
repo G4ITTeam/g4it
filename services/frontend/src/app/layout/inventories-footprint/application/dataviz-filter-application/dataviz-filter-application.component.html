@@ -6,10 +6,25 @@
     tabindex="0"
     role="button"
     [attr.aria-label]="'common.access-filters' | translate"
+    id="filter-component"
 >
     <div>
-        <img src="assets/images/icons/icon-filter.svg" alt="" />
-        <span>{{ "inventories-footprint.filter" | translate }}</span>
+        @if (selectedFilterNames().length) {
+            <i class="pi pi-filter-fill"></i>
+        } @else {
+            <i class="pi pi-filter"></i>
+        }
+
+        <span class="ml-3">
+            {{ "inventories-footprint.filter" | translate }}
+            @if (selectedFilterNames().length) {
+                <i>
+                    {{ "-" }}
+                    {{ "inventories-footprint.active-filters" | translate }}
+                    {{ ": " + selectedFilterNames() }}
+                </i>
+            }
+        </span>
     </div>
     <i class="pi pi-chevron-down font-bold mx-3"></i>
 </div>
@@ -60,6 +75,7 @@
                                             item.toString()
                                         )
                                     "
+                                    [id]="item"
                                 ></p-checkbox>
                             }
                         </li>

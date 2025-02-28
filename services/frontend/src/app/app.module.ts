@@ -13,7 +13,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { KeycloakAngularModule, KeycloakService } from "keycloak-angular";
-import { MatomoModule, MatomoRouterModule } from "ngx-matomo-client";
 import { MessageService } from "primeng/api";
 import { ProgressBarModule } from "primeng/progressbar";
 import { ToastModule } from "primeng/toast";
@@ -45,8 +44,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
         });
 }
 
-const useMatomo = environment.matomo.trackerUrl !== "";
-
 @NgModule({
     declarations: [AppComponent],
     imports: [
@@ -62,13 +59,6 @@ const useMatomo = environment.matomo.trackerUrl !== "";
                 deps: [HttpClient],
             },
         }),
-        useMatomo
-            ? MatomoModule.forRoot({
-                  trackerUrl: environment.matomo.trackerUrl,
-                  siteId: environment.matomo.siteId,
-              })
-            : [],
-        useMatomo ? MatomoRouterModule : [],
         ToastModule,
         ProgressBarModule,
         KeycloakAngularModule,

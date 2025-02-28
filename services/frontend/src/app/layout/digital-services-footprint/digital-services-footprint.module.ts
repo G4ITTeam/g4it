@@ -24,6 +24,7 @@ import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { DividerModule } from "primeng/divider";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { SharedModule } from "src/app/core/shared/shared.module";
+import { DigitalServiceTableComponent } from "../common/digital-service-table/digital-service-table.component";
 import { SidePanelDsSharedUsersComponent } from "../common/side-panel-ds-shared-users/side-panel-ds-shared-users.component";
 import { DigitalServicesCloudServicesSidePanelComponent } from "./digital-services-cloud-services/digital-services-cloud-services-side-panel/digital-services-cloud-services-side-panel.component";
 import { DigitalServicesCloudServicesComponent } from "./digital-services-cloud-services/digital-services-cloud-services.component";
@@ -43,6 +44,11 @@ import { SidePanelAddVmComponent } from "./digital-services-servers/side-panel-a
 import { SidePanelCreateServerComponent } from "./digital-services-servers/side-panel-create-server/side-panel-create-server.component";
 import { SidePanelListVmComponent } from "./digital-services-servers/side-panel-list-vm/side-panel-list-vm.component";
 import { SidePanelServerParametersComponent } from "./digital-services-servers/side-panel-server-parameters/side-panel-server-parameters.component";
+import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
+import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
+import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
+import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
+import { PanelServerParametersComponent } from "./digital-services-servers/side-panel/server-parameters/server-parameters.component";
 import { DigitalServicesTerminalsSidePanelComponent } from "./digital-services-terminals/digital-services-terminals-side-panel/digital-services-terminals-side-panel.component";
 import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/digital-services-terminals.component";
 
@@ -55,6 +61,7 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesNetworksComponent,
         DigitalServicesServersComponent,
         DigitalServicesCloudServicesComponent,
+        DigitalServiceTableComponent,
         ImpactButtonComponent,
         RadialChartComponent,
         PieChartComponent,
@@ -67,6 +74,11 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         SidePanelDatacenterComponent,
         SidePanelListVmComponent,
         SidePanelAddVmComponent,
+        PanelCreateServerComponent,
+        PanelDatacenterComponent,
+        PanelServerParametersComponent,
+        PanelAddVmComponent,
+        PanelListVmComponent,
     ],
     imports: [
         CommonModule,

@@ -52,10 +52,12 @@ Decision1-->|No|Step4[Error message]
 
 {{< mermaid >}}
 sequenceDiagram
+
 actor RND as Sustainable IT Leader
 participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant DataBase
+participant Azure storage as azure
 
     RND ->> front: Click on export on the equipment or application view
     front ->> back: POST /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/export
@@ -63,7 +65,10 @@ participant DataBase
     back  --> front: export button changes to download button
     RND ->> front: Click on download button on equipment or application view
     front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/export/download
-    back ->> front: Files downloaded in user's local
+    azure ->> back: Retrieve cloud_virtual_equipment.csv, cloud_virtual_equipment.csv
+    azure ->> back: Retrieve cloud_applicationcsv and ind_cloud_application.csv
+	back ->> front: Files downloaded in user's local
     front ->> RND: Exported zipped CSV files
+
 
 {{</ mermaid >}}

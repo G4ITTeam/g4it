@@ -15,6 +15,9 @@ import { DigitalServicesServersComponent } from "./digital-services-servers/digi
 import { SidePanelCreateServerComponent } from "./digital-services-servers/side-panel-create-server/side-panel-create-server.component";
 import { SidePanelListVmComponent } from "./digital-services-servers/side-panel-list-vm/side-panel-list-vm.component";
 import { SidePanelServerParametersComponent } from "./digital-services-servers/side-panel-server-parameters/side-panel-server-parameters.component";
+import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
+import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
+import { PanelServerParametersComponent } from "./digital-services-servers/side-panel/server-parameters/server-parameters.component";
 import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/digital-services-terminals.component";
 
 const titleResolveObject = {
@@ -68,6 +71,21 @@ const routes: Routes = [
                     {
                         path: "vm",
                         component: SidePanelListVmComponent,
+                        ...titleResolveObject,
+                    },
+                    {
+                        path: "panel-create",
+                        component: PanelCreateServerComponent,
+                        ...titleResolveObject,
+                    },
+                    {
+                        path: "panel-parameters",
+                        component: PanelServerParametersComponent,
+                        ...titleResolveObject,
+                    },
+                    {
+                        path: "panel-vm",
+                        component: PanelListVmComponent,
                         ...titleResolveObject,
                     },
                 ],

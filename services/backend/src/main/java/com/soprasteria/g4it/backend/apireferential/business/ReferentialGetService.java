@@ -12,12 +12,11 @@ import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apireferential.mapper.ReferentialMapper;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemImpact;
 import com.soprasteria.g4it.backend.apireferential.modeldb.ItemType;
-import com.soprasteria.g4it.backend.apireferential.modeldb.MatchingItem;
 import com.soprasteria.g4it.backend.apireferential.repository.*;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
-import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,7 @@ import java.util.Optional;
  */
 @Service
 @NoArgsConstructor
+@Slf4j
 public class ReferentialGetService {
 
     @Autowired
@@ -107,10 +107,8 @@ public class ReferentialGetService {
      */
     @Cacheable("ref_getMatchingItem")
     public MatchingItemRest getMatchingItem(String model, String subscriber) {
-        MatchingItem matchingItem = matchingItemRepository.findByItemSourceAndSubscriber(model, subscriber)
-                .orElseThrow(() -> new G4itRestException("404", "Matching item not found"));
-
-        return refRestMapper.toMatchingItemRest(matchingItem);
+        return matchingItemRepository.findByItemSourceAndSubscriber(model, subscriber)
+                .map(item -> refRestMapper.toMatchingItemRest(item)).orElse(null);
     }
 
 
@@ -125,7 +123,7 @@ public class ReferentialGetService {
                                                String category, String subscriber) {
 
         List<ItemImpact> itemImpacts = itemImpactRepository.findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndSubscriber(
-                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, location, category, subscriber);
+                StringUtils.kebabToSnakeCase(criterion), LifecycleStepUtils.get(lifecycleStep, lifecycleStep), name, category, location, subscriber);
         return refRestMapper.toItemImpactRest(itemImpacts);
     }
 
@@ -139,5 +137,13 @@ public class ReferentialGetService {
         return itemImpactRepository.findCountries(subscriber).stream().sorted().toList();
     }
 
+    /**
+     * Get the referential item impacts filtered by electricity mix
+     *
+     * @return list of item impacts
+     */
+    public List<ItemImpact> getElectricityMix() {
+        return itemImpactRepository.findByCategory("electricity-mix");
+    }
 
 }

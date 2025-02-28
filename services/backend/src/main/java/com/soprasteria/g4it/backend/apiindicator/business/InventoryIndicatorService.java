@@ -10,7 +10,10 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
+import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class InventoryIndicatorService {
     @Autowired
     private OrganizationService organizationService;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
     /**
      * Get last batch name in the inventory business object.
      *
@@ -42,8 +48,18 @@ public class InventoryIndicatorService {
      * @return the last batch name or else throw exception.
      */
     private String getLastBatchName(final InventoryBO inventory) {
-        return inventoryService.getLastBatchName(inventory)
-                .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
+
+        if (Boolean.TRUE.equals(inventory.getIsNewArch())) {
+            Task task = taskRepository.findByInventoryAndLastCreationDate(Inventory.builder()
+                            .id(inventory.getId())
+                            .build())
+                    .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
+            return String.valueOf(task.getId());
+        } else {
+            return inventoryService.getLastBatchName(inventory)
+                    .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
+        }
+
     }
 
     /**

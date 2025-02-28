@@ -189,6 +189,9 @@ describe("DigitalServicesDataService", () => {
             {
                 code: "fixe-line-network-1",
                 value: "Fixed FR",
+                annualQuantityOfGo: 1,
+                country: "France",
+                type: "type",
             },
         ];
 

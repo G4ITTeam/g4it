@@ -1,11 +1,12 @@
 <p-toast #toast position="bottom-center"></p-toast>
 @if (sidebarVisible) {
     <p-sidebar
-        [visible]="true"
+        [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-md w-7"
         [showCloseIcon]="true"
         (onHide)="sidebarVisible = false"
+        ariaCloseLabel="Close"
     >
         <app-common-editor
             [content]="digitalService.note?.content"
@@ -32,6 +33,7 @@
                 'digital-services.title'
                     | translate: { OrganizationName: organization.organizationName }
             "
+            id="return-button"
         />
 
         <div class="input-title flex align-items-center">
@@ -68,10 +70,12 @@
     <div class="mr-3 flex align-items-center">
         @if (showBetaFeatures === "true") {
             <p-checkbox
-                [(ngModel)]="isNewArch"
+                (onChange)="changeIsNewArch()"
+                [(ngModel)]="digitalService.isNewArch"
                 label="Use new APIs"
                 [binary]="true"
                 name="isNewArch"
+                ariaLabel="Use new APIs"
             />
         }
         <p-button
@@ -86,6 +90,7 @@
             [plain]="true"
             icon="pi pi-plus-circle"
             [label]="'common.note.add' | translate"
+            id="add-note"
         />
 
         <p-button
@@ -143,9 +148,10 @@
         <p-button
             *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
             styleClass="bg-black text-white header-button"
-            [disabled]="!digitalServiceStore.enableCalcul()"
+            [disabled]="!enableCalcul()"
             (onClick)="launchCalcul()"
             [label]="'common.calculate' | translate"
+            id="calculate"
         />
         <p-button
             styleClass="white-button"
@@ -160,6 +166,7 @@
                 'digital-services.choose-criteria'
                     | translate: { digitalServiceName: digitalService.name }
             "
+            id="criteria-button"
         >
         </p-button>
         <app-criteria-popup
@@ -187,6 +194,7 @@
                     'digital-services.delete-criteria'
                         | translate: { digitalServiceName: digitalService.name }
                 "
+                id="delete-service"
             />
         } @else {
             <p-button

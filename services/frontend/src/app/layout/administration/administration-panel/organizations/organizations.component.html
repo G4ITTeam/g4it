@@ -9,6 +9,7 @@
             placeholder="{{ 'administration.subsriber-placeholder' | translate }}"
             ngDefaultControl
             [(ngModel)]="subscriber"
+            id="subscriberName"
         >
         </p-dropdown>
 
@@ -23,6 +24,7 @@
                         [plain]="true"
                         [rounded]="true"
                         icon="pi pi-pencil"
+                        id="edit-organizations-button"
                     />
                 }
                 @if (editable) {
@@ -93,12 +95,14 @@
                 name="newOrg"
                 ngDefaultControl
                 (ngModelChange)="checkOrganization($event, newOrganization, subscriber)"
+                id="new-organization-input"
             />
             <p-button
                 class="mx-2"
                 styleClass="black-button-sidebar"
                 (click)="addOrganization(newOrganization)"
                 [disabled]="newOrganization.uiStatus !== 'OK'"
+                id="add-organization-button"
                 [ariaLabel]="
                     'administration.organization.accessibility.addAnOrganization'
                         | translate
@@ -139,6 +143,7 @@
                 class="mx-1"
                 *ngIf="editable && organization.status === status.ACTIVE"
                 (click)="confirmDelete($event, organization)"
+                id="delete-organization-button"
             >
                 <img
                     src="assets/images/icons/icon-bin.svg"
