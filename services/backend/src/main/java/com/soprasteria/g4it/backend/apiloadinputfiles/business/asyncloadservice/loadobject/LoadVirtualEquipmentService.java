@@ -16,6 +16,8 @@ import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.
 import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.model.LineError;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InVirtualEquipmentRest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,9 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +45,9 @@ public class LoadVirtualEquipmentService {
     @Autowired
     InApplicationRepository inApplicationRepository;
 
+    @Autowired
+    BoaviztapiService boaviztapiService;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -56,24 +59,27 @@ public class LoadVirtualEquipmentService {
 
         List<LineError> errors = new ArrayList<>();
         List<InVirtualEquipment> virtualEquipmentsToSave = new ArrayList<>();
-
+        Set<String> virtualEquipmentNames = new HashSet<>();
         for (int i = 0; i < virtualEquipments.size(); i++) {
             int line = Constants.BATCH_SIZE * pageNumber + i + 2;
 
-            final List<LineError> checkErrors = checkVirtualEquipmentService.checkRules(context, virtualEquipments.get(i), line);
+            final List<LineError> checkErrors = checkVirtualEquipmentService.checkRules(context, virtualEquipments.get(i), line, virtualEquipmentNames);
             if (checkErrors.isEmpty()) {
                 virtualEquipmentsToSave.add(inVirtualEquipmentMapper.toEntity(virtualEquipments.get(i)));
             } else {
                 errors.addAll(checkErrors);
             }
         }
-
+        virtualEquipmentNames.clear();
         // Delete existing virtual equipments and its sub objects
         final Set<String> names = virtualEquipments.stream().map(InVirtualEquipmentRest::getName).collect(Collectors.toSet());
         inVirtualEquipmentRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), names);
-        if (context.isHasApplications()) {
-            inApplicationRepository.deleteByInventoryIdAndVirtualEquipmentNameIn(context.getInventoryId(), names);
-        }
+
+        //set country code and workload for cloud services
+        Map<String, String> countryMap = boaviztapiService.getCountryMap();
+        virtualEquipmentsToSave.stream()
+                .filter(ve -> InfrastructureType.CLOUD_SERVICES.name().equals(ve.getInfrastructureType()))
+                .forEach(ve -> ve.setLocation(countryMap.get(ve.getLocation())));
 
         // Load data into database
         inVirtualEquipmentRepository.saveAll(virtualEquipmentsToSave);
@@ -85,6 +91,6 @@ public class LoadVirtualEquipmentService {
     }
 
     public Long getVirtualEquipmentCount(Long inventoryId) {
-        return inVirtualEquipmentRepository.sumQuantityByInventoryId(inventoryId);
+        return inVirtualEquipmentRepository.countQuantityByDistinctNameByInventoryId(inventoryId);
     }
 }

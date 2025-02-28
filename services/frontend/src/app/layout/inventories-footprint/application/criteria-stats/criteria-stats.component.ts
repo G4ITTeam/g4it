@@ -58,14 +58,67 @@ export class CriteriaStatsComponent {
         }
     }
 
+    computeData(
+        appNameList: Set<string>,
+        impact: ApplicationImpact,
+        count: number,
+        sipAvgImpact: { value: number },
+        unitAvgImpact: { value: number },
+    ) {
+        appNameList.add(impact.applicationName);
+        count++;
+        sipAvgImpact.value += impact.sip;
+        unitAvgImpact.value += impact.impact;
+    }
+
+    domainCase(
+        domain: TransformedDomain | undefined,
+        appNameList: Set<string>,
+        impact: ApplicationImpact,
+        count: number,
+        sipAvgImpact: { value: number },
+        unitAvgImpact: { value: number },
+    ) {
+        if (domain?.checked) {
+            this.computeData(appNameList, impact, count, sipAvgImpact, unitAvgImpact);
+        }
+    }
+
+    subDomainCase(
+        domain: TransformedDomain | undefined,
+        appNameList: Set<string>,
+        impact: ApplicationImpact,
+        count: number,
+        sipAvgImpact: { value: number },
+        unitAvgImpact: { value: number },
+    ) {
+        if (
+            domain?.children?.some(
+                (child) => child.label === impact.subDomain && child.checked,
+            )
+        ) {
+            this.computeData(appNameList, impact, count, sipAvgImpact, unitAvgImpact);
+        }
+    }
+
+    applicationCase(
+        appNameList: Set<string>,
+        impact: ApplicationImpact,
+        count: number,
+        sipAvgImpact: { value: number },
+        unitAvgImpact: { value: number },
+    ) {
+        if (this.footprintStore.appApplication() === impact.applicationName) {
+            this.computeData(appNameList, impact, count, sipAvgImpact, unitAvgImpact);
+        }
+    }
+
     computeApplicationStats(): CriteriaData {
-        let sipAvgImpact = 0;
-        let unitAvgImpact = 0;
+        let sipAvgImpact = { value: 0 };
+        let unitAvgImpact = { value: 0 };
         let count = 0;
         let appNameList: Set<string> = new Set();
-        let appCount = 0;
-        let averageImpactSip = 0;
-        let averageImpactUnit = 0;
+
         this.footprint().forEach((application) => {
             if (application.criteria === this.footprintStore.applicationCriteria()) {
                 application.impacts.forEach((impact: ApplicationImpact) => {
@@ -81,43 +134,42 @@ export class CriteriaStatsComponent {
                     ) {
                         switch (this.footprintStore.appGraphType()) {
                             case "global":
-                                appNameList.add(impact.applicationName);
-                                count++;
-                                sipAvgImpact += impact.sip;
-                                unitAvgImpact += impact.impact;
+                                this.computeData(
+                                    appNameList,
+                                    impact,
+                                    count,
+                                    sipAvgImpact,
+                                    unitAvgImpact,
+                                );
                                 break;
                             case "domain":
-                                if (domain?.checked) {
-                                    appNameList.add(impact.applicationName);
-                                    count++;
-                                    sipAvgImpact += impact.sip;
-                                    unitAvgImpact += impact.impact;
-                                }
+                                this.domainCase(
+                                    domain,
+                                    appNameList,
+                                    impact,
+                                    count,
+                                    sipAvgImpact,
+                                    unitAvgImpact,
+                                );
                                 break;
                             case "subdomain":
-                                if (
-                                    domain?.children?.some(
-                                        (child) =>
-                                            child.label === impact.subDomain &&
-                                            child.checked,
-                                    )
-                                ) {
-                                    appNameList.add(impact.applicationName);
-                                    count++;
-                                    sipAvgImpact += impact.sip;
-                                    unitAvgImpact += impact.impact;
-                                }
+                                this.subDomainCase(
+                                    domain,
+                                    appNameList,
+                                    impact,
+                                    count,
+                                    sipAvgImpact,
+                                    unitAvgImpact,
+                                );
                                 break;
                             case "application":
-                                if (
-                                    this.footprintStore.appApplication() ===
-                                    impact.applicationName
-                                ) {
-                                    appNameList.add(impact.applicationName);
-                                    count++;
-                                    sipAvgImpact += impact.sip;
-                                    unitAvgImpact += impact.impact;
-                                }
+                                this.applicationCase(
+                                    appNameList,
+                                    impact,
+                                    count,
+                                    sipAvgImpact,
+                                    unitAvgImpact,
+                                );
                                 break;
                         }
                     }
@@ -125,16 +177,19 @@ export class CriteriaStatsComponent {
             }
         });
 
-        appCount = appNameList.size;
+        let appCount = appNameList.size;
+        let averageImpactSip = 0;
+        let averageImpactUnit = 0;
+
         if (appCount !== 0) {
-            averageImpactSip = sipAvgImpact / appCount;
-            averageImpactUnit = unitAvgImpact / appCount;
+            averageImpactSip = sipAvgImpact.value / appCount;
+            averageImpactUnit = unitAvgImpact.value / appCount;
         }
 
         return {
-            appCount: appCount,
-            averageImpactSip: averageImpactSip,
-            averageImpactUnit: averageImpactUnit,
+            appCount,
+            averageImpactSip,
+            averageImpactUnit,
         };
     }
 }

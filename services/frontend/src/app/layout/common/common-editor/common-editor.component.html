@@ -1,5 +1,11 @@
 <div class="px-4" [class]="styleClass">
-    <div class="side-panel-title" role="heading" appAutofocus tabIndex="-1">
+    <div
+        class="side-panel-title"
+        role="heading"
+        aria-level="2"
+        appAutofocus
+        tabIndex="-1"
+    >
         <i class="pi pi-clipboard text-2xl"></i>
         {{ title }}
     </div>
@@ -99,11 +105,15 @@
                 editorTextValue !== '' && editorTextValue === editorTextValueUnmodified
             "
             (click)="saveContent()"
+            id="save-note"
             >{{ "common.save" | translate }}</p-button
         >
-        <p-button styleClass="white-button" (click)="cancelContent($event)">{{
-            "common.cancel" | translate
-        }}</p-button>
+        <p-button
+            styleClass="white-button"
+            (click)="cancelContent($event)"
+            id="cancel-button"
+            >{{ "common.cancel" | translate }}</p-button
+        >
         <p-button
             styleClass="white-button"
             *ngIf="content"

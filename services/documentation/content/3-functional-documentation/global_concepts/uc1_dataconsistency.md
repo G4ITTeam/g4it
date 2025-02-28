@@ -9,6 +9,7 @@ weight: 300
 <!-- TOC -->
   * [Table of contents](#table-of-contents)
   * [Description](#description)
+    * [Formula to explain the calculation](#formula-to-explain-the-calculation)
   * [Global view](#global-view)
 <!-- TOC -->
 
@@ -36,6 +37,19 @@ As described in the following diagram, data consistency is available in differen
 List of errors can be found in the export associated with a digital service or an inventory. To know how to export data from G4IT, please see the following pages : 
 * [1. My IS inventory/1.7 Export files](../use_cases/uc_inventory/uc7_export_files.md)
 * [2. Digital Service/2.6 Export a digital service](../use_cases/uc_digital_services/uc6_export_digital_service.md)
+
+### Formula to explain the calculation
+```math
+$$
+UnableToCalculatePercentage_{step,criteria} = {AggIndicatorsInError_{step, criteria}\over TotalAggIndicators_{step, cirteria}}
+$$
+```
+*With :*
+- ***AggIndicatorsInError**: number of indicators coming from an out_..._equipment table in database with status in error for any specific reason*
+- ***TotalAggIndicators**: total number of indicators coming from an out_..._equipment table in database*
+
+Warning: some differences can happen about the percentage between raw indicators and aggregated indicators
+
 
 ## Global view
 

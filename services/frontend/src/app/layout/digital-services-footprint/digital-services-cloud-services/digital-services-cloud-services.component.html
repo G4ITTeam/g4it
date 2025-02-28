@@ -1,118 +1,142 @@
 <div class="table-container">
-    <p-table
-        [value]="cloudServices()"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        [rows]="6"
-        [paginator]="true"
-        [sortField]="'creationDate'"
-        [sortOrder]="1"
-    >
-        <ng-template pTemplate="caption">
-            <div class="table-header">
-                <div class="table-head">
-                    {{ "digital-services-cloud-services.cloud-services" | translate }}
+    @if (digitalServiceStore.isNewArch()) {
+        <app-digital-service-table
+            title="cloud-services"
+            addButton="add"
+            translationPrefix="digital-services-cloud-services"
+            [headerFields]="headerFields"
+            [data]="cloudServices()"
+            (sidebar)="changeSidebar($event)"
+            (resetItem)="resetCloudServices()"
+            (setItem)="setItem($event)"
+            (deleteItem)="deleteItem($event)"
+        ></app-digital-service-table>
+    } @else {
+        <p-table
+            [value]="cloudServices()"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            [rows]="6"
+            [paginator]="true"
+            [sortField]="'creationDate'"
+            [sortOrder]="1"
+        >
+            <ng-template pTemplate="caption">
+                <div class="table-header">
+                    <div class="table-head">
+                        {{ "digital-services-cloud-services.cloud-services" | translate }}
+                    </div>
+                    <p-button
+                        id="add-cloud"
+                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        (click)="resetCloudServices(); sidebarVisible = true"
+                        styleClass="inventory-button-small"
+                        >{{ "digital-services-cloud-services.add" | translate }}</p-button
+                    >
                 </div>
-                <p-button
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    (click)="resetCloudServices(); sidebarVisible = true"
-                    styleClass="inventory-button-small"
-                    >{{ "digital-services-cloud-services.add" | translate }}</p-button
-                >
-            </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-            <caption class="visually-hidden">
-                {{
-                    "digital-services-cloud-services.cloud-services" | translate
-                }}
-            </caption>
-            <tr>
-                <th scope="col" id="id">
-                    {{ "digital-services-cloud-services.id" | translate }}
-                </th>
-                <th scope="col" pSortableColumn="name" id="name">
-                    {{ "digital-services-cloud-services.name" | translate }}
-                    <p-sortIcon field="name"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="cloudProvider" id="cloudProvider">
-                    {{ "digital-services-cloud-services.cloud-provider" | translate }}
-                    <p-sortIcon field="cloudProvider"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="instanceType" id="instanceType">
-                    {{ "digital-services-cloud-services.instance-type" | translate }}
-                    <p-sortIcon field="instanceType"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="quantity" id="quantity">
-                    {{ "digital-services-cloud-services.quantity" | translate }}
-                    <p-sortIcon field="quantity"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="location" id="location">
-                    {{ "digital-services-cloud-services.location" | translate }}
-                    <p-sortIcon field="location"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="annualUsage" id="annualUsage">
-                    {{ "digital-services-cloud-services.annual-usage" | translate }}
-                    <p-sortIcon field="annualUsage"></p-sortIcon>
-                </th>
-                <th scope="col" pSortableColumn="averageWorkload" id="averageWorkload">
-                    {{ "digital-services-cloud-services.average-workload" | translate }}
-                    <p-sortIcon field="averageWorkload"></p-sortIcon>
-                </th>
-                <th id="button"></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-cloud let-rowIndex="rowIndex">
-            <tr>
-                <td class="grey-text">{{ rowIndex + 1 }}</td>
-                <td>{{ cloud.name }}</td>
-                <td>{{ cloud.cloudProvider }}</td>
-                <td>{{ cloud.instanceType }}</td>
-                <td>{{ cloud.quantity }}</td>
-                <td>{{ cloud.location.name }}</td>
-                <td>{{ cloud.annualUsage | decimals }}</td>
-                <td>{{ cloud.averageWorkload | decimals }}</td>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <caption class="visually-hidden">
+                    {{
+                        "digital-services-cloud-services.cloud-services" | translate
+                    }}
+                </caption>
+                <tr>
+                    <th scope="col" id="id">
+                        {{ "digital-services-cloud-services.id" | translate }}
+                    </th>
+                    <th scope="col" pSortableColumn="name" id="name">
+                        {{ "digital-services-cloud-services.name" | translate }}
+                        <p-sortIcon field="name"></p-sortIcon>
+                    </th>
+                    <th scope="col" pSortableColumn="cloudProvider" id="cloudProvider">
+                        {{ "digital-services-cloud-services.cloud-provider" | translate }}
+                        <p-sortIcon field="cloudProvider"></p-sortIcon>
+                    </th>
+                    <th scope="col" pSortableColumn="instanceType" id="instanceType">
+                        {{ "digital-services-cloud-services.instance-type" | translate }}
+                        <p-sortIcon field="instanceType"></p-sortIcon>
+                    </th>
+                    <th scope="col" pSortableColumn="quantity" id="quantity">
+                        {{ "digital-services-cloud-services.quantity" | translate }}
+                        <p-sortIcon field="quantity"></p-sortIcon>
+                    </th>
+                    <th scope="col" pSortableColumn="location" id="location">
+                        {{ "digital-services-cloud-services.location" | translate }}
+                        <p-sortIcon field="location"></p-sortIcon>
+                    </th>
+                    <th scope="col" pSortableColumn="annualUsage" id="annualUsage">
+                        {{ "digital-services-cloud-services.annual-usage" | translate }}
+                        <p-sortIcon field="annualUsage"></p-sortIcon>
+                    </th>
+                    <th
+                        scope="col"
+                        pSortableColumn="averageWorkload"
+                        id="averageWorkload"
+                    >
+                        {{
+                            "digital-services-cloud-services.average-workload" | translate
+                        }}
+                        <p-sortIcon field="averageWorkload"></p-sortIcon>
+                    </th>
+                    <th class="text-hidden" id="button">
+                        {{ "common.button" | translate }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-cloud let-rowIndex="rowIndex">
+                <tr>
+                    <td class="grey-text">{{ rowIndex + 1 }}</td>
+                    <td>{{ cloud.name }}</td>
+                    <td>{{ cloud.cloudProvider }}</td>
+                    <td>{{ cloud.instanceType }}</td>
+                    <td>{{ cloud.quantity }}</td>
+                    <td>{{ cloud.location.name }}</td>
+                    <td>{{ cloud.annualUsage | decimals }}</td>
+                    <td>{{ cloud.averageWorkload | decimals }}</td>
 
-                <td style="text-align: right">
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="
-                            setServerCloud(cloud, rowIndex + 1); sidebarVisible = true
-                        "
-                        styleClass="p-button-text mx-1"
-                    >
-                        <img
-                            src="assets/images/icons/icon-edit.svg"
-                            alt="{{ 'common.edit' | translate }} {{
-                                'digital-services-cloud-services.cloud-services'
-                                    | translate
-                            }} {{ rowIndex + 1 }}"
-                        />
-                    </p-button>
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="deleteCloudServices(cloud)"
-                        styleClass="p-button-text"
-                    >
-                        <img
-                            src="assets/images/icons/icon-bin.svg"
-                            alt="{{ 'common.delete' | translate }} {{
-                                'digital-services-cloud-services.cloud-services'
-                                    | translate
-                            }} {{ rowIndex + 1 }}"
-                        />
-                    </p-button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+                    <td style="text-align: right">
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                            (click)="
+                                setServerCloud(cloud, rowIndex + 1); sidebarVisible = true
+                            "
+                            styleClass="p-button-text mx-1"
+                        >
+                            <img
+                                src="assets/images/icons/icon-edit.svg"
+                                alt="{{ 'common.edit' | translate }} {{
+                                    'digital-services-cloud-services.cloud-services'
+                                        | translate
+                                }} {{ rowIndex + 1 }}"
+                            />
+                        </p-button>
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                            (click)="deleteCloudServices(cloud)"
+                            styleClass="p-button-text"
+                        >
+                            <img
+                                src="assets/images/icons/icon-bin.svg"
+                                alt="{{ 'common.delete' | translate }} {{
+                                    'digital-services-cloud-services.cloud-services'
+                                        | translate
+                                }} {{ rowIndex + 1 }}"
+                            />
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }
 </div>
 
 @if (sidebarVisible) {
     <p-sidebar
-        [visible]="true"
+        [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-md"
         (onHide)="childSidePanel.close()"
+        ariaCloseLabel="Close"
     >
         <app-digital-services-cloud-services-side-panel
             #childSidePanel

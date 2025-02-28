@@ -5,14 +5,12 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { MessageService } from "primeng/api";
-import {
-    DigitalServiceNetworkConfig,
-    NetworkType,
-} from "src/app/core/interfaces/digital-service.interfaces";
+import { DigitalServiceNetworkConfig } from "src/app/core/interfaces/digital-service.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
+import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 
 @Component({
     selector: "app-digital-services-networks-side-panel",
@@ -20,8 +18,9 @@ import { UserService } from "src/app/core/service/business/user.service";
     providers: [MessageService],
 })
 export class DigitalServicesNetworksSidePanelComponent {
+    protected digitalServiceStore = inject(DigitalServiceStoreService);
+
     @Input() network: DigitalServiceNetworkConfig = {} as DigitalServiceNetworkConfig;
-    @Input() networkTypes: NetworkType[] = [];
 
     @Output() update: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
     @Output() delete: EventEmitter<DigitalServiceNetworkConfig> = new EventEmitter();
@@ -29,7 +28,10 @@ export class DigitalServicesNetworksSidePanelComponent {
     @Output() sidebarVisible: EventEmitter<boolean> = new EventEmitter();
 
     networksForm = this._formBuilder.group({
-        type: [{ code: "", value: "" }, Validators.required],
+        type: [
+            { code: "", value: "", country: "", type: "", annualQuantityOfGo: 0 },
+            Validators.required,
+        ],
         yearlyQuantityOfGbExchanged: [0, [Validators.required]],
     });
 

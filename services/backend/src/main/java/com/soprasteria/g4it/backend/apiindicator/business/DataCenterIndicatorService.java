@@ -10,7 +10,10 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DataCenterIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.DataCentersInformationBO;
 import com.soprasteria.g4it.backend.apiindicator.repository.DataCenterIndicatorViewRepository;
+import com.soprasteria.g4it.backend.apiindicator.repository.InDatacenterViewRepository;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
+import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
+import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import lombok.AllArgsConstructor;
@@ -41,6 +44,12 @@ public class DataCenterIndicatorService {
     @Autowired
     private DataCenterIndicatorMapper dataCenterIndicatorMapper;
 
+    @Autowired
+    private InventoryService inventoryService;
+
+    @Autowired
+    private InDatacenterViewRepository inDatacenterViewRepository;
+
     /**
      * Retrieve datacenter indicators.
      *
@@ -51,9 +60,16 @@ public class DataCenterIndicatorService {
      */
     public List<DataCentersInformationBO> getDataCenterIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-        final var result = dataCenterIndicatorViewRepository.findDataCenterIndicators(inventoryId).stream()
-                .peek(indicator -> indicator.setEquipment(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getEquipment())))
-                .toList();
-        return dataCenterIndicatorMapper.toDto(result);
+        final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+
+        if (Boolean.TRUE.equals(inventory.getIsNewArch())) {
+            final var result = inDatacenterViewRepository.findDataCenterIndicators(inventoryId);
+            return dataCenterIndicatorMapper.toDataCentersDto(result);
+        } else {
+            final var result = dataCenterIndicatorViewRepository.findDataCenterIndicators(inventoryId).stream()
+                    .peek(indicator -> indicator.setEquipment(TypeUtils.getShortType(subscriber, linkedOrganization.getName(), indicator.getEquipment())))
+                    .toList();
+            return dataCenterIndicatorMapper.toDto(result);
+        }
     }
 }

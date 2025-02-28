@@ -173,8 +173,10 @@ public class AzureFileStorage implements FileStorage {
     @Override
     public void delete(final FileFolder folder, final String fileName) {
         final BlobClient blobClient = blobContainerClient.getBlobClient(filePath(folder, fileName));
-        log.info("Deleting {}", blobClient.getBlobUrl());
-        blobClient.delete();
+        if (Boolean.TRUE.equals(blobClient.exists())) {
+            log.info("Deleting {}", blobClient.getBlobUrl());
+            blobClient.delete();
+        }
     }
 
     /**

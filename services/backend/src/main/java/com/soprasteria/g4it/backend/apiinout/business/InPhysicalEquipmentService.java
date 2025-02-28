@@ -43,8 +43,8 @@ public class InPhysicalEquipmentService {
      * @return the physical equipment list.
      */
     public List<InPhysicalEquipmentRest> getByDigitalService(final String digitalServiceUid) {
-        final List<InPhysicalEquipment> inVirtualEquipment = inPhysicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
-        return inPhysicalEquipmentMapper.toRest(inVirtualEquipment);
+        final List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
+        return inPhysicalEquipmentMapper.toRest(inPhysicalEquipments);
     }
 
     /**
@@ -201,11 +201,26 @@ public class InPhysicalEquipmentService {
     }
 
     /**
-     * Delete a physical equipment
+     * Delete the physical equipment of a digital service
      *
-     * @param id the physical equipment id.
+     * @param digitalServiceUid the digital service uid
+     * @param id                the physical equipment id.
      */
-    public void deleteInPhysicalEquipment(final Long id) {
+    public void deleteInPhysicalEquipment(final String digitalServiceUid, final Long id) {
+        inPhysicalEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Physical equipment %d not found in digital service %s", id, digitalServiceUid)));
+        inPhysicalEquipmentRepository.deleteById(id);
+    }
+
+    /**
+     * Delete the physical equipment of an inventory
+     *
+     * @param inventoryId the inventory id
+     * @param id          the physical equipment id.
+     */
+    public void deleteInPhysicalEquipment(final Long inventoryId, final Long id) {
+        inPhysicalEquipmentRepository.findByInventoryIdAndId(inventoryId, id)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Physical equipment %d not found in inventory %d", id, inventoryId)));
         inPhysicalEquipmentRepository.deleteById(id);
     }
 

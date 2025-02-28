@@ -7,12 +7,11 @@ mermaid: true
 
 ## Table of contents
 
-- [Table of contents](#table-of-contents)
-- [Description](#description)
-- [State Diagram](#state-diagram)
-- [Mockup](#mockup)
-- [Sequence Diagram](#sequence-diagram)
-
+-   [Table of contents](#table-of-contents)
+-   [Description](#description)
+-   [State Diagram](#state-diagram)
+-   [Mockup](#mockup)
+-   [Sequence Diagram](#sequence-diagram)
 
 ## Description
 
@@ -30,10 +29,12 @@ https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval
 **Navigation Path**
 
 Input :
-- My Information System / Visualize my inventories / My inventory / Application button
+
+-   My Information System / Visualize my inventories / My inventory / Application button
 
 Output :
-- My Information System / Visualize my inventories / My inventory / Application footprint page
+
+-   My Information System / Visualize my inventories / My inventory / Application footprint page
 
 **Access Conditions**  
 The connected user must have the read role for that module one the selected organization.
@@ -60,11 +61,10 @@ representing one of the application|Step8[Visualize impact for an application by
 
 ![uc6_visualize_application_footprint_multicriteria.png](../images/uc6_visualize_application_footprint_multicriteria.png)
 
-
 {{% expand title="Behavior rules" expanded="false" center="true"%}}
 
 | Reference | Group                      | Elements                  | Sub-Elements     | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-|-----------|----------------------------|---------------------------|------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | -------------------------- | ------------------------- | ---------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |           | Page Header                |                           |                  | group  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 1         |                            | My Information System -   |                  | title  | <li><u>initialization rules</u>: The title is concatenated with the current organization selected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | 2         |                            | IS version or name        |                  | label  | <li><u>initialization rules</u>: The IS version or name of the IS selected for which the user want to visualize equipment footprint. The type of visualization (Application) is also shown.                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
@@ -87,7 +87,7 @@ representing one of the application|Step8[Visualize impact for an application by
 {{% expand title="Behavior rules" expanded="false" center="true"%}}
 
 | Reference | Group                   | Elements         | Sub-Elements       | Type         | Description                                                                                                                                                                                                                                                                         |
-|-----------|-------------------------|------------------|--------------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ----------------------- | ---------------- | ------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         | Title                   |                  |                    |              | <li><u>_initialization rules_</u>: The title is the concatenation of the depth levels.<br><br><li><u>_action rules_</u>: By clicking on it, it allows you to go up one level.<br>                                                                                                   |
 |           | Graphical visualization |                  |                    | group        |                                                                                                                                                                                                                                                                                     |
 | 2         |                         | bar tooltips     |                    | label        | <li><u>_initialization rules_</u>: By overflying a bar, information is displayed :<br><br> - Domain's impact in people eq.<br><br> - Domain's impact in the unit of the chosen criteria<br><br> - Subdomain's number of the domain<br><br> - Application's number of the domain<br> |
@@ -103,11 +103,12 @@ representing one of the application|Step8[Visualize impact for an application by
 {{% /expand %}}
 
 ### Chart By SubDomain
+
 ![uc6_visualize_application_footprint_by_criteria_level_subDomain.png](../images/uc6_visualize_application_footprint_by_criteria_level_subDomain.png)
 {{% expand title="Behavior rules" expanded="false" center="true"%}}
 
 | Reference | Group                   | Elements         | Sub-Elements       | Type         | Description                                                                                                                                                                                                                                                                      |
-|-----------|-------------------------|------------------|--------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ----------------------- | ---------------- | ------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         | Title                   |                  |                    |              | <li><u>_initialization rules_</u>: The title is the concatenation of the depth levels.<br><br><li><u>_action rules_</u>: By clicking on it, it allows you to go up one level.<br>                                                                                                |
 |           | Graphical visualization |                  |                    | group        | Details of the behaviour and content are described in Multi-criteria View or in View dedicated for each criteria                                                                                                                                                                 |
 | 2         |                         | bar tooltips     |                    | label        | <li><u>_initialization rules_</u>: By overflying a bar, information is displayed :<br><br> _ Subdomain's impact in people eq.<br><br> _ Subdomain's impact in the unit of the chosen criteria \* Application's number of the domain<br>                                          |
@@ -121,12 +122,14 @@ representing one of the application|Step8[Visualize impact for an application by
 | 6         |                         | Data consistency |                    | button       | <li><u>_action rules_</u>: Click to view graph of data consistency for the sub-domains of selected domain. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md) </li>                                                                           |
 
 {{% /expand %}}
+
 ### Chart By Application
+
 ![uc6_visualize_application_footprint_by_criteria_level_Application.png](../images/uc6_visualize_application_footprint_by_criteria_level_Application.png)
 {{% expand title="Behavior rules" expanded="false" center="true"%}}
 
 | Reference | Group                   | Elements         | Sub-Elements       | Type         | Description                                                                                                                                                                                                                                                                 |
-|-----------|-------------------------|------------------|--------------------|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ----------------------- | ---------------- | ------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         | Title                   |                  |                    |              | <li><u>_initialization rules_</u>: The title is the concatenation of the depth levels.<br><br><li><u>_action rules_</u>: By clicking on it, it allows you to go up one level.<br>                                                                                           |
 |           | Graphical visualization |                  |                    | group        | Details of the behaviour and content are described in Multi-criteria View or in View dedicated for each criteria                                                                                                                                                            |
 | 2         |                         | bar tooltips     |                    | label        | <li><u>_initialization rules_</u>: By overflying a bar, information is displayed :<br><br> _ Application's impact in people eq.<br><br> _ Application's impact in the unit of the chosen criteria<br><br>                                                                   |
@@ -142,11 +145,12 @@ representing one of the application|Step8[Visualize impact for an application by
 {{% /expand %}}
 
 ### Chart By virtual machine
+
 ![uc6_visualize_application_footprint_by_criteria_level_VM.png](../images/uc6_visualize_application_footprint_by_criteria_level_VM.png)
 {{% expand title="Behavior rules" expanded="false" center="true"%}}
 
 | Reference | Group                   | Elements         | Sub-Elements       | Type         | Description                                                                                                                                                                                                                                              |
-|-----------|-------------------------|------------------|--------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ----------------------- | ---------------- | ------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         | Title                   |                  |                    |              | <li><u>_initialization rules_</u>: The title is the concatenation of the depth levels.<br><br><li><u>_action rules_</u>: By clicking on it, it allows you to go up one level.<br>                                                                        |
 |           | Graphical visualization |                  |                    | group        | Details of the behaviour and content are described in Multi-criteria View or in View dedicated for each criteria                                                                                                                                         |
 | 2         |                         | bar tooltips     |                    | label        | <li><u>_initialization rules_</u>: By overflying a bar, information is displayed :<br><br> - VM's impact in people eq.<br><br> - VM's impact in the unit of the chosen criterion<br><br> - Cluster<br><br> - Type of equipment<br><br> - Environment<br> |
@@ -162,6 +166,17 @@ representing one of the application|Step8[Visualize impact for an application by
 
 {{% /expand %}}
 
+### Chart By virtual machine in Case of Equipment is a Cloud Instance
+
+![uc6_visualize_cloud_application_footprint_by_criteria_level_VM.png](../images/uc6_visualize_cloud_application_footprint_by_criteria_level_VM.png)
+{{% expand title="Behavior rules" expanded="false" center="true"%}}
+
+| Reference | Group | Elements     | Sub-Elements | Type  | Description                                                                                                                                                                                                                                                    |
+| --------- | ----- | ------------ | ------------ | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1         |       | bar tooltips |              | label | <li><u>_initialization rules_</u>: By overflying a bar, information is displayed :<br><br> - VM's impact in people eq.<br><br> - VM's impact in the unit of the chosen criterion<br><br> - Cluster<br><br> - Name of Cloud provider <br><br> - Environment<br> |
+
+{{% /expand %}}
+
 ### View dedicated for data consistency
 
 ![uc6_visualize_application_footprint_data_consistency.png](../images/uc6_visualize_application_footprint_data_consistency.png)
@@ -169,90 +184,33 @@ representing one of the application|Step8[Visualize impact for an application by
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group | Elements         | Sub-Elements | Type   | Description                                                                                                                                                                                                                                                    |
-|-----------|-------|------------------|--------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ----- | ---------------- | ------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         |       | Data consistency |              | button | <li><u>action rules</u>: Click to view graph of data consistency for the selected criteria. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md)</li>                                                                         |
 | 2         |       | Graph            |              | bar    | <li><u>initialization rules</u>: The axes of the bar correspond to the criteria or filters selected, and it displays results where the impact is calculated in blue and the impact that cannot be calculated in red. The value is represented as a percentage. |
 
 {{% /expand %}}
 
-
 ## Sequence Diagram
 
-{{% expand title="Show the Sequence Diagram for Multi-criteria view" expanded="false" center="true"%}}
+### Show the Sequence Diagram
 
 {{< mermaid >}}
 sequenceDiagram
 actor RND as Sustainable IT Leader
 participant front as G4IT Front-End
 participant back as G4IT Back-End
-participant NumEcoEval
-
+participant Database
 RND ->> front: Click on "Application" button or one of the tab in the view or one the chart of multi-criteria tab
-front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_date}/indicators/applications/filters
-back -> NumEcoEval: Get filters based on indicators from table ind_indicateur_impact_application of NumEcoEval
-back -->> front: Send the list of filters to display on my view related to my view
-front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_date}/indicators/applications
-back -> NumEcoEval: Get indicators from table ind_indicateur_impact_application of NumEcoEval
+front ->> back: GET /api/{subscriber}/{organization}/inventories?inventoryId={inventory_id}
+Database--> back: Get inventory information
+back -->> front: Send the details of selected inventory Id on my view related to my view
+front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}/indicators/applications
+back -> Database: Get indicators from table ind_indicateur_impact_application generated by NumEcoEval
+back ->> front: Send the list of virtual equipment on my view related to my view
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/outputs/applications
+Database--> back: Get cloud indicators from out_application table generated by Boavizta
 back -->> front: Indicators aggregated to be displayed on the front application
+front --> RND: Display the list of filters related to my view
+front --> RND: Display filtered graphs related to my view
 
 {{< /mermaid >}}
-
-{{% /expand %}}
-
-{{% expand title="Show the Sequence Diagram for Domain view" expanded="false" center="true"%}}
-{{< mermaid >}}
-sequenceDiagram
-actor RND as Sustainable IT Leader
-participant front as G4IT Front-End
-participant back as G4IT Back-End
-participant NumEcoEval
-
-RND ->> front: Click on a bar from the chart of a tab by criteria (chart by domain)
-front ->> back: GET
-/api/{subscriber}/{organization}/inventories/{inventory_date}/indicators/applications/filters?domain={Domain name}
-back -> NumEcoEval: Get filters based on indicators from table ind_indicateur_impact_application of NumEcoEval
-back -->> front: Send the list of filters to display on my view related to my view
-
-{{< /mermaid >}}
-{{% /expand %}}
-
-{{% expand title="Show the Sequence Diagram for SubDomain view" expanded="false" center="true"%}}
-{{< mermaid >}}
-sequenceDiagram
-actor RND as Sustainable IT Leader
-participant front as G4IT Front-End
-participant back as G4IT Back-End
-participant NumEcoEval
-
-RND ->> front: Click on a bar from the chart of a tab by criteria (chart by subdomain)
-front ->> back: GET
-/api/{subscriber}/{organization}/inventories/{inventory_date}/indicators/applications/filters?domain={Domain
-name}&subDomain={subdomain name}
-back -> NumEcoEval: Get filters based on indicators from table ind_indicateur_impact_application of NumEcoEval
-back -->> front: Send the list of filters to display on my view related to my view
-
-{{< /mermaid >}}
-{{% /expand %}}
-
-{{% expand title="Show the Sequence Diagram for Application view" expanded="false" center="true"%}}
-{{< mermaid >}}
-sequenceDiagram
-actor RND as Sustainable IT Leader
-participant front as G4IT Front-End
-participant back as G4IT Back-End
-participant NumEcoEval
-
-RND ->> front: Click on a bar from the chart of a tab by criteria (chart by application)
-front ->> back: GET
-/api/{subscriber}/{organization}/inventories/{inventory_date}/indicators/applications/filters?domain={Domain
-name}&subDomain={subdomain name}&application={application name}
-back -> NumEcoEval: Get filters based on indicators from table ind_indicateur_impact_application of NumEcoEval
-back -->> front: Send the list of filters to display on my view related to my view
-front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_date}/indicators/applications/{application
-name}/{criteria}
-back -> NumEcoEval: Get indicators from table ind_indicateur_impact_application of NumEcoEval for this application and
-this specific criteria
-back -->> front: Indicators aggregated to be displayed on the front application
-
-{{< /mermaid >}}
-{{% /expand %}}

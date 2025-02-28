@@ -19,6 +19,7 @@
             name="email"
             pInputText
             readonly
+            aria-label="Email"
         />
     </div>
     <br />
@@ -38,6 +39,7 @@
             placeholder="{{ 'administration.user.is-module' | translate }}"
             [disabled]="isAdmin"
             [showClear]="true"
+            id="module-is-dropdown"
         ></p-dropdown>
         <br />
         <br />
@@ -51,6 +53,7 @@
             placeholder="{{ 'administration.user.ds-module' | translate }}"
             [disabled]="isAdmin"
             [showClear]="true"
+            id="module-ds-dropdown"
         ></p-dropdown>
     </div>
     <br />
@@ -70,6 +73,7 @@
             [required]="true"
             placeholder="{{ 'administration.user.role' | translate }}"
             class="p-inputtext-sm type-dropdown"
+            id="user-role-dropdown"
         ></p-dropdown>
         <p class="error-text" *ngIf="!adminModule">
             {{ "administration.user.role" | translate }}
@@ -92,6 +96,7 @@
             type="submit"
             (click)="addUpdateOrg()"
             *ngIf="!updateOrganizationEnable"
+            id="add-button"
         >
             <span>{{ "common.add" | translate }}</span>
         </p-button>

@@ -15,7 +15,12 @@ import com.soprasteria.g4it.backend.apiindicator.modeldb.AggApplicationIndicator
 import com.soprasteria.g4it.backend.apiindicator.modeldb.AggEquipmentIndicator;
 import com.soprasteria.g4it.backend.apiindicator.repository.AggApplicationIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.AggEquipmentIndicatorRepository;
+import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apiindicator.utils.TypeUtils;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.external.numecoeval.repository.NumEcoEvalRepository;
@@ -29,6 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils.transformCriteriaNameToCriteriaKey;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 
 /**
@@ -63,6 +69,11 @@ public class IndicatorService {
     @Autowired
     private OrganizationService organizationService;
 
+    @Autowired
+    private OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
+
+    @Autowired
+    private OutApplicationRepository outApplicationRepository;
 
     /**
      * Retrieve equipment indicators.
@@ -75,16 +86,28 @@ public class IndicatorService {
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String subscriber, final Long organizationId, final String batchName) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
-        final Map<String, List<AggEquipmentIndicator>> aggIndicatorsMap = aggEquipmentIndicatorRepository.findByBatchName(batchName).stream()
-                .peek(aggEquipmentIndicator -> aggEquipmentIndicator.setEquipment(
-                        TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggEquipmentIndicator.getEquipment())
-                ))
-                .collect(Collectors.groupingBy(AggEquipmentIndicator::getCriteria));
+        // isNewArch mode
+        if (isNumeric(batchName)) {
+            final Map<String, List<OutPhysicalEquipment>> outPhysicalEquipmentMap = outPhysicalEquipmentRepository.findByTaskId(Long.parseLong(batchName)).stream()
+                    .collect(Collectors.groupingBy(OutPhysicalEquipment::getCriterion));
 
-        return aggIndicatorsMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        map -> transformCriteriaNameToCriteriaKey(map.getKey()),
-                        map -> equipmentIndicatorMapper.toDto(map.getValue())));
+            return outPhysicalEquipmentMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            map -> com.soprasteria.g4it.backend.common.utils.StringUtils.snakeToKebabCase(map.getKey()),
+                            map -> equipmentIndicatorMapper.outToDto(map.getValue())
+                    ));
+        } else {
+            List<AggEquipmentIndicator> aggIndicators = aggEquipmentIndicatorRepository.findByBatchName(batchName);
+            aggIndicators.forEach(aggEquipmentIndicator -> aggEquipmentIndicator.setEquipment(
+                    TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggEquipmentIndicator.getEquipment())));
+
+            final Map<String, List<AggEquipmentIndicator>> aggIndicatorsMap = aggIndicators.stream().collect(Collectors.groupingBy(AggEquipmentIndicator::getCriteria));
+            return aggIndicatorsMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            map -> transformCriteriaNameToCriteriaKey(map.getKey()),
+                            map -> equipmentIndicatorMapper.toDto(map.getValue())));
+        }
+
     }
 
     /**
@@ -98,14 +121,21 @@ public class IndicatorService {
     public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final String batchName) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
-        final List<AggApplicationIndicator> aggApplicationIndicators = aggApplicationIndicatorRepository.findByBatchName(batchName).stream()
-                .peek(aggApplicationIndicator ->
-                        aggApplicationIndicator.setEquipmentType(
-                                TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggApplicationIndicator.getEquipmentType())
-                        ))
-                .toList();
+        // isNewArch mode
+        if (isNumeric(batchName)) {
+            List<OutApplication> outApplications = outApplicationRepository.findByTaskId(Long.parseLong(batchName));
+            outApplications.forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
+            return applicationIndicatorMapper.toOutDto(outApplications);
+        } else {
+            final List<AggApplicationIndicator> aggApplicationIndicators = aggApplicationIndicatorRepository.findByBatchName(batchName).stream()
+                    .peek(aggApplicationIndicator ->
+                            aggApplicationIndicator.setEquipmentType(
+                                    TypeUtils.getShortType(subscriber, linkedOrganization.getName(), aggApplicationIndicator.getEquipmentType())
+                            ))
+                    .toList();
 
-        return applicationIndicatorMapper.toDto(aggApplicationIndicators);
+            return applicationIndicatorMapper.toDto(aggApplicationIndicators);
+        }
     }
 
     /**

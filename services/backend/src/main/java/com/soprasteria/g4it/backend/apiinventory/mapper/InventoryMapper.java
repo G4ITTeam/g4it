@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.common.task.model.TaskBO;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -48,18 +49,20 @@ public interface InventoryMapper {
     /**
      * Map to entity.
      *
-     * @param organization the organization.
-     * @param name         the inventory name.
-     * @param type         the inventory type.
+     * @param organization    the organization.
+     * @param inventoryCreate the inventoryCreate rest object.
      * @return entity.
      */
     @Mapping(target = "organization", source = "organization")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "isNewArch", source = "isNewArch")
+    @Mapping(target = "name", source = "inventoryCreate.name")
+    @Mapping(target = "type", expression = "java(inventoryCreate.getType().name())")
+    @Mapping(target = "isNewArch", source = "inventoryCreate.isNewArch")
+    @Mapping(target = "doExport", source = "inventoryCreate.doExport")
+    @Mapping(target = "doExportVerbose", source = "inventoryCreate.doExportVerbose")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "lastUpdateDate", ignore = true)
-    Inventory toEntity(final Organization organization, final String name, final String type, final Boolean isNewArch);
+    Inventory toEntity(final Organization organization, final InventoryCreateRest inventoryCreate);
 
     @Mapping(target = "organization", ignore = true)
     Inventory toEntity(InventoryBO inventoryBO);

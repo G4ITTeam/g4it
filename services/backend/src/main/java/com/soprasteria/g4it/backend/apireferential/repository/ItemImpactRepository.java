@@ -28,8 +28,8 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
             ((?1 IS NULL) OR (?1 IS NOT NULL AND cf.criterion = ?1)) AND
             ((?2 IS NULL) OR (?2 IS NOT NULL AND cf.lifecycleStep = ?2)) AND
             ((?3 IS NULL) OR (?3 IS NOT NULL AND cf.name = ?3)) AND
-            ((?4 IS NULL) OR (?5 IS NOT NULL AND cf.category = ?4)) AND
-            ((?5 IS NULL) OR (?4 IS NOT NULL AND cf.location = ?5)) AND
+            ((?4 IS NULL) OR (?4 IS NOT NULL AND cf.category = ?4)) AND
+            ((?5 IS NULL) OR (?5 IS NOT NULL AND cf.location = ?5)) AND
             ((?6 IS NULL) OR (?6 IS NOT NULL AND cf.subscriber = ?6))
             """)
     List<ItemImpact> findByCriterionAndLifecycleStepAndNameAndCategoryAndLocationAndSubscriber(final String criterion,
@@ -47,9 +47,9 @@ public interface ItemImpactRepository extends JpaRepository<ItemImpact, Long> {
 
     @Query("""
             SELECT distinct ii.location
-            FROM ItemImpact ii 
+            FROM ItemImpact ii
             WHERE ii.category = 'electricity-mix'
-            AND (:subscriber IS NULL OR :subscriber IS NOT NULL AND ii.subscriber = :subscriber)  
+            AND (:subscriber IS NULL OR :subscriber IS NOT NULL AND ii.subscriber = :subscriber)
             """)
     List<String> findCountries(@Param("subscriber") String subscriber);
 

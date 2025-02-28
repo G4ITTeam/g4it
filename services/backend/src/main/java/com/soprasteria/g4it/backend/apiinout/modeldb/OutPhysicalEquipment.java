@@ -63,7 +63,16 @@ public class OutPhysicalEquipment {
     @Min(0)
     private Double lifespan;
 
+    @Min(0)
+    private Long countValue;
+
+    @Min(0)
+    @Column(name = "nb_user")
+    private Double numberOfUsers;
+
     private String unit;
+    private String reference;
+    private String hostingEfficiency;
 
     private List<String> commonFilters;
 

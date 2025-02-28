@@ -23,8 +23,6 @@ public interface InPhysicalEquipmentMapper {
 
     List<InPhysicalEquipmentRest> toRest(final List<InPhysicalEquipment> source);
 
-    @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "lastUpdateDate", ignore = true)
     InPhysicalEquipmentRest toRest(final InPhysicalEquipment source);
 
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.LocalDateTime.now())")

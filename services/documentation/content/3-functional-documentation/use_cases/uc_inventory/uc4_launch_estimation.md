@@ -79,12 +79,19 @@ actor RND as Sustainable IT Leader
 participant front as G4IT Front-End
 participant back as G4IT Back-End
 participant NumEcoEval
+participant BOAVIZTAPI
 participant DataBase
+participant Azure storage
 
 RND ->> front: Click on "Launch estimate" button
 front ->> back: POST /api/{subscriber}/{organization}/inventories/{inventory_id}/evaluation
+back ->> BOAVIZTAPI: Estimate the impact of the cloud services via POST /api/v1/cloud/instance
+BOAVIZTAPI ->> DataBase: Send cloud indicators data in out_virtual_equipment table
+back --> Azure storage: Send cloud_virtual_equipment.csv and cloud_virtual_equipment.csv to Azure storage.
 back -> NumEcoEval: Estimate the impact of the inventory via POST /api/entrees/calculs/soumission
-NumEcoEval ->> DataBase: Send indicators data in ind_indicateur_impact
+NumEcoEval ->> DataBase: Send indicators data in ind_indicateur_impact table
+NumEcoEval ->> DataBase: Send cloud indicators data in out_application table
+back --> Azure storage: Send cloud_application.csv and ind_cloud_application.csv to Azure storage.
 back --> DataBase: Aggregate indicators data in agg_application_indicator and agg_equipment_indicator
 front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}
 back ->> DataBase: Get the inventory

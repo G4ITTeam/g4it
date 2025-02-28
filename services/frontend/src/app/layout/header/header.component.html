@@ -28,6 +28,7 @@
             *ngIf="userService.isAllowedDigitalServiceRead$ | async"
             class="p-2"
             [routerLink]="selectedPath + '/digital-services'"
+            id="digital-services"
         >
             <img
                 src="assets/images/icons/icon-digital-service.svg"
@@ -47,6 +48,7 @@
             class="p-2"
             *ngIf="userService.isAllowedInventoryRead$ | async"
             [routerLink]="selectedPath + '/inventories'"
+            id="information-system"
         >
             <img
                 src="assets/images/icons/icon-dashboard.svg"
@@ -65,6 +67,7 @@
             routerLink="/administration/users"
             *ngIf="isAdminOnSubscriberOrOrganization"
             class="p-2"
+            id="administration"
         >
             <img
                 src="assets/images/icons/icon-key.svg"
@@ -95,7 +98,7 @@
 
 @if (sideHeaderVisible) {
     <div id="settings-sidebar">
-        <p-sidebar [visible]="true" (onHide)="sideHeaderVisible = false">
+        <p-sidebar [(visible)]="sideHeaderVisible" (onHide)="sideHeaderVisible = false">
             <ng-template pTemplate="content">
                 <div class="text-white">
                     <div class="mt-2 mb-5">

@@ -37,6 +37,10 @@ import java.util.function.Predicate;
 public class InventoryEvaluationJobService {
 
     /**
+     * Subscriber parameter name.
+     */
+    public static final String SUBSCRIBER = "subscriber";
+    /**
      * Organization parameter name.
      */
     public static final String ORGANIZATION = "organization";
@@ -103,12 +107,13 @@ public class InventoryEvaluationJobService {
      * @return the job id.
      * @throws InventoryEvaluationRuntimeException when error occurs in batch job.
      */
-    public Long launchInventoryEvaluation(final String organization, final String inventoryName, final Long inventoryId, final Long organizationId, final List<String> criteriaList) throws InventoryEvaluationRuntimeException {
+    public Long launchInventoryEvaluation(final String subscriber, final String organization, final String inventoryName, final Long inventoryId, final Long organizationId, final List<String> criteriaList) throws InventoryEvaluationRuntimeException {
         try {
             // trigger job execution
             final JobExecution jobExecution = asyncEvaluationJobLauncher.run(evaluateInventoryJob,
                     new JobParametersBuilder()
                             .addString("local.working.folder", getRandomFolderName())
+                            .addString(SUBSCRIBER, subscriber)
                             .addString(ORGANIZATION, organization)
                             .addLong(ORGANIZATION_ID, organizationId)
                             .addLong(INVENTORY_ID_JOB_PARAM, inventoryId)

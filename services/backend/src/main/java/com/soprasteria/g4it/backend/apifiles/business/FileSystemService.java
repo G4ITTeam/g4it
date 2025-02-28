@@ -43,7 +43,7 @@ public class FileSystemService {
     /**
      * Content types.
      */
-    private static final List<String> TYPES = List.of("text/csv", "application/vnd.ms-excel");
+    private static final List<String> TYPES = List.of("text/csv", "application/vnd.ms-excel", "application/octet-stream");
     /**
      * File System.
      */

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -21,6 +22,11 @@ public class TaskBO {
 
     private Long id;
     private String status;
+    private String type;
+    private String progressPercentage;
+    private List<String> details;
+    private List<String> errors;
+    private List<String> criteria;
     private LocalDateTime creationDate;
     private LocalDateTime lastUpdateDate;
 }

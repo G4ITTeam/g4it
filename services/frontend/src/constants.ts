@@ -119,6 +119,7 @@ export abstract class Constants {
         CALCUL_SUBMISSION_TO_NUMECOVAL: "calculation_submission",
         CALCUL_IN_PROGRESS: "calculation_in_progress",
         AGGREGATION_IN_PROGRESS: "aggregation_in_progress",
+        IN_PROGRESS: "calculation_in_progress",
     };
 
     static readonly INVENTORY_TYPE = {
@@ -203,6 +204,8 @@ export abstract class Constants {
 
     static readonly MUTLI_CRITERIA: string = "multi-criteria";
 
+    static readonly CLOUD_SERVICES: string = "Cloud Services";
+
     static readonly CHART_RICH = {
         redBold: {
             color: Constants.GRAPH_RED,
@@ -219,8 +222,14 @@ export abstract class Constants {
 
     static readonly DATA_QUALITY_STATUS = {
         ok: "OK",
+        err: "ERROR",
         error: "ERREUR",
     };
+
+    static readonly DATA_QUALITY_ERROR = [
+        this.DATA_QUALITY_STATUS.err,
+        this.DATA_QUALITY_STATUS.error,
+    ];
 
     static readonly TOTAL_VISIBLE_GRAPH_ITEMS = 10;
 }

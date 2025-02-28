@@ -1,105 +1,122 @@
 <div class="table-container">
-    <p-table
-        [value]="digitalService.networks"
-        [tableStyle]="{ 'min-width': '50rem' }"
-        [rows]="6"
-        [paginator]="true"
-        [sortField]="'creationDate'"
-        [sortOrder]="1"
-    >
-        <ng-template pTemplate="caption">
-            <div class="table-header">
-                <div class="table-head">
-                    {{ "digital-services-networks.networks" | translate }}
+    @if (digitalServiceStore.isNewArch()) {
+        <app-digital-service-table
+            title="networks"
+            addButton="add"
+            translationPrefix="digital-services-networks"
+            [headerFields]="headerFields"
+            [data]="networkData()"
+            (sidebar)="changeSidebar($event)"
+            (resetItem)="resetNetwork()"
+            (setItem)="setItem($event)"
+            (deleteItem)="deleteItem($event)"
+        ></app-digital-service-table>
+    } @else {
+        <p-table
+            [value]="digitalService.networks"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            [rows]="6"
+            [paginator]="true"
+            [sortField]="'creationDate'"
+            [sortOrder]="1"
+        >
+            <ng-template pTemplate="caption">
+                <div class="table-header">
+                    <div class="table-head">
+                        {{ "digital-services-networks.networks" | translate }}
+                    </div>
+                    <p-button
+                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                        (click)="resetNetwork(); sidebarVisible = true"
+                        styleClass="inventory-button-small"
+                        id="add-networks"
+                        >{{ "digital-services-networks.add" | translate }}</p-button
+                    >
                 </div>
-                <p-button
-                    *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                    (click)="resetNetwork(); sidebarVisible = true"
-                    styleClass="inventory-button-small"
-                    >{{ "digital-services-networks.add" | translate }}</p-button
-                >
-            </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-            <caption class="visually-hidden">
-                {{
-                    "digital-services-networks.networks" | translate
-                }}
-            </caption>
-            <tr>
-                <th scope="col" id="id">
-                    {{ "digital-services-networks.id" | translate }}
-                </th>
-                <th
-                    scope="col"
-                    id="networkType"
-                    pSortableColumn="type.value"
-                    class="terminal-table-column"
-                >
-                    {{ "digital-services-networks.type" | translate }}
-                    <p-sortIcon field="type.value"></p-sortIcon>
-                </th>
-                <th
-                    scope="col"
-                    id="yearlyGo"
-                    pSortableColumn="yearlyQuantityOfGbExchanged"
-                    class="terminal-table-column"
-                >
-                    {{ "digital-services-networks.table-yearly-go" | translate }}
-                    <p-sortIcon field="yearlyQuantityOfGbExchanged"></p-sortIcon>
-                </th>
-                <th id="button"></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-network let-rowIndex="rowIndex">
-            <tr>
-                <td class="grey-text">{{ rowIndex + 1 }}</td>
-                <td>{{ network.type.value }}</td>
-                <td>{{ network.yearlyQuantityOfGbExchanged | decimals }}</td>
-                <td style="text-align: right">
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="
-                            setNetworks(network, rowIndex + 1); sidebarVisible = true
-                        "
-                        styleClass="p-button-text mx-1"
+            </ng-template>
+            <ng-template pTemplate="header">
+                <caption class="visually-hidden">
+                    {{
+                        "digital-services-networks.networks" | translate
+                    }}
+                </caption>
+                <tr>
+                    <th scope="col" id="id">
+                        {{ "digital-services-networks.id" | translate }}
+                    </th>
+                    <th
+                        scope="col"
+                        id="networkType"
+                        pSortableColumn="type.value"
+                        class="terminal-table-column"
                     >
-                        <img
-                            src="assets/images/icons/icon-edit.svg"
-                            alt="{{ 'common.edit' | translate }} {{
-                                'digital-services-networks.network' | translate
-                            }} {{ rowIndex + 1 }}"
-                        />
-                    </p-button>
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="actionNetwork('delete', network)"
-                        styleClass="p-button-text"
+                        {{ "digital-services-networks.type" | translate }}
+                        <p-sortIcon field="type.value"></p-sortIcon>
+                    </th>
+                    <th
+                        scope="col"
+                        id="yearlyGo"
+                        pSortableColumn="yearlyQuantityOfGbExchanged"
+                        class="terminal-table-column"
                     >
-                        <img
-                            src="assets/images/icons/icon-bin.svg"
-                            alt="{{ 'common.delete' | translate }} {{
-                                'digital-services-networks.network' | translate
-                            }} {{ rowIndex + 1 }}"
-                        />
-                    </p-button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+                        {{ "digital-services-networks.table-yearly-go" | translate }}
+                        <p-sortIcon field="yearlyQuantityOfGbExchanged"></p-sortIcon>
+                    </th>
+                    <th class="text-hidden" id="button">
+                        {{ "common.button" | translate }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-network let-rowIndex="rowIndex">
+                <tr>
+                    <td class="grey-text">{{ rowIndex + 1 }}</td>
+                    <td>{{ network.type.value }}</td>
+                    <td>{{ network.yearlyQuantityOfGbExchanged | decimals }}</td>
+                    <td style="text-align: right">
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                            (click)="
+                                setNetworks(network, rowIndex + 1); sidebarVisible = true
+                            "
+                            styleClass="p-button-text mx-1"
+                        >
+                            <img
+                                src="assets/images/icons/icon-edit.svg"
+                                alt="{{ 'common.edit' | translate }} {{
+                                    'digital-services-networks.network' | translate
+                                }} {{ rowIndex + 1 }}"
+                            />
+                        </p-button>
+                        <p-button
+                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+                            (click)="actionNetwork('delete', network)"
+                            styleClass="p-button-text"
+                        >
+                            <img
+                                src="assets/images/icons/icon-bin.svg"
+                                alt="{{ 'common.delete' | translate }} {{
+                                    'digital-services-networks.network' | translate
+                                }} {{ rowIndex + 1 }}"
+                            />
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }
 </div>
 @if (sidebarVisible) {
     <p-sidebar
-        [visible]="true"
+        [(visible)]="sidebarVisible"
         position="right"
         styleClass="p-sidebar-lg"
         (onHide)="networkSidePanel.close()"
+        ariaCloseLabel="Close"
     >
         <app-digital-services-networks-side-panel
             #networkSidePanel
             (sidebarVisible)="(sidebarVisible)"
             [network]="network"
-            [networkTypes]="networkTypes"
             (update)="actionNetwork('update', $event)"
             (delete)="actionNetwork('delete', $event)"
             (cancel)="actionNetwork('cancel', $event)"

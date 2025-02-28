@@ -15,3 +15,12 @@ databaseChangeLog:
         - createSequence:
             incrementBy: 100
             sequenceName: in_application_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: out_physical_equipment_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: out_virtual_equipment_id_seq
+        - createSequence:
+            incrementBy: 100
+            sequenceName: out_application_id_seq

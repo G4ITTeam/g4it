@@ -23,8 +23,6 @@ public interface InApplicationMapper {
 
     List<InApplicationRest> toRest(final List<InApplication> source);
 
-    @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "lastUpdateDate", ignore = true)
     InApplicationRest toRest(final InApplication source);
 
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.LocalDateTime.now())")

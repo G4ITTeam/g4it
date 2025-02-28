@@ -67,7 +67,7 @@ public class InPhysicalEquipmentDigitalServiceController implements DigitalServi
      */
     @Override
     public ResponseEntity<Void> deleteDigitalServiceInputsPhysicalEquipmentRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
-        inPhysicalEquipmentService.deleteInPhysicalEquipment(id);
+        inPhysicalEquipmentService.deleteInPhysicalEquipment(digitalServiceUid, id);
         return ResponseEntity.noContent().build();
     }
 

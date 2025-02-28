@@ -99,6 +99,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         if (this.footprintStore.appGraphType() === "global") {
             this.footprintStore.setGraphType("domain");
             this.footprintStore.setDomain(event.name);
+            this.footprintStore.setSubDomain("");
         } else if (this.footprintStore.appGraphType() === "domain") {
             this.footprintStore.setGraphType("subdomain");
             this.footprintStore.setSubDomain(event.name);
@@ -118,14 +119,14 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
         } else if (this.footprintStore.appGraphType() === "domain") {
             this.footprintStore.setGraphType("global");
             this.footprintStore.setDomain("");
+            this.footprintStore.setSubDomain("");
         }
     }
 
     checkIfNoData(selectedFilters: Filter) {
         this.appComponent.formatLifecycleImpact([this.footprint]);
         let hasNoData = true;
-
-        this.footprint.impacts.forEach((impact: ApplicationImpact) => {
+        this.footprint?.impacts?.forEach((impact: ApplicationImpact) => {
             if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                 hasNoData = false;
             }
@@ -360,23 +361,11 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             showZoom = false;
         }
         return {
-            aria: {
-                enabled: true,
-                label: {
-                    description: `${this.translate.instant(
-                        "inventories-footprint.application.graph-critere",
-                    )}`,
-                },
-            },
             tooltip: {
                 show: true,
                 formatter: (params: any) => {
                     let impact = "";
-                    if (
-                        result &&
-                        result.unitImpact &&
-                        result.unitImpact[params.dataIndex]
-                    ) {
+                    if (result?.unitImpact[params.dataIndex]) {
                         impact = `
                         <span>
                             Impact : ${this.integerPipe.transform(params.value)}
@@ -385,7 +374,9 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                             Impact : ${
                                 result?.unitImpact[params.dataIndex] < 1
                                     ? "< 1"
-                                    : result?.unitImpact[params.dataIndex].toFixed(0)
+                                    : this.decimalsPipe.transform(
+                                          result?.unitImpact[params.dataIndex],
+                                      )
                             }
                                 ${unit}
                                 ${
@@ -467,13 +458,7 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
                     type: "category",
                     data: result.xAxis,
                     axisLabel: {
-                        formatter: (value: any) => {
-                            const isAllImpactsOK =
-                                this.allCriteriaMap[value].status.error <= 0;
-                            return isAllImpactsOK
-                                ? `{grey|${value}}`
-                                : `{redBold| \u24d8} {red|${value}}`;
-                        },
+                        formatter: (value: any) => this.checkImpacts(value),
                         rich: Constants.CHART_RICH as any,
                         margin: 15,
                         rotate: 30,
@@ -496,6 +481,11 @@ export class ApplicationCriteriaFootprintComponent extends AbstractDashboard {
             ],
             color: Constants.BLUE_COLOR,
         };
+    }
+
+    checkImpacts(value: any) {
+        const isAllImpactsOK = this.allCriteriaMap[value].status.error <= 0;
+        return isAllImpactsOK ? `{grey|${value}}` : `{redBold| \u24d8} {red|${value}}`;
     }
 
     selectedStackBarClick(criteriaName: string): void {

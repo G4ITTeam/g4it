@@ -5,7 +5,8 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject, Input, SimpleChanges } from "@angular/core";
+import { Component, computed, inject, Input, SimpleChanges } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { CheckboxChangeEvent } from "primeng/checkbox";
 import { Filter, TransformedDomain } from "src/app/core/interfaces/filter.interface";
 import { FilterService } from "src/app/core/service/business/filter.service";
@@ -21,7 +22,7 @@ export class DatavizFilterApplicationComponent {
     @Input() allFilters: Filter<string | TransformedDomain> = {};
     allUnusedFilters: Filter<TransformedDomain> = {};
     private filterService = inject(FilterService);
-
+    private translate = inject(TranslateService);
     protected footprintStore = inject(FootprintStoreService);
 
     overlayVisible: boolean = false;
@@ -29,7 +30,17 @@ export class DatavizFilterApplicationComponent {
     all = Constants.ALL;
     empty = Constants.EMPTY;
 
-    constructor() {}
+    selectedFilterNames = computed(() => {
+        const filters = this.footprintStore.applicationSelectedFilters();
+        return Object.keys(filters)
+            .filter((tab) => this.filterActive(filters[tab]))
+            .map((tab) =>
+                this.translate.instant(
+                    `inventories-footprint.filter-tabs-application.${tab}`,
+                ),
+            )
+            .join(", ");
+    });
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes["allFilters"]) {
@@ -40,6 +51,14 @@ export class DatavizFilterApplicationComponent {
     selectedFilters() {
         this.allUnusedFilters = JSON.parse(JSON.stringify(this.allFilters));
         this.footprintStore.setApplicationSelectedFilters(this.allUnusedFilters);
+    }
+
+    filterActive(filter: any) {
+        return (
+            filter.length === 0 ||
+            (typeof filter[0] === "object" && filter[0]["checked"] === false) ||
+            (typeof filter[0] === "string" && !filter.includes("All"))
+        );
     }
 
     onFilterSelected(selectedValues: string[], tab: string, selection: string) {

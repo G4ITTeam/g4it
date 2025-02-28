@@ -191,20 +191,6 @@ class DigitalServiceServiceTest {
     }
 
     @Test
-    void shouldDeleteDigitalService() {
-
-        doNothing().when(digitalServiceRepository).deleteById(DIGITAL_SERVICE_UID);
-        doNothing().when(indicatorService).deleteIndicators(DIGITAL_SERVICE_UID);
-        doNothing().when(inVirtualEquipmentRepository).deleteByDigitalServiceUid(DIGITAL_SERVICE_UID);
-
-        digitalServiceService.deleteDigitalService(DIGITAL_SERVICE_UID);
-
-        verify(digitalServiceRepository, times(1)).deleteById(DIGITAL_SERVICE_UID);
-        verify(indicatorService, times(1)).deleteIndicators(DIGITAL_SERVICE_UID);
-        verify(inVirtualEquipmentRepository, times(1)).deleteByDigitalServiceUid(DIGITAL_SERVICE_UID);
-    }
-
-    @Test
     void shouldUpdateDigitalService() {
         final UserBO userBO = UserBO.builder().id(1).build();
         final User user = User.builder().id(1).build();

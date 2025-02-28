@@ -15,8 +15,11 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceR
 import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.numecoeval.PhysicalEquipmentIndicator;
 import com.soprasteria.g4it.backend.apiindicator.repository.numecoeval.PhysicalEquipmentIndicatorRepository;
+import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
@@ -24,6 +27,8 @@ import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +44,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -66,9 +72,12 @@ public class DigitalServiceExportService {
     private LocalFileService localFileService;
     @Autowired
     private FileSystemService fileSystemService;
-
+    @Autowired
+    private ReferentialService referentialService;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private CriteriaService criteriaService;
 
     @PostConstruct
     public void initFolder() throws IOException {
@@ -85,6 +94,17 @@ public class DigitalServiceExportService {
      * @throws IOException exception
      */
     public InputStream createFiles(final String digitalServiceUid, final String subscriber, final Long organization) throws IOException {
+
+        final DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
+                .orElseThrow(() -> new G4itRestException("404", "Digital service not found"));
+
+        if (Boolean.TRUE.equals(digitalService.getIsNewArch())) {
+            Task task = taskRepository.findByDigitalServiceUid(digitalServiceUid)
+                    .orElseThrow(() -> new G4itRestException("404", "Digital service task not found"));
+            String filename = task.getId() + Constants.ZIP;
+            return fileSystemService.downloadFile(subscriber, organization, FileFolder.EXPORT, filename);
+        }
+
         final Path digitalServicePath = Path.of(localWorkingFolder, "export", "digital-service", digitalServiceUid);
         final Path directoryPath = digitalServicePath.resolve("csvFiles");
 
@@ -93,13 +113,12 @@ public class DigitalServiceExportService {
         }
         Files.createDirectories(directoryPath);
 
-        final DigitalService digitalService = digitalServiceRepository.findById(digitalServiceUid)
-                .orElseThrow(() -> new G4itRestException("404", "Digital service not found"));
+        List<String> criteriaKeyList = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organization, digitalService.getCriteria()).active();
 
         createTerminalFile(directoryPath, digitalService);
         createNetworkFile(directoryPath, digitalService);
         createServerFile(directoryPath, digitalService);
-        createPhysicalEquipmentIndicatorFile(directoryPath, digitalService);
+        createPhysicalEquipmentIndicatorFile(directoryPath, digitalService, criteriaKeyList);
         createDatacenterFile(directoryPath, digitalService);
         createVirtualMachineFile(directoryPath, digitalService);
         int cloudInstanceFileSize = createCloudInstanceFile(directoryPath, digitalService);
@@ -308,7 +327,7 @@ public class DigitalServiceExportService {
      * @param digitalService digital service
      */
     private void createPhysicalEquipmentIndicatorFile(final Path directoryPath,
-                                                      final DigitalService digitalService) {
+                                                      final DigitalService digitalService, final List<String> criteriaKeyList) {
         final String type = "ind_physical_equipment";
         final String digitalServiceUid = digitalService.getUid();
 
@@ -321,15 +340,33 @@ public class DigitalServiceExportService {
 
         final List<String> dataLines = new ArrayList<>();
         final List<Header> headers = csvFileMapperInfo.getMapping(FileType.PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE);
-        final List<String> fieldNamesWithDsName = getFieldList(headers);
+
+        // skip for fields digitalServiceName and sipImpact
+        final List<String> fieldNamesWithDsName = headers.stream()
+                .filter(field -> headers.indexOf(field) != 0 && headers.indexOf(field) != 24)
+                .map(field -> field.getDbName() == null ? field.getName() : field.getDbName())
+                .toList();
 
         dataLines.add(headers.stream().map(Header::getName).collect(Collectors.joining(DELIMITER)));
+
+        List<String> activeCriteria = criteriaKeyList.stream().filter(CriteriaUtils.CRITERIA_MAP::containsKey)
+                .map(StringUtils::kebabToSnakeCase)
+                .toList();
+
+        Map<String, Double> refSipByCriteria = referentialService.getSipValueMap(activeCriteria);
 
         physicalEquipmentIndicators.forEach(item ->
                 dataLines.add(String.join(DELIMITER,
                         digitalService.getName(),
-                        fieldNamesWithDsName.stream().map(field -> getCsvString(field, item, PhysicalEquipmentIndicator.class)).collect(Collectors.joining(DELIMITER)))
-                )
+                        fieldNamesWithDsName.stream()
+                                .map(field -> getCsvString(field, item, PhysicalEquipmentIndicator.class))
+                                .collect(Collectors.joining(DELIMITER)),
+                        String.valueOf(
+                                (refSipByCriteria.get(item.getCommonCriteria()) == null || item.getUnitImpact() == null)
+                                        ? 0d
+                                        : item.getUnitImpact() / refSipByCriteria.get(item.getCommonCriteria())
+                        )
+                ))
         );
 
         localFileService.writeFile(directoryPath.resolve(type + ".csv"), dataLines);

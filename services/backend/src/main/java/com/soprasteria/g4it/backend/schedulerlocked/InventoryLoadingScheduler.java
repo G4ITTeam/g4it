@@ -8,7 +8,6 @@
 
 package com.soprasteria.g4it.backend.schedulerlocked;
 
-import com.soprasteria.g4it.backend.apibatchevaluation.repository.InventoryEvaluationReportRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -24,9 +23,6 @@ public class InventoryLoadingScheduler {
 
     @Autowired
     private LoadInputFilesService loadInputFilesService;
-
-    @Autowired
-    private InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
 
     @Scheduled(fixedDelay = 60_000, initialDelay = 5_000)
     @SchedulerLock(name = "restartLostLoading", lockAtMostFor = "2m", lockAtLeastFor = "9s")

@@ -9,7 +9,7 @@
     <p-fileUpload
         #fileUpload
         styleClass="bg-black text-2xs letter-spacing-2 w-15rem mx-2 h-3rem uppercase"
-        id="file"
+        id="file{{ index }}"
         mode="basic"
         chooseLabel="{{ fileUploadText }}"
         accept=".csv"
@@ -22,5 +22,6 @@
         icon="pi pi-times"
         (click)="onDeleteButton()"
         [text]="true"
+        [ariaLabel]="'administration.delete' | translate"
     ></p-button>
 </div>

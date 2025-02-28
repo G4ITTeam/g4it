@@ -27,6 +27,7 @@ import {
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
+import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { getLifeCycleList, getLifeCycleMap } from "src/app/core/utils/lifecycle";
@@ -49,7 +50,9 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
         PhysicalEquipmentLowImpact[],
         PhysicalEquipmentsElecConsumption[],
     ] = [[], [], []];
+    @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
     showInconsitencyGraph = false;
+    allErrorData = false;
 
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     peopleeq = Constants.PEOPLEEQ;
@@ -120,6 +123,32 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
         };
     });
 
+    getTotal(unit: string, criteriaCalculated: CriteriaCalculated): number {
+        return unit === Constants.PEOPLEEQ
+            ? criteriaCalculated.total.sip
+            : criteriaCalculated.total.impact;
+    }
+
+    checkDataStatus(data: EchartPieDataItem) {
+        if (data.status) {
+            this.criteriaMap[data.name] = { status: data.status };
+        }
+    }
+
+    computeToolTipHtml(
+        echartsData: EchartPieDataItem[],
+        params: any,
+        unit: string,
+        selectedView: string,
+    ) {
+        return this.getToolTipHtml(
+            echartsData[params.dataIndex],
+            unit === Constants.PEOPLEEQ ? Constants.PEOPLEEQ : this.unitOfCriteria(),
+            params.color,
+            selectedView,
+        );
+    }
+
     renderChart(
         criteriaCalculated: CriteriaCalculated,
         selectedView: string,
@@ -127,6 +156,7 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
     ): EChartsOption {
         this.xAxisInput = [];
         this.criteriaMap = {};
+
         if (criteriaCalculated.footprints.length === 0) {
             return {};
         }
@@ -135,10 +165,7 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
         const echartsData: EchartPieDataItem[] = [];
         const otherData: any = [];
 
-        const total =
-            unit === Constants.PEOPLEEQ
-                ? criteriaCalculated.total.sip
-                : criteriaCalculated.total.impact;
+        const total = this.getTotal(unit, criteriaCalculated);
 
         criteriaCalculated.footprints.forEach((item) => {
             const sumValue =
@@ -198,14 +225,15 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
             (a: any, b: any) =>
                 b.status?.error! / b.status.total - a.status?.error! / a.status.total,
         );
-        this.xAxisInput = errorEchartsData.map(
-            (data: any) => this.translate.instant("acvStep")[data.name] ?? data.name,
+        this.xAxisInput = errorEchartsData.map((data: any) =>
+            data.name === Constants.EMPTY
+                ? this.translate.instant("common.empty")
+                : (this.translate.instant("acvStep")[data.name] ?? data.name),
         );
         errorEchartsData.forEach((data) => {
-            if (data.status) {
-                this.criteriaMap[data.name] = { status: data.status };
-            }
+            this.checkDataStatus(data);
         });
+        this.allErrorData = echartsData?.every((f) => !f.status.ok);
         return {
             height: 700,
             tooltip: {
@@ -213,12 +241,10 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
                 hideDelay: 200,
                 trigger: "item",
                 formatter: (params: any) => {
-                    return this.getToolTipHtml(
-                        echartsData[params.dataIndex],
-                        unit === Constants.PEOPLEEQ
-                            ? Constants.PEOPLEEQ
-                            : this.unitOfCriteria(),
-                        params.color,
+                    return this.computeToolTipHtml(
+                        echartsData,
+                        params,
+                        unit,
                         selectedView,
                     );
                 },
@@ -234,7 +260,7 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
             },
             series: [
                 {
-                    avoidLabelOverlap: false,
+                    avoidLabelOverlap: true,
                     type: "pie",
                     radius: ["50%", "75%"],
                     center: ["50%", "45%"],
@@ -278,7 +304,7 @@ export class InventoriesCritereFootprintComponent extends AbstractDashboard {
 
         const pipe = unit === Constants.PEOPLEEQ ? this.integerPipe : this.decimalsPipe;
 
-        if (chartValue.name.toLowerCase() === "other") {
+        if (["other", "autres"].includes(chartValue.name.toLowerCase())) {
             tooltipLines = chartValue.otherData.map((data: any) =>
                 this.getTooltipItemHtml(
                     data.name,

@@ -990,3 +990,22 @@ databaseChangeLog:
       changes:
         - sql: update agg_application_indicator set status_indicator ='OK' where status_indicator is null;
         - sql: update agg_equipment_indicator set status_indicator ='OK' where status_indicator is null;
+
+  - changeSet:
+      id: add-column-is_do_export_and_verbose-inventory
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: inventory
+            columns:
+              - column:
+                  name: do_export
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: do_export_verbose
+                  type: boolean
+                  defaultValue: false
+        - sql: update inventory set do_export = false where do_export is null;
+        - sql: update inventory set do_export_verbose = false where do_export_verbose is null;
+

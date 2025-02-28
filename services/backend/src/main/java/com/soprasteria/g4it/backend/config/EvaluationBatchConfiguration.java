@@ -4,10 +4,11 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.config;
 
 import com.soprasteria.g4it.backend.apibatchevaluation.listener.InventoryEvaluationJobListener;
+import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -18,6 +19,7 @@ import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -30,6 +32,8 @@ import org.springframework.core.task.TaskExecutor;
 public class EvaluationBatchConfiguration {
 
     public static final String EVALUATE_INVENTORY_JOB = "evaluateInventoryJob";
+    @Autowired
+    EvaluatingService evaluatingService;
 
     /**
      * Evaluation Job configuration
@@ -66,8 +70,8 @@ public class EvaluationBatchConfiguration {
      * @return the configured listener.
      */
     @Bean
-    public InventoryEvaluationJobListener inventoryEvaluationJobListener(final InventoryRepository inventoryRepository) {
-        return new InventoryEvaluationJobListener(inventoryRepository);
+    public InventoryEvaluationJobListener inventoryEvaluationJobListener(final InventoryRepository inventoryRepository, final EvaluatingService evaluatingService) {
+        return new InventoryEvaluationJobListener(inventoryRepository, evaluatingService);
     }
 
     /**

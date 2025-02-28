@@ -1,6 +1,11 @@
 <div class="my-3">
     <div class="flex my-2">
-        <img src="assets/images/icons/icon-{{ icon }}.svg" alt="" width="44px" />
+        <img
+            src="assets/images/icons/icon-{{ icon }}.svg"
+            alt=""
+            width="44px"
+            height="44px"
+        />
         <span
             class="flex align-items-center text-sm font-semibold uppercase letter-spacing-2 mx-3 relative"
             role="heading"
@@ -12,11 +17,16 @@
     <p-card>
         <div class="grid">
             @for (stat of stats; track $index) {
-                <div class="px-5 mt-2 mb-1" [class.text-gray-700]="!stat.value">
+                <div
+                    class="px-5 mt-2 mb-1"
+                    [class.text-gray-700]="!stat.value && stat.value !== 0"
+                >
                     <span tabIndex="0" class="text-3xl font-medium">
-                        <span>{{ stat.value ? stat.label : "--" }} </span>
+                        <span
+                            >{{ stat.value || stat.value === 0 ? stat.label : "--" }}
+                        </span>
                         <span class="text-sm font-normal">
-                            {{ stat.value ? stat.unit : "" }}
+                            {{ stat.value || stat.value === 0 ? stat.unit : "" }}
                         </span>
                         <i
                             class="pi pi-info-circle text-xs cursor-pointer vertical-align-top"
@@ -24,10 +34,9 @@
                             tooltipEvent="focus"
                             tooltipPosition="right"
                             tabindex="0"
-                            attr.aria-label="{{ stat.description }}"
                         ></i>
                     </span>
-                    <p>
+                    <p [attr.lang]="stat?.lang ? stat.lang : null">
                         {{ stat.title }}
                     </p>
                 </div>

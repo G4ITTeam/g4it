@@ -39,7 +39,7 @@ services:
       service: api-event-calculs
 
   g4it-backend:
-    image: localhost/g4it-backend:latest
+    image: g4it/backend:${G4IT_TAG}
     container_name: g4it-backend
     ports:
       - "8080:8080"
@@ -84,7 +84,7 @@ services:
       - api-referentiel
 
   g4it-frontend:
-    image: localhost/g4it-frontend:latest
+    image: g4it/frontend:${G4IT_TAG}
     container_name: g4it-frontend
     ports:
       - "4200:4200"
@@ -93,8 +93,7 @@ services:
       FRONTEND_URL: http://localhost:4200
       KEYCLOAK_URL: http://keycloak:8180/auth
       KEYCLOAK_ENABLED: "true"
-      MATOMO_URL: ""
-      MATOMO_SITE_ID: "0"
+      MATOMO_TAG_MANAGER_URL : ""
     networks:
       - numecoeval
     depends_on:

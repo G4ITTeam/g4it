@@ -77,10 +77,36 @@ export class InventoryService {
         }
         if (inventory.tasks && inventory.tasks.length > 0) {
             inventory.tasks.sort(sortByProperty("creationDate", "desc"));
+
+            const tasksLoading = inventory.tasks
+                .filter((t) => t.type === "LOADING")
+                .slice(0, this.maxReportsSize);
+            const tasksEvaluating = inventory.tasks
+                .filter((t) => t.type === "EVALUATING")
+                .slice(0, this.maxReportsSize);
+
             inventory.tasks = inventory.tasks
-                ? inventory.tasks.slice(0, this.maxReportsSize)
+                ? [...tasksLoading, ...tasksEvaluating]
                 : [];
-            inventory.lastTask = inventory.tasks[0];
+
+            if (tasksLoading.length > 0) {
+                inventory.lastTaskLoading = tasksLoading[0];
+                if (inventory.lastTaskLoading) {
+                    inventory.lastTaskLoading.progress =
+                        +inventory.lastTaskLoading?.progressPercentage.replace("%", "")!;
+                }
+            }
+
+            if (tasksEvaluating.length > 0) {
+                inventory.lastTaskEvaluating = tasksEvaluating[0];
+                if (inventory.lastTaskEvaluating) {
+                    inventory.lastTaskEvaluating.progress =
+                        +inventory.lastTaskEvaluating?.progressPercentage.replace(
+                            "%",
+                            "",
+                        )!;
+                }
+            }
         }
 
         // Format date

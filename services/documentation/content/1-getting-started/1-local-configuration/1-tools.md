@@ -22,6 +22,8 @@ You can find this IDE on **[official JetBrain website](https://www.jetbrains.com
 In _File_>_Project Structure_ > _Platform Settings_ > _SDKs_, _click on_ __+__ > _Download JDK_ and select __version 23,
 Oracle OpenJDK__, default Location.
 
+In recent versions of IntelliJ, SDK is already installed.
+
 ### Plugins
 
 _In case plugins download don't work, configure the proxy in IntelliJ File > Settings > search proxy > HTTP Proxy, then
@@ -107,7 +109,7 @@ You can find this tool on **[Python website](https://www.python.org/downloads/)*
 #### Podman Desktop
 
 You can find the installation procedure
-on [official Podman Desktop website](https://podman-desktop.io/docs/Installation/windows-install/installing-podman-desktop-silently-with-the-windows-installer)
+on [official Podman Desktop website](https://podman-desktop.io/docs/Installation/windows-install/)
 
 Start Podman Desktop, on the first start, you can set up podman.
 
@@ -127,3 +129,11 @@ podman-compose -v
 # Restart it in Admin mode if you have Access Denied
 # You will maybe need to use podman compose instead of podman-compose in case it doesn't work
 ```
+Warning : New laptops have Windows security features that prevent the installation of podman-compose.
+You must whitelist the location where podman wants to install podman-compose. 
+<br> To do so, go to :
+```
+Windows Security > Virus & Threat Protection > Manage settings > 
+Add or remove exclusions > Add an exclusion > Folder
+```
+Then select the relevant folder and apply.

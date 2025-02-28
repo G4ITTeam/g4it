@@ -15,6 +15,7 @@ import {
     PhysicalEquipmentsElecConsumption,
     Stat,
 } from "src/app/core/interfaces/footprint.interface";
+import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
@@ -34,12 +35,21 @@ export class DataCenterEquipmentStatsComponent extends AbstractDashboard {
         PhysicalEquipmentLowImpact[],
         PhysicalEquipmentsElecConsumption[],
     ] = [[], [], []];
+    @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
 
     datacenterStats = computed<Stat[]>(() =>
         this.inventoryUtilService.computeDataCenterStats(
             this.store.filters(),
             this.filterFields,
             this.datacenters,
+        ),
+    );
+
+    cloudStats = computed<Stat[]>(() =>
+        this.inventoryUtilService.computeCloudStats(
+            this.inVirtualEquipments,
+            this.store.filters(),
+            this.filterFields,
         ),
     );
 

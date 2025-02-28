@@ -1,17 +1,20 @@
 ---
-title: '1.5. Visualize equipment footprint'
+title: "1.5. Visualize equipment footprint"
 description: "This use case describes how to visualize the equipment's impact of my IS"
 weight: 50
 mermaid: true
 ---
+
 ## Table of contents
-- [Table of contents](#table-of-contents)
-- [Description](#description)
-- [Mockup](#mockup)
-- [State Diagram](#state-diagram)
-- [Sequence Diagram](#sequence-diagram)
+
+-   [Table of contents](#table-of-contents)
+-   [Description](#description)
+-   [Mockup](#mockup)
+-   [State Diagram](#state-diagram)
+-   [Sequence Diagram](#sequence-diagram)
 
 ## Description
+
 The use case allows a sustainable IT leader to visualize the inventory's impact of the Information system, which is versioned to track their evolution over time.
 The key indicators displayed on the radar graph are data center and equipment.
 The results can be filtered by a number of criteria, such as the country of the equipment/data center.
@@ -24,10 +27,10 @@ https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval
 2. By overflowing, the user can collect data corresponding to a certain phase in the life cycle of the equipment, a click on a specific criteria redirects to view by criteria
 3. Each tab represents the impact for one specific criterion
 4. Filter's menu. On this view, filters available are :
-    * Country
-    * Entity
-    * Equipment
-    * Status
+    - Country
+    - Entity
+    - Equipment
+    - Status
 5. Each button allows seeing the impact for one specific filter
 6. Quick description of what people eq. means
 7. Key indicators about a Data center
@@ -36,10 +39,12 @@ https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval
 **Navigation Path**
 
 Input :
-- My Information System / Visualize my inventories / My inventory / Equipment button 
+
+-   My Information System / Visualize my inventories / My inventory / Equipment button
 
 Output :
-- My Information System / Visualize my inventories / My inventory / Equipment footprint page
+
+-   My Information System / Visualize my inventories / My inventory / Equipment footprint page
 
 **Access Conditions**  
 The connected user must have the read role for that module one the selected organization.
@@ -58,12 +63,14 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 {{< /mermaid >}}
 
 ## Mockup
+
 ### Global view
+
 ![uc5_visualize_equipment_footprint.png](../images/uc5_visualize_equipment_footprint.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group                      | Elements                                        | Sub-Elements     | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                    |
-|-----------|----------------------------|-------------------------------------------------|------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | -------------------------- | ----------------------------------------------- | ---------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |           | Page Header                |                                                 |                  | group  |                                                                                                                                                                                                                                                                                                                                                                                                |
 | 1         |                            | My Information System - <selected organization> |                  | title  | <li><u>_initialization rules_</u>: The title is concatenated with the current organization selected.                                                                                                                                                                                                                                                                                           |
 | 2         |                            | IS version or name                              |                  | label  | <li><u>_initialization rules_</u>: The IS version or name of the IS selected for which the user want to visualize equipment footprint. The type of visualization (Equipment) is also shown.                                                                                                                                                                                                    |
@@ -80,34 +87,39 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 {{% /expand %}}
 
 ### Multi-criteria view
+
 ![uc5_visualize_equipment_footprint_multi.png](../images/uc5_visualize_equipment_footprint_multi.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
-| Reference | Group                      | Elements               | Sub-Elements            | Type   | Description                                                                                                                                                                                        |
-|-----------|----------------------------|------------------------|-------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|           | Global Vision (People eq.) |                        |                         | group  |                                                                                                                                                                                                    |
-| 1         |                            | Filters                |                         | list   | <li><u>_initialization rules_</u>: The possible values are 'Lifecycle', 'Country', 'Entity', 'Equipment' and 'Status'. By default, 'Lifecycle' is selected.                                        |
-| 2         |                            | Graph                  |                         | radar  | <li><u>_initialization rules_</u>:The axes of the radar correspond of the criteria selected for inventory for the last estimate. Value based on the selected filters.                              |
-| 3         |                            | Legend                 |                         | list   | <li><u>_initialization rules_</u>: Items are the values available for the selected filter for the inventory. <br>Each item is clickable and filter the graph. Value based on the selected filters. |
-| 4         |                            | Data consistency       |                         | button | <li><u>_action rules_</u>: Click to view graph of data consistency for all criteria. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md)</li>                    |
-| 5         |                            | Context-sensitive help |                         | group  | **Context-sensitive help** specifies certain elements of the display.                                                                                                                              |
-|           | Key indicators             |                        |                         |        |                                                                                                                                                                                                    |
-|           |                            | Data center            |                         |        |                                                                                                                                                                                                    |
-| 6         |                            |                        | Number of datacenters   | label  |                                                                                                                                                                                                    |
-| 7         |                            |                        | Avg. PUE                | label  |                                                                                                                                                                                                    |
-|           |                            | Equipment              |                         |        |                                                                                                                                                                                                    |
-| 8         |                            |                        | Number of equipments    | label  |                                                                                                                                                                                                    |
-| 9         |                            |                        | Avg. lifespan           | label  |                                                                                                                                                                                                    |
-| 10        |                            |                        | Low impact              | label  |                                                                                                                                                                                                    |
-| 11        |                            |                        | Total power consumption | label  |                                                                                                                                                                                                    |
+| Reference | Group                      | Elements               | Sub-Elements              | Type   | Description                                                                                                                                                                                        |
+| --------- | -------------------------- | ---------------------- | ------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|           | Global Vision (People eq.) |                        |                           | group  |                                                                                                                                                                                                    |
+| 1         |                            | Filters                |                           | list   | <li><u>_initialization rules_</u>: The possible values are 'Lifecycle', 'Country', 'Entity', 'Equipment' and 'Status'. By default, 'Lifecycle' is selected.                                        |
+| 2         |                            | Graph                  |                           | radar  | <li><u>_initialization rules_</u>:The axes of the radar correspond of the criteria selected for inventory for the last estimate. Value based on the selected filters.                              |
+| 3         |                            | Legend                 |                           | list   | <li><u>_initialization rules_</u>: Items are the values available for the selected filter for the inventory. <br>Each item is clickable and filter the graph. Value based on the selected filters. |
+| 4         |                            | Data consistency       |                           | button | <li><u>_action rules_</u>: Click to view graph of data consistency for all criteria. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md)</li>                    |
+| 5         |                            | Context-sensitive help |                           | group  | **Context-sensitive help** specifies certain elements of the display.                                                                                                                              |
+|           | Key indicators             |                        |                           |        |                                                                                                                                                                                                    |
+|           |                            | Data center            |                           |        |                                                                                                                                                                                                    |
+| 6         |                            |                        | Number of datacenters     | label  |                                                                                                                                                                                                    |
+| 7         |                            |                        | Avg. PUE                  | label  |                                                                                                                                                                                                    |
+|           |                            | Cloud Services         |                           |        |                                                                                                                                                                                                    |
+| 8         |                            |                        | Number of Cloud Instances | label  |                                                                                                                                                                                                    |
+|           |                            | Equipment              |                           |        |                                                                                                                                                                                                    |
+| 9         |                            |                        | Number of equipments      | label  |                                                                                                                                                                                                    |
+| 10        |                            |                        | Avg. lifespan             | label  | The Lifespan for each equipment is calculated as(date_retrait - date_achat)/365.0 years, where date_achat defaults to current date if empty.                                                       |
+| 11        |                            |                        | Low impact                | label  |                                                                                                                                                                                                    |
+| 12        |                            |                        | Total power consumption   | label  |                                                                                                                                                                                                    |
 
 {{% /expand %}}
+
 ### View dedicated for each criterion
+
 ![uc5_visualize_equipment_footprint_one.png](../images/uc5_visualize_equipment_footprint_one.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group                      | Elements                            | Sub-Elements            | Type   | Description                                                                                                                                                                                        |
-|-----------|----------------------------|-------------------------------------|-------------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | -------------------------- | ----------------------------------- | ----------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |           | Global Vision (People eq.) |                                     |                         | group  |                                                                                                                                                                                                    |
 | 1         |                            | Filters                             |                         | list   | <li><u>_initialization rules_</u>: The possible values are 'Lifecycle', 'Country', 'Entity', 'Equipment' and 'Status'. By default, 'Lifecycle' is selected.                                        |
 | 2         |                            | Graph                               |                         | radar  | <li><u>_initialization rules_</u>:The axes of the radar correspond of the criteria selected for inventory for the last estimate. Value based on the selected filters.                              |
@@ -129,12 +141,14 @@ Step5-->|New filters selected|Step6[View is updated according to the filters]
 |           |                            | ...                                 |                         |        |                                                                                                                                                                                                    |
 
 {{% /expand %}}
+
 ### View dedicated for data consistency
+
 ![uc5_visualize_equipment_footprint_data_consistency.png](../images/uc5_visualize_equipment_footprint_data_consistency.png)
 {{% expand title="Show the behavior detail" expanded="false" center="true"%}}
 
 | Reference | Group | Elements         | Sub-Elements | Type   | Description                                                                                                                                                                                                                                                     |
-|-----------|-------|------------------|--------------|--------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------- | ----- | ---------------- | ------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1         |       | Data consistency |              | button | <li><u>_action rules_</u>: Click to view graph of data consistency for the selected criteria. See [Global concepts/ Data consistency](../../global_concepts/uc1_dataconsistency.md)</li>                                                                        |
 | 2         |       | Graph            |              | bar    | <li><u>_initialization rules_</u>:The axes of the bar correspond to the criteria or filters selected, and it displays results where the impact is calculated in blue and the impact that cannot be calculated in red. The value is represented as a percentage. |
 
@@ -147,16 +161,25 @@ sequenceDiagram
 actor RND as Sustainable IT Leader
 participant front as G4IT Front-End
 participant back as G4IT Back-End
-participant NumEcoEval
-
+participant Database
 RND ->> front: Click on "Equipment" button or one of the tab in the view or one the chart of multi-criteria tab
-front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}/indicators/equipments/filters
-back -> NumEcoEval: Get filters based on indicators from tables ind_indicateur_impact_equipement_physique <br> and ind_indicateur_impact_equipement_virtuel of NumEcoEval
-back -->> front: Send the list of filters to display on my view related to my view
+front ->> back: GET /api/{subscriber}/{organization}/inventories?inventoryId={inventory_id}
+Database--> back: Get inventory information
+back -->> front: Send the details of selected inventory Id on my view related to my view
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventory_id}/outputs/virtual-equipments
+Database-> back: Get cloud indicators from out_virtual_equipment table generated by Boavizta
 front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}/indicators
-back -> NumEcoEval: Get  indicators from tables ind_indicateur_impact_equipement_physique and <br> ind_indicateur_impact_equipement_virtuel of NumEcoEval
+Database -> back : Get indicators from tables ind_indicateur_impact_equipement_physique and <br> ind_indicateur_impact_equipement_virtuel generated by NumEcoEval
 back -->> front: Indicators aggregated to be displayed on the front application
-
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsElecConsumption
+Database -> back : Get total power consumption of the equipments
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsLowImpact
+Database -> back : Get the number of physical equipmentwhich are in low impact
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/physicalEquipmentsAvgAge
+Database -> back : Get average Age of physical equipments
+front ->> back: GET /api/subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/datacenters
+Database -> back : Get number of datacenters
+front --> RND: Display the list of filters related to my view
+front --> RND: Display filtered graphs and key indicators related to the view
 
 {{< /mermaid >}}
-

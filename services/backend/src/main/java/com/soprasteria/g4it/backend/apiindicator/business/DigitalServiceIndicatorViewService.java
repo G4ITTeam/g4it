@@ -25,6 +25,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,9 +108,7 @@ public class DigitalServiceIndicatorViewService {
      * @return indicator list.
      */
     public List<DigitalServiceIndicatorBO> getDigitalServiceIndicators(final String uid) {
-        return digitalServiceIndicatorMapper.toDto(
-                digitalServiceIndicatorRepository.findDigitalServiceIndicators(uid)
-        );
+        return digitalServiceIndicatorMapper.toDto(digitalServiceIndicatorRepository.findDigitalServiceIndicators(uid));
     }
 
     /**
@@ -365,7 +364,7 @@ public class DigitalServiceIndicatorViewService {
                         .collect(groupingBy(OutVirtualEquipment::getCriterion))
                         .entrySet().stream()
                         .map(indicator -> new DigitalServiceCloudIndicatorBO(
-                                indicator.getKey(),
+                                StringUtils.snakeToKebabCase(indicator.getKey()),
                                 indicator.getValue().stream().map(this::buildDigitalServiceCloudImpactBO).toList()))
                         .toList())
                 .orElseGet(List::of);

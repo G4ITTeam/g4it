@@ -150,7 +150,6 @@ public class LocalFileStorage implements FileStorage {
     @Override
     public void upload(final String fileLocalPath, final FileFolder folder, final String fileName) throws
             IOException {
-        // In the local storage, upload is the same as copy
         final Path copied = toPath(folder, fileName);
         final Path originalPath = Path.of(fileLocalPath);
         createNecessaryFolders(copied);

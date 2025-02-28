@@ -55,6 +55,12 @@ public class InventoryExportService {
                                     final Long inventoryId) {
 
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
+
+        if (inventory.getIsNewArch()) {
+            // skipped because already created in file storage
+            return;
+        }
+        
         if (CollectionUtils.isEmpty(inventory.getEvaluationReports())
                 || inventory.getEvaluationReports().stream().noneMatch(report -> "COMPLETED".equals(report.getBatchStatusCode()))) {
             throw new EvaluationNotFoundException();

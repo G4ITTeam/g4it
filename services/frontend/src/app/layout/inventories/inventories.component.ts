@@ -40,6 +40,8 @@ export class InventoriesComponent implements OnInit {
     id: number = 0;
     name: any = "";
     isNewArch = false;
+    doExport = false;
+    doExportVerbose = false;
     inventories: Map<string, Inventory[]> = new Map();
     inventoriesForSimulationsAll: Inventory[] = [];
     inventoriesOpen: Set<number> = new Set();
@@ -192,7 +194,8 @@ export class InventoriesComponent implements OnInit {
     setInventoryToReload(inventory: Inventory) {
         let doAddIntegration = false;
         let doAddEvaluation = false;
-        let doAddTask = false;
+        let doAddTaskLoading = false;
+        let doAddTaskEvaluating = false;
 
         if (inventory.lastIntegrationReport) {
             doAddIntegration =
@@ -208,15 +211,33 @@ export class InventoriesComponent implements OnInit {
                 );
         }
 
-        if (inventory.lastTask) {
-            doAddTask = !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
-                inventory.lastTask.status,
-            );
+        if (inventory.lastTaskLoading) {
+            doAddTaskLoading =
+                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                    inventory.lastTaskLoading.status,
+                );
         }
 
-        if (doAddIntegration || doAddEvaluation || doAddTask) {
+        if (inventory.lastTaskEvaluating) {
+            doAddTaskEvaluating =
+                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
+                    inventory.lastTaskEvaluating.status,
+                );
+        }
+
+        if (
+            doAddIntegration ||
+            doAddEvaluation ||
+            doAddTaskLoading ||
+            doAddTaskEvaluating
+        ) {
             this.inventoriesToReload.add(inventory.id);
-        } else if (!doAddIntegration && !doAddEvaluation && !doAddTask) {
+        } else if (
+            !doAddIntegration &&
+            !doAddEvaluation &&
+            !doAddTaskLoading &&
+            !doAddTaskEvaluating
+        ) {
             this.inventoriesToReload.delete(inventory.id);
         }
     }
@@ -231,6 +252,8 @@ export class InventoriesComponent implements OnInit {
             const inventory = value.find((inventory) => inventory.id === id);
             if (inventory) {
                 this.isNewArch = inventory?.isNewArch || false;
+                this.doExport = inventory.doExport || false;
+                this.doExportVerbose = inventory.doExportVerbose || false;
                 this.name = inventory.name;
                 break;
             }

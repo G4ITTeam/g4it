@@ -4,11 +4,13 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchloading.listener;
 
 import com.soprasteria.g4it.backend.apibatchloading.model.CustomExitStatus;
 import com.soprasteria.g4it.backend.apibatchloading.model.InventoryLoadingSession;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.InventoryIntegrationReport;
 import com.soprasteria.g4it.backend.apiinventory.repository.ApplicationRepository;
@@ -69,6 +71,16 @@ public class InventoryJobExecutionListener implements JobExecutionListener {
     private final ApplicationRepository applicationRepository;
 
     /**
+     * InVirtualEquipment repository to count distinct inVirtual equipments.
+     */
+    private final InVirtualEquipmentRepository inVirtualEquipmentRepository;
+
+    /**
+     * InApplication repository to count distinct inApplication.
+     */
+    private final InApplicationRepository inApplicationRepository;
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -119,8 +131,10 @@ public class InventoryJobExecutionListener implements JobExecutionListener {
                 .map(StepExecution::getExecutionContext)
                 .findFirst().ifPresent(e -> updateWithUploadData(e, currentReport));
         processedInventory.setDataCenterCount((long) Hibernate.size(processedInventory.getDataCenterList()));
-        processedInventory.setVirtualEquipmentCount((long) Hibernate.size(processedInventory.getVirtualEquipments()));
-        processedInventory.setApplicationCount(applicationRepository.countDistinctNomApplicationByInventoryId(processedInventory.getId()));
+        processedInventory.setVirtualEquipmentCount(
+                (long) Hibernate.size(processedInventory.getVirtualEquipments()) +
+                        inVirtualEquipmentRepository.countQuantityByDistinctNameByInventoryId(processedInventory.getId()));
+        processedInventory.setApplicationCount(applicationRepository.countDistinctCloudAndNonCloudApp(processedInventory.getId()));
         processedInventory.setPhysicalEquipmentCount(physicalEquipmentRepository.countByInventoryId(processedInventory.getId()));
         inventoryRepository.save(processedInventory);
     }

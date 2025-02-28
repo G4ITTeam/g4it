@@ -82,13 +82,12 @@ export class RadialChartComponent extends AbstractDashboard {
         radialChartData.sort((a: any, b: any) => {
             return order.indexOf(a.tier) - order.indexOf(b.tier);
         });
-        radialChartData.forEach((data) =>
-            data.impacts.sort((a: any, b: any) => {
-                return (
-                    criteriaOrder.indexOf(a.criteria) - criteriaOrder.indexOf(b.criteria)
-                );
-            }),
-        );
+        radialChartData.forEach((data) => {
+            data.impacts.sort(
+                (a, b) =>
+                    criteriaOrder.indexOf(a.criteria) - criteriaOrder.indexOf(b.criteria),
+            );
+        });
         this.getCriteriaMap(radialChartData);
         const noErrorRadialChartData: DigitalServiceFootprint[] = radialChartData.map(
             (item) => {

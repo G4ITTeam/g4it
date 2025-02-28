@@ -127,6 +127,10 @@ export class SidePanelAddVmComponent {
                 this.diskControl.updateValueAndValidity();
             }
         }
+        this.checkQuantity();
+    }
+
+    checkQuantity() {
         const quant = this.addVmForm.value.quantity;
         if (quant == 0) {
             this.quantityControl.setErrors({

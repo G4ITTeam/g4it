@@ -7,6 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.modeldb.numecoeval;
 
+import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -102,10 +104,10 @@ public class PhysicalEquipmentIndicator extends CommonIndicatorExport {
     /**
      * Used by csv-headers.yml
      *
-     * @return the common criteria
+     * @return the common criteria in snake case
      */
     public String getCommonCriteria() {
-        return this.getCriteria();
+        return StringUtils.kebabToSnakeCase(CriteriaUtils.transformCriteriaNameToCriteriaKey(this.getCriteria()));
     }
 
     /**
@@ -115,15 +117,6 @@ public class PhysicalEquipmentIndicator extends CommonIndicatorExport {
      */
     public Double getCommonUnitImpact() {
         return this.getUnitImpact();
-    }
-
-    /**
-     * Used by csv-headers.yml
-     *
-     * @return the common sipImpact
-     */
-    public Double getCommonSipImpact() {
-        return this.getSipImpact();
     }
 
 }

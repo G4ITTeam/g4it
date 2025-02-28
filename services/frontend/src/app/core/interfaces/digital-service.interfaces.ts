@@ -33,6 +33,7 @@ export interface DigitalServiceUserInfo {
 }
 
 export interface DigitalServiceServerConfig {
+    id?: number;
     sumOfVmQuantity?: number;
     uid?: string;
     creationDate?: number;
@@ -41,13 +42,15 @@ export interface DigitalServiceServerConfig {
     type: string;
     quantity: number;
     host?: Host;
+    hostValue?: string;
     datacenter?: ServerDC;
+    datacenterName?: string;
     totalVCpu?: number;
     totalDisk?: number;
     lifespan?: number;
     annualElectricConsumption?: number;
     annualOperatingTime?: number;
-    vm?: ServerVM[];
+    vm: ServerVM[];
 }
 
 export interface DigitalServiceCloudServiceConfig {
@@ -59,22 +62,27 @@ export interface DigitalServiceCloudServiceConfig {
     instanceType: string;
     quantity: number;
     location: DropdownValue;
+    locationValue: string;
     annualUsage: number;
     averageWorkload: number;
     idFront?: number;
 }
 
 export interface DigitalServiceNetworkConfig {
+    id?: number;
     uid?: string;
     creationDate?: number;
     type: NetworkType;
+    typeCode?: string;
     yearlyQuantityOfGbExchanged: number;
     idFront?: number;
 }
 
 export interface DigitalServiceTerminalConfig {
+    id?: number;
     uid?: string;
-    creationDate?: number;
+    creationDate?: number | string;
+    typeCode?: string;
     type: TerminalsType;
     lifespan: number;
     country: string;
@@ -106,6 +114,9 @@ export interface TerminalsType {
 export interface NetworkType {
     code: string;
     value: string;
+    type: string;
+    annualQuantityOfGo: number;
+    country: string;
 }
 
 export interface DigitalServiceTerminalResponse {
@@ -128,6 +139,7 @@ export interface TerminalImpact {
     unit: string;
     yearlyUsageTimePerUser: number;
     status: string;
+    countValue: number;
 }
 
 export interface CloudImpact {
@@ -213,8 +225,10 @@ export interface ImpactACVStep {
 }
 
 export interface ImpactTerminalsACVStep {
-    ACVStep: string;
+    acvStep: string;
     sipValue: number;
+    rawValue: number;
+    unit: string;
     status?: string;
     statusCount?: {
         ok: number;
@@ -264,7 +278,7 @@ export interface ServerVM {
 }
 
 export interface ServerDC {
-    uid: string;
+    uid?: string;
     name: string;
     location: string;
     pue: number;
@@ -274,6 +288,8 @@ export interface ServerDC {
 export interface Host {
     code: number;
     value: string;
+    type?: string;
+    reference?: string;
     characteristic: HostCharacteristics[];
 }
 

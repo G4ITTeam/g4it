@@ -67,7 +67,7 @@ public class InVirtualEquipmentInventoryController implements InventoryInputsVir
      */
     @Override
     public ResponseEntity<Void> deleteInventoryInputsVirtualEquipmentRest(final String subscriber, final Long organization, final Long inventoryId, final Long id) {
-        inVirtualEquipmentService.deleteInVirtualEquipment(id);
+        inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id);
         return ResponseEntity.noContent().build();
     }
 

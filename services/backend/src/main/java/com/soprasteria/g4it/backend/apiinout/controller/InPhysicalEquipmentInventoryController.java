@@ -67,7 +67,7 @@ public class InPhysicalEquipmentInventoryController implements InventoryInputsPh
      */
     @Override
     public ResponseEntity<Void> deleteInventoryInputsPhysicalEquipmentRest(final String subscriber, final Long organization, final Long inventoryId, final Long id) {
-        inPhysicalEquipmentService.deleteInPhysicalEquipment(id);
+        inPhysicalEquipmentService.deleteInPhysicalEquipment(inventoryId, id);
         return ResponseEntity.noContent().build();
     }
 

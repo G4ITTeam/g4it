@@ -20,7 +20,11 @@ import com.soprasteria.g4it.backend.apidigitalservice.repository.DatacenterDigit
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.EvaluateCloudService;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.business.IndicatorService;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
@@ -31,8 +35,6 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.ModeRest;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
-import com.soprasteria.g4it.backend.common.evaluating.business.EvaluateBoaviztaService;
-import com.soprasteria.g4it.backend.common.evaluating.business.ExportZipService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
@@ -74,7 +76,7 @@ public class DigitalServiceService {
 
     private static final String DEFAULT_NAME_PREFIX = "Digital Service";
     @Autowired
-    DigitalServiceSharedRepository digitalServiceSharedRepository;
+    private DigitalServiceSharedRepository digitalServiceSharedRepository;
     @Autowired
     private DigitalServiceRepository digitalServiceRepository;
     @Autowired
@@ -100,17 +102,21 @@ public class DigitalServiceService {
     @Autowired
     private FileMapperInfo fileInfo;
     @Autowired
+    private InDatacenterRepository inDatacenterRepository;
+    @Autowired
+    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Autowired
     private InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Value("${batch.local.working.folder.base.path:}")
     private String localWorkingPath;
     @Autowired
     private TaskService taskService;
     @Autowired
-    private EvaluateBoaviztaService evaluateBoaviztaService;
-    @Autowired
-    private ExportZipService exportZipService;
+    private EvaluateCloudService evaluateCloudService;
     @Autowired
     private OutVirtualEquipmentRepository outVirtualEquipmentRepository;
+    @Autowired
+    private ExportService exportService;
 
     /**
      * Create a new digital service.
@@ -214,6 +220,8 @@ public class DigitalServiceService {
     public void deleteDigitalService(final String digitalServiceUid) {
         indicatorService.deleteIndicators(digitalServiceUid);
         inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
+        inPhysicalEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
+        inDatacenterRepository.deleteByDigitalServiceUid(digitalServiceUid);
         digitalServiceRepository.deleteById(digitalServiceUid);
     }
 
@@ -370,8 +378,9 @@ public class DigitalServiceService {
                     .datetime(LocalDateTime.now())
                     .build();
 
-            evaluateBoaviztaService.doEvaluate(context, task);
-            exportZipService.uploadZip(task.getId(), context.getSubscriber(), context.getOrganizationId().toString());
+            Path exportDirectory = exportService.createExportDirectory(task.getId());
+            evaluateCloudService.doEvaluate(context, task, exportDirectory);
+            exportService.uploadExportZip(task.getId(), context.getSubscriber(), context.getOrganizationId().toString());
 
             task.setProgressPercentage("100%");
             task.setStatus(TaskStatus.COMPLETED.toString());

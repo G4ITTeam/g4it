@@ -203,3 +203,75 @@ databaseChangeLog:
               - column:
                   name: task_id
                   descending: true
+
+  - changeSet:
+      id: in-out-create-out-table-physical-equipment-add-fields
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_physical_equipment
+            columns:
+              - column:
+                  name: count_value
+                  type: bigint
+
+  - changeSet:
+      id: in-out-create-in-table-physical-equipment-add-field-duration_hour
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_physical_equipment
+            columns:
+              - column:
+                  name: duration_hour
+                  type: bigint
+
+  - changeSet:
+      id: in-out-create-out-table-physical-equipment-add-field-reference_hosting-efficiency
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_physical_equipment
+            columns:
+              - column:
+                  name: reference
+                  type: varchar(255)
+              - column:
+                  name: hosting_efficiency
+                  type: varchar(255)
+
+  - changeSet:
+      id: in-out-create-in-table-physical-equipment-add-field-description
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_physical_equipment
+            columns:
+              - column:
+                  name: description
+                  type: varchar(255)
+
+  - changeSet:
+      id: in-out-create-in-table-physical-equipment-add-field-nbUser
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: in_physical_equipment
+            columns:
+              - column:
+                  name: nb_user
+                  type: float
+                  defaultValue: 0
+
+  - changeSet:
+      id: in-out-create-out-table-physical-equipment-add-field-nbUser
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_physical_equipment
+            columns:
+              - column:
+                  name: nb_user
+                  type: float
+                  defaultValue: 0
+

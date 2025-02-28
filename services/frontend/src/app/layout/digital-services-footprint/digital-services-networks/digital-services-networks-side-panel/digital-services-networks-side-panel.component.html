@@ -3,13 +3,20 @@
         class="side-panel-title"
         *ngIf="network.idFront; else new"
         role="heading"
+        aria-level="2"
         appAutofocus
         tabindex="-1"
     >
         {{ "digital-services-networks.network" | translate }} #{{ network.idFront }}
     </div>
     <ng-template #new>
-        <div class="side-panel-title" role="heading" appAutofocus tabindex="-1">
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
             {{ "digital-services-networks.new" | translate }}
         </div>
     </ng-template>
@@ -22,7 +29,7 @@
             <label for="type">{{ "digital-services-networks.type" | translate }}</label>
             <p-dropdown
                 appendTo="body"
-                [options]="networkTypes"
+                [options]="digitalServiceStore.networkTypes()"
                 optionLabel="value"
                 styleClass="dropdown-terminal"
                 formControlName="type"
@@ -55,6 +62,7 @@
                 ngDefaultControl
                 locale="fr-FR"
                 id="yearlyQuantityOfGbExchanged"
+                [ariaLabel]="'digital-services-networks.yearly-go' | translate"
             />
             <p
                 class="error-text"
@@ -84,6 +92,7 @@
                 styleClass="yellow-button"
                 [disabled]="networksForm.invalid"
                 type="submit"
+                id="submit-networks"
             >
                 <span *ngIf="!network.idFront">
                     {{ "common.add" | translate }}

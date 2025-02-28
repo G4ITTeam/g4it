@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceIndi
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -24,15 +25,11 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface DigitalServiceIndicatorMapper {
 
-    /**
-     * @param source
-     * @return
-     */
     List<DigitalServiceImpactBO> toImpact(final List<DigitalServiceIndicatorView> source);
 
     default DigitalServiceImpactBO map(final DigitalServiceIndicatorView digitalServiceIndicatorView) {
         String criterion = CriteriaUtils.transformCriteriaNameToCriteriaKey(digitalServiceIndicatorView.getCriteria());
-        if (criterion.isEmpty()) criterion = digitalServiceIndicatorView.getCriteria();
+        if (criterion.isEmpty()) criterion = StringUtils.snakeToKebabCase(digitalServiceIndicatorView.getCriteria());
 
         return DigitalServiceImpactBO.builder()
                 .unitValue(digitalServiceIndicatorView.getUnitValue())
@@ -50,7 +47,8 @@ public interface DigitalServiceIndicatorMapper {
      */
     @Mapping(target = "impacts", source = "source")
     default List<DigitalServiceIndicatorBO> toDto(final List<DigitalServiceIndicatorView> source) {
-        final Map<String, List<DigitalServiceIndicatorView>> indicatorsByTiers = source.stream().collect(Collectors.groupingBy(DigitalServiceIndicatorView::getTier));
+        final Map<String, List<DigitalServiceIndicatorView>> indicatorsByTiers = source.stream()
+                .collect(Collectors.groupingBy(DigitalServiceIndicatorView::getTier));
         return indicatorsByTiers
                 .entrySet()
                 .stream()

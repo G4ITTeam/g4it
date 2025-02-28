@@ -20,6 +20,7 @@ import {
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
 } from "src/app/core/interfaces/footprint.interface";
+import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { AbstractDashboard } from "../abstract-dashboard";
@@ -32,10 +33,11 @@ export class InventoriesMultiCriteriaFootprintComponent extends AbstractDashboar
     private store = inject(FootprintStoreService);
     private footprintService = inject(FootprintService);
     currentLang: string = this.translate.currentLang;
-    criteriakeys = Object.keys(this.translate.translations[this.currentLang].criteria);
+    criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
     @Input() footprint: Criterias = {} as Criterias;
     @Input() filterFields: string[] = [];
     @Input() datacenters: Datacenter[] = [];
+    @Input() inVirtualEquipments: InVirtualEquipmentRest[] = [];
     @Input() equipments: [
         PhysicalEquipmentAvgAge[],
         PhysicalEquipmentLowImpact[],

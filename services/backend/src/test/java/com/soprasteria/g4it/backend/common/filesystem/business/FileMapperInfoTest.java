@@ -60,7 +60,7 @@ class FileMapperInfoTest {
 
     @Test
     void equipementVirtuelMapperInfosShouldContainEquipementVirtuelName() {
-        final Header expectedHeader = Header.builder().name("nomEquipementPhysique").optional(false).build();
+        final Header expectedHeader = Header.builder().name("nomEquipementVirtuel").optional(false).build();
         Assertions.assertTrue(info.getMapping(FileType.EQUIPEMENT_VIRTUEL).contains(expectedHeader));
     }
 

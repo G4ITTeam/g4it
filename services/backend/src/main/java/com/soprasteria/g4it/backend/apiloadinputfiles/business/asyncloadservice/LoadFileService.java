@@ -50,39 +50,28 @@ import static java.util.stream.Collectors.*;
 @Slf4j
 public class LoadFileService {
 
-    @Value("${local.working.folder}")
-    private String localWorkingFolder;
-
+    private static final String CSV_SEPARATOR = ";";
+    private static final String REJECTED = "rejected";
     @Autowired
     FileSystemService fileSystemService;
-
     @Autowired
     CsvFileMapperInfo csvFileMapperInfo;
-
     @Autowired
     MessageSource messageSource;
-
     @Autowired
     LoadDatacenterService loadDatacenterService;
-
     @Autowired
     LoadPhysicalEquipmentService loadPhysicalEquipmentService;
-
     @Autowired
     LoadVirtualEquipmentService loadVirtualEquipmentService;
-
     @Autowired
     LoadApplicationService loadApplicationService;
-
     @Autowired
     CsvToInMapper csvToInMapper;
-
     @Autowired
     InventoryRepository inventoryRepository;
-
-    private static final String CSV_SEPARATOR = ";";
-    private static final String CSV_EXT = ".csv";
-    private static final String REJECTED = "rejected";
+    @Value("${local.working.folder}")
+    private String localWorkingFolder;
 
     @PostConstruct
     public void initFolder() throws IOException {
@@ -141,7 +130,7 @@ public class LoadFileService {
             readErrors = switch (fileType) {
                 case FileType.DATACENTER -> readDatacenters(context, records);
                 case FileType.EQUIPEMENT_PHYSIQUE -> readPhysicalEquipments(context, records);
-                case FileType.EQUIPEMENT_VIRTUEL -> readVirtualEquipments(context, records);
+                case FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD -> readVirtualEquipments(context, records);
                 case FileType.APPLICATION -> readApplications(context, records);
                 default -> throw new IllegalArgumentException();
             };
@@ -203,7 +192,7 @@ public class LoadFileService {
         Map<Integer, List<String>> errorsByLine = readErrors.stream()
                 .collect(groupingBy(LineError::line, mapping(LineError::error, toList())));
 
-        String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + CSV_EXT;
+        String rejectedFileName = String.join("_", REJECTED, fileType.getFileName(), context.getDatetime().format(Constants.FILE_DATE_TIME_FORMATTER)) + Constants.CSV;
 
         final Path path = Path.of(localWorkingFolder).resolve(REJECTED).resolve(String.valueOf(context.getInventoryId())).resolve(rejectedFileName);
         try {
@@ -376,11 +365,12 @@ public class LoadFileService {
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow();
 
-        inventory.setDataCenterCount(loadDatacenterService.getDatacenterCount(inventoryId));
-        inventory.setPhysicalEquipmentCount(loadPhysicalEquipmentService.getPhysicalEquipmentCount(inventoryId));
-        inventory.setVirtualEquipmentCount(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId));
-        inventory.setApplicationCount(loadApplicationService.getApplicationCount(inventoryId));
-
+        if (Boolean.TRUE.equals(inventory.getIsNewArch())) {
+            inventory.setDataCenterCount(loadDatacenterService.getDatacenterCount(inventoryId));
+            inventory.setPhysicalEquipmentCount(loadPhysicalEquipmentService.getPhysicalEquipmentCount(inventoryId));
+            inventory.setVirtualEquipmentCount(loadVirtualEquipmentService.getVirtualEquipmentCount(inventoryId));
+            inventory.setApplicationCount(loadApplicationService.getApplicationCount(inventoryId));
+        }
         inventoryRepository.save(inventory);
     }
 

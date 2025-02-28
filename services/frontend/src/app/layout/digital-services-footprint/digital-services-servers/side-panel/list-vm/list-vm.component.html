@@ -1,0 +1,60 @@
+<div class="lg-file-panel-margin">
+    <div class="side-panel-title" appAutofocus tabindex="-1">
+        {{ server().name }}
+    </div>
+    <div class="side-panel-subtitle mb-2">
+        {{ server().mutualizationType }}/{{ server().type }}
+    </div>
+    <app-digital-service-table
+        title="vm"
+        addButton="add.vm"
+        translationPrefix="digital-services-servers"
+        [headerFields]="headerFields()"
+        [data]="vmData()"
+        (resetItem)="resetIndex()"
+        [showId]="false"
+        (setItem)="setIndex($event.index - 1)"
+        (deleteItem)="deleteVm($event.index - 1)"
+    ></app-digital-service-table>
+    <div class="button-bottom-right">
+        <p-button styleClass="white-button" (click)="close()">{{
+            "common.cancel" | translate
+        }}</p-button>
+        <p-button
+            styleClass="black-button"
+            (click)="previousStep()"
+            icon="pi pi-arrow-left"
+            [label]="'common.previous' | translate"
+        >
+        </p-button>
+        <p-button
+            styleClass="yellow-button"
+            type="submit"
+            (click)="submitServer()"
+            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+            ><span *ngIf="server().uid === ''">
+                {{ "common.create" | translate }}
+            </span>
+            <span *ngIf="server().uid !== ''">
+                {{ "common.save" | translate }}
+            </span>
+        </p-button>
+    </div>
+</div>
+@if (addVMPanelVisible) {
+    <p-sidebar
+        [visible]="true"
+        position="right"
+        styleClass="p-sidebar-lg"
+        (onHide)="vmSidePanel.close()"
+    >
+        <app-panel-add-vm
+            #vmSidePanel
+            *ngIf="addVMPanelVisible"
+            [index]="index"
+            [addVMPanelVisible]="addVMPanelVisible"
+            (addVMPanelVisibleChange)="addVMPanelVisible = $event"
+        >
+        </app-panel-add-vm>
+    </p-sidebar>
+}

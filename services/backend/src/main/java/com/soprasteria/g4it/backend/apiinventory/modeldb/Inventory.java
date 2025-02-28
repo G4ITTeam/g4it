@@ -59,6 +59,16 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private Boolean isNewArch;
 
     /**
+     * do export
+     */
+    private Boolean doExport;
+
+    /**
+     * do export verbose
+     */
+    private Boolean doExportVerbose;
+
+    /**
      * Attached note.
      */
     @OnDelete(action = OnDeleteAction.CASCADE)

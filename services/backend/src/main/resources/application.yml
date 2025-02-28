@@ -1,4 +1,4 @@
-version: "2.9.2"
+version: "1.0.0"
 
 server:
   port: 8080
@@ -58,7 +58,7 @@ g4it:
 
 filesystem.local.path: ".\\storage"
 
-local.working.folder: ".\\storagetmp"
+local.working.folder:  ".\\storagetmp"
 
 spring:
   profiles:

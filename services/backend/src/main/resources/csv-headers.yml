@@ -16,6 +16,8 @@ filesystem.config.headers:
       optional: true
     - name: "nomSourceDonnee"
       optional: true
+    - name: "nomEquipementPhysique"
+      optional: true
   datacenter:
     - name: "nomCourtDatacenter"
       optional: false
@@ -71,6 +73,81 @@ filesystem.config.headers:
       optional: false
     - name: "nomEquipementPhysique"
       optional: false
+    - name: "nomSourceDonneeEquipementPhysique"
+      optional: true
+    - name: "vCPU"
+      optional: true
+    - name: "nomEntite"
+      optional: true
+    - name: "cluster"
+      optional: true
+    - name: "consoElecAn"
+      optional: true
+    - name: "typeEqv"
+      optional: false
+    - name: "cleRepartition"
+      optional: true
+    - name: "nomSourceDonnee"
+      optional: true
+    - name: "capaciteStockage"
+      optional: true
+  inventoryEquipementVirtuelCloud:
+    - name: "nomEquipementVirtuel"
+      optional: false
+    - name: "nomEquipementPhysique"
+      optional: true
+    - name: "nomSourceDonneeEquipementPhysique"
+      optional: true
+    - name: "cleRepartition"
+      optional: true
+    - name: "vCPU"
+      optional: true
+    - name: "cluster"
+      optional: true
+    - name: "consoElecAn"
+      optional: true
+    - name: "typeEqv"
+      optional: true
+    - name: "capaciteStockage"
+      optional: true
+    - name: "nomEntite"
+      optional: true
+    - name: "nomSourceDonnee"
+      optional: true
+    - name: "typeInfrastructure"
+      optional: true
+      default: "NON_CLOUD_SERVERS"
+    - name: "quantite"
+      optional: true
+    - name: "provider"
+      optional: true
+    - name: "typeInstance"
+      optional: true
+    - name: "location"
+      optional: true
+    - name: "chargeMoy"
+      optional: true
+    - name: "dureeUtilisationAnnuelle"
+      optional: true
+  virtualEquipment:
+    - name: "nomEquipementVirtuel"
+      optional: false
+    - name: "typeInfrastructure"
+      optional: true
+    - name: "quantite"
+      optional: true
+    - name: "cloudProvider"
+      optional: true
+    - name: "instanceType"
+      optional: true
+    - name: "location"
+      optional: true
+    - name: "averageWorkload"
+      optional: true
+    - name: "annualUsageDuration"
+      optional: true
+    - name: "nomEquipementPhysique"
+      optional: true
     - name: "nomSourceDonneeEquipementPhysique"
       optional: true
     - name: "vCPU"
@@ -179,6 +256,12 @@ filesystem.config.headers:
     - name: "equipmentName"
       optional: false
     - name: "virtualEquipmentName"
+      optional: false
+    - name: "infrastructureType"
+      optional: false
+    - name: "provider"
+      optional: false
+    - name: "instanceType"
       optional: false
     - name: "entityName"
       optional: false
@@ -420,7 +503,6 @@ filesystem.config.headers:
     - name: "dataSourceNameDiscriminator"
       optional: false
     - name: "sipImpact"
-      dbName: "commonSipImpact"
       optional: false
   virtualEquipmentIndicatorCloudInstance:
     - name: "digitalServiceName"

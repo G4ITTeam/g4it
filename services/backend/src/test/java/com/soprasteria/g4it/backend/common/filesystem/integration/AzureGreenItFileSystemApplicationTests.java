@@ -7,7 +7,6 @@
  */
 package com.soprasteria.g4it.backend.common.filesystem.integration;
 
-import com.azure.storage.blob.models.BlobStorageException;
 import com.soprasteria.g4it.backend.common.filesystem.business.AzureFileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
@@ -209,11 +208,10 @@ class AzureGreenItFileSystemApplicationTests {
             log.error("Exception occured during lifecycle", e);
             fail(e);
         } finally {
-            assertThrows(BlobStorageException.class, () -> fs.delete(FileFolder.INPUT, FILE_TEST_NAME));
-            assertThrows(BlobStorageException.class, () -> fs.delete(FileFolder.INPUT, FILE_NEW_NAME1));
-
-            assertThrows(BlobStorageException.class, () -> fs.delete(FileFolder.WORK, FILE_NEW_NAME1));
-            assertThrows(BlobStorageException.class, () -> fs.delete(FileFolder.WORK, FILE_NEW_NAME2));
+            fs.delete(FileFolder.INPUT, FILE_TEST_NAME);
+            fs.delete(FileFolder.INPUT, FILE_NEW_NAME1);
+            fs.delete(FileFolder.WORK, FILE_NEW_NAME1);
+            fs.delete(FileFolder.WORK, FILE_NEW_NAME2);
 
             fs.delete(FileFolder.OUTPUT, FILE_NEW_NAME2);
             fs.delete(FileFolder.OUTPUT, UPLOAD_FILE_TEST_NAME);

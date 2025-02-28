@@ -44,9 +44,9 @@ public final class CriteriaUtils {
     public static String transformCriteriaNameToCriteriaKey(final String criteriaName) {
         return switch (criteriaName) {
             case "Climate change" -> "climate-change";
+            case "Particulate matter and respiratory inorganics" -> "particulate-matter";
             case "Ionising radiation" -> "ionising-radiation";
             case "Acidification" -> "acidification";
-            case "Particulate matter and respiratory inorganics" -> "particulate-matter";
             case "Resource use (minerals and metals)" -> "resource-use";
             case "Ozone depletion" -> "ozone-depletion";
             case "Photochemical ozone formation" -> "photochemical-ozone-formation";

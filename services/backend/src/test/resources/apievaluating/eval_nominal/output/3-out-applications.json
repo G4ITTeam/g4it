@@ -1,0 +1,60 @@
+[
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "countValue": 1,
+    "criterion": "CLIMATE_CHANGE",
+    "electricityConsumption": 0.0,
+    "environment": "Test",
+    "equipmentType": "Server",
+    "filters": [
+      "Domain 1",
+      "Sub Domain 1"
+    ],
+    "filtersPhysicalEquipment": [
+      "In use"
+    ],
+    "filtersVirtualEquipment": [
+      "Cluster 1"
+    ],
+    "lifecycleStep": "MANUFACTURING",
+    "location": "France",
+    "name": "application-1",
+    "peopleEqImpact": 0.5980619742177782,
+    "quantity": 1.0,
+    "statusIndicator": "OK",
+    "unit": "kg CO2 eq",
+    "unitImpact": 509.1002555528837,
+    "virtualEquipmentName": "virtual-eq-1-1"
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "countValue": 1,
+    "criterion": "CLIMATE_CHANGE",
+    "electricityConsumption": 0.0,
+    "environment": "Test",
+    "equipmentType": "Server",
+    "filters": [
+      "Domain 1",
+      "Sub Domain 2"
+    ],
+    "filtersPhysicalEquipment": [
+      "In use"
+    ],
+    "filtersVirtualEquipment": [
+      "Cluster 2"
+    ],
+    "lifecycleStep": "MANUFACTURING",
+    "location": "France",
+    "name": "application-2",
+    "peopleEqImpact": 2.1047561430023687,
+    "quantity": 1.0,
+    "statusIndicator": "OK",
+    "unit": "kg CO2 eq",
+    "unitImpact": 1791.6736667307662,
+    "virtualEquipmentName": "virtual-eq-2-1"
+  }
+]

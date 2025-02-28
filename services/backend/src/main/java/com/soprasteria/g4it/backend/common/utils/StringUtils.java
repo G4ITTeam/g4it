@@ -44,4 +44,15 @@ public final class StringUtils {
         if (str == null) return null;
         return str.toUpperCase(Locale.getDefault()).replace('-', '_');
     }
+
+    /**
+     * SNAKE_CASE to kebab-case string
+     *
+     * @param str string
+     * @return the kebab-case string
+     */
+    public static String snakeToKebabCase(final String str) {
+        if (str == null) return null;
+        return str.toLowerCase(Locale.getDefault()).replace('_', '-');
+    }
 }

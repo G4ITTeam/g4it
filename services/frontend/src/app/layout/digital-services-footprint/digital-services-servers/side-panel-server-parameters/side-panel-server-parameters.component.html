@@ -28,6 +28,7 @@
                     inputId="host"
                     ngDefaultControl
                     lang="en"
+                    [ariaLabel]="'digital-services-servers.host' | translate"
                 ></p-dropdown>
                 <p
                     class="error-text"
@@ -57,6 +58,7 @@
                         name="datacenter"
                         ngDefaultControl
                         inputId="datacenter"
+                        [ariaLabel]="'digital-services-servers.datacenter' | translate"
                     ></p-dropdown>
                     <p
                         class="error-text"
@@ -75,7 +77,7 @@
                     </p-button>
                     @if (addSidebarVisible) {
                         <p-sidebar
-                            [visible]="true"
+                            [(visible)]="addSidebarVisible"
                             position="right"
                             styleClass="p-sidebar-lg"
                             (onHide)="childSidePanel.close()"
@@ -114,6 +116,7 @@
                         ngDefaultControl
                         locale="fr-FR"
                         id="quantity"
+                        [ariaLabel]="'igital-services-servers.quantity' | translate"
                     />
                     <p
                         class="error-text"
@@ -145,6 +148,7 @@
                         ngDefaultControl
                         locale="fr-FR"
                         id="vcpu"
+                        [ariaLabel]="'digital-services-servers.total.vcpu' | translate"
                     />
                     <p
                         class="error-text"
@@ -245,6 +249,7 @@
                         ngDefaultControl
                         locale="fr-FR"
                         id="electricityConsumption"
+                        [ariaLabel]="'digital-services-servers.electricity' | translate"
                     />
                     <p
                         class="error-text"
@@ -274,6 +279,7 @@
                         ngDefaultControl
                         locale="fr-FR"
                         id="operatingTime"
+                        [ariaLabel]="'digital-services-servers.usage.time' | translate"
                     />
                     <p
                         class="error-text"
@@ -304,6 +310,7 @@
                 [disabled]="serverForm.invalid"
                 icon="pi pi-arrow-right"
                 [label]="createLabelKey | translate"
+                id="submit-servers"
             >
             </p-button>
         </div>

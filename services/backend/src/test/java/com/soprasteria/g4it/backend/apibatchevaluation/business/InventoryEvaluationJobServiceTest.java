@@ -75,7 +75,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenReturn(execution);
 
-        final Long jobId = service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList);
+        final Long jobId = service.launchInventoryEvaluation("SUBSCRIBER-DEMO", organization, inventoryName, inventoryId, organizationId, criteriaList);
 
         assertThat(jobId).isEqualTo(1L);
 
@@ -99,7 +99,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobExecutionAlreadyRunningException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation("SUBSCRIBER-DEMO", organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("Job is already running.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -123,7 +123,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobRestartException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation("SUBSCRIBER-DEMO", organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("Illegal attempt at restarting Job.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -147,7 +147,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobInstanceAlreadyCompleteException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation("SUBSCRIBER-DEMO", organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("An instance of this Job already exists.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 
@@ -171,7 +171,7 @@ class InventoryEvaluationJobServiceTest {
 
         when(asyncJobLauncher.run(any(), any())).thenThrow(new JobParametersInvalidException(""));
 
-        assertThatThrownBy(() -> service.launchInventoryEvaluation(organization, inventoryName, inventoryId, organizationId, criteriaList))
+        assertThatThrownBy(() -> service.launchInventoryEvaluation("SUBSCRIBER-DEMO", organization, inventoryName, inventoryId, organizationId, criteriaList))
                 .hasMessageContaining("Invalid parameters.")
                 .isInstanceOf(InventoryEvaluationRuntimeException.class);
 

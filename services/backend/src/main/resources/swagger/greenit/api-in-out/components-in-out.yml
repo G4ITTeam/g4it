@@ -2,14 +2,14 @@ openapi: "3.0.3"
 info:
   title: Swagger GreenIT - Open API 3.0 - Components in out
   description: This is a GreenIT Server based on the OpenAPI 3.0 specification.
-  version: '1.0.0'
+  version: "1.0.0"
 
 components:
   schemas:
     InDatacenterRest:
       description: Version
       type: object
-      required: [ name, location, pue ]
+      required: [name, location, pue]
       properties:
         id:
           type: integer
@@ -48,7 +48,7 @@ components:
     InPhysicalEquipmentRest:
       description: Version
       type: object
-      required: [ name, quantity ]
+      required: [name, quantity]
       properties:
         id:
           type: integer
@@ -69,6 +69,10 @@ components:
           type: string
           maxLength: 255
         quantity:
+          type: number
+          format: double
+          minimum: 0
+        numberOfUsers:
           type: number
           format: double
           minimum: 0
@@ -108,10 +112,17 @@ components:
         quality:
           type: string
           maxLength: 255
+        description:
+          type: string
+          maxLength: 255
         electricityConsumption:
           type: number
           format: double
           minimum: 0
+        durationHour:
+          type: number
+          minimum: 0
+          maximum: 8760
         commonFilters:
           type: array
           maxItems: 5
@@ -133,7 +144,7 @@ components:
     InVirtualEquipmentRest:
       description: Version
       type: object
-      required: [ name, quantity, infrastructureType ]
+      required: [name, quantity, infrastructureType]
       properties:
         id:
           type: integer
@@ -223,7 +234,7 @@ components:
     InApplicationRest:
       description: Version
       type: object
-      required: [ name, environment ]
+      required: [name, environment]
       properties:
         id:
           type: integer
@@ -293,6 +304,12 @@ components:
           type: string
         unit:
           type: string
+        reference:
+          type: string
+        hostingEfficiency:
+          type: string
+        countValue:
+          type: number
         unitImpact:
           type: number
           format: double
@@ -303,6 +320,9 @@ components:
           type: number
           format: double
         quantity:
+          type: number
+          format: double
+        numberOfUsers:
           type: number
           format: double
         lifespan:
@@ -356,6 +376,8 @@ components:
           type: string
         statusIndicator:
           type: string
+        countValue:
+          type: number
         quantity:
           type: number
           format: double
@@ -370,6 +392,12 @@ components:
           format: double
         unit:
           type: string
+        usageDuration:
+          type: number
+          format: double
+        workload:
+          type: number
+          format: double
         commonFilters:
           type: array
           maxItems: 5
@@ -395,6 +423,8 @@ components:
       properties:
         name:
           type: string
+        virtualEquipmentName:
+          type: string
         environment:
           type: string
         criterion:
@@ -415,6 +445,8 @@ components:
           type: string
         unit:
           type: string
+        countValue:
+          type: number
         unitImpact:
           type: number
           format: double
@@ -427,6 +459,8 @@ components:
         quantity:
           type: number
           format: double
+        provider:
+          type: string
         commonFilters:
           type: array
           maxItems: 5

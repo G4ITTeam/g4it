@@ -115,6 +115,10 @@ export class DigitalServicesDataService {
         return this.http.post<string>(`${endpoint}/${uid}/evaluation`, {});
     }
 
+    launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
+        return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
+    }
+
     getTerminalsIndicators(
         uid: DigitalService["uid"],
     ): Observable<DigitalServiceTerminalResponse[]> {

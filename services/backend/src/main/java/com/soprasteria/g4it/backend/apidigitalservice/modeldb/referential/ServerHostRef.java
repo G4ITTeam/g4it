@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential;
 
 import jakarta.persistence.*;
@@ -26,7 +26,8 @@ import lombok.experimental.SuperBuilder;
                      cast(ref_s.nb_of_vcpu as integer)                             as nbOfVcpu,
                      cast(ref_s.total_disk as integer)                             as totalDisk,
                      cast(ref_s.lifespan as numeric)                               as lifespan,
-                     cast(ref_factcaract.conso_elec_moyenne as integer)            as annualElectricityConsumption
+                     cast(ref_factcaract.conso_elec_moyenne as integer)            as annualElectricityConsumption,
+                     ref_s.reference                                               as reference
                 from ref_server_host ref_s
                 left join ref_facteurcaracterisation ref_factcaract on ref_s.reference = ref_factcaract.nom
                 where ref_s.type = :type
@@ -44,7 +45,8 @@ import lombok.experimental.SuperBuilder;
                         @ColumnResult(name = "nbOfVcpu", type = Integer.class),
                         @ColumnResult(name = "totalDisk", type = Integer.class),
                         @ColumnResult(name = "lifespan", type = Double.class),
-                        @ColumnResult(name = "annualElectricityConsumption", type = Integer.class)
+                        @ColumnResult(name = "annualElectricityConsumption", type = Integer.class),
+                        @ColumnResult(name = "reference", type = String.class)
                 }
         )
 )

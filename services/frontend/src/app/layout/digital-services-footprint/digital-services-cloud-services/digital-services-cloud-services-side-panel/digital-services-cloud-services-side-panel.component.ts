@@ -105,6 +105,7 @@ export class DigitalServicesCloudServicesSidePanelComponent {
                 code: "EEE",
                 name: "Europe",
             },
+            locationValue: "Europe",
             annualUsage: 8760,
             averageWorkload: 50,
         };

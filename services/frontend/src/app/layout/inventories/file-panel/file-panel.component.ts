@@ -12,6 +12,7 @@ import {
     Input,
     OnInit,
     Output,
+    signal,
     SimpleChanges,
     ViewChild,
     ViewContainerRef,
@@ -51,6 +52,8 @@ export class FilePanelComponent implements OnInit {
     @Input() name: string = ""; // inventoryDate (for IS Type)
     @Input() inventoryId?: number = 0;
     @Input() isNewArch: boolean = false;
+    @Input() doExport: boolean = false;
+    @Input() doExportVerbose: boolean = false;
     @Input() allSimulations: Inventory[] = [];
     @Input() inventories: Inventory[] = [];
 
@@ -70,6 +73,7 @@ export class FilePanelComponent implements OnInit {
     inventoriesForm!: FormGroup;
     inventoryType = Constants.INVENTORY_TYPE;
     showBetaFeatures: string = environment.showBetaFeatures;
+    isFileUploaded = signal(false);
 
     ngUnsubscribe = new Subject<void>();
 
@@ -232,8 +236,24 @@ export class FilePanelComponent implements OnInit {
             instance.onDelete
                 .asObservable()
                 .pipe(takeUntil(this.uploaderOutpoutHandlerReset$))
-                .subscribe(() => this.deleteComponent(instance.index));
+                .subscribe(() => {
+                    this.deleteComponent(instance.index);
+                    this.checkfileUploaded();
+                });
+            instance.fileSelected
+                .asObservable()
+                .pipe(takeUntil(this.uploaderOutpoutHandlerReset$))
+                .subscribe(() => {
+                    this.checkfileUploaded();
+                });
         });
+    }
+
+    checkfileUploaded() {
+        const isFileUploaded = this.arrayComponents.some(
+            (compRef) => compRef?.instance?.file,
+        );
+        this.isFileUploaded.set(isFileUploaded);
     }
 
     submitFormData() {
@@ -262,6 +282,8 @@ export class FilePanelComponent implements OnInit {
                 name: this.name,
                 type: this.selectedType,
                 isNewArch: this.isNewArch,
+                doExport: this.doExport,
+                doExportVerbose: this.doExportVerbose,
             };
             this.inventoryService.createInventory(creationObj).subscribe({
                 next: (response) => {

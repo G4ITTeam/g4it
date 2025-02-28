@@ -1,0 +1,3 @@
+nomApplication;typeEnvironnement;nomEquipementVirtuel;nomSourceDonneeEquipementVirtuel;domaine;sousDomaine;nomEntite;nomSourceDonnee;nomEquipementPhysique
+application-1;Test;virtual-eq-1-1;;Domain 1;Sub Domain 1;Entity 1;;physical-eq-1
+application-2;Test;virtual-eq-2-1;;Domain 1;Sub Domain 2;Entity 1;;physical-eq-2

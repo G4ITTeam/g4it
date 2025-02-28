@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiinventory.repository;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Application;
@@ -48,6 +48,30 @@ public interface ApplicationRepository extends AbstractValidationBaseEntityRepos
             and a.nom_vm = ev.nom_vm)
              """, nativeQuery = true)
     Page<Application> findApplicationNotLinkedToVirtualEquipment(final Date sessionDate, final Pageable pageable);
+
+    /**
+     * Count distinct application name from application and inApplication table.
+     *
+     * @param inventoryId the unique inventory identifier.
+     * @return the distinct application number.
+     * @implNote Use JPQL query because Spring Data generated a select count distinct id.
+     */
+    @Query(value = """
+            select count(*) as total_count
+            from (
+                   select name
+                   from (
+                         select nom_application as name
+                         from application
+                         where inventory_id = :inventoryId
+                         union
+                         select name
+                         from in_application
+                         where inventory_id = :inventoryId
+                        ) combined_apps
+                  ) count_query
+            """, nativeQuery = true)
+    Long countDistinctCloudAndNonCloudApp(@Param("inventoryId") final Long inventoryId);
 
     /**
      * Delete application not linked to inventory or virtual equipments.

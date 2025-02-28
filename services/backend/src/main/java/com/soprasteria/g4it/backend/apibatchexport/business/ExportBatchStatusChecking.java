@@ -17,6 +17,7 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ import static com.soprasteria.g4it.backend.common.utils.Constants.STATUS_IN_PROG
 @Slf4j
 @Component
 @Transactional
+@Profile("!test")
 public class ExportBatchStatusChecking {
 
     @Autowired

@@ -1,0 +1,9 @@
+criterion;lifecycleStep;name;category;avgElectricityConsumption;description;location;level;source;tier;unit;value;subscriber;version
+CLIMATE_CHANGE;MANUFACTURING;blade-server-1;IT equipment;3721.0;Blade server 2CPU 16G RAM;France;2-Equipement;Fake data for tests;Datacenter;Item;2226.09317222576;;
+CLIMATE_CHANGE;TRANSPORTATION;blade-server-1;IT equipment;3721.0;Blade server 2CPU 16G RAM;France;2-Equipement;Fake data for tests;Datacenter;Item;46.3607713639849;;
+CLIMATE_CHANGE;USING;blade-server-1;IT equipment;3721.0;Blade server 2CPU 16G RAM;France;2-Equipement;Fake data for tests;Datacenter;Item;231.642666020108;;
+CLIMATE_CHANGE;END_OF_LIFE;blade-server-1;IT equipment;3721.0;Blade server 2CPU 16G RAM;France;2-Equipement;Fake data for tests;Datacenter;Item;6.97183551903243;;
+CLIMATE_CHANGE;MANUFACTURING;Electricity Mix FR;electricity-mix;;;France;0-Base data;Base IMPACTS ®Version 2.01;;;0.0813225;;
+CLIMATE_CHANGE;MANUFACTURING;Electricity Mix DE;electricity-mix;;;Germany;0-Base data;Base IMPACTS ®Version 2.01;;;0.0813225;;
+CLIMATE_CHANGE;MANUFACTURING;Electricity Mix AL;electricity-mix;;;Albania;0-Base data;Base IMPACTS ®Version 2.01;;;0.0813225;;
+CLIMATE_CHANGE;MANUFACTURING;Electricity Mix DZ;electricity-mix;;;Algeria;0-Base data;Base IMPACTS ®Version 2.01;;;0.0813225;;

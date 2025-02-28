@@ -48,6 +48,44 @@ export class ApplicationCriteriaPieChartComponent {
 
     constructor(private translate: TranslateService) {}
 
+    pushData(lifecyles: string[], impact: any, data: any[]) {
+        if (!lifecyles.includes(impact.lifeCycle)) {
+            lifecyles.push(impact.lifeCycle);
+            data.push({
+                name: impact.lifeCycle,
+                value: impact.sip,
+            });
+        } else {
+            const index = lifecyles.indexOf(impact.lifeCycle);
+            data[index].value += impact.sip;
+        }
+    }
+
+    domainCase(lifecyles: string[], impact: any, data: any[]) {
+        if (this.footprintStore.appDomain() === impact.domain) {
+            this.pushData(lifecyles, impact, data);
+        }
+    }
+
+    subDomainCase(lifecyles: string[], impact: any, data: any[]) {
+        if (
+            this.footprintStore.appDomain() === impact.domain &&
+            this.footprintStore.appSubDomain() === impact.subDomain
+        ) {
+            this.pushData(lifecyles, impact, data);
+        }
+    }
+
+    applicationCase(lifecyles: string[], impact: any, data: any[]) {
+        if (
+            this.footprintStore.appDomain() === impact.domain &&
+            this.footprintStore.appSubDomain() === impact.subDomain &&
+            this.footprintStore.appApplication() === impact.applicationName
+        ) {
+            this.pushData(lifecyles, impact, data);
+        }
+    }
+
     initLifecycleGraph(selectedFilters: Filter, footprint: ApplicationFootprint[]) {
         const data: any[] = [];
         const lifecyles: string[] = [];
@@ -60,66 +98,16 @@ export class ApplicationCriteriaPieChartComponent {
                 if (this.filterService.getFilterincludes(selectedFilters, impact)) {
                     switch (this.footprintStore.appGraphType()) {
                         case "global":
-                            if (!lifecyles.includes(impact.lifeCycle)) {
-                                lifecyles.push(impact.lifeCycle);
-                                data.push({
-                                    name: impact.lifeCycle,
-                                    value: impact.sip,
-                                });
-                            } else {
-                                const index = lifecyles.indexOf(impact.lifeCycle);
-                                data[index].value += impact.sip;
-                            }
+                            this.pushData(lifecyles, impact, data);
                             break;
                         case "domain":
-                            if (this.footprintStore.appDomain() === impact.domain) {
-                                if (!lifecyles.includes(impact.lifeCycle)) {
-                                    lifecyles.push(impact.lifeCycle);
-                                    data.push({
-                                        name: impact.lifeCycle,
-                                        value: impact.sip,
-                                    });
-                                } else {
-                                    const index = lifecyles.indexOf(impact.lifeCycle);
-                                    data[index].value += impact.sip;
-                                }
-                            }
+                            this.domainCase(lifecyles, impact, data);
                             break;
                         case "subdomain":
-                            if (
-                                this.footprintStore.appDomain() === impact.domain &&
-                                this.footprintStore.appSubDomain() === impact.subDomain
-                            ) {
-                                if (!lifecyles.includes(impact.lifeCycle)) {
-                                    lifecyles.push(impact.lifeCycle);
-                                    data.push({
-                                        name: impact.lifeCycle,
-                                        value: impact.sip,
-                                    });
-                                } else {
-                                    const index = lifecyles.indexOf(impact.lifeCycle);
-                                    data[index].value += impact.sip;
-                                }
-                            }
+                            this.subDomainCase(lifecyles, impact, data);
                             break;
                         case "application":
-                            if (
-                                this.footprintStore.appDomain() === impact.domain &&
-                                this.footprintStore.appSubDomain() === impact.subDomain &&
-                                this.footprintStore.appApplication() ===
-                                    impact.applicationName
-                            ) {
-                                if (!lifecyles.includes(impact.lifeCycle)) {
-                                    lifecyles.push(impact.lifeCycle);
-                                    data.push({
-                                        name: impact.lifeCycle,
-                                        value: impact.sip,
-                                    });
-                                } else {
-                                    const index = lifecyles.indexOf(impact.lifeCycle);
-                                    data[index].value += impact.sip;
-                                }
-                            }
+                            this.applicationCase(lifecyles, impact, data);
                             break;
                     }
                 }
@@ -127,14 +115,6 @@ export class ApplicationCriteriaPieChartComponent {
         }
 
         return {
-            aria: {
-                enabled: true,
-                label: {
-                    description: `${this.translate.instant(
-                        "inventories-footprint.application.graph-lifecycle",
-                    )}`,
-                },
-            },
             series: [
                 {
                     type: "pie",
@@ -183,14 +163,6 @@ export class ApplicationCriteriaPieChartComponent {
         }
 
         return {
-            aria: {
-                enabled: true,
-                label: {
-                    description: `${this.translate.instant(
-                        "inventories-footprint.application.graph-env",
-                    )}`,
-                },
-            },
             series: [
                 {
                     type: "pie",

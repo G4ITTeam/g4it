@@ -97,6 +97,11 @@ List of tools to be installed:
 
 -   Node.js 20
 
+#### Cypress tests
+
+Run `npm run cypress:open` to execute cypress tests locally one by one.
+Run `npm run cypress:run` to execute all tests, then run `start cypress/report/$(date +"%m-%d-%Y")/result.html` to open report (from folder `services/frontend`).
+
 #### End-to-end tests
 
 Run `npm run e2e` to execute the end-to-end tests via a platform of your choice. To use
@@ -134,4 +139,3 @@ And for deployment on k8s:
 ```sh
 BASE_HREF=/overgreen
 ```
-

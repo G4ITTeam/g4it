@@ -19,9 +19,17 @@ public final class LifecycleStepUtils {
             "FIN_DE_VIE", "END_OF_LIFE"
     );
 
+    private static final Map<String, String> LIFECYCLE_TRANSLATE_REVERSED = Map.of(
+            "MANUFACTURING", "FABRICATION",
+            "TRANSPORTATION", "DISTRIBUTION",
+            "USING", "UTILISATION",
+            "END_OF_LIFE", "FIN_DE_VIE"
+    );
+
     /**
      * Private constructor to hive the implicit public one.
      */
+
     private LifecycleStepUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
@@ -47,5 +55,16 @@ public final class LifecycleStepUtils {
     public static String get(final String lifecycleStep, final String defaultValue) {
         if (lifecycleStep == null) return null;
         return LIFECYCLE_TRANSLATE.getOrDefault(lifecycleStep, defaultValue);
+    }
+
+    /**
+     * Method to translate lifecycle step from new referential to the old one
+     *
+     * @param lifecycleStep the lifecycle step.
+     * @return the translated lifecycle step
+     */
+    public static String getReverse(final String lifecycleStep) {
+        if (lifecycleStep == null) return null;
+        return LIFECYCLE_TRANSLATE_REVERSED.getOrDefault(lifecycleStep, lifecycleStep);
     }
 }
