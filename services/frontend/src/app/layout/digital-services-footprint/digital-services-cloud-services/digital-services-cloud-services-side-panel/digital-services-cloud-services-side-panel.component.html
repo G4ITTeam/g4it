@@ -1,10 +1,22 @@
 <div class="lg-file-panel-margin">
     @if (isNew) {
-        <div class="side-panel-title" role="heading" appAutofocus tabindex="-1">
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
             {{ "digital-services-cloud-services.new" | translate }}
         </div>
     } @else {
-        <div class="side-panel-title" role="heading" appAutofocus tabindex="-1">
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
             {{ "digital-services-cloud-services.cloud-service" | translate }} #{{
                 cloud.idFront
             }}
@@ -62,6 +74,9 @@
                     name="cloudProvider"
                     ngDefaultControl
                     id="cloudProvider"
+                    [ariaLabel]="
+                        'digital-services-cloud-services.cloud-provider' | translate
+                    "
                 >
                 </p-dropdown>
                 <p
@@ -90,6 +105,9 @@
                     [virtualScroll]="true"
                     [virtualScrollItemSize]="50"
                     id="cloudInstance"
+                    [ariaLabel]="
+                        'digital-services-cloud-services.instance-type' | translate
+                    "
                 >
                 </p-dropdown>
                 <p
@@ -119,6 +137,7 @@
                     ngDefaultControl
                     locale="fr-FR"
                     id="quantity"
+                    [ariaLabel]="'digital-services-cloud-services.quantity' | translate"
                 />
                 <p
                     class="error-text"
@@ -146,6 +165,7 @@
                     name="location"
                     ngDefaultControl
                     id="location"
+                    [ariaLabel]="'digital-services-cloud-services.location' | translate"
                 >
                 </p-dropdown>
                 <p
@@ -172,6 +192,9 @@
                     ngDefaultControl
                     locale="fr-FR"
                     id="annualUsage"
+                    [ariaLabel]="
+                        'digital-services-cloud-services.annual-usage' | translate
+                    "
                 />
                 <p
                     class="error-text"
@@ -197,6 +220,9 @@
                     ngDefaultControl
                     locale="fr-FR"
                     id="averageWorkload"
+                    [ariaLabel]="
+                        'digital-services-cloud-services.average-workload' | translate
+                    "
                 />
                 <p
                     class="error-text"
@@ -217,9 +243,12 @@
                         (click)="deleteServerCloud()"
                         >{{ "common.delete" | translate }}</p-button
                     >
-                    <p-button styleClass="white-button" (click)="close()">{{
-                        "common.cancel" | translate
-                    }}</p-button>
+                    <p-button
+                        styleClass="white-button"
+                        (click)="close()"
+                        id="cloud-cancel"
+                        >{{ "common.cancel" | translate }}</p-button
+                    >
                     <p-button
                         *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                         styleClass="yellow-button"

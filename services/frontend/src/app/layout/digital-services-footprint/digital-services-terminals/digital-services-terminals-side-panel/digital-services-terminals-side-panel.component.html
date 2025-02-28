@@ -1,10 +1,22 @@
 <div class="lg-file-panel-margin">
     @if (isNew) {
-        <div class="side-panel-title" role="heading" appAutofocus tabindex="-1">
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
             {{ "digital-services-terminals.new" | translate }}
         </div>
     } @else {
-        <div class="side-panel-title" role="heading" appAutofocus tabindex="-1">
+        <div
+            class="side-panel-title"
+            role="heading"
+            aria-level="2"
+            appAutofocus
+            tabindex="-1"
+        >
             {{ "digital-services-terminals.device" | translate }} #{{ terminal.idFront }}
         </div>
     }
@@ -31,6 +43,7 @@
                 (onChange)="terminal.lifespan = $event.value.lifespan"
                 ngDefaultControl
                 lang="en"
+                [ariaLabel]="'digital-services-terminals.type' | translate"
             >
             </p-dropdown>
             <p class="error-text" *ngIf="terminalsForm.get('type')?.hasError('required')">
@@ -56,6 +69,7 @@
                 inputId="countryInput"
                 ngDefaultControl
                 lang="en"
+                [ariaLabel]="'digital-services-terminals.country' | translate"
             >
             </p-dropdown>
             <p
@@ -157,6 +171,7 @@
                 styleClass="yellow-button"
                 [disabled]="terminalsForm.invalid"
                 type="submit"
+                id="submit-terminals"
             >
                 @if (isNew) {
                     <span>{{ "common.add" | translate }}</span>

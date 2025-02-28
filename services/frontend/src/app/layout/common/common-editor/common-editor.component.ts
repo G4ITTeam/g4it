@@ -52,7 +52,8 @@ export class CommonEditorComponent {
     }
 
     removeStylesFromText(htmlText: string) {
-        return htmlText.replace(/<[^>]*>/g, "");
+        let html = new DOMParser().parseFromString(htmlText, "text/html");
+        return html.body.textContent ?? "";
     }
 
     saveContent() {

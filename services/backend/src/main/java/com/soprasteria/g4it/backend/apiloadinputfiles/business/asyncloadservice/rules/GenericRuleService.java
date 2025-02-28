@@ -43,7 +43,7 @@ public class GenericRuleService {
         if (referentialGetService.getCountries(subscriber).contains(location)) return Optional.empty();
         if (referentialGetService.getCountries(null).contains(location)) return Optional.empty();
 
-        return Optional.of(new LineError(line, messageSource.getMessage("referential.location", new String[]{location}, locale)));
+        return Optional.of(new LineError(line, messageSource.getMessage("referential.location.not.exist", new String[]{location}, locale)));
     }
 
     /**
@@ -57,7 +57,8 @@ public class GenericRuleService {
 
         if (!referentialGetService.getItemTypes(type, subscriber).isEmpty()) return Optional.empty();
         if (!referentialGetService.getItemTypes(type, null).isEmpty()) return Optional.empty();
-        return Optional.of(new LineError(line, messageSource.getMessage("referential.type.not.exist", new String[]{}, locale)));
+
+        return Optional.of(new LineError(line, messageSource.getMessage("referential.type.not.exist", new String[]{type}, locale)));
     }
 
     /**

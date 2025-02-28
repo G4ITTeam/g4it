@@ -396,19 +396,11 @@ export class BarChartComponent extends AbstractDashboard {
     ): StatusCountMap {
         let okMap = {};
         const isTerminals = type === Constants.TERMINAL;
-        const stepKey = isTerminals ? "ACVStep" : "acvStep";
 
         if (!this.barChartChild) {
             return this.processParentData(seriesData, xAxis, yAxis, okMap, isTerminals);
         } else {
-            return this.processChildData(
-                seriesData,
-                xAxis,
-                yAxis,
-                okMap,
-                stepKey,
-                isTerminals,
-            );
+            return this.processChildData(seriesData, xAxis, yAxis, okMap, isTerminals);
         }
     }
 
@@ -464,12 +456,13 @@ export class BarChartComponent extends AbstractDashboard {
         xAxis: string[],
         yAxis: any[],
         okMap: StatusCountMap,
-        stepKey: string,
         isTerminals: boolean,
     ): StatusCountMap {
         const childData = seriesData.find(
             (item: any) => item.name === this.selectedDetailParam,
         );
+
+        const stepKey = "acvStep";
 
         if (childData) {
             const order = LifeCycleUtils.getLifeCycleList();
@@ -606,6 +599,9 @@ export class BarChartComponent extends AbstractDashboard {
                             return (index + 1) % 3 === 0 ? str + "<br/>" : str;
                         })
                         .join("");
+                    const impactVm = detailServers
+                        .find((server: any) => server.name === params.seriesName)
+                        .vmList.reduce((acc: number, i: any) => acc + i.rawValue, 0);
                     return `
                         <div style="display: flex; align-items: center; height: 30px;">
                             <span style="display: inline-block; width: 10px; height: 10px; background-color: ${params.color}; border-radius: 50%; margin-right: 5px;"></span>
@@ -616,7 +612,7 @@ export class BarChartComponent extends AbstractDashboard {
                         </div>
                         <div>Impact: ${this.integerPipe.transform(params.data[1])}
                             ${this.translate.instant("common.peopleeq-min")} <br>
-                            ${this.decimalsPipe.transform(params.data[2])} ${params.data[3]}
+                            ${this.decimalsPipe.transform(impactVm)} ${params.data[3]}
                         </div>
                         <div>
                             ${this.translate.instant(
@@ -792,8 +788,8 @@ export class BarChartComponent extends AbstractDashboard {
                         rotate: 30, // Rotate labels if they overlap
                         formatter: (value) =>
                             !serverChildOkmap[value].status.error
-                                ? `{grey| ${this.translate.instant(value) || value}}`
-                                : `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`,
+                                ? this.noError(value)
+                                : this.errorDetected(value),
                         interval: 0, // Display all labels
                         color: function (value: any) {
                             return !serverChildOkmap[value].status.error
@@ -818,6 +814,14 @@ export class BarChartComponent extends AbstractDashboard {
             ],
             color: Constants.BLUE_COLOR,
         };
+    }
+
+    noError(value: string) {
+        return `{grey| ${this.translate.instant(value) || value}}`;
+    }
+
+    errorDetected(value: string) {
+        return `{redBold| \u24d8} {red| ${this.translate.instant(value) || value}}`;
     }
 
     changeTerminalsRadioButtonSelected() {

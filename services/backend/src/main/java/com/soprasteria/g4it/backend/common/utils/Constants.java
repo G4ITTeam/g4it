@@ -24,14 +24,14 @@ public final class Constants {
     public static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * File-readable local date time
-     */
-    public static final DateTimeFormatter FILE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-
-    /**
      * Human-readable local date time with ms
      */
     public static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER_MS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+    /**
+     * File-readable local date time
+     */
+    public static final DateTimeFormatter FILE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
     /**
      * Local date allowed formatters
@@ -140,8 +140,9 @@ public final class Constants {
      */
     public static final String ZIP = ".zip";
 
-    public static final String FABRICATION = "FABRICATION";
-    public static final String UTILISATION = "UTILISATION";
+    public static final String MANUFACTURING = "MANUFACTURING";
+    public static final String USING = "USING";
     public static final String REFERENTIAL_VERSION_CLOUD = "BaseImpact 2011";
     public static final String CLOUD_TYPE = "compute";
+
 }

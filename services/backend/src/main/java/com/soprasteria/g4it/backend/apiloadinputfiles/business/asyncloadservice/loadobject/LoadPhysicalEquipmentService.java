@@ -72,9 +72,6 @@ public class LoadPhysicalEquipmentService {
         // Delete existing physical equipments and its sub objects
         final Set<String> names = physicalEquipments.stream().map(InPhysicalEquipmentRest::getName).collect(Collectors.toSet());
         inPhysicalEquipmentRepository.deleteByInventoryIdAndNameIn(context.getInventoryId(), names);
-        if (context.isHasVirtualEquipments()) {
-            inVirtualEquipmentRepository.deleteByInventoryIdAndPhysicalEquipmentNameIn(context.getInventoryId(), names);
-        }
 
         // Load data into database
         inPhysicalEquipmentRepository.saveAll(physicalEquipmentsToSave);

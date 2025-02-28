@@ -10,11 +10,14 @@ package com.soprasteria.g4it.backend.common.task.repository;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +28,8 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByStatusAndType(final String status, final String type);
+
+    List<Task> findByInventoryAndType(final Inventory inventory, final String type);
 
     List<Task> findByInventoryAndStatusAndType(final Inventory inventory, final String status, final String type);
 
@@ -38,9 +43,24 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      */
     @Query("""
             SELECT t FROM Task t
-            WHERE t.inventory = :inventory
+            WHERE t.inventory = :inventory AND type = 'EVALUATING'
             ORDER BY creationDate DESC LIMIT 1
             """)
     Optional<Task> findByInventoryAndLastCreationDate(@Param("inventory") final Inventory inventory);
 
+    @Modifying
+    @Transactional
+    @Query("""
+            UPDATE Task t SET t.lastUpdateDate = :lastUpdateDate
+            WHERE t.id = :taskId
+            """)
+    void updateLastUpdateDate(@Param("taskId") final Long taskId, @Param("lastUpdateDate") final LocalDateTime lastUpdateDate);
+
+    @Modifying
+    @Transactional
+    @Query("""
+            DELETE FROM Task t
+            WHERE t.id = :taskId
+            """)
+    void deleteTask(@Param("taskId") final Long taskId);
 }

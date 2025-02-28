@@ -49,6 +49,12 @@ export class DigitalServicesTerminalsSidePanelComponent {
         await this.getTerminalsReferentials();
         if (!this.terminal.idFront) {
             this.resetTerminal();
+        } else {
+            if (this.terminal.typeCode) {
+                this.terminal.type = this.terminalDeviceTypes.find(
+                    (item) => item.value === this.terminal.typeCode,
+                )!;
+            }
         }
     }
 

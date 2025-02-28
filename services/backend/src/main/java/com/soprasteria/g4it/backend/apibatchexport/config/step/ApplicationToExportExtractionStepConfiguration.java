@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apibatchexport.config.step;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Application;
@@ -33,8 +33,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -119,10 +117,7 @@ public class ApplicationToExportExtractionStepConfiguration {
     public FlatFileItemWriter<Application> extractedApplicationToExportWriter(
             @Value("#{jobParameters['local.working.folder']}") final String localWorkingFolder,
             final FileMapperInfo fileInfo) {
-        final List<String> headerList = new ArrayList<>(List.copyOf(fileInfo.getMapping(FileType.APPLICATION).stream().map(Header::getName).toList()));
-        // Add 'nomEquipementPhysique to the headers.
-        headerList.add("nomEquipementPhysique");
-        final String[] headers = headerList.toArray(String[]::new);
+        final String[] headers = fileInfo.getMapping(FileType.APPLICATION).stream().map(Header::getName).toList().toArray(String[]::new);
         return new FlatFileItemWriterBuilder<Application>()
                 .name("extractedApplicationToExportWriter")
                 .resource(new FileSystemResource(Path.of(localWorkingFolder, "application.csv")))

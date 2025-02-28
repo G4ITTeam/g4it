@@ -7,6 +7,8 @@
         [draggable]="false"
         (onHide)="closePopup()"
         [dismissableMask]="true"
+        id="criteria"
+        appendTo="body"
     >
         <ng-template pTemplate="header">
             <h4 class="font-bold">
@@ -148,6 +150,7 @@
                     styleClass="white-button"
                     (click)="closePopup()"
                     aria-label="Cancel"
+                    id="criteria-cancel"
                 >
                     {{ "common.cancel" | translate }}
                 </p-button>

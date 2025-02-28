@@ -31,7 +31,7 @@ import java.util.Optional;
 public class TaskService {
 
     @Autowired
-    private TaskRepository taskRepository;
+    TaskRepository taskRepository;
 
     @Autowired
     TaskMapper taskMapper;

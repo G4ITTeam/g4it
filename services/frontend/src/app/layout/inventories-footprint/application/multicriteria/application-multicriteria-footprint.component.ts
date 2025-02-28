@@ -97,6 +97,14 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         return uri;
     }
 
+    checkStatusIndicatorOk(statusIndicator: string): number {
+        return statusIndicator === Constants.DATA_QUALITY_STATUS.ok ? 1 : 0;
+    }
+
+    checkStatusIndicatorError(statusIndicator: string): number {
+        return statusIndicator === Constants.DATA_QUALITY_STATUS.error ? 1 : 0;
+    }
+
     loadBarChartOption(
         barChartData: ApplicationFootprint[],
         selectedFilters: Filter,
@@ -128,25 +136,15 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
                     const statusIndicator = impact.statusIndicator;
 
                     if (criteriaStatus) {
-                        criteriaStatus.ok +=
-                            statusIndicator === Constants.DATA_QUALITY_STATUS.ok ? 1 : 0;
+                        criteriaStatus.ok += this.checkStatusIndicatorOk(statusIndicator);
                         criteriaStatus.error +=
-                            statusIndicator === Constants.DATA_QUALITY_STATUS.error
-                                ? 1
-                                : 0;
+                            this.checkStatusIndicatorError(statusIndicator);
                         criteriaStatus.total += 1;
                     } else {
                         this.criteriaMap[translatedTitle] = {
                             status: {
-                                ok:
-                                    statusIndicator === Constants.DATA_QUALITY_STATUS.ok
-                                        ? 1
-                                        : 0,
-                                error:
-                                    statusIndicator ===
-                                    Constants.DATA_QUALITY_STATUS.error
-                                        ? 1
-                                        : 0,
+                                ok: this.checkStatusIndicatorOk(statusIndicator),
+                                error: this.checkStatusIndicatorError(statusIndicator),
                                 total: 1,
                             },
                         };
@@ -183,14 +181,6 @@ export class ApplicationMulticriteriaFootprintComponent extends AbstractDashboar
         });
 
         return {
-            aria: {
-                enabled: true,
-                label: {
-                    description: `${this.translate.instant(
-                        "inventories-footprint.application.graph-global",
-                    )}`,
-                },
-            },
             tooltip: {
                 show: true,
                 renderMode: "html",

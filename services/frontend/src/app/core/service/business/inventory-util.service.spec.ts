@@ -482,5 +482,35 @@ describe("InventoryUtilService", () => {
 
             expect(result.length).toEqual(4);
         });
+
+        it("should return an array with count and avgPue", () => {
+            const count = 5;
+            const avgPue = 1.5;
+
+            const result = service.getDatacenterStats(count, avgPue);
+
+            expect(result).toEqual([
+                {
+                    label: service["decimalsPipe"].transform(count),
+                    value: count,
+                    description: service["translate"].instant(
+                        "inventories-footprint.global.tooltip.nb-dc",
+                    ),
+                    title: service["translate"].instant(
+                        "inventories-footprint.global.datacenters",
+                    ),
+                },
+                {
+                    label: service["decimalsPipe"].transform(avgPue),
+                    value: avgPue,
+                    description: service["translate"].instant(
+                        "inventories-footprint.global.tooltip.ave-pue",
+                    ),
+                    title: service["translate"].instant(
+                        "inventories-footprint.global.ave-pue",
+                    ),
+                },
+            ]);
+        });
     });
 });

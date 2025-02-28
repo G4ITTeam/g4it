@@ -30,6 +30,8 @@ public class OutApplication {
 
     private String name;
 
+    private String virtualEquipmentName;
+
     private Long taskId;
 
     private String criterion;
@@ -62,7 +64,12 @@ public class OutApplication {
     @Min(0)
     private Double electricityConsumption;
 
+    @Min(0)
+    private Long countValue;
+
     private String unit;
+
+    private String provider;
 
     private List<String> commonFilters;
 
@@ -73,4 +80,5 @@ public class OutApplication {
     private List<String> filtersVirtualEquipment;
 
     private Set<String> errors;
+
 }

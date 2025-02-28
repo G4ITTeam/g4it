@@ -19,5 +19,10 @@ export const environment = {
         clientId: "g4it",
         enabled: "false",
     },
-     showBetaFeatures: "true"
+    showBetaFeatures: "true",
+    matomo: {
+        matomoTagManager: {
+            containerUrl: "",
+        },
+    },
 };

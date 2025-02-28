@@ -18,12 +18,15 @@ import com.soprasteria.g4it.backend.apifiles.business.FileSystemService;
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceExportService;
 import com.soprasteria.g4it.backend.apiindicator.repository.numecoeval.PhysicalEquipmentIndicatorRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
+import com.soprasteria.g4it.backend.common.criteria.CriteriaByType;
+import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.business.local.LocalFileService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
 import com.soprasteria.g4it.backend.common.filesystem.model.Header;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.exception.G4itRestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,8 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DigitalServiceExportServiceTest {
@@ -67,7 +69,8 @@ class DigitalServiceExportServiceTest {
     private FileSystemService fileSystemService;
     @Mock
     private FileMapperInfo fileInfo;
-
+    @Mock
+    private CriteriaService criteriaService;
     @Mock
     private TaskRepository taskRepository;
 
@@ -75,6 +78,8 @@ class DigitalServiceExportServiceTest {
     void shouldCreateFile() throws Exception {
         Optional<DigitalService> digitalService = Optional.of(getDigitalService());
         final String digitalServiceUid = digitalService.get().getUid();
+        final List<String> criteriaList = List.of("ionising-radiation", "climate-change");
+        digitalService.get().setCriteria(criteriaList);
 
         Mockito.lenient().when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(digitalService);
         Mockito.lenient().when(datacenterDigitalServiceRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(List.of(DatacenterDigitalService.builder().name("datacenter1").pue(BigDecimal.valueOf(1.75)).location("France").digitalService(getDigitalService()).build()));
@@ -89,8 +94,8 @@ class DigitalServiceExportServiceTest {
         Mockito.lenient().when(fileInfo.getMapping(FileType.CLOUD_INSTANCE)).thenReturn(List.of(Header.builder().build()));
         Mockito.doCallRealMethod().when(localFileService).writeFile(any(), any());
         Mockito.when(localFileService.createZipFile(any(), any())).thenCallRealMethod();
-//        Mockito.when(fileSystemService.downloadFile(eq(SUBSCRIBER), eq(ORGANIZATION_ID), any(), any()))
-//                .thenReturn(null);
+        when(criteriaService.getSelectedCriteriaForDigitalService(SUBSCRIBER, ORGANIZATION_ID, criteriaList)).thenReturn(new CriteriaByType(criteriaList, null, null, null, null, null));
+
         Mockito.lenient().when(taskRepository.findByDigitalServiceUid(digitalServiceUid)).thenReturn(Optional.of(Task.builder().id(1L).digitalServiceUid(digitalServiceUid).build()));
         ReflectionTestUtils.setField(exportService, "localWorkingFolder", "target");
 
@@ -107,7 +112,7 @@ class DigitalServiceExportServiceTest {
         final String digitalServiceUid = "80651485-3f8b-49dd-a7be-753e4fe1fd36";
         Mockito.lenient().when(digitalServiceRepository.findById(digitalServiceUid)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> exportService.createFiles(digitalServiceUid, SUBSCRIBER, ORGANIZATION_ID))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(G4itRestException.class);
     }
 
     DigitalService getDigitalService() {
@@ -119,6 +124,7 @@ class DigitalServiceExportServiceTest {
         digitalService.setCreationDate(LocalDateTime.now());
         digitalService.setTerminals(List.of(Terminal.builder().deviceType(DeviceTypeRef.builder().id(12L).description("Landline").build()).country("India").numberOfUsers(2).lifespan(9.0).yearlyUsageTimePerUser(5.0).build()));
         digitalService.setServers(List.of(Server.builder().name("Server A").type("Compute").mutualizationType("DEDICATED").serverHost(ServerHostRef.builder().description("server").externalReferentialDescription("extref").build()).quantity(2).lifespan(2.0).annualElectricityConsumption(3).build()));
+        digitalService.setIsNewArch(false);
         return digitalService;
     }
 }

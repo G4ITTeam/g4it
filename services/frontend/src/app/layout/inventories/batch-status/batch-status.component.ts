@@ -27,6 +27,7 @@ export class BatchStatusComponent implements OnInit {
     cssClass: string = "";
     toolTip: string = "";
     betweenDiv: string = "";
+    localCreateTime: Date | undefined;
     @Input() createTime: Date | undefined;
     @Input() batchLoading = false;
     @Input() inventoryId: number = 0;
@@ -83,6 +84,10 @@ export class BatchStatusComponent implements OnInit {
         } else {
             this.cssClass = `pi pi-hourglass bg-warning ${defaultClasses}`;
             this.toolTip = this.translate.instant("common.pending");
+        }
+
+        if (this.createTime) {
+            this.localCreateTime = new Date(this.createTime.toString() + "Z");
         }
     }
 

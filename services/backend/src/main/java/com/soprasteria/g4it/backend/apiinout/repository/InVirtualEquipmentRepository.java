@@ -52,12 +52,61 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     Optional<InVirtualEquipment> findByInventoryIdAndId(Long inventoryId, Long id);
 
     /**
-     * Find virtual equipments of one digital service
+     * Find virtual equipments of one inventory
      *
      * @param inventoryId inventory id
      * @return return a list of virtual equipments
      */
     List<InVirtualEquipment> findByInventoryId(Long inventoryId);
+
+    /**
+     * Find virtual equipments of one inventory and one physical equipment name
+     *
+     * @param inventoryId           inventory i
+     * @param physicalEquipmentName physicalEquipmentName
+     * @return return a list of virtual equipments
+     */
+    List<InVirtualEquipment> findByInventoryIdAndPhysicalEquipmentName(Long inventoryId, String physicalEquipmentName, Pageable pageable);
+
+    /**
+     * Find virtual equipments of one inventory and one physical equipment name
+     *
+     * @param digitalServiceUid     digitalServiceUid
+     * @param physicalEquipmentName physicalEquipmentName
+     * @return return a list of virtual equipments
+     */
+    List<InVirtualEquipment> findByDigitalServiceUidAndPhysicalEquipmentName(String digitalServiceUid, String physicalEquipmentName, Pageable pageable);
+
+    /**
+     * Count virtual equipments linked to an inventory
+     *
+     * @param inventoryId inventory Id
+     * @return the sum of quantity
+     */
+    @Query("select coalesce(sum(quantity), 0) from InVirtualEquipment ev where ev.inventoryId = :inventoryId")
+    Long sumQuantityByInventoryId(Long inventoryId);
+
+    /**
+     * Count distinct virtual equipments linked to an inventory
+     *
+     * @param inventoryId the unique inventory identifier.
+     * @return the sum of quantity of distinct virtual equipments.
+     */
+    @Query("""
+            select coalesce(sum(quantity), 0)
+            from (
+                select
+                    ive.name as name,
+                    ive.quantity as quantity
+                from
+                    InVirtualEquipment ive
+                where ive.inventoryId = :inventoryId
+                group by
+                    ive.name,
+                    ive.quantity
+            ) as subquery
+            """)
+    Long countQuantityByDistinctNameByInventoryId(Long inventoryId);
 
 
     /**
@@ -73,20 +122,11 @@ public interface InVirtualEquipmentRepository extends JpaRepository<InVirtualEqu
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
 
-    @Transactional
-    @Modifying
-    void deleteByInventoryIdAndPhysicalEquipmentNameIn(Long inventoryId, Set<String> names);
-
-    /**
-     * Count virtual equipments linked to an inventory
-     *
-     * @param inventoryId inventory Id
-     * @return the sum of quantity
-     */
-    @Query("select coalesce(sum(quantity), 0) from InVirtualEquipment ev where ev.inventoryId = :inventoryId")
-    Long sumQuantityByInventoryId(Long inventoryId);
-
     List<InVirtualEquipment> findByDigitalServiceUid(final String digitalServiceUid, final Pageable pageable);
 
     long countByDigitalServiceUid(final String digitalServiceUid);
+
+    long countByDigitalServiceUidAndInfrastructureType(final String digitalServiceUid, final String infrastructureType);
+
+    long countByInventoryIdAndInfrastructureType(final Long inventoryId, final String infrastructureType);
 }

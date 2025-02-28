@@ -36,7 +36,8 @@ public class DatabaseCacheConfiguration {
             "ref_getCountries",
             "boaviztaGetCountryMap",
             "boaviztaGetProviderList",
-            "boaviztaGetInstanceList"
+            "boaviztaGetInstanceList",
+            "getNewElectricityMixQuartiles",
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.database.ttl}")
     public void emptyDatabaseCaches() {

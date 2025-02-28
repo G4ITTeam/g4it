@@ -109,6 +109,9 @@ public abstract class DigitalServiceMapper {
 
         target.setName(source.getName());
         target.setLastUpdateDate(LocalDateTime.now());
+        if (source.getIsNewArch() != null) {
+            target.setIsNewArch(source.getIsNewArch());
+        }
 
         // Merge terminals.
         Optional.ofNullable(target.getTerminals()).orElse(new ArrayList<>())

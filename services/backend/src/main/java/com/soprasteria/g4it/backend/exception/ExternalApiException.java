@@ -15,6 +15,14 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class ExternalApiException extends RuntimeException {
 
+    /**
+     * The HTTP return code.
+     */
+    private final int statusCode;
+
+    /**
+     * The error message.
+     */
     private final String message;
 
 }

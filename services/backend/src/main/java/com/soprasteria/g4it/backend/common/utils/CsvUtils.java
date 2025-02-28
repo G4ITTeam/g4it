@@ -13,6 +13,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 public class CsvUtils {
 
@@ -83,5 +84,13 @@ public class CsvUtils {
         return value.toString();
     }
 
+    public static String printFirst(List<String> list) {
+        if (list == null) return "";
+        return list.getFirst();
+    }
 
+    public static String printSecond(List<String> list) {
+        if (list == null) return "";
+        return list.get(1);
+    }
 }

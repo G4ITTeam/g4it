@@ -124,7 +124,7 @@ public class InventoryEvaluationService {
         InventoryExportReportBO exportReport = inventory.getExportReport();
         if (exportReport == null) {
             // Launch evaluation.
-            return inventoryEvaluationJobService.launchInventoryEvaluation(organization, inventory.getName(), inventoryId, organizationId, criteriaKeyList);
+            return inventoryEvaluationJobService.launchInventoryEvaluation(subscriber, organization, inventory.getName(), inventoryId, organizationId, criteriaKeyList);
         }
 
         // force stopping export job if one is running
@@ -156,7 +156,7 @@ public class InventoryEvaluationService {
         inventoryExportService.updateBatchStatusCode(exportReport.getBatchName(), ExportBatchStatus.REMOVED.name());
 
         // Launch evaluation.
-        return inventoryEvaluationJobService.launchInventoryEvaluation(organization, inventory.getName(), inventoryId, organizationId, criteriaKeyList);
+        return inventoryEvaluationJobService.launchInventoryEvaluation(subscriber, organization, inventory.getName(), inventoryId, organizationId, criteriaKeyList);
     }
 
     /**

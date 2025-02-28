@@ -179,3 +179,28 @@ databaseChangeLog:
               - column:
                   name: task_id
                   descending: true
+
+  - changeSet:
+      id: in-out-create-out-table-application-add-fields
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_application
+            columns:
+              - column:
+                  name: count_value
+                  type: bigint
+              - column:
+                  name: virtual_equipment_name
+                  type: varchar(255)
+
+  - changeSet:
+      id: in-out-add-provider-out_application
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: out_application
+            columns:
+              - column:
+                  name: provider
+                  type: varchar(255)

@@ -9,7 +9,9 @@
 package com.soprasteria.g4it.backend.apiinout.repository;
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,4 +24,7 @@ public interface OutPhysicalEquipmentRepository extends JpaRepository<OutPhysica
 
     List<OutPhysicalEquipment> findByTaskId(Long taskId);
 
+    @Transactional
+    @Modifying
+    void deleteByTaskId(Long taskId);
 }

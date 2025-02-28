@@ -41,7 +41,6 @@ public class NumEcoEvalRepository {
     public static final List<String> IND_TABLES = List.of(
             "ind_indicateur_impact_messagerie",
             "ind_indicateur_impact_application",
-            "ind_indicateur_impact_reseau",
             "ind_indicateur_impact_equipement_virtuel",
             "ind_indicateur_impact_equipement_physique"
     );

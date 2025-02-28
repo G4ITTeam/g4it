@@ -3,6 +3,8 @@ storage
 !storage
 storage/*
 !storage/--INTERNAL-G4IT--
+volume_generation/data
+volume_generation/progress.log
 
 storagetmp/*
 

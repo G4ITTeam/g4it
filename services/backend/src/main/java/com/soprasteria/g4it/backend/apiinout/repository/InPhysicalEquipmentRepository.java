@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 
 import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -41,6 +42,8 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      */
     List<InPhysicalEquipment> findByDigitalServiceUid(String digitalServiceUid);
 
+    List<InPhysicalEquipment> findByDigitalServiceUid(String digitalServiceUid, Pageable pageable);
+
     /**
      * Find physical equipment by the functionally unique fields
      *
@@ -58,6 +61,12 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      */
     List<InPhysicalEquipment> findByInventoryId(Long inventoryId);
 
+    List<InPhysicalEquipment> findByInventoryId(Long inventoryId, Pageable pageable);
+
+    long countByInventoryId(Long inventoryId);
+
+    long countByDigitalServiceUid(String digitalServiceUid);
+
     @Transactional
     @Modifying
     void deleteByInventoryIdAndNameIn(Long inventoryId, Set<String> names);
@@ -71,4 +80,7 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     @Query("select coalesce(sum(quantity), 0) from InPhysicalEquipment ep where ep.inventoryId = :inventoryId")
     Long sumQuantityByInventoryId(Long inventoryId);
 
+    @Transactional
+    @Modifying
+    void deleteByDigitalServiceUid(String digitalServiceUid);
 }

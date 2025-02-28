@@ -32,6 +32,7 @@ export class AdministrationPanelComponent {
                 this.tabMenuList.push({
                     label: this.translate.instant("administration.manage-users"),
                     routerLink: "users",
+                    id: "users-tab",
                 });
             }
 
@@ -39,6 +40,7 @@ export class AdministrationPanelComponent {
                 this.tabMenuList.push({
                     label: this.translate.instant("administration.manage-organizations"),
                     routerLink: "organizations",
+                    id: "organizations-tab",
                 });
             }
         });

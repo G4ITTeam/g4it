@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,18 +40,14 @@ import java.util.Objects;
 @Slf4j
 public class AsyncLoadFilesService implements ITaskExecute {
 
-    @Value("${local.working.folder}")
-    private String localWorkingFolder;
-
     @Autowired
     TaskRepository taskRepository;
-
     @Autowired
     LoadFileService loadFileService;
-
     @Autowired
     LocalFileService localFileService;
-
+    @Value("${local.working.folder}")
+    private String localWorkingFolder;
     @Autowired
     private FileSystem fileSystem;
 
@@ -76,13 +73,17 @@ public class AsyncLoadFilesService implements ITaskExecute {
 
         int fileNumber = 0;
         try {
-            for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)) {
+            for (FileType fileType : List.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD, FileType.APPLICATION)) {
                 for (String filename : filenames) {
                     if (filename.startsWith(fileType.toString())) {
                         details.add(LogUtils.info("Manage file " + loadFileService.getOriginalFilename(fileType, filename)));
                         errors.addAll(loadFileService.manageFile(context, fileType, filename));
-                        task.setProgressPercentage(fileNumber * 100 / filenames.size() + "%");
+
                         fileNumber++;
+
+                        task.setProgressPercentage(fileNumber * 100 / filenames.size() + "%");
+                        task.setLastUpdateDate(LocalDateTime.now());
+                        taskRepository.save(task);
                     }
                 }
             }
@@ -99,7 +100,7 @@ public class AsyncLoadFilesService implements ITaskExecute {
         } catch (AsyncTaskException e) {
             log.error("Async task with id '{}' failed for '{}' with error: ", task.getId(), context.log(), e);
             task.setStatus(TaskStatus.FAILED.toString());
-            details.add(LogUtils.error("Error message: " + e.getMessage()));
+            details.add(LogUtils.error(e.getMessage()));
         } finally {
             task.setErrors(errors);
             task.setDetails(details);

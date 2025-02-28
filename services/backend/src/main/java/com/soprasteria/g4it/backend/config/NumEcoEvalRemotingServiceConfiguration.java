@@ -12,6 +12,14 @@ import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.ImportsAp
 import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.invoker.ApiClient;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.ImportRfrentielsApi;
 import com.soprasteria.g4it.backend.client.gen.connector.apireferentiel.InterneNumEcoEvalApi;
+import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactApplicationService;
+import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipementPhysiqueService;
+import org.mte.numecoeval.calculs.domain.port.input.service.CalculImpactEquipementVirtuelService;
+import org.mte.numecoeval.calculs.domain.port.input.service.DureeDeVieEquipementPhysiqueService;
+import org.mte.numecoeval.calculs.domain.port.input.service.impl.CalculImpactApplicationServiceImpl;
+import org.mte.numecoeval.calculs.domain.port.input.service.impl.CalculImpactEquipementPhysiqueServiceImpl;
+import org.mte.numecoeval.calculs.domain.port.input.service.impl.CalculImpactEquipementVirtuelServiceImpl;
+import org.mte.numecoeval.calculs.domain.port.input.service.impl.DureeDeVieEquipementPhysiqueServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -84,6 +92,27 @@ public class NumEcoEvalRemotingServiceConfiguration {
         apiClient.setBasePath(numEcoEvalReferentialBaseUrl);
 
         return new ImportRfrentielsApi(apiClient);
+    }
+
+    @Bean
+    public DureeDeVieEquipementPhysiqueService dureeDeVieEquipementPhysiqueService() {
+        return new DureeDeVieEquipementPhysiqueServiceImpl();
+    }
+
+    @Bean
+    public CalculImpactEquipementPhysiqueService calculImpactEquipementPhysiqueService(DureeDeVieEquipementPhysiqueService dureeDeVieEquipementPhysiqueService) {
+        return new CalculImpactEquipementPhysiqueServiceImpl(
+                dureeDeVieEquipementPhysiqueService);
+    }
+
+    @Bean
+    CalculImpactEquipementVirtuelService calculImpactEquipementVirtuelService() {
+        return new CalculImpactEquipementVirtuelServiceImpl();
+    }
+
+    @Bean
+    CalculImpactApplicationService calculImpactApplicationService() {
+        return new CalculImpactApplicationServiceImpl();
     }
 
 }

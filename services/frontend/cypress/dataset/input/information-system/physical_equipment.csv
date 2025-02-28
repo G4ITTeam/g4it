@@ -1,0 +1,7 @@
+nomEquipementPhysique;nomEntite;nomSourceDonnee;modele;quantite;type;statut;paysDUtilisation;utilisateur;dateAchat;dateRetrait;nbCoeur;nomCourtDatacenter;consoElecAnnuelle;fabricant;tailleDuDisque;tailleMemoire;typeDeProcesseur
+physical-eq-1;Entity 1;;Physical Server unknown;1;Server;In use;France;;2020-07-08;;;;;;;;
+physical-eq-2;Entity 1;;Physical Server unknown;2;Server;In use;France;;2020-07-28;;;;;;;;
+physical-eq-3;Entity 2;;Physical Server unknown;4;Server;In use;France;;2020-07-08;;;;;;;;
+physical-eq-4;Entity 2;;Physical Server unknown;5;Server;In use;France;;2020-07-28;;;;;;;;
+physical-eq-5;Entity 3;;Physical Server unknown;2;Server;Not used;France;;2020-07-08;2023-06-16;;;;;;;
+physical-eq-6;Entity 3;;Physical Server unknown;10;Server;Not used;France;;2020-07-28;2023-06-16;;;;;;;

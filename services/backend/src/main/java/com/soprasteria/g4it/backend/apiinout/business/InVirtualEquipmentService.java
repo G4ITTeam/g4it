@@ -201,13 +201,29 @@ public class InVirtualEquipmentService {
     }
 
     /**
-     * Delete a virtual equipment
+     * Delete the virtual equipment of a digital service
      *
-     * @param id the virtual equipment id.
+     * @param digitalServiceUid the digital service uid
+     * @param id                the virtual equipment id.
      */
-    public void deleteInVirtualEquipment(final Long id) {
+    public void deleteInVirtualEquipment(final String digitalServiceUid, final Long id) {
+        inVirtualEquipmentRepository.findByDigitalServiceUidAndId(digitalServiceUid, id)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Virtual equipment %d not found in digital service %s", id, digitalServiceUid)));
         inVirtualEquipmentRepository.deleteById(id);
     }
+
+    /**
+     * Delete the virtual equipment of an inventory
+     *
+     * @param inventoryId the inventory id
+     * @param id          the virtual equipment id.
+     */
+    public void deleteInVirtualEquipment(final Long inventoryId, final Long id) {
+        inVirtualEquipmentRepository.findByInventoryIdAndId(inventoryId, id)
+                .orElseThrow(() -> new G4itRestException("404", String.format("Virtual equipment %d not found in inventory %d", id, inventoryId)));
+        inVirtualEquipmentRepository.deleteById(id);
+    }
+
 
 }
 

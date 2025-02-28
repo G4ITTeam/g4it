@@ -23,8 +23,6 @@ public interface InDatacenterMapper {
 
     List<InDatacenterRest> toRest(final List<InDatacenter> source);
 
-    @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "lastUpdateDate", ignore = true)
     InDatacenterRest toRest(final InDatacenter source);
 
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.LocalDateTime.now())")

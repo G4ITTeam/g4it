@@ -36,6 +36,7 @@ test-application:
   image: !reference [build-application, image]
   script:
     - cd "${PROJECT_ROOT_DIR}"
+    - npm i -g @angular/cli@18.2.12
     - npm run test:ci
   coverage: '/Statements\s+:\s(\d+.?\d+)%/'
   # need to explicitly set the same paths: as for the build-application (and same dependencies) for it to work

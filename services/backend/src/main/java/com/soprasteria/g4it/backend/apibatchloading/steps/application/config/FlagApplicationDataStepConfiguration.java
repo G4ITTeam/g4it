@@ -212,7 +212,6 @@ public class FlagApplicationDataStepConfiguration extends AbstractFlagDataStepCo
             @Value("#{jobParameters['local.working.folder']}") final String localWorkingFolder,
             final FileMapperInfo fileInfo) {
         final List<String> headers = new ArrayList<>(List.copyOf(fileInfo.getMapping(FileType.APPLICATION).stream().map(Header::getName).toList()));
-        headers.add("nomEquipementPhysique");
         headers.add("inputFileName");
         headers.add("lineNumber");
         headers.add("message");

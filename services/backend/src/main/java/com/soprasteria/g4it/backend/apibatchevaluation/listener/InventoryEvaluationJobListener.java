@@ -7,6 +7,7 @@
  */
 package com.soprasteria.g4it.backend.apibatchevaluation.listener;
 
+import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.InventoryEvaluationReport;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
@@ -32,12 +33,20 @@ public class InventoryEvaluationJobListener implements JobExecutionListener {
      */
     private final InventoryRepository inventoryRepository;
 
+    private final EvaluatingService evaluatingService;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void beforeJob(final JobExecution jobExecution) {
-        final Inventory processedInventory = inventoryRepository.findById(Objects.requireNonNull(jobExecution.getJobParameters().getLong("inventory.id"))).orElseThrow();
+        Long inventoryId = jobExecution.getJobParameters().getLong("inventory.id");
+        final Inventory processedInventory = inventoryRepository.findById(Objects.requireNonNull(inventoryId)).orElseThrow();
+       // Set Do export for cloud instances
+        processedInventory.setDoExport(true);
+        inventoryRepository.save(processedInventory);
+        evaluatingService.evaluating(
+                jobExecution.getJobParameters().getString("subscriber"), jobExecution.getJobParameters().getLong("organization.id"), inventoryId);
         processedInventory.addEvaluationReport(InventoryEvaluationReport.builder()
                 .batchName(jobExecution.getJobParameters().getString("batch.name"))
                 .createTime(jobExecution.getCreateTime())

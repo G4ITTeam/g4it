@@ -67,7 +67,7 @@ import java.io.Serializable;
                     inner join server s
                         on s.uid = ep.nom_equipement
                     inner join datacenter_digital_service dc
-                        on s.digital_service_uid = dc.digital_service_uid
+                        on s.datacenter_uid = dc.uid
                     inner join ref_sustainable_individual_package sip
                         on sip.criteria = ep.critere
                     where ep.nom_lot = :uid
@@ -105,7 +105,7 @@ import java.io.Serializable;
                     inner join server s
                         on s.uid = vm.server_uid
                     inner join datacenter_digital_service dc
-                        on s.digital_service_uid = dc.digital_service_uid
+                         on s.datacenter_uid = dc.uid
                     inner join ref_sustainable_individual_package sip
                         on sip.criteria = ev.critere
                     where ev.nom_lot = :uid

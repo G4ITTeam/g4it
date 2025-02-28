@@ -10,8 +10,8 @@
             [tableStyle]="{ 'min-width': '50rem' }"
             [rows]="5"
             [paginator]="true"
-            [value]="server.vm ?? []"
-            [totalRecords]="server.vm!.length"
+            [value]="server.vm"
+            [totalRecords]="server.vm.length"
         >
             <ng-template pTemplate="caption">
                 <div class="table-header">
@@ -124,7 +124,7 @@
 </div>
 @if (addVMPanelVisible) {
     <p-sidebar
-        [visible]="true"
+        [(visible)]="addVMPanelVisible"
         position="right"
         styleClass="p-sidebar-lg"
         (onHide)="vmSidePanel.close()"
