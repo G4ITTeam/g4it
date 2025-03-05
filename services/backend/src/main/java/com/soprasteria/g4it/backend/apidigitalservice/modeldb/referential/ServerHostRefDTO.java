@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential;
 
 import lombok.AllArgsConstructor;
@@ -50,4 +50,9 @@ public class ServerHostRefDTO {
      * Annual electricity consumption
      */
     private Integer annualElectricityConsumption;
+
+    /**
+     * Reference
+     */
+    private String reference;
 }

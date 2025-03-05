@@ -1,0 +1,22 @@
+[
+  {
+    "commonFilters": ["Entity 1"],
+    "countValue": 2,
+    "criterion": "CLIMATE_CHANGE",
+    "electricityConsumption": 0.0,
+    "equipmentType": "Server",
+    "filters": ["In use"],
+    "hostingEfficiency": "Medium",
+    "lifecycleStep": "MANUFACTURING",
+    "lifespan": 9.342465753424658,
+    "location": "France",
+    "name": "",
+    "numberOfUsers": 0.0,
+    "peopleEqImpact": 2.702818117220147,
+    "quantity": 3.0,
+    "reference": "blade-server-1",
+    "statusIndicator": "OK",
+    "unit": "kg CO2 eq",
+    "unitImpact": 2300.77392228365
+  }
+]

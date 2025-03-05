@@ -52,6 +52,8 @@ describe("InventoryDataService", () => {
                 type: "test",
                 name: "test",
                 isNewArch: false,
+                doExport: false,
+                doExportVerbose: false,
                 date: new Date("12 April 2023 08:48 UTC"),
                 lastEvaluationReport: {
                     batchStatusCode: "test",
@@ -118,6 +120,8 @@ describe("InventoryDataService", () => {
                 type: "test",
                 name: "test",
                 isNewArch: false,
+                doExport: false,
+                doExportVerbose: false,
                 date: new Date("12 April 2023 08:48 UTC"),
                 lastEvaluationReport: {
                     batchStatusCode: "test",

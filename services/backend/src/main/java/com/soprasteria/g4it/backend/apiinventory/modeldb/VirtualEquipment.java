@@ -8,6 +8,7 @@
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractValidationBaseEntity;
+import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -79,5 +80,54 @@ public class VirtualEquipment extends AbstractValidationBaseEntity implements Se
     @Size(max = 255, message = "{capacitestockage.size}")
     @Pattern(regexp = "[+-]?(\\d*[.])?\\d+|", message = "{capacitestockage.pattern}")
     private String capaciteStockage;
+
+    /**
+     * Used for legacy export
+     */
+    public String getTypeInfrastructure() {
+        return InfrastructureType.NON_CLOUD_SERVERS.name();
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getProvider() {
+        return "";
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getTypeInstance() {
+        return "";
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getQuantite() {
+        return "";
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getLocation() {
+        return "";
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getChargeMoy() {
+        return "";
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getDureeUtilisationAnnuelle() {
+        return "";
+    }
 
 }

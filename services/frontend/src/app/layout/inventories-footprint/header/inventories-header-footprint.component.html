@@ -11,6 +11,7 @@
                 'inventories.title'
                     | translate: { OrganizationName: selectedOrganization }
             "
+            id="my-is-return-button"
         />
 
         <h1 *ngIf="inventory.type === types.INFORMATION_SYSTEM" class="px-2">
@@ -53,6 +54,7 @@
             "
             icon="pi pi-download"
             [label]="'inventories-footprint.header.export' | translate"
+            id="export-inventory-button"
         />
 
         <p-button
@@ -82,11 +84,12 @@
     </div>
     @if (sidebarVisible) {
         <p-sidebar
-            [visible]="true"
+            [(visible)]="sidebarVisible"
             position="right"
             tabIndex="0"
             styleClass="p-sidebar-md w-7"
             (onHide)="sidebarVisible = false"
+            ariaCloseLabel="Close"
         >
             <app-common-editor
                 [content]="inventory.note?.content"
@@ -101,4 +104,4 @@
         </p-sidebar>
     }
 </div>
-<p-confirmPopup [style]="{ width: '450px' }"></p-confirmPopup>
+<p-confirmPopup ariaCloseLabel="close" [style]="{ width: '450px' }"></p-confirmPopup>

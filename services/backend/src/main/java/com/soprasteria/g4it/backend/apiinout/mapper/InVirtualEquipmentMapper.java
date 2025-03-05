@@ -14,6 +14,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * in virtual equipment mapper.
@@ -23,8 +24,6 @@ public interface InVirtualEquipmentMapper {
 
     List<InVirtualEquipmentRest> toRest(final List<InVirtualEquipment> source);
 
-    @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "lastUpdateDate", ignore = true)
     InVirtualEquipmentRest toRest(final InVirtualEquipment source);
 
     @Mapping(target = "lastUpdateDate", expression = "java(java.time.LocalDateTime.now())")

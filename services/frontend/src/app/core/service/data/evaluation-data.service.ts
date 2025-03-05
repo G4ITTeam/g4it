@@ -32,4 +32,8 @@ export class EvaluationDataService {
             headers: headers,
         });
     }
+
+    launchEvaluating(inventoryId: number): Observable<number> {
+        return this.http.post<number>(`${endpoint}/${inventoryId}/evaluating`, null);
+    }
 }

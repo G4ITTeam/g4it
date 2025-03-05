@@ -9,7 +9,7 @@ package com.soprasteria.g4it.backend.apiloadinputfiles.controller;
 
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.LoadInputFilesService;
 import com.soprasteria.g4it.backend.common.task.mapper.TaskMapper;
-import com.soprasteria.g4it.backend.server.gen.api.InventoryLoadingEvaluatingApiDelegate;
+import com.soprasteria.g4it.backend.server.gen.api.InventoryLoadingFilesApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskIdRest;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Service
 @NoArgsConstructor
-public class LoadInputFilesController implements InventoryLoadingEvaluatingApiDelegate {
+public class LoadInputFilesController implements InventoryLoadingFilesApiDelegate {
 
     @Autowired
     LoadInputFilesService loadInputFilesService;

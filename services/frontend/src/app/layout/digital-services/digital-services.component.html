@@ -10,6 +10,7 @@
         styleClass="black-button"
         (onClick)="createNewDigitalService()"
         *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
+        id="add-digital"
     >
         {{ "digital-services.add" | translate }}
     </p-button>
@@ -69,11 +70,12 @@
     </p-accordion>
     @if (sidebarVisible) {
         <p-sidebar
-            [visible]="true"
+            [(visible)]="sidebarVisible"
             position="right"
             styleClass="p-sidebar-md w-7"
             [showCloseIcon]="true"
             (onHide)="sidebarVisible = false"
+            ariaCloseLabel="Close"
         >
             <app-common-editor
                 [content]="selectedDigitalService.note?.content"

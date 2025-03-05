@@ -46,19 +46,16 @@ public class LoadInputFilesService {
 
     @Autowired
     InventoryRepository inventoryRepository;
-
-    @Autowired
-    private FileSystemService fileSystemService;
-
     @Autowired
     @Qualifier("taskExecutorSingleThreaded")
     TaskExecutor taskExecutor;
-
     /**
      * Async Service where is executed the file loading
      */
     @Autowired
     AsyncLoadFilesService asyncLoadFilesService;
+    @Autowired
+    private FileSystemService fileSystemService;
 
     /**
      * Load input files for an inventory
@@ -84,7 +81,7 @@ public class LoadInputFilesService {
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
-        if (virtualEquipments != null) allFiles.put(FileType.EQUIPEMENT_VIRTUEL, virtualEquipments);
+        if (virtualEquipments != null) allFiles.put(FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD, virtualEquipments);
         if (applications != null) allFiles.put(FileType.APPLICATION, applications);
 
         if (allFiles.isEmpty()) return new Task();
@@ -108,7 +105,7 @@ public class LoadInputFilesService {
 
 
         // store files into file storage
-        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)
+        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD, FileType.APPLICATION)
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);

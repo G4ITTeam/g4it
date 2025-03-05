@@ -21,6 +21,7 @@
             [filterFields]="filterFields"
             [datacenters]="allUnmodifiedDatacenters"
             [equipments]="allUnmodifiedEquipments"
+            [inVirtualEquipments]="transformedInVirtualEquipments"
         ></app-inventories-multicriteria-footprint>
     } @else {
         <app-inventories-critere-footprint
@@ -29,6 +30,7 @@
             [filterFields]="filterFields"
             [datacenters]="allUnmodifiedDatacenters"
             [equipments]="allUnmodifiedEquipments"
+            [inVirtualEquipments]="transformedInVirtualEquipments"
         ></app-inventories-critere-footprint>
     }
 </p-scrollPanel>

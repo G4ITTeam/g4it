@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.apireferential.controller;
 
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
+import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.ReferentialGetApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.NoArgsConstructor;
@@ -83,6 +84,8 @@ public class ReferentialGetController implements ReferentialGetApiDelegate {
     @Override
     public ResponseEntity<MatchingItemRest> getMatchingItem(String model, String subscriber) {
         MatchingItemRest matchingItem = referentialGetService.getMatchingItem(model, subscriber);
+        if (matchingItem == null) throw new G4itRestException("404", "Matching item not found");
+
         return new ResponseEntity<>(matchingItem, HttpStatus.OK);
     }
 

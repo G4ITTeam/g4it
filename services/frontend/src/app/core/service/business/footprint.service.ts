@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Observable, tap } from "rxjs";
 import {
     ApplicationFootprint,
+    ApplicationImpact,
     Criterias,
     Impact,
 } from "src/app/core/interfaces/footprint.interface";
@@ -23,6 +24,7 @@ import {
     TransformedDomain,
 } from "../../interfaces/filter.interface";
 import { FootprintCalculated, SumImpact } from "../../interfaces/footprint.interface";
+import { OutApplicationsRest } from "../../interfaces/output.interface";
 
 @Injectable({
     providedIn: "root",
@@ -57,15 +59,19 @@ export class FootprintService {
 
     setUnspecifiedData(footprint: ApplicationFootprint[]) {
         footprint.forEach((element) => {
-            element.impacts.forEach((impact: any) => {
-                for (const key in impact) {
-                    if (impact[key] === "") {
-                        impact[key] = Constants.UNSPECIFIED;
-                    }
-                }
+            element.impacts.forEach((impact) => {
+                this.setUnspecifiedDataImpact(impact);
             });
         });
         return footprint;
+    }
+
+    setUnspecifiedDataImpact(impact: ApplicationImpact) {
+        for (const key in impact) {
+            if (String(impact[key as keyof ApplicationImpact])?.trim() === "") {
+                (impact as any)[key] = Constants.UNSPECIFIED;
+            }
+        }
     }
 
     addImpact(i1: SumImpact, i2: SumImpact): SumImpact {
@@ -81,6 +87,45 @@ export class FootprintService {
             error: i1.error + i2.error,
             total: i1.total + i2.total,
         };
+    }
+
+    setGroupedSumImpacts(
+        filteredImpacts: Impact[],
+        selectedView: string,
+        groupedSumImpacts: Map<string, SumImpact>,
+    ) {
+        for (const impact of filteredImpacts) {
+            let key = this.valueImpact(impact, selectedView)!;
+            if (!key) key = Constants.EMPTY;
+
+            if (!impact.impact) {
+                impact.impact = 0;
+                impact.sip = 0;
+            }
+
+            groupedSumImpacts.set(
+                key,
+                this.addImpact(
+                    groupedSumImpacts.get(key) || { impact: 0, sip: 0 },
+                    impact,
+                ),
+            );
+        }
+    }
+
+    performActionsOnFootprint(
+        viewExist: FootprintCalculated | undefined,
+        impact: Impact,
+        view: FootprintCalculated,
+        footprintCalculated: FootprintCalculated[],
+    ) {
+        if (viewExist) {
+            viewExist.impacts.push(impact);
+            viewExist.total = this.addImpact(viewExist.total, view.total);
+            viewExist.status = this.addStatus(viewExist.status, view.status);
+        } else {
+            footprintCalculated.push(view);
+        }
     }
 
     calculate(
@@ -114,7 +159,7 @@ export class FootprintService {
                       let isPresent = true;
                       for (const field in filtersSet) {
                           let value = this.valueImpact(impact, field)!;
-                          if (value == null) value = Constants.EMPTY;
+                          if (!value) value = Constants.EMPTY;
 
                           if (!filtersSet[field].has(value)) {
                               isPresent = false;
@@ -137,24 +182,7 @@ export class FootprintService {
             };
             const groupedSumImpacts = new Map<string, SumImpact>();
 
-            for (const impact of filteredImpacts) {
-                let key = this.valueImpact(impact, selectedView)!;
-                if (key == null) key = Constants.EMPTY;
-
-                if (!impact.impact) {
-                    impact.impact = 0;
-                    impact.sip = 0;
-                }
-
-                groupedSumImpacts.set(
-                    key,
-                    this.addImpact(
-                        groupedSumImpacts.get(key) || { impact: 0, sip: 0 },
-                        impact,
-                    ),
-                );
-            }
-
+            this.setGroupedSumImpacts(filteredImpacts, selectedView, groupedSumImpacts);
             for (let [dimension, sumImpact] of groupedSumImpacts) {
                 const impact = {
                     criteria,
@@ -174,16 +202,18 @@ export class FootprintService {
                     status: {
                         ok: filteredImpacts.filter(
                             (i) =>
-                                this.valueImpact(i, selectedView) === dimension &&
-                                i.statusIndicator === "OK",
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                    dimension && i.statusIndicator === "OK",
                         ).length,
                         error: filteredImpacts.filter(
                             (i) =>
-                                this.valueImpact(i, selectedView) === dimension &&
-                                i.statusIndicator !== "OK",
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                    dimension && i.statusIndicator !== "OK",
                         ).length,
                         total: filteredImpacts.filter(
-                            (i) => this.valueImpact(i, selectedView) === dimension,
+                            (i) =>
+                                this.checkIfEmpty(this.valueImpact(i, selectedView)!) ===
+                                dimension,
                         ).length,
                     },
                 };
@@ -191,13 +221,12 @@ export class FootprintService {
                 const viewExist = footprintCalculated.find(
                     (data: any) => data.data === view.data,
                 );
-                if (viewExist) {
-                    viewExist.impacts.push(impact);
-                    viewExist.total = this.addImpact(viewExist.total, view.total);
-                    viewExist.status = this.addStatus(viewExist.status, view.status);
-                } else {
-                    footprintCalculated.push(view);
-                }
+                this.performActionsOnFootprint(
+                    viewExist,
+                    impact,
+                    view,
+                    footprintCalculated,
+                );
             }
         }
 
@@ -211,6 +240,13 @@ export class FootprintService {
         }
 
         return { footprintCalculated, criteriaCountMap };
+    }
+
+    checkIfEmpty(input: string): string {
+        if (!input) {
+            return Constants.EMPTY;
+        }
+        return input;
     }
 
     valueImpact(v: Impact, dimension: string) {
@@ -262,26 +298,11 @@ export class FootprintService {
                 const criteriaImpact = impact as any;
                 if (!isEquipment) {
                     (appConstant as ConstantApplicationFilter[]).forEach((fieldObj) => {
-                        const fieldSet = uniqueValues[fieldObj.field] as any;
-
-                        let domainSet = fieldSet[criteriaImpact[fieldObj.field]];
-                        if (!domainSet) {
-                            fieldSet[criteriaImpact[fieldObj.field]] = new Set<string>();
-                        }
-
-                        if (fieldObj.children) {
-                            fieldObj.children.forEach((child) => {
-                                fieldSet[criteriaImpact[fieldObj.field]].add(
-                                    criteriaImpact[child.field],
-                                );
-                            });
-                        } else {
-                            fieldSet.add(criteriaImpact[fieldObj.field]);
-                        }
+                        this.populateSets(uniqueValues, fieldObj, criteriaImpact);
                     });
                 } else {
                     (appConstant as string[]).forEach((fieldObj) => {
-                        uniqueValues[fieldObj].add(criteriaImpact[fieldObj]);
+                        uniqueValues[fieldObj].add(criteriaImpact[fieldObj] ?? "");
                     });
                 }
             });
@@ -299,6 +320,27 @@ export class FootprintService {
         return result;
     }
 
+    populateSets(
+        uniqueValues: { [key: string]: Set<string> },
+        fieldObj: ConstantApplicationFilter,
+        criteriaImpact: any,
+    ) {
+        const fieldSet = uniqueValues[fieldObj.field] as any;
+
+        let domainSet = fieldSet[criteriaImpact[fieldObj.field]];
+        if (!domainSet) {
+            fieldSet[criteriaImpact[fieldObj.field]] = new Set<string>();
+        }
+
+        if (fieldObj.children) {
+            fieldObj.children.forEach((child) => {
+                fieldSet[criteriaImpact[fieldObj.field]].add(criteriaImpact[child.field]);
+            });
+        } else {
+            fieldSet.add(criteriaImpact[fieldObj.field]);
+        }
+    }
+
     convertToDesiredFormat(domainObject: {
         [key: string]: Set<string>;
     }): TransformedDomain[] {
@@ -308,7 +350,7 @@ export class FootprintService {
             const domainEntry: TransformedDomain = {
                 field: "domain",
                 label: domain,
-                key: domain.toLowerCase(),
+                key: domain?.toLowerCase(),
                 checked: true,
                 visible: true,
                 children: [],
@@ -319,7 +361,7 @@ export class FootprintService {
                 domainEntry.children.push({
                     field: "subDomain",
                     label: subDomain,
-                    key: subDomain.toLowerCase(),
+                    key: subDomain?.toLowerCase(),
                     checked: true,
                     visible: true,
                 });
@@ -329,5 +371,28 @@ export class FootprintService {
         }
 
         return result;
+    }
+
+    getTransformOutApplications(outApplication: OutApplicationsRest[]) {
+        return outApplication.map(
+            (outApp) =>
+                ({
+                    criteria: outApp.criterion.toLocaleLowerCase().replaceAll("_", "-"),
+                    applicationName: outApp.name,
+                    domain: outApp.filters?.[0],
+                    subDomain: outApp.filters?.[1],
+                    environment: outApp.environment,
+                    equipmentType: `Cloud ${(outApp?.provider ?? "").toUpperCase()}`,
+                    lifeCycle:
+                        LifeCycleUtils.getLifeCycleMapReverse().get(
+                            outApp.lifecycleStep,
+                        ) ?? outApp.lifecycleStep,
+                    virtualEquipmentName: outApp.virtualEquipmentName,
+                    cluster: outApp.filtersVirtualEquipment?.[0],
+                    impact: outApp.unitImpact,
+                    sip: outApp.peopleEqImpact,
+                    statusIndicator: outApp.statusIndicator,
+                }) as ApplicationImpact,
+        );
     }
 }

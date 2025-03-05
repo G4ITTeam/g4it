@@ -8,15 +8,19 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
+import { differenceInSeconds } from "date-fns";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { lastValueFrom } from "rxjs";
+import { sortByProperty } from "sort-by-property";
 import {
     OrganizationCriteriaRest,
     SubscriberCriteriaRest,
 } from "src/app/core/interfaces/administration.interfaces";
 import {
+    IntegrationReport,
     Inventory,
     InventoryCriteriaRest,
+    TaskRest,
 } from "src/app/core/interfaces/inventory.interfaces";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
@@ -57,6 +61,10 @@ export class InventoryItemComponent implements OnInit {
         criteriaDs: [],
     };
 
+    taskLoading: TaskRest[] = [];
+    taskEvaluating: TaskRest[] = [];
+    integrationReports: IntegrationReport[] = [];
+
     constructor(
         private inventoryService: InventoryService,
         private evaluationService: EvaluationDataService,
@@ -80,20 +88,80 @@ export class InventoryItemComponent implements OnInit {
             this.organization.criteriaIs = organization.criteriaIs!;
             this.organization.criteriaDs = organization.criteriaDs!;
         });
+        if (this.inventory.integrationReports) {
+            this.integrationReports = this.inventory.integrationReports.map((ir) => {
+                if (ir.batchStatusCode === "COMPLETED" && this.inventory.tasks) {
+                    for (const task of this.inventory.tasks.sort(
+                        sortByProperty("creationDate", "asc"),
+                    )) {
+                        const diff = differenceInSeconds(
+                            ir.createTime,
+                            task.creationDate,
+                        );
+                        if (diff > 0 && diff < 30 && task.status !== "COMPLETED") {
+                            ir.batchStatusCode = task.status;
+                            break;
+                        }
+                    }
+                }
+                return ir;
+            });
+        }
+
+        if (this.inventory.tasks) {
+            this.taskLoading = this.inventory.tasks.filter((t) => t.type === "LOADING");
+            this.taskEvaluating = this.inventory.tasks.filter(
+                (t) => t.type === "EVALUATING",
+            );
+        }
     }
 
     isRunning() {
-        if (!this.inventory.lastEvaluationReport) return false;
+        if (this.inventory.isNewArch) {
+            if (!this.inventory.lastTaskEvaluating) return false;
+            return Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(
+                this.inventory.lastTaskEvaluating.status,
+            );
+        } else {
+            if (!this.inventory.lastEvaluationReport) return false;
+            return Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(
+                this.inventory.lastEvaluationReport.batchStatusCode,
+            );
+        }
+    }
+
+    isTaskRunning() {
+        if (!this.inventory.lastTaskEvaluating) return false;
         return Constants.EVALUATION_BATCH_RUNNING_STATUSES.includes(
-            this.inventory.lastEvaluationReport.batchStatusCode,
+            this.inventory.lastTaskEvaluating.status,
         );
     }
 
-    showEquipment = () =>
-        this.inventory.lastEvaluationReport && this.inventory.physicalEquipmentCount > 0;
+    showEquipment = () => {
+        if (this.inventory.isNewArch) {
+            return (
+                this.inventory.lastTaskEvaluating &&
+                this.inventory.physicalEquipmentCount > 0
+            );
+        } else {
+            return (
+                this.inventory.lastEvaluationReport &&
+                this.inventory.physicalEquipmentCount > 0
+            );
+        }
+    };
 
-    showApplication = () =>
-        this.inventory.lastEvaluationReport && this.inventory.applicationCount > 0;
+    showApplication = () => {
+        if (this.inventory.isNewArch) {
+            return (
+                this.inventory.lastTaskEvaluating && this.inventory.applicationCount > 0
+            );
+        } else {
+            return (
+                this.inventory.lastEvaluationReport && this.inventory.applicationCount > 0
+            );
+        }
+    };
 
     confirmDelete(event: Event) {
         this.confirmationService.confirm({
@@ -120,7 +188,12 @@ export class InventoryItemComponent implements OnInit {
     }
 
     redirectFootprint(redirectTo: string): void {
-        if (!this.inventory.lastEvaluationReport) return;
+        if (this.inventory.isNewArch) {
+            if (!this.inventory.lastTaskEvaluating) return;
+        } else {
+            if (!this.inventory.lastEvaluationReport) return;
+        }
+
         const criteriaArrayLength = this.inventory?.criteria?.length;
         let uri = undefined;
 
@@ -152,13 +225,23 @@ export class InventoryItemComponent implements OnInit {
             message: this.translate.instant("inventories.popup.estimate"),
             icon: "pi pi-exclamation-triangle",
             accept: async () => {
-                await lastValueFrom(
-                    this.evaluationService.launchEstimation(
-                        this.inventory.id,
-                        this.inventory.organization,
-                    ),
-                );
-                await TimeUtils.delay(2000);
+                if (this.inventory.isNewArch) {
+                    await lastValueFrom(
+                        this.evaluationService.launchEvaluating(this.inventory.id),
+                    );
+                } else {
+                    await lastValueFrom(
+                        this.evaluationService.launchEstimation(
+                            this.inventory.id,
+                            this.inventory.organization,
+                        ),
+                    );
+                }
+                if (this.inventory.isNewArch) {
+                    await TimeUtils.delay(500);
+                } else {
+                    await TimeUtils.delay(2000);
+                }
                 this.reloadInventoryAndLoop.emit(this.inventory.id);
             },
         });

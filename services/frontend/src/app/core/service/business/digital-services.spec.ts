@@ -17,6 +17,8 @@ import { Constants } from "src/constants";
 import {
     DigitalServiceCloudImpact,
     DigitalServiceServerConfig,
+    DigitalServiceTerminalResponse,
+    DigitalServiceTerminalsImpact,
 } from "../../interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "../data/digital-services-data.service";
 import { DigitalServiceBusinessService } from "./digital-services.service";
@@ -442,5 +444,140 @@ describe("DigitalServiceBusinessService", () => {
             baseName,
         );
         expect(nextAvailableName).toBe(expectedName);
+    });
+
+    it("should transform terminal data correctly", () => {
+        const terminalFootprint: DigitalServiceTerminalResponse[] = [
+            {
+                criteria: "criteria1",
+                impacts: [
+                    {
+                        country: "Country1",
+                        description: "Description1",
+                        sipValue: 10,
+                        rawValue: 20,
+                        unit: "unit1",
+                        acvStep: "step1",
+                        status: "ok",
+                        countValue: 1,
+                        numberUsers: 100,
+                        yearlyUsageTimePerUser: 200,
+                    },
+                    {
+                        country: "Country2",
+                        description: "Description2",
+                        sipValue: 15,
+                        rawValue: 25,
+                        unit: "unit2",
+                        acvStep: "step2",
+                        status: "error",
+                        countValue: 2,
+                        numberUsers: 150,
+                        yearlyUsageTimePerUser: 250,
+                    },
+                ],
+            },
+        ];
+
+        const result: DigitalServiceTerminalsImpact[] =
+            digitalServiceService.transformTerminalData(terminalFootprint);
+
+        expect(result).toEqual([
+            {
+                criteria: "criteria1",
+                impactCountry: [
+                    {
+                        name: "Country1",
+                        totalSipValue: 10,
+                        rawValue: 20,
+                        unit: "unit1",
+                        totalNbUsers: 25,
+                        avgUsageTime: 200,
+                        impact: [
+                            {
+                                acvStep: "step1",
+                                sipValue: 10,
+                                rawValue: 20,
+                                unit: "unit1",
+                                status: "ok",
+                                statusCount: {
+                                    ok: 0,
+                                    error: 1,
+                                    total: 1,
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        name: "Country2",
+                        totalSipValue: 15,
+                        rawValue: 25,
+                        unit: "unit2",
+                        totalNbUsers: 37.5,
+                        avgUsageTime: 250,
+                        impact: [
+                            {
+                                acvStep: "step2",
+                                sipValue: 15,
+                                rawValue: 25,
+                                unit: "unit2",
+                                status: "error",
+                                statusCount: {
+                                    ok: 0,
+                                    error: 2,
+                                    total: 2,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                impactType: [
+                    {
+                        name: "Description1",
+                        totalSipValue: 10,
+                        rawValue: 20,
+                        unit: "unit1",
+                        totalNbUsers: 25,
+                        avgUsageTime: 200,
+                        impact: [
+                            {
+                                acvStep: "step1",
+                                sipValue: 10,
+                                rawValue: 20,
+                                unit: "unit1",
+                                status: "ok",
+                                statusCount: {
+                                    ok: 0,
+                                    error: 1,
+                                    total: 1,
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        name: "Description2",
+                        totalSipValue: 15,
+                        rawValue: 25,
+                        unit: "unit2",
+                        totalNbUsers: 37.5,
+                        avgUsageTime: 250,
+                        impact: [
+                            {
+                                acvStep: "step2",
+                                sipValue: 15,
+                                rawValue: 25,
+                                unit: "unit2",
+                                status: "error",
+                                statusCount: {
+                                    ok: 0,
+                                    error: 2,
+                                    total: 2,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]);
     });
 });

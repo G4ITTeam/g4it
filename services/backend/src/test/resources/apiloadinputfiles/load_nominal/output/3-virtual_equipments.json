@@ -1,0 +1,62 @@
+[
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "filters": [
+      "Cluster 1"
+    ],
+    "id": 1,
+    "infrastructureType": "NON_CLOUD_SERVERS",
+    "name": "virtual-eq-1-1",
+    "physicalEquipmentName": "physical-eq-1",
+    "quantity": 1.0,
+    "type": "calcul",
+    "vcpuCoreNumber": 4.0
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "filters": [
+      "Cluster 1"
+    ],
+    "id": 2,
+    "infrastructureType": "NON_CLOUD_SERVERS",
+    "name": "virtual-eq-1-2",
+    "physicalEquipmentName": "physical-eq-1",
+    "quantity": 1.0,
+    "type": "calcul",
+    "vcpuCoreNumber": 2.0
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "filters": [
+      "Cluster 2"
+    ],
+    "id": 3,
+    "infrastructureType": "NON_CLOUD_SERVERS",
+    "name": "virtual-eq-2-1",
+    "physicalEquipmentName": "physical-eq-2",
+    "quantity": 1.0,
+    "type": "calcul",
+    "vcpuCoreNumber": 2.0
+  },
+  {
+    "commonFilters": [
+      "Entity 1"
+    ],
+    "filters": [
+      "Cluster 2"
+    ],
+    "id": 4,
+    "infrastructureType": "NON_CLOUD_SERVERS",
+    "name": "virtual-eq-2-2",
+    "physicalEquipmentName": "physical-eq-2",
+    "quantity": 1.0,
+    "type": "calcul",
+    "vcpuCoreNumber": 1.0
+  }
+]

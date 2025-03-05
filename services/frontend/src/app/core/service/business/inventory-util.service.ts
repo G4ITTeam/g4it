@@ -19,6 +19,7 @@ import {
     PhysicalEquipmentsElecConsumption,
     Stat,
 } from "../../interfaces/footprint.interface";
+import { InVirtualEquipmentRest } from "../../interfaces/input.interface";
 import { InventoryFilterSet } from "../../interfaces/inventory.interfaces";
 import { DecimalsPipe } from "../../pipes/decimal.pipe";
 import { IntegerPipe } from "../../pipes/integer.pipe";
@@ -94,9 +95,9 @@ export class InventoryUtilService {
             filtersSet[item].has(Constants.ALL),
         );
 
-        const impacts = footprint[this.maxCriteriaAndStep(footprint)[0]].impacts.filter(
-            (impact) => impact.acvStep === this.maxCriteriaAndStep(footprint)[1],
-        );
+        const impacts = footprint[this.maxCriteriaAndStep(footprint)[0]].impacts
+            .filter((impact) => impact.acvStep === this.maxCriteriaAndStep(footprint)[1])
+            .filter((i) => i.status !== Constants.CLOUD_SERVICES);
 
         const physicalEquipmentCount = hasAllFilters
             ? impacts.reduce((n, impact) => n + impact.countValue, 0)
@@ -111,6 +112,7 @@ export class InventoryUtilService {
               });
 
         let physicalEquipmentSum = 0;
+        let poidsSum = 0;
 
         filteredEquipmentsAvgAge.forEach((physicalEquipment) => {
             let { poids, ageMoyen } = physicalEquipment;
@@ -118,6 +120,7 @@ export class InventoryUtilService {
             ageMoyen = ageMoyen || 0;
 
             physicalEquipmentSum += poids * ageMoyen;
+            poidsSum += poids;
         });
 
         const filteredEquipmentsLowImpact = hasAllFilters
@@ -156,12 +159,63 @@ export class InventoryUtilService {
 
         return this.getEquipmentStats(
             physicalEquipmentCount,
-            physicalEquipmentCount == 0
-                ? undefined
-                : physicalEquipmentSum / physicalEquipmentCount,
+            physicalEquipmentCount == 0 ? undefined : physicalEquipmentSum / poidsSum,
             (lowImpactPhysicalEquipmentCount / physicalEquipmentTotalCount) * 100,
             elecConsumptionSum,
         );
+    }
+
+    computeCloudStats(
+        inVirtualEquipments: InVirtualEquipmentRest[],
+        filters: Filter<string>,
+        filterFields: string[],
+    ): Stat[] {
+        const filtersSet: InventoryFilterSet = this.createFiltersSet(
+            filters,
+            filterFields,
+        );
+        const hasAllFilters = this.checkAllFilters(filtersSet);
+
+        const cloudLength = hasAllFilters
+            ? inVirtualEquipments.reduce((n, impact) => n + (impact?.quantity ?? 0), 0)
+            : inVirtualEquipments
+                  .filter((impact) =>
+                      this.isItemPresent(impact as any as Impact, filtersSet),
+                  )
+                  .reduce((n, impact) => n + (impact?.quantity ?? 0), 0);
+
+        return this.getCloudStats(cloudLength);
+    }
+
+    private createFiltersSet(
+        filters: Filter<string>,
+        filterFields: string[],
+    ): InventoryFilterSet {
+        const filtersSet: InventoryFilterSet = {};
+        filterFields.forEach((field) => (filtersSet[field] = new Set(filters[field])));
+        return filtersSet;
+    }
+
+    private checkAllFilters(filtersSet: InventoryFilterSet): boolean {
+        return Object.keys(filtersSet).every((item) =>
+            filtersSet[item].has(Constants.ALL),
+        );
+    }
+
+    getCloudStats(count: number = NaN) {
+        return [
+            {
+                label: this.decimalsPipe.transform(count),
+                value: isNaN(count) ? undefined : count,
+                description: this.translate.instant(
+                    "inventories-footprint.global.tooltip.nb-cloud",
+                ),
+                title: this.translate.instant(
+                    "inventories-footprint.global.cloud-instances",
+                ),
+                lang: "en",
+            },
+        ];
     }
 
     getEquipmentStats(
@@ -189,8 +243,9 @@ export class InventoryUtilService {
                 title: this.translate.instant("inventories-footprint.global.ave-age"),
             },
             {
-                label: `${this.integerPipe.transform(lowImpact)}%`,
+                label: `${this.integerPipe.transform(lowImpact)}`,
                 value: isNaN(lowImpact) ? undefined : lowImpact,
+                unit: "%",
                 description: this.translate.instant(
                     "inventories-footprint.global.tooltip.low-impact",
                 ),

@@ -20,11 +20,12 @@ export const environment = {
         enabled: "false",
     },
     frontEndUrl: "http://localhost:4200",
+    showBetaFeatures: "true",
     matomo: {
-        trackerUrl: "", // DO NOT COMMIT AN OTHER VALUE
-        siteId: "0",
+        matomoTagManager: {
+            containerUrl: "",
+        },
     },
-    showBetaFeatures: "true"
 };
 
 /*

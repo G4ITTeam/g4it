@@ -72,7 +72,7 @@ public class InVirtualEquipmentDigitalServiceController implements DigitalServic
     @Override
     public ResponseEntity<Void> deleteDigitalServiceInputsVirtualEquipmentRest(final String subscriber, final Long organization, final String digitalServiceUid, final Long id) {
         digitalServiceService.updateLastUpdateDate(digitalServiceUid);
-        inVirtualEquipmentService.deleteInVirtualEquipment(id);
+        inVirtualEquipmentService.deleteInVirtualEquipment(digitalServiceUid, id);
         return ResponseEntity.noContent().build();
     }
 

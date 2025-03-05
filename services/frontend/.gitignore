@@ -44,5 +44,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Local env file
-src/environments/environment.local.ts
+# Cypress
+cypress/report/*
+cypress/screenshots/
+!cypress/report/result.css
+!cypress/report/description.json

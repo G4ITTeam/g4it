@@ -365,6 +365,12 @@ components:
             type: string
         isNewArch:
           type: boolean
+        doExport:
+          type: boolean
+          default: false
+        doExportVerbose:
+          type: boolean
+          default: false
         integrationReports:
           type: array
           items:
@@ -554,6 +560,8 @@ components:
           type: number
           format: double
         statusIndicator:
+          type: string
+        provider:
           type: string
 
     ApplicationVmIndicatorRest:
@@ -1061,6 +1069,15 @@ components:
         value:
           description: Network type value
           type: string
+        type:
+          description: Network type type
+          type: string
+        annualQuantityOfGo:
+          description: Network type annualQuantityOfGo
+          type: number
+        country:
+          description: Network type country
+          type: string
     ServerHostRefRest:
       description: Server Host referential
       type: object
@@ -1071,6 +1088,12 @@ components:
           format: int64
         value:
           description: Server host value
+          type: string
+        type:
+          description: Server host type
+          type: string
+        reference:
+          description: Server host reference
           type: string
         characteristic:
           type: array
@@ -1142,7 +1165,12 @@ components:
         isNewArch:
           type: boolean
           default: false
-
+        doExport:
+          type: boolean
+          default: false
+        doExportVerbose:
+          type: boolean
+          default: false
     InventoryUpdateRest:
       description: Inventory Create information
       type: object
@@ -1158,6 +1186,12 @@ components:
             type: string
         note:
           $ref: "#/components/schemas/NoteUpsertRest"
+        doExport:
+          type: boolean
+          default: false
+        doExportVerbose:
+          type: boolean
+          default: false
 
     NoteRest:
       description: Note for a digital service or IS

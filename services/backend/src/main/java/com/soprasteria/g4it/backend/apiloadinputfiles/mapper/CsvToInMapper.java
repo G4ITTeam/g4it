@@ -8,6 +8,7 @@
 
 package com.soprasteria.g4it.backend.apiloadinputfiles.mapper;
 
+import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InApplicationRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InDatacenterRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InPhysicalEquipmentRest;
@@ -59,17 +60,24 @@ public interface CsvToInMapper {
     }
 
     default InVirtualEquipmentRest csvInVirtualEquipmentToRest(CSVRecord csvRecord, final Long inventoryId) {
+
+        Double workload = readDouble(csvRecord, "chargeMoy");
+
         return InVirtualEquipmentRest.builder()
                 .name(read(csvRecord, "nomEquipementVirtuel"))
                 .inventoryId(inventoryId)
                 .physicalEquipmentName(read(csvRecord, "nomEquipementPhysique"))
-                .quantity(readDouble(csvRecord, "quantite"))
+                .quantity(readDouble(csvRecord, "quantite", 1d))
                 .type(read(csvRecord, "typeEqv"))
                 .vcpuCoreNumber(readDouble(csvRecord, "vCPU"))
                 .allocationFactor(readDouble(csvRecord, "cleRepartition"))
                 .electricityConsumption(readDouble(csvRecord, "consoElecAnnuelle"))
-                .quantity(1d)
-                .infrastructureType("ON_PREMISE")
+                .infrastructureType(read(csvRecord, "typeInfrastructure", InfrastructureType.NON_CLOUD_SERVERS.name()))
+                .provider(read(csvRecord, "provider"))
+                .instanceType(read(csvRecord, "typeInstance"))
+                .location(read(csvRecord, "location"))
+                .durationHour(readDouble(csvRecord, "dureeUtilisationAnnuelle"))
+                .workload(workload == null ? null : workload / 100.0)
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(read(csvRecord, "cluster", "")))
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))

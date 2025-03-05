@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.model;
 
 import lombok.Data;
@@ -30,6 +30,16 @@ public class ServerHostBO {
      * Value.
      */
     private String value;
+
+    /**
+     * Reference.
+     */
+    private String reference;
+
+    /**
+     * Type.
+     */
+    private String type;
 
     /**
      * Default characteristics

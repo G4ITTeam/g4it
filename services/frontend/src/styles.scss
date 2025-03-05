@@ -157,6 +157,10 @@ main {
     font-size: 0.6rem;
 }
 
+.text-hidden {
+    font-size: 0 !important;
+}
+
 .header-button {
     @include styleclass("uppercase py-3 px-4 letter-spacing-2 mx-2");
 }
@@ -944,7 +948,7 @@ div.label-input-div-medium {
 }
 
 .p-dialog .p-dialog-header .p-dialog-title {
-    color: red;
+    color: #b00020;
 }
 
 .full-screen {

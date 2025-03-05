@@ -103,7 +103,11 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
 
     exportResult() {
         this.footprintService.sendExportRequest(this.inventoryId).subscribe((res) => {
-            this.batchStatusCode = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES[0];
+            if (this.inventory.isNewArch) {
+                this.batchStatusCode = Constants.EXPORT_BATCH_GENERATED;
+            } else {
+                this.batchStatusCode = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES[0];
+            }
         });
         this.loopInventories();
     }

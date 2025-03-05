@@ -4,9 +4,10 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apiindicator.modeldb.numecoeval;
 
+import com.soprasteria.g4it.backend.common.utils.InfrastructureType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -96,4 +97,24 @@ public class VirtualEquipmentIndicator extends CommonIndicatorExport {
     @Column(name = "cluster")
     private String cluster;
 
+    /**
+     * Used for legacy export
+     */
+    public String getInfrastructureType() {
+        return InfrastructureType.NON_CLOUD_SERVERS.name();
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getProvider() {
+        return "";
+    }
+
+    /**
+     * Used for legacy export
+     */
+    public String getInstanceType() {
+        return "";
+    }
 }

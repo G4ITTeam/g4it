@@ -5,24 +5,44 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, inject, OnDestroy, OnInit, signal } from "@angular/core";
+import {
+    Component,
+    computed,
+    inject,
+    OnDestroy,
+    OnInit,
+    Signal,
+    signal,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EChartsOption } from "echarts";
-import { takeUntil } from "rxjs";
+import { firstValueFrom, takeUntil } from "rxjs";
 import {
     DigitalService,
     DigitalServiceCloudImpact,
-    DigitalServiceCloudResponse,
     DigitalServiceFootprint,
     DigitalServiceNetworksImpact,
     DigitalServiceServersImpact,
     DigitalServiceTerminalResponse,
     DigitalServiceTerminalsImpact,
 } from "src/app/core/interfaces/digital-service.interfaces";
+import {
+    OutPhysicalEquipmentRest,
+    OutVirtualEquipmentRest,
+} from "src/app/core/interfaces/output.interface";
 import { DecimalsPipe } from "src/app/core/pipes/decimal.pipe";
 import { IntegerPipe } from "src/app/core/pipes/integer.pipe";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { DigitalServicesDataService } from "src/app/core/service/data/digital-services-data.service";
+import { OutPhysicalEquipmentsService } from "src/app/core/service/data/in-out/out-physical-equipments.service";
+import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
+import {
+    convertToGlobalVision,
+    transformOutPhysicalEquipmentsToNetworkData,
+    transformOutPhysicalEquipmentstoServerData,
+    transformOutPhysicalEquipmentsToTerminalData,
+    transformOutVirtualEquipmentsToCloudData,
+} from "src/app/core/service/mapper/digital-service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { Constants } from "src/constants";
@@ -37,6 +57,8 @@ export class DigitalServicesFootprintDashboardComponent
     implements OnInit, OnDestroy
 {
     private digitalServiceStore = inject(DigitalServiceStoreService);
+    private outPhysicalEquipmentsService = inject(OutPhysicalEquipmentsService);
+    private outVirtualEquipmentsService = inject(OutVirtualEquipmentsService);
 
     chartType = signal("radial");
     showInconsitencyBtn = false;
@@ -60,10 +82,59 @@ export class DigitalServicesFootprintDashboardComponent
 
     globalVisionChartData: DigitalServiceFootprint[] | undefined;
 
-    networkData: DigitalServiceNetworksImpact[] = [];
-    serverData: DigitalServiceServersImpact[] = [];
-    terminalData: DigitalServiceTerminalsImpact[] = [];
-    cloudData: DigitalServiceCloudImpact[] = [];
+    outPhysicalEquipments: OutPhysicalEquipmentRest[] = [];
+    outVirtualEquipments: OutVirtualEquipmentRest[] = [];
+
+    oldNetworkData = signal<DigitalServiceNetworksImpact[]>([]);
+    oldCloudData = signal<DigitalServiceCloudImpact[]>([]);
+    oldServerData = signal<DigitalServiceServersImpact[]>([]);
+    oldTerminalData = signal<DigitalServiceTerminalsImpact[]>([]);
+
+    cloudData = computed(() => {
+        if (this.digitalServiceStore.isNewArch()) {
+            if (this.outVirtualEquipments === undefined) return [];
+            return transformOutVirtualEquipmentsToCloudData(
+                this.outVirtualEquipments,
+                this.digitalServiceStore.countryMap(),
+            );
+        } else {
+            return this.oldCloudData();
+        }
+    });
+
+    networkData: Signal<DigitalServiceNetworksImpact[]> = computed(() => {
+        if (this.digitalServiceStore.isNewArch()) {
+            return transformOutPhysicalEquipmentsToNetworkData(
+                this.outPhysicalEquipments,
+                this.digitalServiceStore.networkTypes(),
+            );
+        } else {
+            return this.oldNetworkData();
+        }
+    });
+
+    serverData: Signal<DigitalServiceServersImpact[]> = computed(() => {
+        if (this.digitalServiceStore.isNewArch()) {
+            return transformOutPhysicalEquipmentstoServerData(
+                this.outPhysicalEquipments,
+                this.outVirtualEquipments,
+                this.digitalServiceStore.serverTypes(),
+            );
+        } else {
+            return this.oldServerData();
+        }
+    });
+
+    terminalData: Signal<DigitalServiceTerminalsImpact[]> = computed(() => {
+        if (this.digitalServiceStore.isNewArch()) {
+            return transformOutPhysicalEquipmentsToTerminalData(
+                this.outPhysicalEquipments,
+                this.digitalServiceStore.terminalDeviceTypes(),
+            );
+        } else {
+            return this.oldTerminalData();
+        }
+    });
 
     calculatedCriteriaList: string[] = [];
 
@@ -78,18 +149,44 @@ export class DigitalServicesFootprintDashboardComponent
         super(translate, integerPipe, decimalsPipe, globalStore);
     }
 
-    ngOnInit() {
-        this.digitalServicesDataService.digitalService$
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((ds: DigitalService) => {
-                this.digitalService = ds;
-                this.retrieveFootprintData(this.digitalService.uid);
-                this.digitalService.criteria = ds.criteria;
-                if (this.impacts?.length === 1) {
-                    this.selectedCriteria = this.impacts[0]?.name;
-                    this.chartType.set("pie");
-                }
-            });
+    async ngOnInit() {
+        this.digitalService = await firstValueFrom(
+            this.digitalServicesDataService.digitalService$,
+        );
+        if (this.digitalService.isNewArch) {
+            const [outPhysicalEquipments, outVirtualEquipments] = await Promise.all([
+                firstValueFrom(
+                    this.outPhysicalEquipmentsService.get(this.digitalService.uid),
+                ),
+                firstValueFrom(
+                    this.outVirtualEquipmentsService.getByDigitalService(
+                        this.digitalService.uid,
+                    ),
+                ),
+            ]);
+            this.outPhysicalEquipments = outPhysicalEquipments;
+            this.outVirtualEquipments = outVirtualEquipments;
+
+            this.retrieveFootprintData(
+                this.digitalService.uid,
+                this.digitalService.isNewArch,
+            );
+            if (this.impacts?.length === 1) {
+                this.selectedCriteria = this.impacts[0]?.name;
+                this.chartType.set("pie");
+            }
+        } else {
+            this.digitalServicesDataService.digitalService$
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((ds: DigitalService) => {
+                    this.digitalService = ds;
+                    this.retrieveFootprintData(
+                        this.digitalService.uid,
+                        this.digitalService.isNewArch,
+                    );
+                    this.digitalService.criteria = ds.criteria;
+                });
+        }
     }
 
     initImpacts(): void {
@@ -106,60 +203,92 @@ export class DigitalServicesFootprintDashboardComponent
         });
     }
 
-    retrieveFootprintData(uid: string): void {
+    retrieveFootprintData(uid: string, isNewArch: boolean) {
         this.calculatedCriteriaList = [];
-        this.digitalServicesService
-            .getFootprint(uid)
-            .subscribe((footprint: DigitalServiceFootprint[]) => {
-                this.globalVisionChartData = footprint;
-                this.showInconsitencyBtn = this.globalVisionChartData
-                    .flatMap((footprint) => footprint?.impacts)
-                    .some(
-                        (footprint) =>
-                            footprint?.status === Constants.DATA_QUALITY_STATUS.error,
-                    );
-                if (footprint.length > 0) {
-                    footprint[0].impacts.forEach((impact) => {
-                        this.calculatedCriteriaList.push(impact.criteria);
-                    });
-                }
-                this.initImpacts();
-                this.setCriteriaButtons(footprint);
-                if (footprint.length > 0) {
-                    this.noData = false;
-                } else {
-                    this.noData = true;
-                }
-            });
-
-        this.digitalServicesService
-            .getNetworksIndicators(uid)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((networkFootprint: DigitalServiceNetworksImpact[]) => {
-                this.networkData = networkFootprint;
-            });
-        this.digitalServicesService
-            .getServersIndicators(uid)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((serverFootprint: DigitalServiceServersImpact[]) => {
-                this.serverData = serverFootprint;
-            });
-        this.digitalServicesService
-            .getCloudsIndicators(uid)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((cloudFootprint: DigitalServiceCloudResponse[]) => {
-                this.cloudData = this.digitalServicesService.transformCloudData(
-                    cloudFootprint,
-                    this.digitalServiceStore.countryMap(),
+        if (isNewArch) {
+            this.globalVisionChartData = convertToGlobalVision(
+                this.outPhysicalEquipments,
+                this.outVirtualEquipments,
+            );
+            this.showInconsitencyBtn = this.globalVisionChartData
+                .flatMap((footprint) => footprint?.impacts)
+                .some((footprint) =>
+                    Constants.DATA_QUALITY_ERROR.includes(footprint?.status),
                 );
-            });
-        this.digitalServicesService
-            .getTerminalsIndicators(uid)
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((terminalFootprint: DigitalServiceTerminalResponse[]) => {
-                this.terminalData =
-                    this.digitalServicesService.transformTerminalData(terminalFootprint);
-            });
+
+            if (this.globalVisionChartData.length > 0) {
+                this.globalVisionChartData[0].impacts.forEach((impact) => {
+                    this.calculatedCriteriaList.push(impact.criteria);
+                });
+            }
+            this.initImpacts();
+            this.setCriteriaButtons(this.globalVisionChartData);
+            if (this.globalVisionChartData.length > 0) {
+                this.noData = false;
+            } else {
+                this.noData = true;
+            }
+        } else {
+            this.digitalServicesService
+                .getFootprint(uid)
+                .subscribe((footprint: DigitalServiceFootprint[]) => {
+                    this.globalVisionChartData = footprint;
+                    this.showInconsitencyBtn = this.globalVisionChartData
+                        .flatMap((footprint) => footprint?.impacts)
+                        .some(
+                            (footprint) =>
+                                footprint?.status === Constants.DATA_QUALITY_STATUS.error,
+                        );
+                    if (footprint.length > 0) {
+                        footprint[0].impacts.forEach((impact) => {
+                            this.calculatedCriteriaList.push(impact.criteria);
+                        });
+                    }
+                    this.initImpacts();
+                    this.setCriteriaButtons(footprint);
+                    if (footprint.length > 0) {
+                        this.noData = false;
+                    } else {
+                        this.noData = true;
+                    }
+                    if (this.impacts?.length === 1) {
+                        this.selectedCriteria = this.impacts[0]?.name;
+                        this.chartType.set("pie");
+                    }
+                });
+            this.digitalServicesService
+                .getNetworksIndicators(uid)
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((networkFootprint: DigitalServiceNetworksImpact[]) => {
+                    this.oldNetworkData.set(networkFootprint);
+                });
+            this.digitalServicesService
+                .getServersIndicators(uid)
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((serverFootprint: DigitalServiceServersImpact[]) => {
+                    this.oldServerData.set(serverFootprint);
+                });
+            this.digitalServicesService
+                .getTerminalsIndicators(uid)
+                .pipe(takeUntil(this.ngUnsubscribe))
+                .subscribe((terminalFootprint: DigitalServiceTerminalResponse[]) => {
+                    this.oldTerminalData.set(
+                        this.digitalServicesService.transformTerminalData(
+                            terminalFootprint,
+                        ),
+                    );
+                });
+            this.digitalServicesService
+                .getCloudsIndicators(uid)
+                .subscribe((cloudIndicators) => {
+                    this.oldCloudData.set(
+                        this.digitalServicesService.transformCloudData(
+                            cloudIndicators,
+                            this.digitalServiceStore.countryMap(),
+                        ),
+                    );
+                });
+        }
     }
 
     handleChartChange(criteria: string) {

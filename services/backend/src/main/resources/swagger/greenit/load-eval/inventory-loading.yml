@@ -1,0 +1,70 @@
+openapi: "3.0.3"
+info:
+  title: Swagger GreenIT - Open API 3.0 - Inventory Loading and Evaluating
+  description: This is a Inventory Server based on the OpenAPI 3.0 specification.
+  version: '1.0.0'
+
+tags:
+  - name: inventory-loading-files
+    description: All endpoint for the organization's inventory loading
+
+paths:
+  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/load-input-files:
+    parameters:
+      - $ref: '#/components/parameters/subscriberPathParam'
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+      - in: header
+        name: Accept-Language
+        schema:
+          type: string
+    post:
+      summary: Launch loading batch
+      operationId: launchloadInputFiles
+      x-custom-role: "hasRole('INVENTORY_WRITE')"
+      tags:
+        - inventory-loading-files
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                DATACENTER:
+                  description: List of file of datacenter
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                EQUIPEMENT_PHYSIQUE:
+                  description: List of file of physical equipment
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                EQUIPEMENT_VIRTUEL:
+                  description: List of file of virtual equipment
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                APPLICATION:
+                  description: List of file of applications
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: The task id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskIdRest"
+        '400':
+          $ref: "#/components/responses/BadRequestError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: "#/components/responses/InternalServerError"

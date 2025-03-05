@@ -20,12 +20,15 @@ import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryCreateRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -62,6 +65,9 @@ public class InventoryService {
     @Autowired
     private InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
     /**
      * Retrieve the last batch name in inventory.
      *
@@ -84,8 +90,15 @@ public class InventoryService {
      * @return number of criteria on which evaluation was done
      */
     public Long getCriteriaNumber(final String batchName) {
-        InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
-        return (long) evaluationReport.getCriteria().size();
+        // isNewArch mode
+        if (StringUtils.isNumeric(batchName)) {
+            Task task = taskRepository.findById(Long.parseLong(batchName)).orElseThrow();
+            return (long) task.getCriteria().size();
+        } else {
+            InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
+            return (long) evaluationReport.getCriteria().size();
+        }
+
     }
 
     /**
@@ -158,7 +171,8 @@ public class InventoryService {
             throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationId));
         }
 
-        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest.getName(), inventoryCreateRest.getType().name(), inventoryCreateRest.getIsNewArch());
+
+        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest);
 
         // Deprecated inventoryDate, used to better revert if needed
         if (InventoryType.INFORMATION_SYSTEM.name().equals(inventoryCreateRest.getType().name())) {
@@ -186,6 +200,8 @@ public class InventoryService {
 
         final Inventory inventoryToSave = inventory.get();
         inventoryToSave.setName(inventoryUpdateRest.getName());
+        inventoryToSave.setDoExport(inventoryUpdateRest.getDoExport() == null || inventoryUpdateRest.getDoExport());
+        inventoryToSave.setDoExportVerbose(inventoryUpdateRest.getDoExportVerbose() == null || inventoryUpdateRest.getDoExportVerbose());
 
         List<String> currentCriteria = inventoryToSave.getCriteria();
         List<String> newCriteria = inventoryUpdateRest.getCriteria();
