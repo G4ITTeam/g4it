@@ -1,8 +1,3 @@
-*
-
 !Dockerfile
-
 !dist
-
-!nginx
-
+!mock-server
