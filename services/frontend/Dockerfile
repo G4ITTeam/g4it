@@ -7,7 +7,7 @@ RUN npm ci \
     && npm run build
 
 FROM nginx:latest
-COPY --from=build /app/dist/ /usr/share/nginx/html
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 ENV JSFOLDER=/usr/share/nginx/html
 COPY nginx/25-inject-env-var.sh /docker-entrypoint.d/25-inject-env-var.sh
