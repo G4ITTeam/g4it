@@ -2,7 +2,7 @@
  
 ### Getting started
 
-To start the project, follow these steps:
+To start the project, follow these steps :
 
 ```
 npm i
