@@ -2,7 +2,8 @@ name: Dependency Check Backend
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - 'services/backend/**'
     paths:
       - services/backend/**
 

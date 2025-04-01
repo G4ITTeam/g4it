@@ -1,8 +1,13 @@
 name: Frontend - Build - Test - Analyze
 on:
+  push:
+    branches:
+      - 'services/backend/**'
+    tags-ignore:
+      - '*'
   pull_request:
     paths:
-      - "services/frontend/**"
+      - "services/backend/**"
     types: [opened, synchronize, reopened]
 
 jobs:

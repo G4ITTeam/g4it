@@ -2,7 +2,8 @@ name: Keycloak Docker Image Publish
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - '*'
     paths:
       - services/keycloak/**
     tags:

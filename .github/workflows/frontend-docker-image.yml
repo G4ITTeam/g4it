@@ -2,7 +2,8 @@ name: Frontend Docker Image Scan and Publish
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - '*'
     paths:
       - services/frontend/**
     tags:
