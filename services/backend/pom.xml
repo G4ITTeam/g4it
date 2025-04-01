@@ -90,7 +90,7 @@
 
     <dependencies>
 
-        <!-- NumEcoEval library -->
+        <!-- NumEcoEval library, we only depend on the liberary -->
         <dependency>
             <groupId>org.mte.numecoeval</groupId>
             <artifactId>calculs</artifactId>

@@ -1,5 +1,5 @@
 ## Things to know to happily work on this project 🌈
-
+ 
 ### Getting started
 
 To start the project, follow these steps:
