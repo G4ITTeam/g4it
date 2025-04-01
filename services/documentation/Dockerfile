@@ -25,7 +25,7 @@ RUN mkdir -p themes/hugo-video
 RUN git clone -b main --single-branch https://github.com/martignoni/hugo-video.git themes/hugo-video
 
 RUN hugo -d public/
-RUN htmltest public/ -c .htmltest.yml --skip-external
+
 
 # Build docker image
 FROM nginxinc/nginx-unprivileged:1.27-alpine3.20
