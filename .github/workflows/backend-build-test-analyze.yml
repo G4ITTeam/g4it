@@ -1,8 +1,6 @@
 name: Backend - Build - Test - Analyze
 on:
   push:
-    branches:
-      - '*'
     paths:
       - "services/backend/**"
     tags-ignore:
