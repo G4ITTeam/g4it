@@ -69,10 +69,6 @@ export class FootprintDataService {
         return forkJoin([averageAge$, lowImpact$, elecConsumption$]);
     }
 
-    sendExportRequest(inventoryId: number): Observable<number> {
-        return this.http.post<number>(`${endpoint}/${inventoryId}/export`, {});
-    }
-
     deleteIndicators(inventoryId: number) {
         return this.http.delete<any>(`${endpoint}/${inventoryId}/indicators`);
     }

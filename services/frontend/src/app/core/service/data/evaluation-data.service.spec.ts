@@ -4,7 +4,7 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -29,15 +29,5 @@ describe("EvaluationDataService", () => {
 
     it("should be created", () => {
         expect(evaluationDataService).toBeTruthy();
-    });
-
-    it("launchEstimation() should work", () => {
-        evaluationDataService.launchEstimation(inventoryDate, organization).subscribe();
-
-        const req = httpMock.expectOne(`inventories/${inventoryDate}/evaluation`);
-        expect(req.request.method).toEqual("POST");
-        req.flush("inventoryDate");
-
-        httpMock.verify();
     });
 });

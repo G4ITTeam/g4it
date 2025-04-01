@@ -27,7 +27,11 @@
     >
         <p-header [hidden]="escape">
             <span class="ql-formats">
-                <select class="ql-header" tabindex="-1">
+                <select
+                    class="ql-header"
+                    tabindex="-1"
+                    [attr.aria-label]="'common.ds-menu' | translate"
+                >
                     <option value="1" tabindex="-1">
                         {{ "common.heading" | translate }}
                     </option>
@@ -40,7 +44,11 @@
                 </select>
             </span>
             <span class="ql-formats">
-                <select title="Font Size" class="ql-size">
+                <select
+                    title="Font Size"
+                    class="ql-size"
+                    [attr.aria-label]="'common.size-selectbox' | translate"
+                >
                     <option value="normal">M</option>
                     <option value="large">L</option>
                     <option value="huge">XL</option>
@@ -68,7 +76,11 @@
                     aria-label="Unordered List"
                     tabindex="-1"
                 ></button>
-                <select class="ql-align" tabindex="-1">
+                <select
+                    class="ql-align"
+                    tabindex="-1"
+                    [attr.aria-label]="'common.position-selectbox' | translate"
+                >
                     <option selected tabindex="-1"></option>
                     <option value="center" tabindex="-1"></option>
                     <option value="right" tabindex="-1"></option>

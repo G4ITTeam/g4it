@@ -27,20 +27,14 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> equipementPhysique;
     private List<Header> equipementVirtuel;
     private List<Header> virtualEquipment;
-    private List<Header> inventoryEquipementVirtuelCloud;
 
     private List<Header> inventory;
     private List<Header> physicalEquipmentIndicator;
     private List<Header> virtualEquipmentIndicator;
     private List<Header> applicationIndicator;
 
-    private List<Header> terminal;
-    private List<Header> datacenterDigitalService;
-    private List<Header> network;
-    private List<Header> server;
-    private List<Header> cloudInstance;
     private List<Header> physicalEquipmentIndicatorDigitalService;
-    private List<Header> virtualMachine;
+
     private List<Header> virtualEquipmentIndicatorCloudInstance;
     private List<Header> virtualEquipmentCloudInstance;
 
@@ -52,21 +46,14 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case DATACENTER -> new ArrayList<>(List.copyOf(datacenter));
             case EQUIPEMENT_VIRTUEL -> new ArrayList<>(List.copyOf(equipementVirtuel));
             case VIRTUAL_EQUIPMENT -> new ArrayList<>(List.copyOf(virtualEquipment));
-            case INVENTORY_VIRTUAL_EQUIPMENT_CLOUD -> new ArrayList<>(List.copyOf(inventoryEquipementVirtuelCloud));
             case EQUIPEMENT_PHYSIQUE -> new ArrayList<>(List.copyOf(equipementPhysique));
             case APPLICATION -> new ArrayList<>(List.copyOf(application));
             case PHYSICAL_EQUIPMENT_INDICATOR -> new ArrayList<>(physicalEquipmentIndicator);
             case VIRTUAL_EQUIPMENT_INDICATOR -> new ArrayList<>(virtualEquipmentIndicator);
             case APPLICATION_INDICATOR -> new ArrayList<>(applicationIndicator);
             case INVENTORY -> new ArrayList<>(List.copyOf(inventory));
-            case DATACENTER_DIGITAL_SERVICE -> new ArrayList<>(List.copyOf(datacenterDigitalService));
             case PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
                     new ArrayList<>(List.copyOf(physicalEquipmentIndicatorDigitalService));
-            case NETWORK -> new ArrayList<>(List.copyOf(network));
-            case SERVER -> new ArrayList<>(List.copyOf(server));
-            case CLOUD_INSTANCE -> new ArrayList<>(List.copyOf(cloudInstance));
-            case TERMINAL -> new ArrayList<>(List.copyOf(terminal));
-            case VIRTUAL_MACHINE -> new ArrayList<>(List.copyOf(virtualMachine));
             case VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE ->
                     new ArrayList<>(List.copyOf(virtualEquipmentIndicatorCloudInstance));
             case VIRTUAL_EQUIPMENT_CLOUD_INSTANCE -> new ArrayList<>(List.copyOf(virtualEquipmentCloudInstance));

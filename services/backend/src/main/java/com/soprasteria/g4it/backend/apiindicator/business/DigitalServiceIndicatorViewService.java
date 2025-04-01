@@ -13,21 +13,18 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceServ
 import com.soprasteria.g4it.backend.apiindicator.controller.DigitalServiceCloudImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.controller.DigitalServiceCloudIndicatorBO;
 import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceIndicatorMapper;
-import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceNetworkIndicatorMapper;
-import com.soprasteria.g4it.backend.apiindicator.mapper.DigitalServiceTerminalIndicatorMapper;
-import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceIndicatorBO;
+import com.soprasteria.g4it.backend.apiindicator.model.ImpactStepBO;
+import com.soprasteria.g4it.backend.apiindicator.model.VirtualServerImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceNetworkIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceServerIndicatorRepository;
 import com.soprasteria.g4it.backend.apiindicator.repository.DigitalServiceTerminalIndicatorRepository;
-import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,24 +68,6 @@ public class DigitalServiceIndicatorViewService {
     @Autowired
     private DigitalServiceIndicatorMapper digitalServiceIndicatorMapper;
 
-    /**
-     * Digital service terminal indicator mapper
-     */
-    @Autowired
-    private DigitalServiceTerminalIndicatorMapper digitalServiceTerminalIndicatorMapper;
-
-    /**
-     * Digital service network indicator mapper
-     */
-    @Autowired
-    private DigitalServiceNetworkIndicatorMapper digitalServiceNetworkIndicatorMapper;
-
-    /**
-     * NumEcoEval Referential service.
-     */
-    @Autowired
-    private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
-
     @Autowired
     private DigitalServiceCloudIndicatorRestMapper digitalServiceCloudIndicatorRestMapper;
 
@@ -109,90 +88,6 @@ public class DigitalServiceIndicatorViewService {
      */
     public List<DigitalServiceIndicatorBO> getDigitalServiceIndicators(final String uid) {
         return digitalServiceIndicatorMapper.toDto(digitalServiceIndicatorRepository.findDigitalServiceIndicators(uid));
-    }
-
-    /**
-     * Retrieve digital service indicator.
-     *
-     * @param uid the digital service uid.
-     * @return indicator list.
-     */
-    public List<DigitalServiceTerminalIndicatorBO> getDigitalServiceTerminalIndicators(final String uid) {
-        return digitalServiceTerminalIndicatorMapper.toDto(
-                digitalServiceTerminalIndicatorRepository.findDigitalServiceTerminalIndicators(uid)
-        );
-    }
-
-    /**
-     * Retrieve digital service indicator.
-     *
-     * @param uid the digital service uid.
-     * @return indicator list.
-     */
-    public List<DigitalServiceNetworkIndicatorBO> getDigitalServiceNetworkIndicators(final String uid) {
-        return digitalServiceNetworkIndicatorMapper.toDto(
-                digitalServiceNetworkIndicatorRepository.findDigitalServiceNetworkIndicators(uid)
-        );
-
-    }
-
-    /**
-     * Get Server indicators.
-     *
-     * @param uid unique digital service identifier.
-     * @return server indicator list.
-     */
-    public List<DigitalServiceServerIndicatorBO> getDigitalServiceServerIndicators(final String uid) {
-        return digitalServiceServerIndicatorRepository.findDigitalServiceServerIndicators(uid).stream()
-                // (criteria, ([serverType, mutualizationType], serverName, indicators)
-                .collect(groupingBy(DigitalServiceServerIndicatorView::getCriteria,
-                        groupingBy(indicator -> Pair.of(indicator.getType(), indicator.getMutualizationType()),
-                                groupingBy(DigitalServiceServerIndicatorView::getServerName))))
-                .entrySet().stream()
-                .map(indicator -> {
-                            // (criteria, ([serverType, mutualizationType], serverName, indicators)
-                            final String criteria = CriteriaUtils.transformCriteriaNameToCriteriaKey(indicator.getKey());
-
-                            return new DigitalServiceServerIndicatorBO(criteria, indicator.getValue().entrySet().stream().map(ind -> {
-                                        final String serverType = ind.getKey().getKey();
-                                        final String mutualizationType = ind.getKey().getValue();
-                                        return new DigitalServiceServerImpactBO(serverType, mutualizationType, ind.getValue().entrySet().stream()
-                                                .map(entry -> buildServer(entry, mutualizationType))
-                                                .toList());
-                                    }
-                            ).toList());
-                        }
-                ).toList();
-
-    }
-
-    /**
-     * Map server.
-     *
-     * @param indicator         the complex map containing server name in key, and indicators in value.
-     * @param mutualizationType the mutalization type of the server.
-     * @return the server impact.
-     */
-    private ServersImpactBO buildServer(
-            final Map.Entry<String, List<DigitalServiceServerIndicatorView>> indicator, final String mutualizationType) {
-
-        final Optional<DigitalServiceServerIndicatorView> firstIndicator = indicator.getValue().stream().findFirst();
-        String hostingEfficiency = null;
-        if (firstIndicator.isPresent()) {
-            final Integer mixElecQuartile = numEcoEvalReferentialRemotingService.getElectricityMixQuartiles()
-                    .get(Pair.of(firstIndicator.get().getCountry(), firstIndicator.get().getCriteria()));
-            hostingEfficiency = buildHostingEfficiency(mixElecQuartile, firstIndicator.get().getPue());
-        }
-
-        return ServersImpactBO
-                .builder()
-                .name(indicator.getKey())
-                // Sum sip value for each server's indicator.
-                .totalSipValue(indicator.getValue().stream().filter(ind -> ind.getSipValue() != null).mapToDouble(DigitalServiceServerIndicatorView::getSipValue).sum())
-                .impactStep(buildImpactStepList(indicator.getValue()))
-                .impactVmDisk(buildVirtualServerList(indicator.getValue(), mutualizationType))
-                .hostingEfficiency(hostingEfficiency)
-                .build();
     }
 
     /**
@@ -304,30 +199,6 @@ public class DigitalServiceIndicatorViewService {
         }
 
         return result;
-    }
-
-    /**
-     * Map virtual server impacts.
-     *
-     * @param serverIndicators  the indicator list.
-     * @param mutualizationType the mutalization type of the server.
-     * @return the virtual server impact list.
-     */
-    private List<VirtualServerImpactBO> buildVirtualServerList(
-            final List<DigitalServiceServerIndicatorView> serverIndicators,
-            final String mutualizationType
-    ) {
-
-        List<VirtualServerImpactBO> serverData = new ArrayList<>();
-
-        if ("SHARED".equals(mutualizationType)) {
-            serverIndicators.stream().collect(groupingBy(DigitalServiceServerIndicatorView::getVmUid))
-                    .forEach((key, value1) -> serverData.addAll(createVirtualServerDataList(value1, true)));
-        } else {
-            serverIndicators.stream().collect(groupingBy(DigitalServiceServerIndicatorView::getServerName))
-                    .forEach((key, value1) -> serverData.addAll(createVirtualServerDataList(value1, false)));
-        }
-        return serverData;
     }
 
     /**

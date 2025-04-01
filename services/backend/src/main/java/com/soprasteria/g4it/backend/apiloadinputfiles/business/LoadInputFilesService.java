@@ -21,6 +21,7 @@ import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +82,7 @@ public class LoadInputFilesService {
 
         if (datacenters != null) allFiles.put(FileType.DATACENTER, datacenters);
         if (physicalEquipments != null) allFiles.put(FileType.EQUIPEMENT_PHYSIQUE, physicalEquipments);
-        if (virtualEquipments != null) allFiles.put(FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD, virtualEquipments);
+        if (virtualEquipments != null) allFiles.put(FileType.EQUIPEMENT_VIRTUEL, virtualEquipments);
         if (applications != null) allFiles.put(FileType.APPLICATION, applications);
 
         if (allFiles.isEmpty()) return new Task();
@@ -105,7 +106,7 @@ public class LoadInputFilesService {
 
 
         // store files into file storage
-        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.INVENTORY_VIRTUAL_EQUIPMENT_CLOUD, FileType.APPLICATION)
+        List<String> filenames = Stream.of(FileType.DATACENTER, FileType.EQUIPEMENT_PHYSIQUE, FileType.EQUIPEMENT_VIRTUEL, FileType.APPLICATION)
                 .map(fileType -> {
                     List<MultipartFile> files = allFiles.get(fileType);
                     List<String> typeFileNames = newFilenames(files, fileType);
@@ -125,6 +126,7 @@ public class LoadInputFilesService {
                 .type(TaskType.LOADING.toString())
                 .inventory(Inventory.builder().id(inventoryId).build())
                 .filenames(filenames)
+                .createdBy(inventory.getCreatedBy())
                 .build();
 
         taskRepository.save(task);
@@ -149,7 +151,7 @@ public class LoadInputFilesService {
 
         // check tasks to restart
         inProgressLoadingTasks.stream()
-                .filter(task -> task.getLastUpdateDate().plusMinutes(1).isBefore(now))
+                .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now))
                 .forEach(task -> {
                     task.setStatus(TaskStatus.TO_START.toString());
                     task.setLastUpdateDate(now);
@@ -191,7 +193,13 @@ public class LoadInputFilesService {
     private List<String> newFilenames(List<MultipartFile> files, final FileType type) {
         if (files == null) return new ArrayList<>();
         return files.stream()
-                .map(file -> String.format("%s_%s_%s.csv", type.toString(), file.getOriginalFilename(), UUID.randomUUID()))
+                .map(file -> {
+                    String originalFilename = file.getOriginalFilename();
+                    // ensures the original filename can be properly matched with regex later
+                    originalFilename = originalFilename == null ? "" : originalFilename.replace("_", "-");
+                    String extension = StringUtils.getFilenameExtension(originalFilename);
+                    return String.format("%s_%s_%s.%s", type.toString(), originalFilename, UUID.randomUUID(), extension);
+                })
                 .toList();
     }
 }

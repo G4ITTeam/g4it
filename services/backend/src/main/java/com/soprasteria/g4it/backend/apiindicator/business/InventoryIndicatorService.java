@@ -7,11 +7,17 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.business;
 
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryService;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
+import com.soprasteria.g4it.backend.common.task.business.TaskService;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
@@ -30,16 +36,25 @@ import java.util.Map;
 public class InventoryIndicatorService {
 
     @Autowired
+    ExportService exportService;
+    @Autowired
     private InventoryService inventoryService;
-
     @Autowired
     private IndicatorService indicatorService;
-
     @Autowired
     private OrganizationService organizationService;
-
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private InDatacenterRepository inDatacenterRepository;
+    @Autowired
+    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Autowired
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Autowired
+    private InApplicationRepository inApplicationRepository;
+    @Autowired
+    private TaskService taskService;
 
     /**
      * Get last batch name in the inventory business object.
@@ -47,18 +62,12 @@ public class InventoryIndicatorService {
      * @param inventory the inventory business object.
      * @return the last batch name or else throw exception.
      */
-    private String getLastBatchName(final InventoryBO inventory) {
-
-        if (Boolean.TRUE.equals(inventory.getIsNewArch())) {
-            Task task = taskRepository.findByInventoryAndLastCreationDate(Inventory.builder()
-                            .id(inventory.getId())
-                            .build())
-                    .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
-            return String.valueOf(task.getId());
-        } else {
-            return inventoryService.getLastBatchName(inventory)
-                    .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
-        }
+    private Long getLastTaskId(final InventoryBO inventory) {
+        Task task = taskRepository.findByInventoryAndLastCreationDate(Inventory.builder()
+                        .id(inventory.getId())
+                        .build())
+                .orElseThrow(() -> new G4itRestException("404", String.format("inventory %d has no batch executed", inventory.getId())));
+        return task.getId();
 
     }
 
@@ -72,7 +81,7 @@ public class InventoryIndicatorService {
      */
     public Map<String, EquipmentIndicatorBO> getEquipmentIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        return indicatorService.getEquipmentIndicators(subscriber, organizationId, getLastBatchName(inventory));
+        return indicatorService.getEquipmentIndicators(getLastTaskId(inventory));
     }
 
     /**
@@ -86,7 +95,7 @@ public class InventoryIndicatorService {
 
     public List<ApplicationIndicatorBO<ApplicationImpactBO>> getApplicationIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        return indicatorService.getApplicationIndicators(subscriber, organizationId, getLastBatchName(inventory));
+        return indicatorService.getApplicationIndicators(getLastTaskId(inventory));
     }
 
     /**
@@ -97,32 +106,28 @@ public class InventoryIndicatorService {
      * @param inventoryId    the inventory id.
      */
     public void deleteIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
-        inventoryService.getInventory(subscriber, organizationId, inventoryId).getEvaluationReports()
-                .forEach(report -> indicatorService.deleteIndicators(report.getBatchName()));
+        // clean all evaluating tasks
+        taskService.deleteEvaluatingTasksByInventoryId(subscriber, organizationId, inventoryId);
     }
 
     /**
      * Get datacenter indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organizationId.
-     * @param inventoryId    the inventory id.
+     * @param inventoryId the inventory id.
      * @return datacenter indicators
      */
-    public List<DataCentersInformationBO> getDataCenterIndicators(final String subscriber, final Long organizationId, final Long inventoryId) {
-        return indicatorService.getDataCenterIndicators(subscriber, organizationId, inventoryId);
+    public List<DataCentersInformationBO> getDataCenterIndicators(final Long inventoryId) {
+        return indicatorService.getDataCenterIndicators(inventoryId);
     }
 
     /**
      * Get physical equipment average age indicators.
      *
-     * @param subscriber     the subscriber.
-     * @param organizationId the organizationId.
-     * @param inventoryId    the inventory id.
+     * @param inventoryId the inventory id.
      * @return datacenter indicators
      */
-    public List<PhysicalEquipmentsAvgAgeBO> getPhysicalEquipmentAvgAge(final String subscriber, final Long organizationId, final Long inventoryId) {
-        return indicatorService.getPhysicalEquipmentAvgAge(subscriber, organizationId, inventoryId);
+    public List<PhysicalEquipmentsAvgAgeBO> getPhysicalEquipmentAvgAge(final Long inventoryId) {
+        return indicatorService.getPhysicalEquipmentAvgAge(inventoryId);
     }
 
     /**
@@ -147,8 +152,8 @@ public class InventoryIndicatorService {
      */
     public List<PhysicalEquipmentElecConsumptionBO> getPhysicalEquipmentElecConsumption(final String subscriber, final Long organizationId, final Long inventoryId) {
         final InventoryBO inventory = inventoryService.getInventory(subscriber, organizationId, inventoryId);
-        String batchName = getLastBatchName(inventory);
-        final Long criteriaNumber = inventoryService.getCriteriaNumber(batchName);
-        return indicatorService.getPhysicalEquipmentElecConsumption(subscriber, organizationId, batchName, criteriaNumber);
+        Long taskId = getLastTaskId(inventory);
+        final Long criteriaNumber = inventoryService.getCriteriaNumber(taskId);
+        return indicatorService.getPhysicalEquipmentElecConsumption(taskId, criteriaNumber);
     }
 }

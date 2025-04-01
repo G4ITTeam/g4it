@@ -4,7 +4,7 @@ baseURL = '/'
 relativeURLs = true
 enableEmoji = true
 
-theme = 'hugo-theme-relearn'
+theme = ['hugo-theme-relearn', 'hugo-video']
 
 [outputs]
 home = ['html', 'rss', 'search', 'searchpage']

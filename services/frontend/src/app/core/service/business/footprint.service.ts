@@ -7,7 +7,7 @@
  */
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, tap } from "rxjs";
+import { tap } from "rxjs";
 import {
     ApplicationFootprint,
     ApplicationImpact,
@@ -25,6 +25,7 @@ import {
 } from "../../interfaces/filter.interface";
 import { FootprintCalculated, SumImpact } from "../../interfaces/footprint.interface";
 import { OutApplicationsRest } from "../../interfaces/output.interface";
+import { transformCriterion } from "../mapper/array";
 
 @Injectable({
     providedIn: "root",
@@ -34,10 +35,6 @@ export class FootprintService {
         private footprintDataService: FootprintDataService,
         private translate: TranslateService,
     ) {}
-
-    sendExportRequest(inventoryId: number): Observable<number> {
-        return this.footprintDataService.sendExportRequest(inventoryId);
-    }
 
     deleteIndicators(inventoryId: number) {
         return this.footprintDataService.deleteIndicators(inventoryId);
@@ -377,7 +374,7 @@ export class FootprintService {
         return outApplication.map(
             (outApp) =>
                 ({
-                    criteria: outApp.criterion.toLocaleLowerCase().replaceAll("_", "-"),
+                    criteria: transformCriterion(outApp.criterion),
                     applicationName: outApp.name,
                     domain: outApp.filters?.[0],
                     subDomain: outApp.filters?.[1],

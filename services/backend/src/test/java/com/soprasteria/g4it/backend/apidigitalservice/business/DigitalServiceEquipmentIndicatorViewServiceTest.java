@@ -10,9 +10,6 @@ package com.soprasteria.g4it.backend.apidigitalservice.business;
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceIndicatorService;
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceIndicatorViewService;
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceNetworkIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceServerIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceTerminalIndicatorBO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,38 +41,5 @@ class DigitalServiceEquipmentIndicatorViewServiceTest {
         verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceIndicators(uid);
 
     }
-
-    @Test
-    void shouldGetDigitalServiceTerminalIndicator() {
-        final String uid = "uid";
-
-        when(digitalServiceIndicatorViewService.getDigitalServiceTerminalIndicators(uid)).thenReturn(List.of(DigitalServiceTerminalIndicatorBO.builder().build()));
-
-        Assertions.assertThat(indicatorService.getDigitalServiceTerminalIndicators(uid)).hasSize(1);
-
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceTerminalIndicators(uid);
-    }
-
-    @Test
-    void shouldGetDigitalServiceNetworkIndicator() {
-        final String uid = "uid";
-
-        when(digitalServiceIndicatorViewService.getDigitalServiceNetworkIndicators(uid)).thenReturn(List.of(DigitalServiceNetworkIndicatorBO.builder().build()));
-
-        Assertions.assertThat(indicatorService.getDigitalServiceNetworkIndicators(uid)).hasSize(1);
-
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceNetworkIndicators(uid);
-    }
-
-    @Test
-    void shouldGetDigitalServiceServerIndicator() {
-        final String uid = "uid";
-
-        when(digitalServiceIndicatorViewService.getDigitalServiceServerIndicators(uid)).thenReturn(List.of(DigitalServiceServerIndicatorBO.builder().build()));
-
-        Assertions.assertThat(indicatorService.getDigitalServiceServerIndicators(uid)).hasSize(1);
-
-        verify(digitalServiceIndicatorViewService, times(1)).getDigitalServiceServerIndicators(uid);
-    }
-
+    
 }

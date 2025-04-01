@@ -156,18 +156,16 @@ public class EvaluateService {
 
         Map<String, Double> refSip = referentialService.getSipValueMap(criteriaCodes);
 
-        Map<String, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPICITY);
-        Map<String, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPICITY : 0);
-        Map<String, AggValuesBO> aggregationApplications = new HashMap<>(context.isHasApplications() ? INITIAL_MAP_CAPICITY : 0);
+        Map<List<String>, AggValuesBO> aggregationPhysicalEquipments = new HashMap<>(INITIAL_MAP_CAPICITY);
+        Map<List<String>, AggValuesBO> aggregationVirtualEquipments = new HashMap<>(context.isHasVirtualEquipments() ? INITIAL_MAP_CAPICITY : 0);
+        Map<List<String>, AggValuesBO> aggregationApplications = new HashMap<>(context.isHasApplications() ? INITIAL_MAP_CAPICITY : 0);
 
-        if (inventory != null && null == inventory.getDoExport()) {
-            inventory.setDoExport(true);
-        }
+
         if (inventory != null && null == inventory.getDoExportVerbose()) {
             inventory.setDoExportVerbose(true);
         }
         EvaluateReportBO evaluateReportBO = EvaluateReportBO.builder()
-                .export(inventory == null || inventory.getDoExport())
+                .export(true)
                 .verbose(inventory == null || inventory.getDoExportVerbose())
                 .isDigitalService(inventory == null)
                 .nbPhysicalEquipmentLines(0)
@@ -334,8 +332,8 @@ public class EvaluateService {
     private void evaluateVirtualsEquipments(Context context, EvaluateReportBO evaluateReportBO,
                                             InPhysicalEquipment physicalEquipment,
                                             List<ImpactEquipementPhysique> impactEquipementPhysiqueList,
-                                            Map<String, AggValuesBO> aggregationVirtualEquipments,
-                                            Map<String, AggValuesBO> aggregationApplications,
+                                            Map<List<String>, AggValuesBO> aggregationVirtualEquipments,
+                                            Map<List<String>, AggValuesBO> aggregationApplications,
                                             CSVPrinter csvInVirtualEquipment,
                                             CSVPrinter csvVirtualEquipment,
                                             CSVPrinter csvInApplication,
@@ -420,7 +418,7 @@ public class EvaluateService {
                                       InPhysicalEquipment physicalEquipment,
                                       InVirtualEquipment virtualEquipment,
                                       List<ImpactEquipementVirtuel> impactEquipementVirtuelList,
-                                      Map<String, AggValuesBO> aggregationApplications,
+                                      Map<List<String>, AggValuesBO> aggregationApplications,
                                       CSVPrinter csvInApplication,
                                       CSVPrinter csvApplication,
                                       Map<String, Double> refSip, RefShortcutBO refShortcutBO) throws IOException {

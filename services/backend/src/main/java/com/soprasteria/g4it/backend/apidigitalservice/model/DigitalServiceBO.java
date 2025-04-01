@@ -57,11 +57,6 @@ public class DigitalServiceBO {
     private List<String> criteria;
 
     /**
-     * is new arch
-     */
-    private Boolean isNewArch;
-
-    /**
      * Creation date.
      */
     @EqualsAndHashCode.Exclude
@@ -78,21 +73,6 @@ public class DigitalServiceBO {
      */
     @EqualsAndHashCode.Exclude
     private LocalDateTime lastCalculationDate;
-
-    /**
-     * Terminals.
-     */
-    private List<TerminalBO> terminals;
-
-    /**
-     * Networks.
-     */
-    private List<NetworkBO> networks;
-
-    /**
-     * Servers
-     */
-    private List<ServerBO> servers;
 
     /**
      * Note

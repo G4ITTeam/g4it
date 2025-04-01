@@ -23,7 +23,12 @@ import {
     OutVirtualEquipmentRest,
 } from "../../interfaces/output.interface";
 import { getLifeCycleMapReverse } from "../../utils/lifecycle";
-import { groupByCriterion, groupByField, sumByProperty } from "./array";
+import {
+    groupByCriterion,
+    groupByField,
+    sumByProperty,
+    transformCriterion,
+} from "./array";
 
 export const convertToGlobalVision = (
     physicalEquipments: OutPhysicalEquipmentRest[],
@@ -41,12 +46,16 @@ export const convertToGlobalVision = (
         }
     });
     const data = physicalEquipments.filter((pe) =>
-        ["Dedicated Server", "Shared Server"].includes(pe.equipmentType),
+        ["Dedicated Server"].includes(pe.equipmentType),
     );
-    if (data.length > 0) {
+    const vms = virtualEquipments.filter((pe) =>
+        ["Shared Server"].includes(pe.equipmentType),
+    );
+    const physicalEqpsAndVms = [...data, ...vms];
+    if (physicalEqpsAndVms.length > 0) {
         globalVision.push({
             tier: "Server",
-            impacts: aggregateAndMap(data),
+            impacts: aggregateAndMap(physicalEqpsAndVms),
         });
     }
 
@@ -68,7 +77,7 @@ const aggregateAndMap = (data: any[]): DigitalServiceFootprintImpact[] => {
     return aggregateImpacts(data, ["criterion", "unit", "statusIndicator"]).map(
         (item) => {
             return {
-                criteria: item.criterion.toLocaleLowerCase().replaceAll("_", "-"),
+                criteria: transformCriterion(item.criterion),
                 countValue: item.countValue,
                 sipValue: item.peopleEqImpact,
                 unitValue: item.unitImpact,
@@ -168,10 +177,7 @@ export const transformOutPhysicalEquipmentstoServerData = (
             criteria: criterion,
             impactsServer: getImpactsForServer(
                 serverByCriterion[criterion],
-                vms.filter(
-                    (vm) =>
-                        vm.criterion.toLocaleLowerCase().replace("_", "-") === criterion,
-                ),
+                vms.filter((vm) => transformCriterion(vm.criterion) === criterion),
                 serverTypes,
             )?.sort((a, b) => {
                 return getServerMutualizationServerType(b)?.localeCompare(
@@ -434,25 +440,26 @@ const getImpactsForServer = (
         )?.type!;
 
         for (const serverName in serversByServer) {
-            const impactStep = serversByServer[serverName].map(
-                (server: OutPhysicalEquipmentRest) => {
-                    return {
-                        acvStep: getLifeCycleMapReverse().get(server.lifecycleStep),
-                        countValue: server.countValue,
-                        sipValue: server.peopleEqImpact,
-                        rawValue: server.unitImpact,
-                        status: server.statusIndicator,
-                        unit: server.unit,
-                    } as ImpactACVStep;
-                },
-            );
+            const vms = vmsByServer[serverName] || undefined;
+            const impactStep = (
+                vms
+                    ? aggregateImpacts(vms, ["lifecycleStep", "unit", "statusIndicator"])
+                    : serversByServer[serverName]
+            ).map((server: OutPhysicalEquipmentRest) => {
+                return {
+                    acvStep: getLifeCycleMapReverse().get(server.lifecycleStep),
+                    countValue: server.countValue,
+                    sipValue: server.peopleEqImpact,
+                    rawValue: server.unitImpact,
+                    status: server.statusIndicator,
+                    unit: server.unit,
+                } as ImpactACVStep;
+            });
 
             const unit = impactStep.find((impact: any) => impact.unit !== "null");
             const hostingEfficiency = serversByServer[serverName].find(
                 (item: any) => item.hostingEfficiency,
             ).hostingEfficiency;
-
-            const vms = vmsByServer[serverName] || undefined;
 
             let impactVmDisk: ImpactSipValue[] = [];
             if (vms === undefined) {

@@ -9,7 +9,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
-import { EvaluationBody } from "../../interfaces/inventory.interfaces";
 
 const endpoint = Constants.ENDPOINTS.inventories;
 
@@ -17,21 +16,7 @@ const endpoint = Constants.ENDPOINTS.inventories;
     providedIn: "root",
 })
 export class EvaluationDataService {
-    data: EvaluationBody | undefined;
-
     constructor(private http: HttpClient) {}
-
-    launchEstimation(inventoryId: number, organization: string): Observable<number> {
-        const headers = { "content-type": "application/json" };
-        this.data = {
-            inventoryId: inventoryId,
-            organization: organization,
-        };
-        const body = JSON.stringify(this.data);
-        return this.http.post<number>(`${endpoint}/${inventoryId}/evaluation`, body, {
-            headers: headers,
-        });
-    }
 
     launchEvaluating(inventoryId: number): Observable<number> {
         return this.http.post<number>(`${endpoint}/${inventoryId}/evaluating`, null);

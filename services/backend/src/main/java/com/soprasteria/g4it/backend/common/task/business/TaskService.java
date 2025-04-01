@@ -9,6 +9,7 @@
 package com.soprasteria.g4it.backend.common.task.business;
 
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
+import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
 import com.soprasteria.g4it.backend.common.task.mapper.TaskMapper;
 import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
 import com.soprasteria.g4it.backend.common.task.model.TaskType;
@@ -16,6 +17,7 @@ import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
 import com.soprasteria.g4it.backend.server.gen.api.dto.TaskRest;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class TaskService {
 
     @Autowired
     TaskMapper taskMapper;
+
+    @Autowired
+    private ExportService exportService;
 
     /**
      * Get task by taskId
@@ -63,6 +68,7 @@ public class TaskService {
                 .orElseGet(() -> Task.builder()
                         .digitalServiceUid(digitalService.getUid())
                         .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+                        .createdBy(digitalService.getUser())
                         .build());
 
         task.setProgressPercentage("0%");
@@ -93,4 +99,25 @@ public class TaskService {
         taskRepository.save(task);
     }
 
+    /**
+     * Delete EVALUATING tasks of an inventory
+     *
+     * @param inventoryId    the inventory id
+     * @param subscriber     the subscriber
+     * @param organizationId the organization id
+     */
+    @Transactional
+    public void deleteEvaluatingTasksByInventoryId(String subscriber, Long organizationId, Long inventoryId) {
+        // Retrieve EVALUATING tasks to be deleted
+        List<Task> tasksToDelete = taskRepository.findByTypeAndInventoryId(TaskType.EVALUATING.toString(), inventoryId);
+        if (tasksToDelete.isEmpty()) {
+            return;
+        }
+        // Clean exports for each task
+        tasksToDelete.forEach(task -> {
+            exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
+        });
+
+        taskRepository.deleteAll(tasksToDelete);
+    }
 }

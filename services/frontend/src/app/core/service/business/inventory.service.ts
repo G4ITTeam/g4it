@@ -58,23 +58,6 @@ export class InventoryService {
     }
 
     enrichInventory(inventory: Inventory) {
-        if (inventory.evaluationReports && inventory.evaluationReports.length > 0) {
-            inventory.evaluationReports.sort(sortByProperty("createTime", "desc"));
-            inventory.evaluationReports = inventory.evaluationReports
-                ? inventory.evaluationReports.slice(0, this.maxReportsSize)
-                : [];
-            inventory.lastEvaluationReport = inventory.evaluationReports[0];
-            inventory.lastEvaluationReport.progress = parseFloat(
-                inventory.lastEvaluationReport.progressPercentage,
-            );
-        }
-        if (inventory.integrationReports && inventory.integrationReports.length > 0) {
-            inventory.integrationReports.sort(sortByProperty("createTime", "desc"));
-            inventory.integrationReports = inventory.integrationReports
-                ? inventory.integrationReports.slice(0, this.maxReportsSize)
-                : [];
-            inventory.lastIntegrationReport = inventory.integrationReports[0];
-        }
         if (inventory.tasks && inventory.tasks.length > 0) {
             inventory.tasks.sort(sortByProperty("creationDate", "desc"));
 

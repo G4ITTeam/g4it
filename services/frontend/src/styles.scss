@@ -273,7 +273,8 @@ main {
 }
 
 .yellow-button,
-.yellow-button-sidebar {
+.yellow-button-sidebar,
+.yellow-button-file {
     background: var(--secondary-color);
     color: var(--black-color);
 }
@@ -299,6 +300,10 @@ main {
     color: var(--black-color);
 }
 
+.inventory-button-small:disabled span {
+    color: var(--black-color) !important;
+}
+
 .round-button,
 .round-button-selected {
     height: 28px;
@@ -316,7 +321,14 @@ main {
 }
 
 .round-button {
-    background: var(--light-grey-color);
+    background: none;
+}
+
+.p-button-plain.header-button:hover {
+    background-color: var(--tertiary-color) !important;
+    span {
+        color: white !important;
+    }
 }
 
 /* Radio Buttons */
@@ -346,6 +358,15 @@ main {
 }
 .white-radio-buttons .p-radiobutton .p-radiobutton-box {
     border: 2px solid white !important;
+}
+
+.p-radiobutton-box.p-focus {
+    border: none !important;
+    background-color: var(--tertiary-color) !important;
+
+    .p-radiobutton-icon {
+        background-color: white !important;
+    }
 }
 
 /* Icons */
@@ -924,7 +945,7 @@ div.label-input-div-medium {
 }
 
 .inventory-add-button-small {
-    background: #f9f9f9;
+    background: none;
     color: var(--black-color);
     padding-left: 30px;
     padding-right: 30px;

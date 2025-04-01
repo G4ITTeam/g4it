@@ -43,7 +43,7 @@ public class InPhysicalEquipmentService {
      * @return the physical equipment list.
      */
     public List<InPhysicalEquipmentRest> getByDigitalService(final String digitalServiceUid) {
-        final List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
+        final List<InPhysicalEquipment> inPhysicalEquipments = inPhysicalEquipmentRepository.findByDigitalServiceUidOrderByName(digitalServiceUid);
         return inPhysicalEquipmentMapper.toRest(inPhysicalEquipments);
     }
 

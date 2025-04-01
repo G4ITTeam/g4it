@@ -59,13 +59,13 @@ components:
         type: string
       required: true
       description: The note uid.
-    batchNamePathParam:
+    taskIdPathParam:
       in: path
-      name: batchName
+      name: taskId
       schema:
         type: string
       required: true
-      description: The batch name.
+      description: The task id.
     userIdQueryParam:
       in: query
       name: userId
@@ -142,6 +142,14 @@ components:
         type: integer
         format: int64
       required: true
+    physicalEqpIdQueryParam:
+      in: query
+      name: physicalEqpId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: The physical equipment id
 
   responses:
     InternalServerError:
@@ -168,8 +176,6 @@ components:
       description: Version
       type: object
       properties:
-        numEcoEval:
-          type: string
         g4it:
           type: string
         boaviztapi:
@@ -187,6 +193,8 @@ components:
           type: string
         lastName:
           type: string
+        isSuperAdmin:
+          type: boolean
         subscribers:
           type: array
           items:
@@ -363,108 +371,12 @@ components:
           type: array
           items:
             type: string
-        isNewArch:
-          type: boolean
-        doExport:
-          type: boolean
-          default: false
-        doExportVerbose:
-          type: boolean
-          default: false
-        integrationReports:
-          type: array
-          items:
-            $ref: "#/components/schemas/IntegrationReportRest"
-        evaluationReports:
-          type: array
-          items:
-            $ref: "#/components/schemas/EvaluationReportRest"
         tasks:
           type: array
           items:
             $ref: "#/components/schemas/TaskRest"
         note:
           $ref: "#/components/schemas/NoteRest"
-        exportReport:
-          $ref: "#/components/schemas/ExportReportRest"
-
-    IntegrationReportRest:
-      description: Information of an integration report
-      type: object
-      properties:
-        batchStatusCode:
-          description: Batch status code
-          type: string
-        createTime:
-          description: Job creation date
-          type: string
-          format: date-time
-        endTime:
-          description: Job end date
-          type: string
-          format: date-time
-        batchName:
-          description: Name of batch in numecoeval
-          type: string
-        resultFileUrl:
-          description: Result file url
-          type: string
-        resultFileSize:
-          description: Result file size
-          type: integer
-          format: int64
-
-    EvaluationReportRest:
-      description: Information of an evaluation report
-      type: object
-      properties:
-        batchStatusCode:
-          description: Batch status code
-          type: string
-        progressPercentage:
-          description: Calculation progress percentage
-          type: string
-        createTime:
-          description: Job creation date
-          type: string
-          format: date-time
-        endTime:
-          description: Job end date
-          type: string
-          format: date-time
-        batchName:
-          description: Name of batch in numecoeval
-          type: string
-        criteria:
-          description: criteria on which evaluation is done
-          items:
-            type: string
-
-    ExportReportRest:
-      description: Information of an export results
-      type: object
-      properties:
-        batchStatusCode:
-          description: Batch status code
-          type: string
-        createTime:
-          description: Job creation date
-          type: string
-          format: date-time
-        endTime:
-          description: Job end date
-          type: string
-          format: date-time
-        batchName:
-          description: Name of batch in numecoeval
-          type: string
-        resultFileUrl:
-          description: Result file url
-          type: string
-        resultFileSize:
-          description: Result file size
-          type: integer
-          format: int64
 
     FileDescriptionRest:
       description: Information of a file
@@ -697,72 +609,9 @@ components:
           type: array
           items:
             type: string
-        isNewArch:
-          type: boolean
-        terminals:
-          type: array
-          items:
-            $ref: "#/components/schemas/TerminalRest"
-        networks:
-          type: array
-          items:
-            $ref: "#/components/schemas/NetworkRest"
-        servers:
-          type: array
-          items:
-            $ref: "#/components/schemas/ServerRest"
         note:
           type: object
           $ref: "#/components/schemas/NoteRest"
-    TerminalRest:
-      description: Information of a Terminal
-      type: object
-      properties:
-        required:
-          - type
-          - country
-          - numberOfUsers
-          - yearlyUsageTimePerUser
-          - lifespan
-        uid:
-          type: string
-        creationDate:
-          type: string
-          format: date-time
-        type:
-          type: object
-          $ref: "#/components/schemas/DeviceTypeRefRest"
-        lifespan:
-          type: number
-          format: double
-          minimum: 0
-        country:
-          type: string
-          default: France
-        numberOfUsers:
-          type: integer
-        yearlyUsageTimePerUser:
-          type: number
-          format: double
-          minimum: 0
-    NetworkRest:
-      description: Information of a Network
-      type: object
-      properties:
-        required:
-          - type
-          - yearlyQuantityOfGbExchanged
-        uid:
-          type: string
-        creationDate:
-          type: string
-          format: date-time
-        type:
-          type: object
-          $ref: "#/components/schemas/NetworkTypeRefRest"
-        yearlyQuantityOfGbExchanged:
-          type: number
-          format: double
 
     DigitalServicesIndicatorsRest:
       type: object
@@ -796,102 +645,7 @@ components:
           type: string
         countValue:
           type: number
-    DigitalServicesTerminalsIndicatorsRest:
-      type: object
-      additionalProperties:
-        $ref: "#/components/schemas/DigitalServiceTerminalIndicatorRest"
-    DigitalServiceTerminalIndicatorRest:
-      description: Digital service terminals indicators object
-      type: object
-      properties:
-        criteria:
-          type: string
-        impacts:
-          type: array
-          items:
-            $ref: "#/components/schemas/DigitalServiceTerminalsImpact"
-    DigitalServiceTerminalsImpact:
-      description: Digital service terminal impact
-      type: object
-      properties:
-        country:
-          type: string
-        description:
-          type: string
-        numberUsers:
-          type: number
-        yearlyUsageTimePerUser:
-          type: number
-        acvStep:
-          type: string
-        rawValue:
-          type: number
-        sipValue:
-          type: number
-        unit:
-          type: string
-        status:
-          type: string
-        countValue:
-          type: number
 
-    DigitalServiceNetworksIndicatorRest:
-      type: object
-      additionalProperties:
-        $ref: "#/components/schemas/DigitalServiceNetworkIndicatorRest"
-    DigitalServiceNetworkIndicatorRest:
-      description: Digital service networks indicators object
-      type: object
-      properties:
-        criteria:
-          type: string
-        impacts:
-          type: array
-          items:
-            $ref: "#/components/schemas/DigitalServiceNetworkImpactRest"
-    DigitalServiceNetworkImpactRest:
-      description: Digital service network impact object
-      type: object
-      properties:
-        networkType:
-          type: string
-        rawValue:
-          type: number
-        sipValue:
-          type: number
-        unit:
-          type: string
-        status:
-          type: string
-        countValue:
-          type: number
-
-    DigitalServiceServersIndicatorRest:
-      type: object
-      additionalProperties:
-        $ref: "#/components/schemas/DigitalServiceServerIndicatorRest"
-    DigitalServiceServerIndicatorRest:
-      type: object
-      properties:
-        criteria:
-          type: string
-        impactsServer:
-          type: array
-          items:
-            $ref: "#/components/schemas/DigitalServiceServersImpactRest"
-    DigitalServiceServersImpactRest:
-      type: object
-      properties:
-        serverType:
-          type: string
-          $ref: "#/components/schemas/ServerHostType"
-        mutualizationType:
-          type: string
-          $ref: "#/components/schemas/ServerType"
-        servers:
-          type: array
-          items:
-            $ref: "#/components/schemas/DigitalServiceServerImpactRest"
 
     DigitalServiceServerImpactRest:
       type: object
@@ -945,20 +699,6 @@ components:
         countValue:
           type: number
 
-    ServerDatacenterRest:
-      type: object
-      description: Digital Service Datacenter
-      required:
-        - name
-      properties:
-        uid:
-          type: string
-        name:
-          type: string
-        location:
-          type: string
-        pue:
-          type: number
     ServerHostType:
       type: string
       enum:
@@ -969,78 +709,7 @@ components:
       enum:
         - Dedicated
         - Shared
-    ServerRest:
-      description: Information of a Server
-      type: object
-      required:
-        - name
-        - mutualizationType
-        - type
-        - host
-        - datacenter
-        - quantity
-      properties:
-        uid:
-          type: string
-        creationDate:
-          type: string
-          format: date-time
-        name:
-          type: string
-          default: "Server A"
-        mutualizationType:
-          type: string
-          $ref: "#/components/schemas/ServerType"
-          default: Storage
-        type:
-          type: string
-          $ref: "#/components/schemas/ServerHostType"
-          default: Dedicated
-        host:
-          type: object
-          $ref: "#/components/schemas/ServerHostRefRest"
-        datacenter:
-          type: object
-          $ref: "#/components/schemas/ServerDatacenterRest"
-        quantity:
-          type: integer
-        totalVCpu:
-          type: integer
-        totalDisk:
-          type: integer
-        lifespan:
-          type: number
-          format: double
-          minimum: 0
-        annualElectricConsumption:
-          type: integer
-          minimum: 0
-        annualOperatingTime:
-          type: integer
-          default: 8760
-        vm:
-          type: array
-          items:
-            $ref: "#/components/schemas/ServerVirtualMachineRest"
-    ServerVirtualMachineRest:
-      description: Virtual machine linked to Digital Service's Server
-      type: object
-      properties:
-        uid:
-          type: string
-        name:
-          type: string
-        vCpu:
-          type: integer
-        quantity:
-          type: integer
-          minimum: 1
-          default: 1
-        annualOperatingTime:
-          type: integer
-          default: 8760
-        disk:
-          type: integer
+
     DeviceTypeRefRest:
       description: Terminal device type referential
       type: object
@@ -1105,7 +774,7 @@ components:
         code:
           description: characteristic code
           type: string
-          enum: [lifespan, vCPU, disk, annualElectricityConsumption]
+          enum: [ lifespan, vCPU, disk, annualElectricityConsumption ]
           example: vCPU
         value:
           description: characteristic value
@@ -1162,15 +831,7 @@ components:
           type: string
           $ref: "#/components/schemas/InventoryType"
           default: INFORMATION_SYSTEM
-        isNewArch:
-          type: boolean
-          default: false
-        doExport:
-          type: boolean
-          default: false
-        doExportVerbose:
-          type: boolean
-          default: false
+
     InventoryUpdateRest:
       description: Inventory Create information
       type: object
@@ -1186,12 +847,6 @@ components:
             type: string
         note:
           $ref: "#/components/schemas/NoteUpsertRest"
-        doExport:
-          type: boolean
-          default: false
-        doExportVerbose:
-          type: boolean
-          default: false
 
     NoteRest:
       description: Note for a digital service or IS
@@ -1320,8 +975,8 @@ components:
         averageWorkLoad:
           type: number
           format: float
-        averageUsage :
-          type : number
+        averageUsage:
+          type: number
           format: float
         quantity:
           type: number

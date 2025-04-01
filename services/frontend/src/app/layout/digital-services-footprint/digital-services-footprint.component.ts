@@ -47,68 +47,54 @@ export class DigitalServicesFootprintComponent implements OnInit {
         // Therefore we can continue without those verifications.
         this.digitalService = digitalService;
 
-        if (this.digitalService.isNewArch) {
-            this.digitalServiceStore.setIsNewArch(true);
-            this.digitalServiceStore.setDigitalService(this.digitalService);
-            await this.digitalServiceStore.initInPhysicalEquipments(uid);
-            await this.digitalServiceStore.initInVirtualEquipments(uid);
+        this.digitalServiceStore.setDigitalService(this.digitalService);
+        await this.digitalServiceStore.initInPhysicalEquipments(uid);
+        await this.digitalServiceStore.initInVirtualEquipments(uid);
 
-            let inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
-            if (inDatacenters.length === 0) {
-                await firstValueFrom(
-                    this.inDatacentersService.create({
-                        location: "France",
-                        name: "Default DC",
-                        pue: 1.5,
-                        digitalServiceUid: uid,
-                    }),
-                );
-                inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
-            }
-
-            this.digitalServiceStore.setInDatacenters(inDatacenters);
-            const referentials = await firstValueFrom(
-                this.digitalServicesData.getNetworkReferential(),
+        let inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
+        if (inDatacenters.length === 0) {
+            await firstValueFrom(
+                this.inDatacentersService.create({
+                    location: "France",
+                    name: "Default DC",
+                    pue: 1.5,
+                    digitalServiceUid: uid,
+                }),
             );
-            this.digitalServiceStore.setNetworkTypes(referentials);
-
-            const terminalReferentials = await firstValueFrom(
-                this.digitalServicesData.getDeviceReferential(),
-            );
-            this.digitalServiceStore.setTerminalDeviceTypes(terminalReferentials);
-
-            const serverHostRefCompute = await firstValueFrom(
-                this.digitalServicesData.getHostServerReferential("Compute"),
-            );
-            const serverHostRefStorage = await firstValueFrom(
-                this.digitalServicesData.getHostServerReferential("Storage"),
-            );
-            const shortCuts = [
-                ...serverHostRefCompute.filter((item) =>
-                    item.value.startsWith("Server "),
-                ),
-                ...serverHostRefStorage.filter((item) =>
-                    item.value.startsWith("Server "),
-                ),
-            ].sort(sortByProperty("value", "desc"));
-
-            this.digitalServiceStore.setServerTypes([
-                ...shortCuts,
-                ...serverHostRefCompute
-                    .filter((item) => !item.value.startsWith("Server "))
-                    .sort(sortByProperty("value", "asc")),
-                ...serverHostRefStorage
-                    .filter((item) => !item.value.startsWith("Server "))
-                    .sort(sortByProperty("value", "asc")),
-            ]);
-        } else {
-            this.digitalService.isNewArch = false;
-            this.digitalServiceStore.setIsNewArch(false);
-            const referentials = await firstValueFrom(
-                this.digitalServicesData.getNetworkReferential(),
-            );
-            this.digitalServiceStore.setNetworkTypes(referentials);
+            inDatacenters = await firstValueFrom(this.inDatacentersService.get(uid));
         }
+
+        this.digitalServiceStore.setInDatacenters(inDatacenters);
+        const referentials = await firstValueFrom(
+            this.digitalServicesData.getNetworkReferential(),
+        );
+        this.digitalServiceStore.setNetworkTypes(referentials);
+
+        const terminalReferentials = await firstValueFrom(
+            this.digitalServicesData.getDeviceReferential(),
+        );
+        this.digitalServiceStore.setTerminalDeviceTypes(terminalReferentials);
+
+        const serverHostRefCompute = await firstValueFrom(
+            this.digitalServicesData.getHostServerReferential("Compute"),
+        );
+        const serverHostRefStorage = await firstValueFrom(
+            this.digitalServicesData.getHostServerReferential("Storage"),
+        );
+        const shortCuts = [
+            ...serverHostRefCompute.filter((item) => item.value.startsWith("Server ")),
+            ...serverHostRefStorage.filter((item) => item.value.startsWith("Server ")),
+        ].sort(sortByProperty("value", "desc"));
+
+        this.digitalServiceStore.setServerTypes([
+            ...shortCuts,
+            ...serverHostRefCompute
+                .filter((item) => !item.value.startsWith("Server "))
+                .sort(sortByProperty("value", "asc")),
+            ...serverHostRefStorage
+                .filter((item) => !item.value.startsWith("Server "))
+                .sort(sortByProperty("value", "asc")),
+        ]);
 
         this.global.setLoading(false);
         this.updateTabItems();
@@ -157,12 +143,6 @@ export class DigitalServicesFootprintComponent implements OnInit {
             this.digitalServicesData.update(this.digitalService),
         );
 
-        const oldIsNewArch = this.digitalServiceStore.isNewArch();
-        if (oldIsNewArch !== this.digitalService.isNewArch) {
-            window.location.reload();
-        }
-
-        this.digitalServiceStore.setIsNewArch(this.digitalService.isNewArch);
         this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
         this.digitalServiceStore.initInVirtualEquipments(this.digitalService.uid);
         this.updateTabItems();

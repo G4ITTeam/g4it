@@ -38,9 +38,9 @@
                 }}"
             />
         </span>
-        @if (isNumeric(batchName)) {
+        @if (isNumeric(taskId)) {
             <span
-                (click)="getTaskDetail(batchName)"
+                (click)="getTaskDetail(taskId)"
                 *ngIf="
                     (userService.isAllowedInventoryWrite$ | async) &&
                     batchStatusCode === 'FAILED'

@@ -71,6 +71,7 @@ export abstract class Constants {
         users: "users",
         subscribers: "administrator/subscribers",
         organizations: "administrator/organizations",
+        actions: "administrator-actions",
         version: "version",
         businessHours: "business-hours",
         templateFiles: "template-files",
@@ -81,12 +82,7 @@ export abstract class Constants {
         410: "expired",
     };
 
-    static readonly CSV_FILES_TYPES = [
-        "datacenter",
-        "physical",
-        "virtual",
-        "application",
-    ];
+    static readonly FILE_TYPES = ["datacenter", "physical", "virtual", "application"];
 
     static readonly INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES = [
         "COMPLETED",
@@ -105,11 +101,6 @@ export abstract class Constants {
         "UNKNOWN",
         "STARTED",
         "STARTING",
-        "DATA_EXTRACTION",
-        "DATA_EXPOSITION_TO_NUMECOVAL",
-        "CALCUL_SUBMISSION_TO_NUMECOVAL",
-        "CALCUL_IN_PROGRESS",
-        "AGGREGATION_IN_PROGRESS",
         "IN_PROGRESS",
     ];
 
@@ -138,21 +129,6 @@ export abstract class Constants {
     static readonly CONSTANT_VALUE = {
         NONE: "none",
     };
-
-    static readonly EXPORT_BATCH_FAILED_STATUSES = [
-        "REMOVED",
-        "UNKNOWN",
-        "FAILED",
-        "STOPPED",
-    ];
-
-    static readonly EXPORT_BATCH_IN_PROGRESS_STATUSES = [
-        "STARTED",
-        "LOADING_SIP_REFERENTIAL",
-        "EXPORTING_DATA",
-        "UPLOADING_DATA",
-        "CLEANING_WORKING_FOLDERS",
-    ];
 
     static readonly RECIPIENT_MAIL = "support.g4it@soprasteria.com";
     static readonly SUBJECT_MAIL = "Support Request";

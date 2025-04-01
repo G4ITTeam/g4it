@@ -68,16 +68,6 @@
         </div>
     </div>
     <div class="mr-3 flex align-items-center">
-        @if (showBetaFeatures === "true") {
-            <p-checkbox
-                (onChange)="changeIsNewArch()"
-                [(ngModel)]="digitalService.isNewArch"
-                label="Use new APIs"
-                [binary]="true"
-                name="isNewArch"
-                ariaLabel="Use new APIs"
-            />
-        }
         <p-button
             (click)="sidebarVisible = true"
             styleClass="text-gray-900 header-button ml-1"

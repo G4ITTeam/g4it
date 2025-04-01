@@ -39,11 +39,6 @@ import { digitalServicesFootprintRouter } from "./digital-services-footprint.rou
 import { DigitalServicesNetworksSidePanelComponent } from "./digital-services-networks/digital-services-networks-side-panel/digital-services-networks-side-panel.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
-import SidePanelDatacenterComponent from "./digital-services-servers/side-panel-add-datacenter/side-panel-datacenter.component";
-import { SidePanelAddVmComponent } from "./digital-services-servers/side-panel-add-vm/side-panel-add-vm.component";
-import { SidePanelCreateServerComponent } from "./digital-services-servers/side-panel-create-server/side-panel-create-server.component";
-import { SidePanelListVmComponent } from "./digital-services-servers/side-panel-list-vm/side-panel-list-vm.component";
-import { SidePanelServerParametersComponent } from "./digital-services-servers/side-panel-server-parameters/side-panel-server-parameters.component";
 import PanelDatacenterComponent from "./digital-services-servers/side-panel/add-datacenter/datacenter.component";
 import { PanelAddVmComponent } from "./digital-services-servers/side-panel/add-vm/add-vm.component";
 import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
@@ -69,11 +64,6 @@ import { DigitalServicesTerminalsComponent } from "./digital-services-terminals/
         DigitalServicesTerminalsSidePanelComponent,
         DigitalServicesNetworksSidePanelComponent,
         DigitalServicesCloudServicesSidePanelComponent,
-        SidePanelCreateServerComponent,
-        SidePanelServerParametersComponent,
-        SidePanelDatacenterComponent,
-        SidePanelListVmComponent,
-        SidePanelAddVmComponent,
         PanelCreateServerComponent,
         PanelDatacenterComponent,
         PanelServerParametersComponent,

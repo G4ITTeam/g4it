@@ -111,44 +111,21 @@
                 {{ "common.mandatory" | translate }}
             </p>
 
-            @if (showBetaFeatures === "true") {
-                <div class="flex flex-row align-items-start ml-1 mt-3">
-                    <p-checkbox
-                        [(ngModel)]="isNewArch"
-                        label="Use new APIs"
-                        [binary]="true"
-                        name="isNewArch"
-                        [disabled]="purpose === 'upload'"
-                        ariaLabel="Use new APIs"
-                    />
-
-                    <p-checkbox
-                        [(ngModel)]="doExport"
-                        label="Export"
-                        [binary]="true"
-                        name="doExport"
-                        class="mx-2"
-                        [disabled]="purpose === 'upload'"
-                        ariaLabel="Export"
-                    />
-                    <p-checkbox
-                        [(ngModel)]="doExportVerbose"
-                        label="Export Verbose"
-                        [binary]="true"
-                        name="doExportVerbose"
-                        [disabled]="purpose === 'upload'"
-                        ariaLabel="Export Verbose"
-                    />
-                </div>
-            }
-
             <div class="input-loading-files overflow-auto max-h-21rem mt-4">
                 <ng-container #uploaderContainer> </ng-container>
             </div>
+
+            <div class="mt-4 mb-4 font-italic">
+                <p>
+                    {{ "common.allowed-extensions" | translate }}
+                    {{ allowedFileExtensions.join(", ") }}
+                </p>
+            </div>
+
             <p-button
                 (click)="addComponent()"
                 label="+ {{ 'common.add' | translate }}"
-                styleClass="px-4 py-2 bg-secondary text-xs text-gray-900 border-round-3xl font-semibold"
+                styleClass="px-4 py-2 border-round-3xl text-xs font-semibold yellow-button-file"
             />
             <hr class="mb-1" />
             <div>

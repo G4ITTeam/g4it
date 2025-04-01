@@ -20,18 +20,18 @@ import lombok.experimental.SuperBuilder;
         resultSetMapping = "ServerHostRefDTO",
         query = """
                 select distinct
-                     ref_s.id                                                      as id,
-                     ref_s.description                                             as description,
-                     ref_s.type                                                    as type,
-                     cast(ref_s.nb_of_vcpu as integer)                             as nbOfVcpu,
-                     cast(ref_s.total_disk as integer)                             as totalDisk,
-                     cast(ref_s.lifespan as numeric)                               as lifespan,
-                     cast(ref_factcaract.conso_elec_moyenne as integer)            as annualElectricityConsumption,
-                     ref_s.reference                                               as reference
-                from ref_server_host ref_s
-                left join ref_facteurcaracterisation ref_factcaract on ref_s.reference = ref_factcaract.nom
-                where ref_s.type = :type
-                and ref_factcaract.niveau = '2-Equipement'
+                      ref_s.id                                                      as id,
+                      ref_s.description                                             as description,
+                      ref_s.type                                                    as type,
+                      cast(ref_s.nb_of_vcpu as integer)                             as nbOfVcpu,
+                      cast(ref_s.total_disk as integer)                             as totalDisk,
+                      cast(ref_s.lifespan as numeric)                               as lifespan,
+                      cast(rii.avg_electricity_consumption  as integer)            as annualElectricityConsumption,
+                      ref_s.reference                                               as reference
+                   from ref_server_host ref_s
+                   left join ref_item_impact rii  on ref_s.reference = rii."name"
+                   where ref_s.type = :type
+                   and rii."level"  = '2-Equipement'
                 """
 )
 @SqlResultSetMapping(
@@ -58,54 +58,47 @@ import lombok.experimental.SuperBuilder;
 public class ServerHostRef {
 
     /**
+     * Auto Generated ID.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    /**
+     * Device's description.
+     */
+    private String description;
+    /**
+     * NumEcoEval Reference.
+     */
+    private String reference;
+    /**
+     * External description.
+     */
+    private String externalReferentialDescription;
+    /**
+     * Server host type.
+     */
+    private String type;
+    /**
+     * Number of VCpu.
+     */
+    @Column(name = "nb_of_vcpu")
+    private Integer nbOfVcpu;
+    /**
+     * Total disk (in GB).
+     */
+    private Integer totalDisk;
+    /**
+     * Device's lifespan.
+     */
+    private Double lifespan;
+
+    /**
      * To prevent update.
      */
     @PreUpdate
     private void preUpdate() {
         throw new UnsupportedOperationException();
     }
-
-    /**
-     * Auto Generated ID.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    /**
-     * Device's description.
-     */
-    private String description;
-
-    /**
-     * NumEcoEval Reference.
-     */
-    private String reference;
-
-    /**
-     * External description.
-     */
-    private String externalReferentialDescription;
-
-    /**
-     * Server host type.
-     */
-    private String type;
-
-    /**
-     * Number of VCpu.
-     */
-    @Column(name = "nb_of_vcpu")
-    private Integer nbOfVcpu;
-
-    /**
-     * Total disk (in GB).
-     */
-    private Integer totalDisk;
-
-    /**
-     * Device's lifespan.
-     */
-    private Double lifespan;
 
 }

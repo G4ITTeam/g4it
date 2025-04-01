@@ -12,9 +12,6 @@ import { DigitalServicesFootprintDashboardComponent } from "./digital-services-f
 import { DigitalServicesFootprintComponent } from "./digital-services-footprint.component";
 import { DigitalServicesNetworksComponent } from "./digital-services-networks/digital-services-networks.component";
 import { DigitalServicesServersComponent } from "./digital-services-servers/digital-services-servers.component";
-import { SidePanelCreateServerComponent } from "./digital-services-servers/side-panel-create-server/side-panel-create-server.component";
-import { SidePanelListVmComponent } from "./digital-services-servers/side-panel-list-vm/side-panel-list-vm.component";
-import { SidePanelServerParametersComponent } from "./digital-services-servers/side-panel-server-parameters/side-panel-server-parameters.component";
 import { PanelCreateServerComponent } from "./digital-services-servers/side-panel/create-server/create-server.component";
 import { PanelListVmComponent } from "./digital-services-servers/side-panel/list-vm/list-vm.component";
 import { PanelServerParametersComponent } from "./digital-services-servers/side-panel/server-parameters/server-parameters.component";
@@ -55,23 +52,8 @@ const routes: Routes = [
                 children: [
                     {
                         path: "",
-                        redirectTo: "create",
+                        redirectTo: "panel-create",
                         pathMatch: "full",
-                    },
-                    {
-                        path: "create",
-                        component: SidePanelCreateServerComponent,
-                        ...titleResolveObject,
-                    },
-                    {
-                        path: "parameters",
-                        component: SidePanelServerParametersComponent,
-                        ...titleResolveObject,
-                    },
-                    {
-                        path: "vm",
-                        component: SidePanelListVmComponent,
-                        ...titleResolveObject,
                     },
                     {
                         path: "panel-create",

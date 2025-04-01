@@ -10,7 +10,7 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { Constants } from "src/constants";
-import { FileDescription, LoadingBody } from "../../interfaces/file-system.interfaces";
+import { LoadingBody } from "../../interfaces/file-system.interfaces";
 import { TaskIdRest } from "../../interfaces/task.interfaces";
 
 const endpoint = Constants.ENDPOINTS.inventories;
@@ -25,17 +25,6 @@ export class LoadingDataService {
         private http: HttpClient,
         private translate: TranslateService,
     ) {}
-
-    launchLoading(fileList: FileDescription[], inventoryId: number): Observable<number> {
-        const headers = new HttpHeaders({
-            "content-type": "application/json",
-            "Accept-Language": this.translate.currentLang,
-        });
-        const body = JSON.stringify(fileList);
-        return this.http.post<number>(`${endpoint}/${inventoryId}/loading`, body, {
-            headers,
-        });
-    }
 
     launchLoadInputFiles(
         inventoryId: number,

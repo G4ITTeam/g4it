@@ -29,6 +29,7 @@ import { FootprintService } from "src/app/core/service/business/footprint.servic
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
+import { transformCriterion } from "src/app/core/service/mapper/array";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
@@ -201,7 +202,7 @@ export class InventoriesFootprintComponent implements OnInit {
             .map(
                 (item) =>
                     ({
-                        criteria: item.criterion.toLocaleLowerCase().replaceAll("_", "-"),
+                        criteria: transformCriterion(item.criterion),
                         acvStep: LifeCycleUtils.getLifeCycleMapReverse().get(
                             item.lifecycleStep,
                         ),

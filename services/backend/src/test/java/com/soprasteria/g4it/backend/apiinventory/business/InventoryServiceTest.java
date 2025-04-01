@@ -11,7 +11,6 @@ package com.soprasteria.g4it.backend.apiinventory.business;
 import com.soprasteria.g4it.backend.TestUtils;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapperImpl;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
-import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReportBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
@@ -118,8 +117,6 @@ class InventoryServiceTest {
                 .physicalEquipmentCount(0L)
                 .virtualEquipmentCount(0L)
                 .applicationCount(0L)
-                .integrationReports(List.of())
-                .evaluationReports(List.of())
                 .tasks(List.of())
                 .build();
 
@@ -147,13 +144,15 @@ class InventoryServiceTest {
                 .name("03-2023")
                 .organization(linkedOrganization).build();
 
+        final UserBO userBo = TestUtils.createUserBONoRole();
+
         when(organizationService.getOrganizationById(ORGANIZATION_ID)).thenReturn(linkedOrganization);
         when(inventoryRepo.findByOrganizationAndName(linkedOrganization, inventoryName))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(inventory));
         when(inventoryRepo.save(any())).thenReturn(inventory);
 
-        InventoryBO actual = inventoryService.createInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCreateRest);
+        InventoryBO actual = inventoryService.createInventory(SUBSCRIBER, ORGANIZATION_ID, inventoryCreateRest, userBo);
 
         verify(organizationService, times(1)).getOrganizationById(ORGANIZATION_ID);
         verify(inventoryRepo, times(1)).findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName());
@@ -219,75 +218,5 @@ class InventoryServiceTest {
         assertThat(result.getNote().getContent()).isEqualTo("newNote");
 
     }
-
-    @Test
-    void shouldGetLastBatchName_withoutReport() {
-        final InventoryBO inventory = InventoryBO.builder().build();
-
-        assertThat(inventoryService.getLastBatchName(inventory)).isEmpty();
-    }
-
-    @Test
-    void shouldGetLastBatchName_withOnlyFailedJobs() {
-        final InventoryBO inventory = InventoryBO.builder()
-                .evaluationReports(List.of(
-                        InventoryEvaluationReportBO.builder()
-                                .batchName("batchName1")
-                                .batchStatusCode("FAILED")
-                                .createTime(LocalDateTime.of(2023, 12, 18, 10, 0, 1))
-                                .endTime(LocalDateTime.of(2023, 12, 18, 10, 5, 1))
-                                .progressPercentage("0%")
-                                .build(),
-                        InventoryEvaluationReportBO.builder()
-                                .batchName("batchName2")
-                                .createTime(LocalDateTime.of(2023, 12, 19, 10, 0, 1))
-                                .endTime(LocalDateTime.of(2023, 12, 19, 10, 5, 1))
-                                .batchStatusCode("FAILED")
-                                .progressPercentage("0%")
-                                .build()
-                ))
-                .build();
-
-        assertThat(inventoryService.getLastBatchName(inventory)).isEmpty();
-    }
-
-    @Test
-    void shouldGetLastBatchName_withCompletedJobs() {
-        final InventoryBO inventory = InventoryBO.builder()
-                .evaluationReports(List.of(
-                        InventoryEvaluationReportBO.builder()
-                                .batchName("batchName1")
-                                .batchStatusCode("FAILED")
-                                .createTime(LocalDateTime.of(2023, 12, 18, 10, 0, 1))
-                                .endTime(LocalDateTime.of(2023, 12, 18, 10, 5, 1))
-                                .progressPercentage("0%")
-                                .build(),
-                        InventoryEvaluationReportBO.builder()
-                                .batchName("batchName2")
-                                .createTime(LocalDateTime.of(2023, 12, 18, 11, 0, 1))
-                                .endTime(LocalDateTime.of(2023, 12, 18, 11, 5, 1))
-                                .batchStatusCode("COMPLETED")
-                                .progressPercentage("100%")
-                                .build(),
-                        InventoryEvaluationReportBO.builder()
-                                .batchName("batchName3")
-                                .createTime(LocalDateTime.of(2023, 12, 18, 11, 50, 1))
-                                .endTime(LocalDateTime.of(2023, 12, 18, 11, 55, 1))
-                                .batchStatusCode("COMPLETED")
-                                .progressPercentage("100%")
-                                .build(),
-                        InventoryEvaluationReportBO.builder()
-                                .batchName("batchName4")
-                                .createTime(LocalDateTime.of(2023, 12, 19, 10, 0, 1))
-                                .endTime(LocalDateTime.of(2023, 12, 19, 10, 5, 1))
-                                .batchStatusCode("FAILED")
-                                .progressPercentage("0%")
-                                .build()
-                ))
-                .build();
-
-        assertThat(inventoryService.getLastBatchName(inventory)).isEqualTo(Optional.of("batchName3"));
-    }
-
 
 }

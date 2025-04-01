@@ -10,7 +10,9 @@ package com.soprasteria.g4it.backend.apiindicator.mapper;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentElecConsumptionBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentLowImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.PhysicalEquipmentsAvgAgeBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.*;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.InPhysicalEquipmentAvgAgeView;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.InPhysicalEquipmentElecConsumptionView;
+import com.soprasteria.g4it.backend.apiindicator.modeldb.InPhysicalEquipmentLowImpactView;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -18,15 +20,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PhysicalEquipmentIndicatorMapper {
 
-    List<PhysicalEquipmentsAvgAgeBO> physicalEquipmentAvgAgetoDto(final List<PhysicalEquipmentAvgAgeView> source);
-
     List<PhysicalEquipmentsAvgAgeBO> inPhysicalEquipmentAvgAgetoDto(final List<InPhysicalEquipmentAvgAgeView> source);
 
-    List<PhysicalEquipmentLowImpactBO> physicalEquipmentLowImpacttoDTO(final List<PhysicalEquipmentLowImpactView> source);
-
     List<PhysicalEquipmentLowImpactBO> inPhysicalEquipmentLowImpacttoDTO(final List<InPhysicalEquipmentLowImpactView> source);
-
-    List<PhysicalEquipmentElecConsumptionBO> physicalEquipmentElecConsumptionToDto(final List<PhysicalEquipmentElecConsumptionView> source);
 
     List<PhysicalEquipmentElecConsumptionBO> inPhysicalEquipmentElecConsumptionToDto(final List<InPhysicalEquipmentElecConsumptionView> source);
 }

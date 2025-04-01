@@ -7,7 +7,6 @@
  */
 package com.soprasteria.g4it.backend.scheduler;
 
-import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
@@ -27,8 +26,6 @@ import java.util.Optional;
 @Slf4j
 public class StorageDeletionService {
 
-    @Autowired
-    InventoryExportService inventoryExportService;
     @Value("${g4it.storage.retention.day.export}")
     private Integer storageRetentionDayExport;
     @Value("${g4it.storage.retention.day.output}")
@@ -63,9 +60,6 @@ public class StorageDeletionService {
 
             List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, retentionExport);
 
-
-            // Update Export Batch Status in database
-            deletedExportFilePaths.forEach(fileName -> inventoryExportService.updateBatchStatusCodeToRemove(fileName));
             deletedFilePaths.addAll(deletedExportFilePaths);
             // organization > subscriber > default
             final Integer retentionOutput = Optional.ofNullable(organizationEntity.getStorageRetentionDayOutput())

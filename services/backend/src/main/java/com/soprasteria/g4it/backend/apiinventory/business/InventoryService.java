@@ -7,13 +7,9 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
-import com.soprasteria.g4it.backend.apibatchevaluation.repository.InventoryEvaluationReportRepository;
 import com.soprasteria.g4it.backend.apiinventory.mapper.InventoryMapper;
-import com.soprasteria.g4it.backend.apiinventory.model.AbstractReportBO;
 import com.soprasteria.g4it.backend.apiinventory.model.InventoryBO;
-import com.soprasteria.g4it.backend.apiinventory.model.InventoryEvaluationReportBO;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
-import com.soprasteria.g4it.backend.apiinventory.modeldb.InventoryEvaluationReport;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
@@ -28,12 +24,10 @@ import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryType;
 import com.soprasteria.g4it.backend.server.gen.api.dto.InventoryUpdateRest;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,41 +57,18 @@ public class InventoryService {
     private InventoryMapper inventoryMapper;
 
     @Autowired
-    private InventoryEvaluationReportRepository inventoryEvaluationReportRepository;
-
-    @Autowired
     private TaskRepository taskRepository;
 
-    /**
-     * Retrieve the last batch name in inventory.
-     *
-     * @param inventory the inventory.
-     * @return the inventory's last batch name if present, or else empty.
-     */
-    public Optional<String> getLastBatchName(final InventoryBO inventory) {
-        if (inventory.getEvaluationReports() == null) return Optional.empty();
-
-        return inventory.getEvaluationReports().stream()
-                .filter(report -> "COMPLETED".equals(report.getBatchStatusCode()) && report.getEndTime() != null)
-                .max(Comparator.comparing(InventoryEvaluationReportBO::getEndTime))
-                .map(AbstractReportBO::getBatchName);
-    }
 
     /**
      * Retrieve number of criteria
      *
-     * @param batchName the batch name
+     * @param taskId the task id
      * @return number of criteria on which evaluation was done
      */
-    public Long getCriteriaNumber(final String batchName) {
-        // isNewArch mode
-        if (StringUtils.isNumeric(batchName)) {
-            Task task = taskRepository.findById(Long.parseLong(batchName)).orElseThrow();
-            return (long) task.getCriteria().size();
-        } else {
-            InventoryEvaluationReport evaluationReport = inventoryEvaluationReportRepository.findByBatchName(batchName);
-            return (long) evaluationReport.getCriteria().size();
-        }
+    public Long getCriteriaNumber(final Long taskId) {
+        Task task = taskRepository.findById(taskId).orElseThrow();
+        return (long) task.getCriteria().size();
 
     }
 
@@ -162,17 +133,18 @@ public class InventoryService {
      * @param subscriberName      the client subscriber name.
      * @param organizationId      the linked organization's id.
      * @param inventoryCreateRest the inventoryCreateRest.
+     * @param user                the inventory's creator
      * @return inventory BO.
      */
-    public InventoryBO createInventory(final String subscriberName, final Long organizationId, final InventoryCreateRest inventoryCreateRest) {
+    public InventoryBO createInventory(final String subscriberName, final Long organizationId, final InventoryCreateRest inventoryCreateRest, final UserBO user) {
         final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
 
         if (inventoryRepository.findByOrganizationAndName(linkedOrganization, inventoryCreateRest.getName()).isPresent()) {
             throw new G4itRestException("409", String.format("inventory %s already exists in %s/%s", inventoryCreateRest.getName(), subscriberName, organizationId));
         }
 
-
-        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest);
+        final User userEntity = User.builder().id(user.getId()).build();
+        final Inventory inventoryToCreate = inventoryMapper.toEntity(linkedOrganization, inventoryCreateRest, userEntity);
 
         // Deprecated inventoryDate, used to better revert if needed
         if (InventoryType.INFORMATION_SYSTEM.name().equals(inventoryCreateRest.getType().name())) {
@@ -200,8 +172,6 @@ public class InventoryService {
 
         final Inventory inventoryToSave = inventory.get();
         inventoryToSave.setName(inventoryUpdateRest.getName());
-        inventoryToSave.setDoExport(inventoryUpdateRest.getDoExport() == null || inventoryUpdateRest.getDoExport());
-        inventoryToSave.setDoExportVerbose(inventoryUpdateRest.getDoExportVerbose() == null || inventoryUpdateRest.getDoExportVerbose());
 
         List<String> currentCriteria = inventoryToSave.getCriteria();
         List<String> newCriteria = inventoryUpdateRest.getCriteria();

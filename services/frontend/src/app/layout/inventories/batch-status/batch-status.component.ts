@@ -32,7 +32,7 @@ export class BatchStatusComponent implements OnInit {
     @Input() batchLoading = false;
     @Input() inventoryId: number = 0;
     @Input() inventoryName = "";
-    @Input() batchName = "";
+    @Input() taskId = "";
     @Input() fileUrl = "";
 
     selectedOrganization!: string;
@@ -96,7 +96,7 @@ export class BatchStatusComponent implements OnInit {
             const blob: Blob = await firstValueFrom(
                 this.fileSystemDataService.downloadResultsFile(
                     this.inventoryId,
-                    this.batchName,
+                    this.taskId,
                 ),
             );
             saveAs(

@@ -93,8 +93,8 @@ public interface CsvToInMapper {
                 .physicalEquipmentName(read(csvRecord, "nomEquipementPhysique"))
                 .creationDate(LocalDateTime.now())
                 .filters(List.of(
-                        read(csvRecord, "domaine", ""),
-                        read(csvRecord, "sousDomaine", "")
+                        read(csvRecord, "domaine", "Unknown"),
+                        read(csvRecord, "sousDomaine", "Unknown")
                 ))
                 .commonFilters(List.of(read(csvRecord, "nomEntite", "")))
                 .build();

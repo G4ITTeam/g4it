@@ -85,6 +85,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: "#/components/responses/InternalServerError"
+
     put:
       tags:
         - digital-service
@@ -112,63 +113,6 @@ paths:
         '500':
           $ref: "#/components/responses/InternalServerError"
 
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/evaluation:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - in: path
-        name: digitalServiceUid
-        schema:
-          type: string
-        required: true
-        description: The digital service UID.
-    post:
-      tags:
-        - digital-service
-      summary: Launch NumEcoEval calculations
-      x-custom-role: "hasRole('DIGITAL_SERVICE_WRITE')"
-      operationId: runCalculations
-      responses:
-        '202':
-          description: Calculation in progress
-        '400':
-          $ref: "#/components/responses/BadRequestError"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-
-  /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/datacenters:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - in: path
-        name: digitalServiceUid
-        schema:
-          type: string
-        required: true
-        description: The digital service UID.
-    get:
-      tags:
-        - digital-service
-      summary: Get digital service's datacenters
-      x-custom-role: "hasRole('DIGITAL_SERVICE_READ')"
-      operationId: getDigitalServiceDatacenters
-      responses:
-        '200':
-          description: datacenter list linked to digital service
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ServerDatacenterRest"
-        '400':
-          $ref: "#/components/responses/BadRequestError"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
 
   /subscribers/{subscriber}/organizations/{organization}/digital-services/{digitalServiceUid}/share:
     parameters:

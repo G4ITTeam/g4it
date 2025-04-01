@@ -19,17 +19,9 @@ export interface Inventory {
     physicalEquipmentCount: number;
     virtualEquipmentCount: number;
     applicationCount: number;
-    integrationReports: IntegrationReport[];
-    evaluationReports: EvaluationReport[];
     date?: Date;
-    lastEvaluationReport?: EvaluationReport;
-    lastIntegrationReport?: IntegrationReport;
     note?: Note;
-    exportReport: ExportReport;
     criteria?: string[];
-    isNewArch: boolean;
-    doExport: boolean;
-    doExportVerbose: boolean;
     tasks: TaskRest[];
     lastTaskLoading?: TaskRest;
     lastTaskEvaluating?: TaskRest;
@@ -45,27 +37,6 @@ export interface InventoryUpdateRest {
 export interface CreateInventory {
     type: string;
     name: string;
-    isNewArch: boolean;
-    doExport: boolean;
-    doExportVerbose: boolean;
-}
-
-export interface IntegrationReport {
-    batchStatusCode: string;
-    createTime: Date;
-    endTime: Date;
-    batchName: string;
-    resultFileUrl: string;
-    resultFileSize: number;
-}
-
-export interface EvaluationReport {
-    batchStatusCode: string;
-    createTime: Date;
-    endTime: Date;
-    batchName: string;
-    progressPercentage: string;
-    progress?: any;
 }
 
 export interface TaskRest {

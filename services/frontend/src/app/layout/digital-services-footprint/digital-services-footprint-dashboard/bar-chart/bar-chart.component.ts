@@ -138,6 +138,10 @@ export class BarChartComponent extends AbstractDashboard {
         seriesData.forEach((impact: ImpactNetworkSipValue) => {
             networkMap[impact.networkType] = {
                 ...impact,
+                rawValue:
+                    (networkMap[impact.networkType]?.rawValue ?? 0) + impact.rawValue,
+                sipValue:
+                    (networkMap[impact.networkType]?.sipValue ?? 0) + impact.sipValue,
                 status: {
                     ok:
                         (networkMap[impact.networkType]?.status?.ok ?? 0) +

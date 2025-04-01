@@ -1,12 +1,16 @@
 export const groupByCriterion = (arr: any[]) => {
     return arr.reduce((acc: any, obj: any) => {
-        const key = obj.criterion.toLocaleLowerCase().replace("_", "-");
+        const key = transformCriterion(obj.criterion);
         if (!acc[key]) {
             acc[key] = [];
         }
         acc[key].push(obj);
         return acc;
     }, {});
+};
+
+export const transformCriterion = (criterion: string) => {
+    return criterion.toLocaleLowerCase().replaceAll("_", "-");
 };
 
 export const groupByField = (arr: any[], field: string) => {

@@ -39,9 +39,6 @@ export class InventoriesComponent implements OnInit {
     sidebarType = "FILE"; // or NOTE
     id: number = 0;
     name: any = "";
-    isNewArch = false;
-    doExport = false;
-    doExportVerbose = false;
     inventories: Map<string, Inventory[]> = new Map();
     inventoriesForSimulationsAll: Inventory[] = [];
     inventoriesOpen: Set<number> = new Set();
@@ -192,24 +189,8 @@ export class InventoriesComponent implements OnInit {
     }
 
     setInventoryToReload(inventory: Inventory) {
-        let doAddIntegration = false;
-        let doAddEvaluation = false;
         let doAddTaskLoading = false;
         let doAddTaskEvaluating = false;
-
-        if (inventory.lastIntegrationReport) {
-            doAddIntegration =
-                !Constants.INTEGRATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
-                    inventory.lastIntegrationReport.batchStatusCode,
-                );
-        }
-
-        if (inventory.lastEvaluationReport) {
-            doAddEvaluation =
-                !Constants.EVALUATION_BATCH_COMPLETED_FAILED_STATUSES.includes(
-                    inventory.lastEvaluationReport.batchStatusCode,
-                );
-        }
 
         if (inventory.lastTaskLoading) {
             doAddTaskLoading =
@@ -225,19 +206,9 @@ export class InventoriesComponent implements OnInit {
                 );
         }
 
-        if (
-            doAddIntegration ||
-            doAddEvaluation ||
-            doAddTaskLoading ||
-            doAddTaskEvaluating
-        ) {
+        if (doAddTaskLoading || doAddTaskEvaluating) {
             this.inventoriesToReload.add(inventory.id);
-        } else if (
-            !doAddIntegration &&
-            !doAddEvaluation &&
-            !doAddTaskLoading &&
-            !doAddTaskEvaluating
-        ) {
+        } else if (!doAddTaskLoading && !doAddTaskEvaluating) {
             this.inventoriesToReload.delete(inventory.id);
         }
     }
@@ -251,9 +222,6 @@ export class InventoriesComponent implements OnInit {
         for (let value of this.inventories.values()) {
             const inventory = value.find((inventory) => inventory.id === id);
             if (inventory) {
-                this.isNewArch = inventory?.isNewArch || false;
-                this.doExport = inventory.doExport || false;
-                this.doExportVerbose = inventory.doExportVerbose || false;
                 this.name = inventory.name;
                 break;
             }

@@ -4,13 +4,12 @@
  *
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
- */ 
+ */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
 
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceReferentialMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DeviceTypeBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.NetworkTypeBO;
 import com.soprasteria.g4it.backend.apidigitalservice.model.ServerHostBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.DeviceTypeRef;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
@@ -19,8 +18,8 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.Server
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,7 +47,7 @@ class DigitalServiceReferentialServiceTest {
     @Mock
     private DigitalServiceReferentialMapper digitalServiceReferentialMapper;
     @Mock
-    private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
+    private ReferentialGetService referentialGetService;
 
     @InjectMocks
     private DigitalServiceReferentialService digitalServiceReferentialService;
@@ -93,24 +92,12 @@ class DigitalServiceReferentialServiceTest {
 
     @Test
     void shouldGetCountry() {
-        when(numEcoEvalReferentialRemotingService.getCountryList()).thenReturn(List.of("FRANCE"));
+        when(referentialGetService.getCountries(null)).thenReturn(List.of("FRANCE"));
 
         final List<String> result = digitalServiceReferentialService.getCountry();
 
         assertThat(result).hasSize(1).contains("FRANCE");
-        verify(numEcoEvalReferentialRemotingService, times(1)).getCountryList();
-    }
-
-    @Test
-    void shouldGetNetworkType() {
-        when(networkTypeRefRepository.findAll()).thenReturn(List.of(NetworkTypeRef.builder().build()));
-        when(digitalServiceReferentialMapper.toNetworkTypeBusinessObject(anyList())).thenReturn(List.of(NetworkTypeBO.builder().build()));
-
-        final List<NetworkTypeBO> result = digitalServiceReferentialService.getNetworkType();
-
-        assertThat(result).hasSize(1);
-        verify(networkTypeRefRepository, times(1)).findAll();
-        verify(digitalServiceReferentialMapper, times(1)).toNetworkTypeBusinessObject(anyList());
+        verify(referentialGetService, times(1)).getCountries(null);
     }
 
     @Test

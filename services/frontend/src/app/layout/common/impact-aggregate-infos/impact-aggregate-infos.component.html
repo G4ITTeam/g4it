@@ -29,14 +29,14 @@
         <div>
             <button
                 class="border-none border-round-3xl p-2 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                [ngClass]="unit === 'impact' ? 'bg-secondary' : 'bg-gray-100'"
+                [ngClass]="unit === 'impact' ? 'bg-secondary' : 'bg-transparent'"
                 (click)="setUnit('impact')"
                 [innerHTML]="unitOfCriteria"
             ></button>
             <button
                 (click)="setUnit('Peopleeq')"
                 class="border-none border-round-3xl p-2 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                [ngClass]="unit === 'Peopleeq' ? 'bg-secondary' : 'bg-gray-100'"
+                [ngClass]="unit === 'Peopleeq' ? 'bg-secondary' : 'bg-transparent'"
             >
                 {{ "common.peopleeq" | translate }}
             </button>

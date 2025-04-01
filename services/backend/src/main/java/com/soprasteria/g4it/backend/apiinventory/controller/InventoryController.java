@@ -99,7 +99,7 @@ public class InventoryController implements InventoryApiDelegate {
     public ResponseEntity<InventoryRest> createInventory(final String subscriber,
                                                          final Long organization,
                                                          final InventoryCreateRest inventoryCreateRest) {
-        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.createInventory(subscriber, organization, inventoryCreateRest)), HttpStatus.CREATED);
+        return new ResponseEntity<>(inventoryRestMapper.toDto(this.inventoryService.createInventory(subscriber, organization, inventoryCreateRest, authService.getUser())), HttpStatus.CREATED);
     }
 
     /**

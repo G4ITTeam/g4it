@@ -53,12 +53,10 @@ g4it:
   local:
     retention:
       ttl: PT10M
-  referential:
-    migration: true
 
 filesystem.local.path: ".\\storage"
 
-local.working.folder:  ".\\storagetmp"
+local.working.folder: ".\\storagetmp"
 
 spring:
   profiles:
@@ -92,11 +90,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8180/auth/realms/g4it
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: always
   codec:
     max-in-memory-size: 100MB
   config:
@@ -112,21 +105,6 @@ spring:
       enabled: true
   jackson:
     default-property-inclusion: NON_NULL
-
-# Batch configs
-evaluation:
-  batch:
-    chunk: 15000
-    page-size: 15000
-export:
-  batch:
-    chunk: 15000
-    page-size: 15000
-loading:
-  batch:
-    chunk: 15000
-    page-size: 15000
-    valid-data-writing-enable: false
 
 springdoc:
   swagger-ui:

@@ -45,6 +45,14 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
     List<InPhysicalEquipment> findByDigitalServiceUid(String digitalServiceUid, Pageable pageable);
 
     /**
+     * Find physical equipments of one digital service order by name
+     *
+     * @param digitalServiceUid digital service Identifier
+     * @return return a list of physical equipments
+     */
+    List<InPhysicalEquipment> findByDigitalServiceUidOrderByName(String digitalServiceUid);
+
+    /**
      * Find physical equipment by the functionally unique fields
      *
      * @param inventoryId inventory id
@@ -79,6 +87,10 @@ public interface InPhysicalEquipmentRepository extends JpaRepository<InPhysicalE
      */
     @Query("select coalesce(sum(quantity), 0) from InPhysicalEquipment ep where ep.inventoryId = :inventoryId")
     Long sumQuantityByInventoryId(Long inventoryId);
+
+    @Transactional
+    @Modifying
+    void deleteByInventoryId(Long inventoryId);
 
     @Transactional
     @Modifying

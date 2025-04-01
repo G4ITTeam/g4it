@@ -17,7 +17,6 @@ import { Organization, Subscriber } from "src/app/core/interfaces/user.interface
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
-import { InventoryRepository } from "src/app/core/store/inventory.repository";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
 
@@ -31,26 +30,19 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     @Input() indicatorType: string = "";
 
     types = Constants.INVENTORY_TYPE;
-    batchStatusCode: string | undefined = undefined;
     subscriber = "";
     organization = "";
     sidebarVisible = false;
     inventory: Inventory = {} as Inventory;
-    inventoryInterval: any;
-    waitingLoop = 10000;
     downloadInProgress = false;
 
     ngUnsubscribe = new Subject<void>();
-    failedStatusCodeList = Constants.EXPORT_BATCH_FAILED_STATUSES;
-    inProgressStatusCodeList = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES;
 
     selectedOrganization = "";
     selectedSubscriber = "";
 
     constructor(
-        public inventoryRepo: InventoryRepository,
         private inventoryService: InventoryService,
-        private confirmationService: ConfirmationService,
         public footprintService: FootprintDataService,
         private translate: TranslateService,
         public router: Router,
@@ -60,13 +52,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
 
     async ngOnInit() {
         await this.initInventory();
-        if (
-            this.batchStatusCode &&
-            this.batchStatusCode !== Constants.EXPORT_BATCH_GENERATED &&
-            this.batchStatusCode !== Constants.EXPORT_REMOVED
-        ) {
-            this.loopInventories();
-        }
         this.userService.currentSubscriber$
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((subscriber: Subscriber) => {
@@ -82,44 +67,6 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     async initInventory() {
         let result = await this.inventoryService.getInventories(this.inventoryId);
         if (result.length > 0) this.inventory = result[0];
-        this.batchStatusCode = this.inventory?.exportReport?.batchStatusCode || undefined;
-    }
-
-    isGenerated() {
-        return Constants.EXPORT_BATCH_GENERATED;
-    }
-
-    confirmExport(event: Event) {
-        this.confirmationService.confirm({
-            target: event.target as EventTarget,
-            acceptLabel: this.translate.instant("common.yes"),
-            rejectLabel: this.translate.instant("common.no"),
-            message: this.translate.instant("inventories-footprint.export-message"),
-            accept: () => {
-                this.exportResult();
-            },
-        });
-    }
-
-    exportResult() {
-        this.footprintService.sendExportRequest(this.inventoryId).subscribe((res) => {
-            if (this.inventory.isNewArch) {
-                this.batchStatusCode = Constants.EXPORT_BATCH_GENERATED;
-            } else {
-                this.batchStatusCode = Constants.EXPORT_BATCH_IN_PROGRESS_STATUSES[0];
-            }
-        });
-        this.loopInventories();
-    }
-
-    loopInventories() {
-        this.inventoryInterval = setInterval(async () => {
-            if (this.batchStatusCode === Constants.EXPORT_BATCH_GENERATED) {
-                clearInterval(this.inventoryInterval);
-            } else {
-                await this.initInventory();
-            }
-        }, this.waitingLoop);
     }
 
     changePageToInventories() {
@@ -131,6 +78,7 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
         this.downloadInProgress = true;
         this.downloadFile();
     }
+
     async downloadFile() {
         try {
             const blob: Blob = await firstValueFrom(
@@ -185,6 +133,5 @@ export class InventoriesHeaderFootprintComponent implements OnInit {
     ngOnDestroy() {
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
-        clearInterval(this.inventoryInterval);
     }
 }
