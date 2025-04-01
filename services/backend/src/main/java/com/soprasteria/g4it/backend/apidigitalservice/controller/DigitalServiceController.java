@@ -9,13 +9,11 @@ package com.soprasteria.g4it.backend.apidigitalservice.controller;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceRestMapper;
-import com.soprasteria.g4it.backend.apidigitalservice.mapper.ServerDataCenterRestMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceRest;
-import com.soprasteria.g4it.backend.server.gen.api.dto.ServerDatacenterRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -51,12 +49,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
     private DigitalServiceRestMapper digitalServiceRestMapper;
 
     /**
-     * ServerDataCenterRest Mapper.
-     */
-    @Autowired
-    private ServerDataCenterRestMapper serverDataCenterRestMapper;
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -88,21 +80,6 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<DigitalServiceRest> updateDigitalService(final String subscriber,
-                                                                   final Long organization,
-                                                                   final String digitalServiceUid,
-                                                                   final DigitalServiceRest digitalService) {
-        digitalService.setUid(digitalServiceUid);
-        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.updateDigitalService(
-                digitalServiceRestMapper.toBusinessObject(digitalService),
-                authService.getUser()
-        )));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ResponseEntity<DigitalServiceRest> getDigitalService(final String subscriber,
                                                                 final Long organization,
                                                                 final String digitalServiceUid) {
@@ -113,21 +90,15 @@ public class DigitalServiceController implements DigitalServiceApiDelegate {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Void> runCalculations(final String subscriber,
-                                                final Long organization,
-                                                final String digitalServiceUid) {
-        digitalServiceService.runCalculations(subscriber, organization, digitalServiceUid);
-        return ResponseEntity.accepted().build();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<List<ServerDatacenterRest>> getDigitalServiceDatacenters(final String subscriber,
-                                                                                   final Long organization,
-                                                                                   final String digitalServiceUid) {
-        return ResponseEntity.ok(serverDataCenterRestMapper.toDto(digitalServiceService.getDigitalServiceDataCenter(digitalServiceUid)));
+    public ResponseEntity<DigitalServiceRest> updateDigitalService(final String subscriber,
+                                                                   final Long organization,
+                                                                   final String digitalServiceUid,
+                                                                   final DigitalServiceRest digitalService) {
+        digitalService.setUid(digitalServiceUid);
+        return ResponseEntity.ok(digitalServiceRestMapper.toDto(digitalServiceService.updateDigitalService(
+                digitalServiceRestMapper.toBusinessObject(digitalService),
+                authService.getUser()
+        )));
     }
 
     /**

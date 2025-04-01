@@ -12,15 +12,9 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 import {
     DigitalService,
-    DigitalServiceCloudResponse,
-    DigitalServiceFootprint,
-    DigitalServiceNetworksImpact,
-    DigitalServiceServersImpact,
-    DigitalServiceTerminalResponse,
     DSCriteriaRest,
     Host,
     NetworkType,
-    ServerDC,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { MapString } from "../../interfaces/generic.interfaces";
@@ -31,11 +25,11 @@ const endpoint = Constants.ENDPOINTS.digitalServices;
     providedIn: "root",
 })
 export class DigitalServicesDataService {
-    private HEADERS = new HttpHeaders({
+    private readonly HEADERS = new HttpHeaders({
         "content-type": "application/json",
     });
-    constructor(private http: HttpClient) {}
-    private digitalServiceSubject = new ReplaySubject<DigitalService>(1);
+    constructor(private readonly http: HttpClient) {}
+    private readonly digitalServiceSubject = new ReplaySubject<DigitalService>(1);
     digitalService$ = this.digitalServiceSubject.asObservable();
 
     list(): Observable<DigitalService[]> {
@@ -68,10 +62,6 @@ export class DigitalServicesDataService {
             .pipe(tap((res: DigitalService) => this.digitalServiceSubject.next(res)));
     }
 
-    getFootprint(uid: DigitalService["uid"]): Observable<DigitalServiceFootprint[]> {
-        return this.http.get<DigitalServiceFootprint[]>(`${endpoint}/${uid}/indicators`);
-    }
-
     delete(uid: DigitalService["uid"]): Observable<string> {
         return this.http.delete<string>(`${endpoint}/${uid}`);
     }
@@ -96,9 +86,6 @@ export class DigitalServicesDataService {
         return this.http.get<Host[]>(`${endpoint}/server-host?type=${type}`);
     }
 
-    getDatacenterServerReferential(uid: string): Observable<ServerDC[]> {
-        return this.http.get<ServerDC[]>(`${endpoint}/${uid}/datacenters`);
-    }
     getBoaviztapiCountryMap(): Observable<MapString> {
         return this.http.get<MapString>(`referential/boaviztapi/countries`);
     }
@@ -111,44 +98,8 @@ export class DigitalServicesDataService {
         );
     }
 
-    launchCalcul(uid: DigitalService["uid"]): Observable<string> {
-        return this.http.post<string>(`${endpoint}/${uid}/evaluation`, {});
-    }
-
     launchEvaluating(uid: DigitalService["uid"]): Observable<string> {
         return this.http.post<string>(`${endpoint}/${uid}/evaluating`, {});
-    }
-
-    getTerminalsIndicators(
-        uid: DigitalService["uid"],
-    ): Observable<DigitalServiceTerminalResponse[]> {
-        return this.http.get<DigitalServiceTerminalResponse[]>(
-            `${endpoint}/${uid}/terminals/indicators`,
-        );
-    }
-
-    getNetworksIndicators(
-        uid: DigitalService["uid"],
-    ): Observable<DigitalServiceNetworksImpact[]> {
-        return this.http.get<DigitalServiceNetworksImpact[]>(
-            `${endpoint}/${uid}/networks/indicators`,
-        );
-    }
-
-    getServersIndicators(
-        uid: DigitalService["uid"],
-    ): Observable<DigitalServiceServersImpact[]> {
-        return this.http.get<DigitalServiceServersImpact[]>(
-            `${endpoint}/${uid}/servers/indicators`,
-        );
-    }
-
-    getCloudsIndicators(
-        uid: DigitalService["uid"],
-    ): Observable<DigitalServiceCloudResponse[]> {
-        return this.http.get<DigitalServiceCloudResponse[]>(
-            `${endpoint}/${uid}/cloud/indicators`,
-        );
     }
 
     copyUrl(uid: DigitalService["uid"]): Observable<string> {

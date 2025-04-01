@@ -40,32 +40,27 @@ export class DigitalServicesNetworksComponent {
     headerFields = ["typeCode", "yearlyQuantityOfGbExchanged"];
 
     networkData = computed(() => {
-        if (this.digitalServiceStore.isNewArch()) {
-            const networkTypes = this.digitalServiceStore.networkTypes();
-            return this.digitalServiceStore
-                .inPhysicalEquipments()
-                .filter((item) => item.type === "Network")
-                .map((item) => {
-                    const type = networkTypes.find(
-                        (networkType) => networkType.code === item.model,
-                    );
+        const networkTypes = this.digitalServiceStore.networkTypes();
+        return this.digitalServiceStore
+            .inPhysicalEquipments()
+            .filter((item) => item.type === "Network")
+            .map((item) => {
+                const type = networkTypes.find(
+                    (networkType) => networkType.code === item.model,
+                );
 
-                    let yearlyQuantityOfGbExchanged = item.quantity;
-                    if (type?.type === "Fixed") {
-                        yearlyQuantityOfGbExchanged =
-                            type.annualQuantityOfGo * item.quantity;
-                    }
-                    return {
-                        creationDate: item.creationDate,
-                        id: item.id,
-                        typeCode: type?.value,
-                        type,
-                        yearlyQuantityOfGbExchanged,
-                    } as DigitalServiceNetworkConfig;
-                });
-        } else {
-            return [];
-        }
+                let yearlyQuantityOfGbExchanged = item.quantity;
+                if (type?.type === "Fixed") {
+                    yearlyQuantityOfGbExchanged = type.annualQuantityOfGo * item.quantity;
+                }
+                return {
+                    creationDate: item.creationDate,
+                    id: item.id,
+                    typeCode: type?.value,
+                    type,
+                    yearlyQuantityOfGbExchanged,
+                } as DigitalServiceNetworkConfig;
+            });
     });
 
     constructor(
@@ -119,61 +114,31 @@ export class DigitalServicesNetworksComponent {
         this.sidebarVisible = false;
         if ("cancel" === action) return;
 
-        if (this.digitalServiceStore.isNewArch()) {
-            const datePurchase = new Date("2020-01-01");
-            const dateWithdrawal = addYears(datePurchase, 1);
+        const datePurchase = new Date("2020-01-01");
+        const dateWithdrawal = addYears(datePurchase, 1);
 
-            const elementToSave = {
-                digitalServiceUid: this.digitalService.uid,
-                name: network.uid || uuid.v4(),
-                type: "Network",
-                model: network.type.code,
-                quantity: this.calculateQuantity(
-                    network.yearlyQuantityOfGbExchanged,
-                    network.type,
-                ),
-                location: network.type.country,
-                datePurchase: datePurchase.toISOString(),
-                dateWithdrawal: dateWithdrawal.toISOString(),
-            } as InPhysicalEquipmentRest;
+        const elementToSave = {
+            digitalServiceUid: this.digitalService.uid,
+            name: network.uid || uuid.v4(),
+            type: "Network",
+            model: network.type.code,
+            quantity: this.calculateQuantity(
+                network.yearlyQuantityOfGbExchanged,
+                network.type,
+            ),
+            location: network.type.country,
+            datePurchase: datePurchase.toISOString(),
+            dateWithdrawal: dateWithdrawal.toISOString(),
+        } as InPhysicalEquipmentRest;
 
-            if (network.id) {
-                elementToSave.id = network.id;
-                await firstValueFrom(
-                    this.inPhysicalEquipmentsService.update(elementToSave),
-                );
-            } else {
-                await firstValueFrom(
-                    this.inPhysicalEquipmentsService.create(elementToSave),
-                );
-            }
-            await this.digitalServiceStore.initInPhysicalEquipments(
-                this.digitalService.uid,
-            );
-            this.digitalServiceStore.setEnableCalcul(true);
+        if (network.id) {
+            elementToSave.id = network.id;
+            await firstValueFrom(this.inPhysicalEquipmentsService.update(elementToSave));
         } else {
-            await this.actionNetworkOldArch(action, network);
+            await firstValueFrom(this.inPhysicalEquipmentsService.create(elementToSave));
         }
-    }
-
-    async actionNetworkOldArch(action: string, network: DigitalServiceNetworkConfig) {
-        if (!this.digitalService.networks) return;
-
-        let index = this.digitalService.networks.findIndex((t) => t.uid === network.uid);
-        if (action === "delete") {
-            if (index === -1) return;
-            this.digitalService.networks.splice(index, 1);
-        } else if (action === "update") {
-            if (index === -1) {
-                this.digitalService.networks.push(network);
-            } else {
-                this.digitalService.networks[index] = network;
-            }
-        }
-
-        this.digitalService = await firstValueFrom(
-            this.digitalServicesData.update(this.digitalService),
-        );
+        await this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
+        this.digitalServiceStore.setEnableCalcul(true);
     }
 
     private calculateQuantity(

@@ -14,11 +14,20 @@ import com.soprasteria.g4it.backend.apiinout.business.InApplicationService;
 import com.soprasteria.g4it.backend.apiinout.business.InDatacenterService;
 import com.soprasteria.g4it.backend.apiinout.business.InPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.InVirtualEquipmentService;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.*;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiloadinputfiles.business.asyncloadservice.AsyncLoadFilesService;
 import com.soprasteria.g4it.backend.apiloadinputfiles.controller.LoadInputFilesController;
+import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckApplication;
+import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckPhysicalEquipment;
+import com.soprasteria.g4it.backend.apiloadinputfiles.modeldb.CheckVirtualEquipment;
+import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckApplicationRepository;
+import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckDatacenterRepository;
+import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiloadinputfiles.repository.CheckVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apireferential.business.ReferentialImportService;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Subscriber;
@@ -51,6 +60,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -59,13 +69,18 @@ import java.util.*;
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FunctionalTests {
+    private static final String SUBSCRIBER = "SUBSCRIBER";
+    private static final Path apiloadinputfiles = Path.of("src/test/resources/apiloadinputfiles");
+    private static final Path apievaluating = Path.of("src/test/resources/apievaluating");
+    // Set to true if you want Assertions on each fail
+    // please commit with  SHOW_ASSERTION = false;
+    private static final boolean SHOW_ASSERTION = false;
     @Autowired
     LoadInputFilesController loadInputFilesController;
     @Autowired
     AsyncLoadFilesService asyncLoadFilesService;
     @Autowired
     AsyncEvaluatingService asyncEvaluatingService;
-
     @Autowired
     SubscriberRepository subscriberRepository;
     @Autowired
@@ -76,7 +91,6 @@ public class FunctionalTests {
     TaskRepository taskRepository;
     @Autowired
     ReferentialImportService referentialImportService;
-
     @Autowired
     InDatacenterService inDatacenterService;
     @Autowired
@@ -85,7 +99,6 @@ public class FunctionalTests {
     InVirtualEquipmentService inVirtualEquipmentService;
     @Autowired
     InApplicationService inApplicationService;
-
     @Autowired
     InDatacenterRepository inDatacenterRepository;
     @Autowired
@@ -94,25 +107,22 @@ public class FunctionalTests {
     InVirtualEquipmentRepository inVirtualEquipmentRepository;
     @Autowired
     InApplicationRepository inApplicationRepository;
-
+    @Autowired
+    CheckDatacenterRepository checkDatacenterRepository;
+    @Autowired
+    CheckVirtualEquipmentRepository checkVirtualEquipmentRepository;
+    @Autowired
+    CheckPhysicalEquipmentRepository checkPhysicalEquipmentRepository;
+    @Autowired
+    CheckApplicationRepository checkApplicationRepository;
     @Autowired
     OutPhysicalEquipmentRepository outPhysicalEquipmentRepository;
     @Autowired
     OutVirtualEquipmentRepository outVirtualEquipmentRepository;
     @Autowired
     OutApplicationRepository outApplicationRepository;
-
     @MockBean
     BoaviztapiService boaviztapiService;
-
-    private static final String SUBSCRIBER = "SUBSCRIBER";
-
-    private static final Path apiloadinputfiles = Path.of("src/test/resources/apiloadinputfiles");
-    private static final Path apievaluating = Path.of("src/test/resources/apievaluating");
-
-    // Set to true if you want Assertions on each fail
-    // please commit with  SHOW_ASSERTION = false;
-    private static final boolean SHOW_ASSERTION = false;
 
     /**
      * Execute all test cases located in :
@@ -136,7 +146,6 @@ public class FunctionalTests {
         var inventory = inventoryRepository.save(Inventory.builder()
                 .name("Inventory Name")
                 .organization(organization)
-                .doExport(true)
                 .doExportVerbose(true)
                 .build());
 
@@ -171,11 +180,19 @@ public class FunctionalTests {
             var testCase = testFolder.getName();
 
             // clean tables
+            checkDatacenterRepository.deleteAll();
+            checkVirtualEquipmentRepository.deleteAll();
+            checkPhysicalEquipmentRepository.deleteAll();
+            checkApplicationRepository.deleteAll();
             inDatacenterRepository.deleteAll();
             inPhysicalEquipmentRepository.deleteAll();
             inVirtualEquipmentRepository.deleteAll();
             inApplicationRepository.deleteAll();
             taskRepository.deleteAll();
+
+            //Load already existing PE in inventory
+            InPhysicalEquipment oldPhysicalEquipment = createAlreadyExistingPEinInventory(inventory, organization.getId());
+            InVirtualEquipment oldVE = createAlreadyExistingVEinInventory(inventory, organization.getId());
 
             // copy files in work
             File inputFolder = apiloadinputfiles.resolve(testCase).resolve("input").toFile();
@@ -196,6 +213,12 @@ public class FunctionalTests {
             // EXECUTE LOADING
             var task = taskRepository.save(TestUtils.createTask(context, filenames, TaskType.LOADING, null, inventory));
             asyncLoadFilesService.execute(context, task);
+
+            //TODO to delete this debug code
+            //TEST checks
+            List<CheckVirtualEquipment> cve = checkVirtualEquipmentRepository.findAll();
+            List<CheckPhysicalEquipment> pec = checkPhysicalEquipmentRepository.findAll();
+            List<CheckApplication> apc = checkApplicationRepository.findAll();
 
             // ASSERT
             Path outputPath = apiloadinputfiles.resolve(testCase).resolve("output");
@@ -357,5 +380,66 @@ public class FunctionalTests {
             Assertions.fail("Evaluating - At least one test case has fail, please check the logs in the console");
         }
 
+        log.info("Virtual equipements {}", checkVirtualEquipmentRepository.findAll());
+
     }
+
+    private InPhysicalEquipment createAlreadyExistingPEinInventory(Inventory inv, Long OrganizationId) {
+
+        InPhysicalEquipment inPE = new InPhysicalEquipment();
+        inPE.setName("MyMagicalPE");
+        inPE.setInventoryId(inv.getId());
+        inPE.setCreationDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
+        inPE.setId(-1L);
+        inPE.setQuantity(12d);
+        inPE.setCpuCoreNumber(2d);
+        inPE.setSizeDiskGb(2353d);
+        inPE.setSizeMemoryGb(234d);
+        inPE.setElectricityConsumption(234d);
+        inPE.setCpuType("cpuType");
+        inPE.setCpuCoreNumber(2d);
+        inPE.setDatacenterName("default");
+        inPE.setDatePurchase(LocalDate.of(2020, 1, 1));
+        inPE.setDescription("OldPE");
+        inPE.setDurationHour(24l);
+        inPE.setLocation("France");
+        inPE.setLastUpdateDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
+
+        inPE.setModel("model");
+        inPE.setManufacturer("manufacturer");
+        inPE.setType("type");
+
+        return inPhysicalEquipmentRepository.save(inPE);
+    }
+
+    private InVirtualEquipment createAlreadyExistingVEinInventory(Inventory inv, Long OrganizationId) {
+
+
+        InVirtualEquipment inVe = new InVirtualEquipment();
+
+        inVe.setId(-1l);
+        inVe.setName("MyMagicalVE");
+        inVe.setPhysicalEquipmentName("MyMagicalPE");
+        inVe.setInventoryId(inv.getId());
+        inVe.setCreationDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
+        inVe.setLastUpdateDate(LocalDateTime.of(2022, 1, 1, 0, 0, 0));
+        inVe.setQuantity(12d);
+        inVe.setInfrastructureType("infrastructureType");
+        inVe.setDurationHour(33d);
+        inVe.setWorkload(33d);
+        inVe.setElectricityConsumption(22d);
+        inVe.setVcpuCoreNumber(2d);
+        inVe.setSizeMemoryGb(3d);
+        inVe.setSizeDiskGb(234d);
+        inVe.setAllocationFactor(0.5d);
+        inVe.setDatacenterName("default");
+        inVe.setLocation("France");
+        inVe.setInfrastructureType("infrastructureType");
+
+        return inVirtualEquipmentRepository.save(inVe);
+
+
+    }
+
+
 }

@@ -11,7 +11,7 @@
             <div class="text-center">
                 <button
                     class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
-                    [ngClass]="selectedUnit === 'Raw' ? 'bg-secondary' : 'bg-gray-100'"
+                    [ngClass]="selectedUnit === 'Raw' ? 'bg-secondary' : 'bg-transparent'"
                     (click)="selectedUnit = 'Raw'"
                 >
                     {{ "digital-services.raw" | translate }}
@@ -20,7 +20,7 @@
                 <button
                     class="border-none border-round-3xl py-2 px-3 mx-1 text-gray-900 font-semibold text-xs cursor-pointer"
                     [ngClass]="
-                        selectedUnit === 'Peopleeq' ? 'bg-secondary' : 'bg-gray-100'
+                        selectedUnit === 'Peopleeq' ? 'bg-secondary' : 'bg-transparent'
                     "
                     (click)="selectedUnit = 'Peopleeq'"
                 >

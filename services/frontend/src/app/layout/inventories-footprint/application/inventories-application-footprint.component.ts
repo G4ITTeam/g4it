@@ -20,7 +20,6 @@ import {
     ApplicationCriteriaFootprint,
     ApplicationFootprint,
 } from "src/app/core/interfaces/footprint.interface";
-import { OutApplicationsRest } from "src/app/core/interfaces/output.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
@@ -80,42 +79,12 @@ export class InventoriesApplicationFootprintComponent {
         this.inventoryId =
             +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
 
-        const isNewArch = await this.isNewArchInventory(this.inventoryId);
         let footprint: ApplicationFootprint[] = [];
-        let outApplication: OutApplicationsRest[] = [];
-        if (isNewArch) {
-            [footprint] = await Promise.all([
-                firstValueFrom(
-                    this.footprintService.initApplicationFootprint(this.inventoryId),
-                ),
-            ]);
-        } else {
-            [footprint, outApplication] = await Promise.all([
-                firstValueFrom(
-                    this.footprintService.initApplicationFootprint(this.inventoryId),
-                ),
-                firstValueFrom(this.outApplicationsService.get(this.inventoryId)),
-            ]);
-            const transformedOutApplication =
-                this.footprintService.getTransformOutApplications(outApplication);
-            transformedOutApplication.forEach((appImpact) => {
-                this.footprintService.setUnspecifiedDataImpact(appImpact);
-                const footprintIndex = footprint.findIndex(
-                    (footprint) => footprint.criteria === appImpact.criteria,
-                );
-                if (footprintIndex !== -1) {
-                    footprint[footprintIndex].impacts.push(appImpact);
-                } else {
-                    footprint.push({
-                        criteria: appImpact.criteria as string,
-                        criteriaTitle: this.translate.instant(
-                            `criteria.${appImpact.criteria}.title`,
-                        ),
-                        impacts: [appImpact],
-                    } as ApplicationFootprint);
-                }
-            });
-        }
+        [footprint] = await Promise.all([
+            firstValueFrom(
+                this.footprintService.initApplicationFootprint(this.inventoryId),
+            ),
+        ]);
 
         this.mapCriteres(footprint);
 
@@ -163,11 +132,6 @@ export class InventoriesApplicationFootprintComponent {
                 )!;
             }
         });
-    }
-
-    async isNewArchInventory(inventoryId: number) {
-        let result = await this.inventoryService.getInventories(inventoryId);
-        return result[0].isNewArch;
     }
 
     private mapCriteres(footprint: ApplicationFootprint[]): void {

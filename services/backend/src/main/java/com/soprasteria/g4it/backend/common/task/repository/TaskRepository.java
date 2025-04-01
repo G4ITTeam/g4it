@@ -63,4 +63,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             WHERE t.id = :taskId
             """)
     void deleteTask(@Param("taskId") final Long taskId);
+
+    List<Task> findByTypeAndInventoryId(String type, Long inventoryId);
+
 }

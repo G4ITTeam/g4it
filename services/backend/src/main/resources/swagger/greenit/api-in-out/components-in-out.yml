@@ -28,7 +28,8 @@ components:
           maxLength: 255
         location:
           type: string
-          maxLength: 255
+          maxLength: 50
+          pattern: "^[A-Za-z ]*$"
         pue:
           type: number
           format: double
@@ -67,7 +68,8 @@ components:
           maxLength: 255
         location:
           type: string
-          maxLength: 255
+          maxLength: 50
+          pattern: "^[A-Za-z ]*$"
         quantity:
           type: number
           format: double
@@ -182,7 +184,8 @@ components:
           maxLength: 255
         location:
           type: string
-          maxLength: 255
+          maxLength: 50
+          pattern: "^[A-Za-z ]*$"
         durationHour:
           type: number
           format: double

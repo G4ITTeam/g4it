@@ -119,7 +119,6 @@ describe("Information System", () => {
         // export inventory
         cy.get('[id="filter-component"]').click();
         cy.get('[id="export-inventory-button"]').click();
-        cy.contains("Yes").click();
         cy.wait(2000).checkA11y(undefined, undefined, reportA11yViolations, true);
 
         // return to my information system page

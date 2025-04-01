@@ -91,3 +91,18 @@ databaseChangeLog:
               - column:
                   name: errors
                   type: varchar(255) array
+
+  - changeSet:
+      id: add-column-created_by-task-table
+      author: G4IT Dev Team
+      changes:
+        - addColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: task-g4it_user-fk
+                    references: g4it_user(id)
+                    deleteCascade: false

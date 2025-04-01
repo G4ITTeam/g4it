@@ -9,54 +9,29 @@ package com.soprasteria.g4it.backend.apidigitalservice.mapper;
 
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceReferentialService;
 import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.NetworkBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.ServerBO;
-import com.soprasteria.g4it.backend.apidigitalservice.model.TerminalBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.Server;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * DigitalService Mapper.
  */
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true),
-        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-        uses = {TerminalMapper.class, NetworkMapper.class, ServerMapper.class})
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED
+)
 @Slf4j
 public abstract class DigitalServiceMapper {
 
     @Autowired
-    private TerminalMapper terminalMapper;
-
-    @Autowired
-    private NetworkMapper networkMapper;
-
-    @Autowired
-    private ServerMapper serverMapper;
-
-    @Autowired
     private NoteMapper noteMapper;
 
-    /**
-     * Map to Business Object.
-     *
-     * @param entity the source.
-     * @return the DigitalServiceBO.
-     */
-    @Mapping(target = "terminals", ignore = true)
-    @Mapping(target = "networks", ignore = true)
-    @Mapping(target = "servers", ignore = true)
     public abstract DigitalServiceBO toBusinessObject(final DigitalService entity);
 
     /**
@@ -109,36 +84,6 @@ public abstract class DigitalServiceMapper {
 
         target.setName(source.getName());
         target.setLastUpdateDate(LocalDateTime.now());
-        if (source.getIsNewArch() != null) {
-            target.setIsNewArch(source.getIsNewArch());
-        }
-
-        // Merge terminals.
-        Optional.ofNullable(target.getTerminals()).orElse(new ArrayList<>())
-                .removeIf(terminal -> !Optional.ofNullable(source.getTerminals()).orElse(new ArrayList<>())
-                        .stream()
-                        .map(TerminalBO::getUid)
-                        .toList()
-                        .contains(terminal.getUid()));
-        Optional.ofNullable(source.getTerminals()).orElse(new ArrayList<>()).forEach(terminal -> mergeTerminal(target, terminal, digitalServiceReferentialService));
-
-        // Merge networks.
-        Optional.ofNullable(target.getNetworks()).orElse(new ArrayList<>())
-                .removeIf(network -> !Optional.ofNullable(source.getNetworks()).orElse(new ArrayList<>())
-                        .stream()
-                        .map(NetworkBO::getUid)
-                        .toList()
-                        .contains(network.getUid()));
-        Optional.ofNullable(source.getNetworks()).orElse(new ArrayList<>()).forEach(network -> mergeNetwork(target, network, digitalServiceReferentialService));
-
-        // Merge servers.
-        Optional.ofNullable(target.getServers()).orElse(new ArrayList<>())
-                .removeIf(server -> !Optional.ofNullable(source.getServers()).orElse(new ArrayList<>())
-                        .stream()
-                        .map(ServerBO::getUid)
-                        .toList()
-                        .contains(server.getUid()));
-        Optional.ofNullable(source.getServers()).orElse(new ArrayList<>()).forEach(server -> mergeServer(target, server, digitalServiceReferentialService));
 
         List<String> sourceCriteria = source.getCriteria();
         List<String> targetCriteria = target.getCriteria();
@@ -161,56 +106,6 @@ public abstract class DigitalServiceMapper {
         }
         // update/delete note
         target.setNote(note);
-    }
-
-    /**
-     * Merge terminal.
-     *
-     * @param target                           the entity to update.
-     * @param source                           the business object containing updated data.
-     * @param digitalServiceReferentialService to retrieve referential data.
-     */
-    private void mergeTerminal(final DigitalService target, final TerminalBO source,
-                               final DigitalServiceReferentialService digitalServiceReferentialService) {
-        // Fix update cascade list.
-        if (StringUtils.isEmpty(source.getUid())) {
-            target.addTerminal(terminalMapper.toEntity(source, digitalServiceReferentialService));
-        } else {
-            terminalMapper.merge(target.getTerminals().stream().filter(ter -> ter.getUid().equals(source.getUid())).findFirst().orElseThrow(), source, digitalServiceReferentialService);
-        }
-    }
-
-    /**
-     * Merge network.
-     *
-     * @param target                           the entity to update.
-     * @param source                           the business object containing updated data.
-     * @param digitalServiceReferentialService to retrieve referential data.
-     */
-    private void mergeNetwork(final DigitalService target, final NetworkBO source,
-                              final DigitalServiceReferentialService digitalServiceReferentialService) {
-        if (StringUtils.isEmpty(source.getUid())) {
-            target.addNetwork(networkMapper.toEntity(source, digitalServiceReferentialService));
-        } else {
-            networkMapper.merge(target.getNetworks().stream().filter(ter -> ter.getUid().equals(source.getUid())).findFirst().orElseThrow(), source, digitalServiceReferentialService);
-        }
-    }
-
-    /**
-     * Merge servers.
-     *
-     * @param target                           the entity to update.
-     * @param source                           the business object containing updated data.
-     * @param digitalServiceReferentialService to retrieve referential data.
-     */
-    private void mergeServer(final DigitalService target, final ServerBO source,
-                             final DigitalServiceReferentialService digitalServiceReferentialService) {
-        if (StringUtils.isEmpty(source.getUid())) {
-            target.addServer(serverMapper.toEntity(source, digitalServiceReferentialService));
-        } else {
-            serverMapper.merge(target.getServers().stream().filter(ter -> ter.getUid().equals(source.getUid())).findFirst().orElseThrow(), source, digitalServiceReferentialService);
-        }
-        target.getServers().stream().map(Server::getDatacenterDigitalService).filter(Objects::nonNull).forEach(target::addDatacenter);
     }
 
 }

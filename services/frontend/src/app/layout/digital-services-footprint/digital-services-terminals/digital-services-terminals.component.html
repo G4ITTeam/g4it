@@ -1,116 +1,16 @@
 <div class="table-container">
-    @if (digitalServiceStore.isNewArch()) {
-        <app-digital-service-table
-            title="devices"
-            addButton="add"
-            translationPrefix="digital-services-terminals"
-            [headerFields]="headerFields"
-            [data]="terminalData()"
-            (sidebar)="changeSidebar($event)"
-            (resetItem)="resetTerminal()"
-            (setItem)="setItem($event)"
-            (deleteItem)="deleteItem($event)"
-        ></app-digital-service-table>
-    } @else {
-        <p-table
-            [value]="digitalService.terminals"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            [rows]="6"
-            [paginator]="true"
-            [sortField]="'creationDate'"
-            [sortOrder]="1"
-        >
-            <ng-template pTemplate="caption">
-                <div class="table-header">
-                    <div class="table-head">
-                        {{ "digital-services-terminals.devices" | translate }}
-                    </div>
-                    <p-button
-                        *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                        (click)="resetTerminal(); sidebarVisible = true"
-                        styleClass="inventory-button-small"
-                        id="add-terminals"
-                        >{{ "digital-services-terminals.add" | translate }}</p-button
-                    >
-                </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-                <caption class="visually-hidden">
-                    {{
-                        "digital-services-terminals.devices" | translate
-                    }}
-                </caption>
-                <tr>
-                    <th scope="col" id="id">
-                        {{ "digital-services-terminals.id" | translate }}
-                    </th>
-                    <th scope="col" pSortableColumn="type.value" id="type">
-                        {{ "digital-services-terminals.type" | translate }}
-                        <p-sortIcon field="type.value"></p-sortIcon>
-                    </th>
-                    <th scope="col" pSortableColumn="country" id="country">
-                        {{ "digital-services-terminals.country" | translate }}
-                        <p-sortIcon field="country"></p-sortIcon>
-                    </th>
-                    <th scope="col" pSortableColumn="numberOfUsers" id="users">
-                        {{ "digital-services-terminals.nb-user" | translate }}
-                        <p-sortIcon field="numberOfUsers"></p-sortIcon>
-                    </th>
-                    <th scope="col" pSortableColumn="yearlyUsageTimePerUser" id="time">
-                        {{ "digital-services-terminals.table-yearly-usage" | translate }}
-                        <p-sortIcon field="yearlyUsageTimePerUser"></p-sortIcon>
-                    </th>
-                    <th scope="col" pSortableColumn="lifespan" id="lifespan">
-                        {{ "digital-services-terminals.lifespan" | translate }}
-                        <p-sortIcon field="lifespan"></p-sortIcon>
-                    </th>
-                    <th class="text-hidden" id="button">
-                        {{ "common.button" | translate }}
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-terminal let-rowIndex="rowIndex">
-                <tr>
-                    <td class="grey-text">{{ rowIndex + 1 }}</td>
-                    <td>{{ terminal.type.value }}</td>
-                    <td>{{ terminal.country }}</td>
-                    <td>{{ terminal.numberOfUsers | decimals }}</td>
-                    <td>
-                        {{ terminal.yearlyUsageTimePerUser | decimals }}
-                    </td>
-                    <td>{{ terminal.lifespan }}</td>
-                    <td style="text-align: right">
-                        <p-button
-                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                            (click)="
-                                setTerminal(terminal, rowIndex + 1); sidebarVisible = true
-                            "
-                            styleClass="p-button-text mx-1"
-                        >
-                            <img
-                                src="assets/images/icons/icon-edit.svg"
-                                alt="{{ 'common.edit' | translate }} {{
-                                    'digital-services-terminals.device' | translate
-                                }} {{ rowIndex + 1 }}"
-                            />
-                        </p-button>
-                        <p-button
-                            *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
-                            (click)="deleteTerminals(terminal)"
-                            styleClass="p-button-text"
-                        >
-                            <img
-                                src="assets/images/icons/icon-bin.svg"
-                                alt="{{ 'common.delete' | translate }} {{
-                                    'digital-services-terminals.device' | translate
-                                }} {{ rowIndex + 1 }}"
-                            />
-                        </p-button>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    }
+    <app-digital-service-table
+        titleText="devices"
+        addButton="add"
+        addButtonId="add-terminals"
+        translationPrefix="digital-services-terminals"
+        [headerFields]="headerFields"
+        [data]="terminalData()"
+        (sidebar)="changeSidebar($event)"
+        (resetItem)="resetTerminal()"
+        (setItem)="setItem($event)"
+        (deleteItem)="deleteItem($event)"
+    ></app-digital-service-table>
 </div>
 @if (sidebarVisible) {
     <p-sidebar

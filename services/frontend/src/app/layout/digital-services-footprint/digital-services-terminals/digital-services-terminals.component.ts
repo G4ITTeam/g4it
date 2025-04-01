@@ -43,8 +43,6 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     ];
 
     terminalData = computed(() => {
-        if (!this.digitalServiceStore.isNewArch()) return [];
-
         const deviceTypes = this.digitalServiceStore.terminalDeviceTypes();
         if (deviceTypes.length === 0) return [];
         return this.digitalServiceStore
@@ -115,61 +113,31 @@ export class DigitalServicesTerminalsComponent implements OnInit {
     }
 
     async updateTerminals(terminal: DigitalServiceTerminalConfig) {
-        if (this.digitalServiceStore.isNewArch()) {
-            const datePurchase = new Date("2020-01-01");
-            const dateWithdrawal = addDays(datePurchase, terminal.lifespan * 365);
+        const datePurchase = new Date("2020-01-01");
+        const dateWithdrawal = addDays(datePurchase, terminal.lifespan * 365);
 
-            const elementToSave = {
-                digitalServiceUid: this.digitalService.uid,
-                name: terminal.uid || uuid.v4(),
-                type: "Terminal",
-                model: terminal.type.code,
-                location: terminal.country,
-                numberOfUsers: terminal.numberOfUsers,
-                quantity:
-                    (terminal.numberOfUsers * terminal.yearlyUsageTimePerUser) /
-                    (365 * 24),
-                durationHour: terminal.yearlyUsageTimePerUser,
-                datePurchase: datePurchase.toISOString(),
-                dateWithdrawal: dateWithdrawal.toISOString(),
-            } as InPhysicalEquipmentRest;
+        const elementToSave = {
+            digitalServiceUid: this.digitalService.uid,
+            name: terminal.uid || uuid.v4(),
+            type: "Terminal",
+            model: terminal.type.code,
+            location: terminal.country,
+            numberOfUsers: terminal.numberOfUsers,
+            quantity:
+                (terminal.numberOfUsers * terminal.yearlyUsageTimePerUser) / (365 * 24),
+            durationHour: terminal.yearlyUsageTimePerUser,
+            datePurchase: datePurchase.toISOString(),
+            dateWithdrawal: dateWithdrawal.toISOString(),
+        } as InPhysicalEquipmentRest;
 
-            if (terminal.id) {
-                elementToSave.id = terminal.id;
-                await firstValueFrom(
-                    this.inPhysicalEquipmentsService.update(elementToSave),
-                );
-            } else {
-                await firstValueFrom(
-                    this.inPhysicalEquipmentsService.create(elementToSave),
-                );
-            }
-            await this.digitalServiceStore.initInPhysicalEquipments(
-                this.digitalService.uid,
-            );
-            this.digitalServiceStore.setEnableCalcul(true);
+        if (terminal.id) {
+            elementToSave.id = terminal.id;
+            await firstValueFrom(this.inPhysicalEquipmentsService.update(elementToSave));
         } else {
-            // Find the index of the terminal with the matching uid
-            let existingTerminalIndex = this.digitalService.terminals?.findIndex(
-                (t) => t.uid === terminal.uid,
-            );
-            // If the terminal with the uid exists, update it; otherwise, add the new terminal
-            if (
-                existingTerminalIndex !== -1 &&
-                existingTerminalIndex !== undefined &&
-                this.digitalService.terminals &&
-                terminal.uid !== undefined
-            ) {
-                this.digitalService.terminals[existingTerminalIndex] = terminal;
-            } else {
-                this.digitalService.terminals?.push(terminal);
-            }
-
-            await lastValueFrom(this.digitalServicesData.update(this.digitalService));
-            this.digitalService = await lastValueFrom(
-                this.digitalServicesData.get(this.digitalService.uid),
-            );
+            await firstValueFrom(this.inPhysicalEquipmentsService.create(elementToSave));
         }
+        await this.digitalServiceStore.initInPhysicalEquipments(this.digitalService.uid);
+        this.digitalServiceStore.setEnableCalcul(true);
     }
 
     async deleteTerminals(terminal: DigitalServiceTerminalConfig) {

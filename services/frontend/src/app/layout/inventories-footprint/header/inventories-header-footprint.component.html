@@ -45,41 +45,14 @@
         />
 
         <p-button
-            styleClass="bg-black text-white header-button"
-            (click)="confirmExport($event)"
-            *ngIf="
-                (batchStatusCode === undefined ||
-                    failedStatusCodeList.includes(batchStatusCode)) &&
-                (userService.isAllowedInventoryWrite$ | async)
-            "
-            icon="pi pi-download"
-            [label]="'inventories-footprint.header.export' | translate"
-            id="export-inventory-button"
-        />
-
-        <p-button
             [ariaLabel]="'common.accessibility.download' | translate"
             styleClass="bg-black text-white header-button"
             (click)="download($event)"
             [disabled]="downloadInProgress"
-            *ngIf="
-                batchStatusCode === isGenerated() &&
-                (userService.isAllowedInventoryWrite$ | async)
-            "
+            *ngIf="userService.isAllowedInventoryWrite$ | async"
+            id="export-inventory-button"
             icon="pi pi-download"
-            [label]="'inventories-footprint.header.download' | translate"
-        />
-
-        <p-button
-            [ariaLabel]="'common.accessibility.download' | translate"
-            styleClass="bg-gray-400 text-gray-900  header-button"
-            *ngIf="
-                batchStatusCode &&
-                inProgressStatusCodeList.includes(batchStatusCode) &&
-                (userService.isAllowedInventoryWrite$ | async)
-            "
-            [label]="'common.preparingResults' | translate"
-            icon="pi pi-refresh"
+            [label]="'inventories-footprint.header.export' | translate"
         />
     </div>
     @if (sidebarVisible) {

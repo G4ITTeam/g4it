@@ -1,0 +1,108 @@
+databaseChangeLog:
+  - changeSet:
+      id: delete-terminal-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS terminal;
+
+  - changeSet:
+      id: delete-network-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS network;
+
+  - changeSet:
+      id: delete-virtual-equipment-digital-service-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS virtual_equipment_digital_service;
+
+  - changeSet:
+      id: delete-virtual-equipment-characteristic-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS virtual_equipment_characteristic;
+
+  - changeSet:
+      id: delete-server-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS server;
+
+  - changeSet:
+      id: delete-server-characteristic-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS server_characteristic;
+
+  - changeSet:
+      id: delete-datacenter-digital-service-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS datacenter_digital_service;
+
+  - changeSet:
+      id: delete-ref-type-item-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_type_item;
+
+  - changeSet:
+      id: delete-ref-type-equipement-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_type_equipement;
+
+  - changeSet:
+      id: delete-ref-mixelec-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_mixelec;
+
+  - changeSet:
+      id: delete-ref-impactreseau-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_impactreseau;
+
+  - changeSet:
+      id: delete-ref-impactequipement-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_impactequipement;
+
+  - changeSet:
+      id: delete-ref-impact-messagerie-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_impact_messagerie;
+
+  - changeSet:
+      id: delete-ref-hypothese-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_hypothese;
+
+  - changeSet:
+      id: delete-ref-facteurcaracterisation-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_facteurcaracterisation;
+
+  - changeSet:
+      id: delete-ref-etapeacv-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_etapeacv;
+
+  - changeSet:
+      id: delete-ref-correspondance-ref-eqp-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_correspondance_ref_eqp;
+
+  - changeSet:
+      id: delete-ref-critere-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_critere;

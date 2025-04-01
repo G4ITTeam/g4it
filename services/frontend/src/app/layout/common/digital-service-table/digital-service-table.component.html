@@ -9,13 +9,13 @@
     <ng-template pTemplate="caption">
         <div class="table-header">
             <div class="table-head">
-                {{ translationPrefix + "." + title | translate }}
+                {{ translationPrefix + "." + titleText | translate }}
             </div>
             <p-button
                 *ngIf="userService.isAllowedDigitalServiceWrite$ | async"
                 (click)="doResetItem(); sidebarVisible(true)"
                 styleClass="inventory-button-small"
-                id="add-button"
+                [id]="addButtonId"
                 >{{ translationPrefix + "." + addButton | translate }}</p-button
             >
         </div>
@@ -23,7 +23,7 @@
     <ng-template pTemplate="header">
         <caption class="visually-hidden">
             {{
-                title | translate
+                translationPrefix + "." + titleText | translate
             }}
         </caption>
         <tr>

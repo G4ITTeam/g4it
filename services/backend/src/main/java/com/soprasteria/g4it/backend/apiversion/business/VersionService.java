@@ -8,10 +8,8 @@
 package com.soprasteria.g4it.backend.apiversion.business;
 
 
-import com.soprasteria.g4it.backend.external.numecoeval.client.ReferentialClient;
 import com.soprasteria.g4it.backend.server.gen.api.dto.VersionRest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -29,9 +27,6 @@ public class VersionService {
     @Value("${boaviztapi.version}")
     private String boaviztaVersion;
 
-    @Autowired
-    private ReferentialClient referentialClient;
-
     /**
      * Get the NumEcoEval version
      *
@@ -39,16 +34,7 @@ public class VersionService {
      */
     @Cacheable("getVersion")
     public VersionRest getVersion() {
-        String numEcoEvalVersion = null;
-
-        try {
-            numEcoEvalVersion = referentialClient.getVersion();
-        } catch (Exception e) {
-            log.error("Cannot connect to api-referential, or retrieve version. Error: {}", e.getMessage());
-        }
-
         return VersionRest.builder()
-                .numEcoEval(numEcoEvalVersion)
                 .boaviztapi(boaviztaVersion)
                 .g4it(version)
                 .build();

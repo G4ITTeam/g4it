@@ -7,8 +7,8 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.modeldb;
 
-import com.soprasteria.g4it.backend.apibatchexport.modeldb.ExportReport;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.common.dbmodel.AbstractBaseEntity;
 import com.soprasteria.g4it.backend.common.dbmodel.Note;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
@@ -54,19 +54,15 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     private List<String> criteria;
 
     /**
-     * is new arch
-     */
-    private Boolean isNewArch;
-
-    /**
-     * do export
-     */
-    private Boolean doExport;
-
-    /**
      * do export verbose
      */
-    private Boolean doExportVerbose;
+    @Builder.Default
+    private Boolean doExportVerbose = true;
+
+    /**
+     * is migrated to new arc
+     */
+    private Boolean isMigrated;
 
     /**
      * Attached note.
@@ -81,34 +77,14 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     @JoinColumn(name = "organization_id", referencedColumnName = "id")
     private Organization organization;
 
-    @ToString.Exclude
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.REMOVE)
-    private List<DataCenter> dataCenterList;
-
     @Builder.Default
     private Long dataCenterCount = 0L;
-
-    @ToString.Exclude
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToMany(mappedBy = "inventory")
-    private List<PhysicalEquipment> physicalEquipmentList;
 
     @Builder.Default
     private Long physicalEquipmentCount = 0L;
 
-    @ToString.Exclude
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.REMOVE)
-    private List<VirtualEquipment> virtualEquipments;
-
     @Builder.Default
     private Long virtualEquipmentCount = 0L;
-
-    @ToString.Exclude
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.REMOVE)
-    private List<Application> applications;
 
     @Builder.Default
     private Long applicationCount = 0L;
@@ -116,40 +92,14 @@ public class Inventory extends AbstractBaseEntity implements Serializable {
     @Builder.Default
     @ToString.Exclude
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<InventoryIntegrationReport> integrationReports = new ArrayList<>();
-
-    @Builder.Default
-    @ToString.Exclude
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<InventoryEvaluationReport> evaluationReports = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private ExportReport exportReport;
-
-    @Builder.Default
-    @ToString.Exclude
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();
 
     /**
-     * Add integration report to inventory.
-     *
-     * @param integrationReport the report to add.
+     * User who created the inventory
      */
-    public void addIntegrationReport(final InventoryIntegrationReport integrationReport) {
-        integrationReport.setInventory(this);
-        this.integrationReports.add(integrationReport);
-    }
-
-    /**
-     * Add integration report to inventory.
-     *
-     * @param evaluationReport the report to add.
-     */
-    public void addEvaluationReport(final InventoryEvaluationReport evaluationReport) {
-        evaluationReport.setInventory(this);
-        this.evaluationReports.add(evaluationReport);
-    }
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private User createdBy;
 
 }

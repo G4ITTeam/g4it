@@ -7,15 +7,13 @@
  */
 package com.soprasteria.g4it.backend.apiindicator.controller;
 
-import com.soprasteria.g4it.backend.apidigitalservice.mapper.*;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceCloudIndicatorRestMapper;
+import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceIndicatorRestMapper;
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceExportService;
 import com.soprasteria.g4it.backend.apiindicator.business.DigitalServiceIndicatorService;
 import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceNetworkIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceServerIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.model.DigitalServiceTerminalIndicatorBO;
 import com.soprasteria.g4it.backend.server.gen.api.DigitalServiceIndicatorApiDelegate;
-import com.soprasteria.g4it.backend.server.gen.api.dto.*;
+import com.soprasteria.g4it.backend.server.gen.api.dto.DigitalServiceIndicatorRest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -48,24 +46,6 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
     private DigitalServiceIndicatorRestMapper digitalServiceIndicatorRestMapper;
 
     /**
-     * Indicator Terminal rest mapper.
-     */
-    @Autowired
-    private DigitalServiceTerminalIndicatorRestMapper digitalServiceTerminalIndicatorRestMapper;
-
-    /**
-     * Indicator Network rest mapper.
-     */
-    @Autowired
-    private DigitalServiceNetworkIndicatorRestMapper digitalServiceNetworkIndicatorRestMapper;
-
-    /**
-     * Indicator Network rest mapper.
-     */
-    @Autowired
-    private DigitalServiceServerIndicatorRestMapper digitalServiceServerIndicatorRestMapper;
-
-    /**
      * Export Service
      */
     @Autowired
@@ -92,39 +72,6 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<List<DigitalServiceTerminalIndicatorRest>> getDigitalServiceTerminalsIndicatorRest(final String subscriber,
-                                                                                                             final Long organization,
-                                                                                                             final String digitalServiceUid) {
-        final List<DigitalServiceTerminalIndicatorBO> indicators = indicatorService.getDigitalServiceTerminalIndicators(digitalServiceUid);
-        return ResponseEntity.ok().body(this.digitalServiceTerminalIndicatorRestMapper.toDto(indicators));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<List<DigitalServiceNetworkIndicatorRest>> getDigitalServiceNetworksIndicatorRest(final String subscriber,
-                                                                                                           final Long organization,
-                                                                                                           final String digitalServiceUid) {
-        final List<DigitalServiceNetworkIndicatorBO> indicators = indicatorService.getDigitalServiceNetworkIndicators(digitalServiceUid);
-        return ResponseEntity.ok().body(this.digitalServiceNetworkIndicatorRestMapper.toDto(indicators));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ResponseEntity<List<DigitalServiceServerIndicatorRest>> getDigitalServiceServersIndicatorRest(final String subscriber,
-                                                                                                         final Long organization,
-                                                                                                         final String digitalServiceUid) {
-        final List<DigitalServiceServerIndicatorBO> indicatorBO = indicatorService.getDigitalServiceServerIndicators(digitalServiceUid);
-        return ResponseEntity.ok(digitalServiceServerIndicatorRestMapper.toDto(indicatorBO));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ResponseEntity<Resource> getDigitalServiceIndicatorsExportResult(String subscriber,
                                                                             Long organization,
                                                                             String digitalServiceUid) {
@@ -135,13 +82,6 @@ public class DigitalServiceIndicatorController implements DigitalServiceIndicato
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while downloading file: " + e.getMessage());
         }
     }
-
-    @Override
-    public ResponseEntity<List<DigitalServiceCloudIndicatorRest>> getDigitalServiceCloudIndicatorRest(String subscriber,
-                                                                                                      Long organization,
-                                                                                                      String digitalServiceUid) {
-        final List<DigitalServiceCloudIndicatorBO> indicators = indicatorService.getDigitalServiceCloudIndicators(digitalServiceUid);
-        return ResponseEntity.ok().body(this.digitalServiceCloudIndicatorRestMapper.toDto(indicators));
-    }
+    
 
 }

@@ -17,9 +17,9 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.Server
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DeviceTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.NetworkTypeRefRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.ServerHostRefRepository;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
 import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
 import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,13 +57,16 @@ public class DigitalServiceReferentialService {
     private DigitalServiceReferentialMapper digitalServiceReferentialMapper;
 
     /**
-     * NumEcoEval Referential Remoting Service.
+     * Boaviztapi  Service.
      */
     @Autowired
-    private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
-
-    @Autowired
     private BoaviztapiService boaviztapiService;
+
+    /**
+     * Referential Service.
+     */
+    @Autowired
+    private ReferentialGetService referentialGetService;
 
 
     /**
@@ -91,7 +94,7 @@ public class DigitalServiceReferentialService {
      * @return list of country.
      */
     public List<String> getCountry() {
-        return numEcoEvalReferentialRemotingService.getCountryList();
+        return referentialGetService.getCountries(null);
     }
 
     /**

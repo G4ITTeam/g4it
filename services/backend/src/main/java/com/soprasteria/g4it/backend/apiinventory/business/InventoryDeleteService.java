@@ -7,10 +7,11 @@
  */
 package com.soprasteria.g4it.backend.apiinventory.business;
 
-import com.soprasteria.g4it.backend.apibatchevaluation.business.InventoryEvaluationService;
-import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
-import com.soprasteria.g4it.backend.apibatchloading.business.InventoryLoadingService;
 import com.soprasteria.g4it.backend.apiindicator.business.InventoryIndicatorService;
+import com.soprasteria.g4it.backend.apiinout.repository.InApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InDatacenterRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.InVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.apiinventory.repository.InventoryRepository;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
@@ -36,28 +37,18 @@ public class InventoryDeleteService {
     private OrganizationService organizationService;
 
     /**
-     * Inventory Evaluation service.
-     */
-    @Autowired
-    private InventoryEvaluationService inventoryEvaluationService;
-
-    /**
-     * Inventory Loading service.
-     */
-    @Autowired
-    private InventoryLoadingService inventoryLoadingService;
-
-    /**
-     * Inventory Export service.
-     */
-    @Autowired
-    private InventoryExportService inventoryExportService;
-
-    /**
      * Inventory Indicator Service
      */
     @Autowired
     private InventoryIndicatorService inventoryIndicatorService;
+    @Autowired
+    private InDatacenterRepository inDatacenterRepository;
+    @Autowired
+    private InPhysicalEquipmentRepository inPhysicalEquipmentRepository;
+    @Autowired
+    private InVirtualEquipmentRepository inVirtualEquipmentRepository;
+    @Autowired
+    private InApplicationRepository inApplicationRepository;
 
 
     /**
@@ -97,12 +88,14 @@ public class InventoryDeleteService {
 
     public void deleteInventory(final String subscriberName, final Long organizationId, final Inventory inventory) {
         Long inventoryId = inventory.getId();
-        inventoryIndicatorService.deleteIndicators(subscriberName, organizationId, inventoryId);
+        // Delete input data
+        inDatacenterRepository.deleteByInventoryId(inventoryId);
+        inPhysicalEquipmentRepository.deleteByInventoryId(inventoryId);
+        inVirtualEquipmentRepository.deleteByInventoryId(inventoryId);
+        inApplicationRepository.deleteByInventoryId(inventoryId);
 
-        // Remove batch job instance (all data linked to the repository to delete).
-        inventoryEvaluationService.deleteEvaluationBatchJob(organizationId, inventoryId);
-        inventoryLoadingService.deleteLoadingBatchJob(organizationId, inventoryId);
-        inventoryExportService.deleteExportBatchJob(inventoryId);
+        // Delete EVALUATING tasks and indicator data
+        inventoryIndicatorService.deleteIndicators(subscriberName, organizationId, inventoryId);
 
         // Remove inventory.
         inventoryRepository.deleteByInventoryId(inventory.getId());

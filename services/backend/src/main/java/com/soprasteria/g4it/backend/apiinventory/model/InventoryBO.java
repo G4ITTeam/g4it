@@ -49,20 +49,8 @@ public class InventoryBO {
 
     private List<String> criteria;
 
-    private Boolean isNewArch;
-
-    private Boolean doExport;
-
-    private Boolean doExportVerbose;
-
-    private List<InventoryIntegrationReportBO> integrationReports;
-
-    private List<InventoryEvaluationReportBO> evaluationReports;
-
     private List<TaskBO> tasks;
 
     private NoteBO note;
-
-    private InventoryExportReportBO exportReport;
 
 }

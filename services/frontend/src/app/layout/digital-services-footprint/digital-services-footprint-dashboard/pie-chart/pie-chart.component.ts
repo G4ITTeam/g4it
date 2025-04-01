@@ -84,14 +84,19 @@ export class PieChartComponent extends AbstractDashboard {
                         this.selectedCriteria &&
                     impact.status === Constants.DATA_QUALITY_STATUS.ok,
             );
+            const selectedImpactUnit = item.impacts.find(
+                (impact: any) =>
+                    impact.criteria.split(" ").slice(0, 2).join(" ") ===
+                    this.selectedCriteria,
+            );
             const value = selectedImpact ? selectedImpact.sipValue : 0;
             const nameValue = this.existingTranslation(item.tier, "digital-services");
             return {
                 name: nameValue,
                 value: value,
                 tier: item.tier,
-                unitValue: selectedImpact?.unitValue,
-                unit: selectedImpact?.unit,
+                unitValue: selectedImpactUnit?.unitValue,
+                unit: selectedImpactUnit?.unit,
                 label: {
                     color: !dsTierOkmap[nameValue]?.status.error
                         ? Constants.GRAPH_GREY

@@ -193,27 +193,6 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
-  /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/export:
-    parameters:
-      - $ref: '#/components/parameters/subscriberPathParam'
-      - $ref: '#/components/parameters/organizationPathParam'
-      - $ref: '#/components/parameters/inventoryIdPathParam'
-    post:
-      summary: Request an export for inventory's indicator
-      tags:
-        - inventory-indicator
-      operationId: exportIndicators
-      x-custom-role: "hasRole('INVENTORY_READ')"
-      responses:
-        '200':
-          description: Export requested.
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-
   /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/indicators/export/download:
     parameters:
       - $ref: '#/components/parameters/subscriberPathParam'

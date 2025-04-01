@@ -12,6 +12,7 @@ import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.AsyncEvaluatingService;
 import com.soprasteria.g4it.backend.apievaluating.business.asyncevaluatingservice.ExportService;
+import com.soprasteria.g4it.backend.apiindicator.utils.Constants;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
@@ -38,6 +39,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -107,6 +110,11 @@ public class EvaluatingService {
         List<String> activeCriteria = criteriaService.getSelectedCriteriaForInventory(subscriber, organizationId, inventory.getCriteria())
                 .active();
 
+        // evaluate impacts on 5 default criteria if no activeCriteria
+        List<String> criteriaToSet = Optional.ofNullable(activeCriteria)
+                .filter(criteria -> !criteria.isEmpty())
+                .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
+
         // create task with type LOADING
         Task task = Task.builder()
                 .creationDate(context.getDatetime())
@@ -116,7 +124,8 @@ public class EvaluatingService {
                 .status(TaskStatus.TO_START.toString())
                 .type(TaskType.EVALUATING.toString())
                 .inventory(inventory)
-                .criteria(activeCriteria)
+                .criteria(criteriaToSet)
+                .createdBy(inventory.getCreatedBy())
                 .build();
 
         taskRepository.save(task);
@@ -157,11 +166,17 @@ public class EvaluatingService {
         List<String> activeCriteria = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalService.getCriteria())
                 .active();
 
+        // evaluate impacts on 5 default criteria if no activeCriteria
+        List<String> criteriaToSet = Optional.ofNullable(activeCriteria)
+                .filter(criteria -> !criteria.isEmpty())
+                .orElseGet(() -> Constants.CRITERIA_LIST.subList(0, 5));
+
         // create task with type EVALUATING_DIGITAL_SERVICE
         Task task = taskRepository.findByDigitalServiceUid(digitalService.getUid())
                 .orElseGet(() -> Task.builder()
                         .digitalServiceUid(digitalService.getUid())
                         .type(TaskType.EVALUATING_DIGITAL_SERVICE.toString())
+                        .createdBy(digitalService.getUser())
                         .build());
 
         if (task.getCreationDate() != null) {
@@ -174,7 +189,7 @@ public class EvaluatingService {
         task.setStatus(TaskStatus.IN_PROGRESS.toString());
         task.setCreationDate(context.getDatetime());
         task.setLastUpdateDate(context.getDatetime());
-        task.setCriteria(activeCriteria);
+        task.setCriteria(criteriaToSet);
         task.setDetails(new ArrayList<>());
 
         taskRepository.save(task);
@@ -202,7 +217,7 @@ public class EvaluatingService {
 
         // check tasks to restart
         inProgressLoadingTasks.stream()
-                .filter(task -> task.getLastUpdateDate().plusMinutes(1).isBefore(now) && task.getInventory() != null)
+                .filter(task -> task.getLastUpdateDate().plusMinutes(15).isBefore(now) && task.getInventory() != null)
                 .forEach(task -> {
                     task.setStatus(TaskStatus.TO_START.toString());
                     task.setLastUpdateDate(now);
@@ -258,5 +273,6 @@ public class EvaluatingService {
                     exportService.cleanExport(task.getId(), subscriber, String.valueOf(organizationId));
                 });
     }
+
 
 }

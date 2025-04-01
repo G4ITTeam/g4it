@@ -30,7 +30,6 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         digitalService$: of({
             name: "Test Digital Service",
             uid: "test-uid",
-            isNewArch: false,
             creationDate: Date.now(),
             lastUpdateDate: Date.now(),
             lastCalculationDate: null,
@@ -88,7 +87,6 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         component.digitalService = {
             name: "...",
             uid: "",
-            isNewArch: false,
             creationDate: Date.now(),
             lastUpdateDate: Date.now(),
             lastCalculationDate: null,
@@ -117,7 +115,6 @@ describe("DigitalServicesFootprintHeaderComponent", () => {
         component.digitalService = {
             name: "...",
             uid: "",
-            isNewArch: false,
             creationDate: Date.now(),
             lastUpdateDate: parseFloat("2023-09-03T09:56:34.658656Z"),
             lastCalculationDate: parseFloat("2023-09-04T09:56:34.658656Z"),

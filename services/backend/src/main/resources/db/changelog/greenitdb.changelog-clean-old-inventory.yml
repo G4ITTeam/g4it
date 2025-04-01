@@ -1,0 +1,191 @@
+databaseChangeLog:
+  - changeSet:
+      id: delete-agg_application_indicator
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS agg_application_indicator;
+
+  - changeSet:
+      id: delete-agg_equipment_indicator
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS agg_equipment_indicator;
+
+  - changeSet:
+      id: delete-application
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS application;
+
+  - changeSet:
+      id: delete-batch_tables
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS batch_job_execution_params ;
+        - sql: DROP TABLE IF EXISTS batch_job_execution_context ;
+        - sql: DROP TABLE IF EXISTS batch_step_execution_context ;
+        - sql: DROP TABLE IF EXISTS batch_step_execution ;
+        - sql: DROP TABLE IF EXISTS batch_job_execution ;
+        - sql: DROP TABLE IF EXISTS batch_job_instance ;
+
+  - changeSet:
+      id: delete-data_center
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS data_center;
+
+  - changeSet:
+      id: delete-en_application
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_application;
+
+  - changeSet:
+      id: delete-en_data_center
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_data_center;
+
+  - changeSet:
+      id: delete-en_donnees_entrees
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_donnees_entrees;
+
+  - changeSet:
+      id: delete-en_entite
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_entite;
+
+  - changeSet:
+      id: delete-en_equipement_physique
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_equipement_physique;
+
+  - changeSet:
+      id: delete-en_equipement_virtuel
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_equipement_virtuel;
+
+  - changeSet:
+      id: delete-en_messagerie
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_messagerie;
+
+  - changeSet:
+      id: delete-en_operation_non_it
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS en_operation_non_it;
+
+  - changeSet:
+      id: delete-equipement_physique
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS equipement_physique;
+
+  - changeSet:
+      id: delete-equipement_virtuel
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS equipement_virtuel;
+
+  - changeSet:
+      id: delete-g4it_evaluation_report
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS g4it_evaluation_report;
+
+  - changeSet:
+      id: delete-g4it_export_report
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS g4it_export_report;
+
+  - changeSet:
+      id: delete-g4it_integration_report
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS g4it_integration_report;
+
+  - changeSet:
+      id: delete-ind_indicateur_impact_application
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ind_indicateur_impact_application;
+
+  - changeSet:
+      id: delete-ind_indicateur_impact_equipement_physique
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ind_indicateur_impact_equipement_physique;
+
+  - changeSet:
+      id: delete-ind_indicateur_impact_equipement_virtuel
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ind_indicateur_impact_equipement_virtuel;
+
+  - changeSet:
+      id: delete-ind_indicateur_impact_messagerie
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ind_indicateur_impact_messagerie;
+
+  - changeSet:
+      id: delete-ind_indicateur_impact_operation_non_it
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ind_indicateur_impact_operation_non_it;
+
+  - changeSet:
+      id: delete-ind_indicateur_impact_reseau
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ind_indicateur_impact_reseau;
+
+  - changeSet:
+      id: delete-numecoeval_calculation_report
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS numecoeval_calculation_report;
+
+  - changeSet:
+      id: delete-numecoeval_input_error_report
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS numecoeval_input_error_report;
+
+  - changeSet:
+      id: delete-numecoeval_input_report
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS numecoeval_input_report;
+
+  - changeSet:
+      id: delete-ref-facteurcaracterisation-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_facteurcaracterisation;
+
+  - changeSet:
+      id: delete-ref-etapeacv-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_etapeacv;
+
+  - changeSet:
+      id: delete-ref-correspondance-ref-eqp-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_correspondance_ref_eqp;
+
+  - changeSet:
+      id: delete-ref-critere-table
+      author: G4IT Dev Team
+      changes:
+        - sql: DROP TABLE IF EXISTS ref_critere;

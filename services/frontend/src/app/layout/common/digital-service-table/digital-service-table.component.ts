@@ -12,11 +12,12 @@ export class DigitalServiceTableComponent {
 
     @Input() data: any[] = [];
 
-    @Input() title = "";
+    @Input() titleText = "";
     @Input() addButton = "";
     @Input() translationPrefix = "";
     @Input() headerFields: string[] = [];
     @Input() showId = true;
+    @Input() addButtonId = "add-button";
 
     @Output() sidebar: EventEmitter<boolean> = new EventEmitter();
     @Output() resetItem: EventEmitter<boolean> = new EventEmitter();

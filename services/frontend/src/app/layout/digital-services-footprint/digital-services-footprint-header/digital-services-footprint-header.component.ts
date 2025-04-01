@@ -14,7 +14,6 @@ import {
     Input,
     OnInit,
     Output,
-    signal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
@@ -28,7 +27,6 @@ import {
     DigitalService,
     DSCriteriaRest,
 } from "src/app/core/interfaces/digital-service.interfaces";
-import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface";
 import { Note } from "src/app/core/interfaces/note.interface";
 import { Organization, Subscriber } from "src/app/core/interfaces/user.interfaces";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
@@ -38,7 +36,6 @@ import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
 import { GlobalStoreService } from "src/app/core/store/global.store";
 import { delay } from "src/app/core/utils/time";
-import { environment } from "src/environments/environment";
 
 @Component({
     selector: "app-digital-services-footprint-header",
@@ -62,38 +59,26 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     selectedCriteria: string[] = [];
     organization: OrganizationWithSubscriber = {} as OrganizationWithSubscriber;
     subscriber!: Subscriber;
-    showBetaFeatures: string = environment.showBetaFeatures;
-
-    virtualEquipments = signal<InVirtualEquipmentRest[]>([]);
 
     enableCalcul = computed(() => {
         const digitalService = this.digitalServiceStore.digitalService();
 
-        if (digitalService.isNewArch) {
-            if (this.digitalServiceStore.enableCalcul()) return true;
+        if (this.digitalServiceStore.enableCalcul()) return true;
 
-            const hasInPhysicalEquipments =
-                this.digitalServiceStore.inPhysicalEquipments().length > 0;
-            const hasInVirtualEquipments =
-                this.digitalServiceStore.inVirtualEquipments().length > 0;
+        const hasInPhysicalEquipments =
+            this.digitalServiceStore.inPhysicalEquipments().length > 0;
+        const hasInVirtualEquipments =
+            this.digitalServiceStore.inVirtualEquipments().length > 0;
 
-            const digitalService = this.digitalServiceStore.digitalService();
+        const isUpdate =
+            digitalService.lastCalculationDate == null
+                ? true
+                : digitalService.lastUpdateDate > digitalService.lastCalculationDate;
 
-            const isUpdate =
-                digitalService.lastCalculationDate == null
-                    ? true
-                    : digitalService.lastUpdateDate > digitalService.lastCalculationDate;
-
-            if (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) {
-                return true;
-            }
-            return false;
-        } else {
-            return (
-                this.digitalServiceStore.enableCalcul() ||
-                this.canLaunchCompute(this.virtualEquipments().length > 0)
-            );
+        if (isUpdate && (hasInPhysicalEquipments || hasInVirtualEquipments)) {
+            return true;
         }
+        return false;
     });
     private destroyRef = inject(DestroyRef);
 
@@ -121,10 +106,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
                     );
                 }),
             )
-            .subscribe((virtualEquipments) => {
-                if (!this.digitalServiceStore.isNewArch()) {
-                    this.virtualEquipments.set(virtualEquipments);
-                }
+            .subscribe(() => {
                 this.digitalServiceIsShared();
             });
 
@@ -143,10 +125,6 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             this.organization.criteriaDs = organization.criteriaDs!;
             this.organization.criteriaIs = organization.criteriaIs!;
         });
-    }
-
-    changeIsNewArch() {
-        this.digitalServiceChange.emit(this.digitalService);
     }
 
     onNameUpdate(digitalServiceName: string) {
@@ -214,15 +192,9 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
 
     async launchCalcul() {
         this.global.setLoading(true);
-        if (this.digitalService.isNewArch) {
-            await firstValueFrom(
-                this.digitalServicesData.launchEvaluating(this.digitalService.uid),
-            );
-        } else {
-            await lastValueFrom(
-                this.digitalServicesData.launchCalcul(this.digitalService.uid),
-            );
-        }
+        await firstValueFrom(
+            this.digitalServicesData.launchEvaluating(this.digitalService.uid),
+        );
 
         this.digitalService = await lastValueFrom(
             this.digitalServicesData.get(this.digitalService.uid),

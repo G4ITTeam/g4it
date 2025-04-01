@@ -1,3 +1,6 @@
 [submodule "services/documentation/themes/hugo-theme-relearn"]
 	path = services/documentation/themes/hugo-theme-relearn
 	url = https://github.com/McShelby/hugo-theme-relearn.git
+[submodule "services/documentation/themes/hugo-video"]
+	path = services/documentation/themes/hugo-video
+	url = https://github.com/martignoni/hugo-video.git

@@ -100,50 +100,20 @@ export class DigitalServicesCloudServicesComponent {
     }
 
     async updateCloudServices(cloud: DigitalServiceCloudServiceConfig) {
-        if (this.digitalServiceStore.isNewArch()) {
-            if (cloud.id) {
-                await firstValueFrom(
-                    this.inVirtualEquipmentsService.update(
-                        this.toInVirtualEquipmentRest(cloud),
-                    ),
-                );
-            } else {
-                await firstValueFrom(
-                    this.inVirtualEquipmentsService.create(
-                        this.toInVirtualEquipmentRest(cloud),
-                    ),
-                );
-            }
-            await this.getCloudServices();
-        } else {
-            this.cloud.digitalServiceUid = this.digitalServiceUid;
-            // Find the index of the cloud server with the matching uid
-            let existingCloudIndex = this.cloudServices().findIndex(
-                (c) => c.id === cloud.id,
+        if (cloud.id) {
+            await firstValueFrom(
+                this.inVirtualEquipmentsService.update(
+                    this.toInVirtualEquipmentRest(cloud),
+                ),
             );
-            // If the cloud with the uid exists, update it; otherwise, add the new cloud
-            if (
-                existingCloudIndex !== -1 &&
-                existingCloudIndex !== undefined &&
-                this.cloudServices() &&
-                cloud.id !== undefined
-            ) {
-                await lastValueFrom(
-                    this.inVirtualEquipmentsService.update(
-                        this.toInVirtualEquipmentRest(cloud),
-                    ),
-                );
-            }
-            //create it
-            else {
-                await lastValueFrom(
-                    this.inVirtualEquipmentsService.create(
-                        this.toInVirtualEquipmentRest(cloud),
-                    ),
-                );
-            }
-            this.getCloudServices();
+        } else {
+            await firstValueFrom(
+                this.inVirtualEquipmentsService.create(
+                    this.toInVirtualEquipmentRest(cloud),
+                ),
+            );
         }
+        await this.getCloudServices();
         this.digitalServiceStore.setEnableCalcul(true);
     }
 

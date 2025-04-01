@@ -36,7 +36,6 @@ import { TemplateFileService } from "src/app/core/service/data/template-file.ser
 import { extractFileName } from "src/app/core/utils/path";
 import { delay } from "src/app/core/utils/time";
 import { Constants } from "src/constants";
-import { environment } from "src/environments/environment";
 import { SelectFileComponent } from "./select-file/select-file.component";
 
 @Component({
@@ -51,9 +50,6 @@ export class FilePanelComponent implements OnInit {
     @Input() purpose: string = "";
     @Input() name: string = ""; // inventoryDate (for IS Type)
     @Input() inventoryId?: number = 0;
-    @Input() isNewArch: boolean = false;
-    @Input() doExport: boolean = false;
-    @Input() doExportVerbose: boolean = false;
     @Input() allSimulations: Inventory[] = [];
     @Input() inventories: Inventory[] = [];
 
@@ -72,8 +68,8 @@ export class FilePanelComponent implements OnInit {
     simulationNames: string[] = [];
     inventoriesForm!: FormGroup;
     inventoryType = Constants.INVENTORY_TYPE;
-    showBetaFeatures: string = environment.showBetaFeatures;
     isFileUploaded = signal(false);
+    allowedFileExtensions = [".csv", ".xlsx", ".ods"];
 
     ngUnsubscribe = new Subject<void>();
 
@@ -177,7 +173,7 @@ export class FilePanelComponent implements OnInit {
                     }
                     if (res.name.includes("csv")) {
                         templateFileDescription.type = "csv";
-                        Constants.CSV_FILES_TYPES.forEach((csvFileType) => {
+                        Constants.FILE_TYPES.forEach((csvFileType) => {
                             if (res.name.includes(csvFileType)) {
                                 templateFileDescription.displayFileName =
                                     this.translate.instant(
@@ -197,8 +193,8 @@ export class FilePanelComponent implements OnInit {
 
                 csvFiles.sort(
                     (a, b) =>
-                        Constants.CSV_FILES_TYPES.indexOf(a.csvFileType || "") -
-                        Constants.CSV_FILES_TYPES.indexOf(b.csvFileType || ""),
+                        Constants.FILE_TYPES.indexOf(a.csvFileType || "") -
+                        Constants.FILE_TYPES.indexOf(b.csvFileType || ""),
                 );
                 this.templateFiles = [zipFile, ...csvFiles, xlsxFile];
             });
@@ -228,6 +224,7 @@ export class FilePanelComponent implements OnInit {
     addComponent(type = this.fileTypes[0]) {
         const componentRef = this.uploaderContainer.createComponent(SelectFileComponent);
         componentRef.setInput("fileTypes", this.fileTypes);
+        componentRef.setInput("allowedFileExtensions", this.allowedFileExtensions);
         componentRef.instance.type = type;
         this.arrayComponents.push(componentRef);
         this.uploaderOutpoutHandlerReset$.next();
@@ -281,9 +278,6 @@ export class FilePanelComponent implements OnInit {
             const creationObj: CreateInventory = {
                 name: this.name,
                 type: this.selectedType,
-                isNewArch: this.isNewArch,
-                doExport: this.doExport,
-                doExportVerbose: this.doExportVerbose,
             };
             this.inventoryService.createInventory(creationObj).subscribe({
                 next: (response) => {
@@ -297,7 +291,7 @@ export class FilePanelComponent implements OnInit {
                         } ${this.translate.instant("inventories.created")}`,
                     });
                     if (bodyLoading.length !== 0) {
-                        this.uploadAndLaunchLoading(formData, bodyLoading, response.id);
+                        this.uploadAndLaunchLoading(formData, response.id);
                     } else {
                         this.reloadInventoriesAndLoop.emit(response.id);
                         this.close();
@@ -307,7 +301,7 @@ export class FilePanelComponent implements OnInit {
             });
         } else {
             if (bodyLoading.length !== 0) {
-                this.uploadAndLaunchLoading(formData, bodyLoading, this.inventoryId);
+                this.uploadAndLaunchLoading(formData, this.inventoryId);
             }
         }
     }
@@ -323,43 +317,18 @@ export class FilePanelComponent implements OnInit {
         this.className = "default-calendar";
     }
 
-    uploadAndLaunchLoading(
-        formData: FormData,
-        bodyLaunchLoading: FileDescription[],
-        inventoryId: number = 0,
-    ) {
-        if (this.isNewArch) {
-            this.loadingService.launchLoadInputFiles(inventoryId, formData).subscribe({
-                next: async () => {
-                    await delay(500);
-                    this.sidebarVisibleChange.emit(false);
-                    this.reloadInventoriesAndLoop.emit(inventoryId);
-                    this.close();
-                },
-                error: () => {},
-            });
-        } else {
-            this.filesSystemService
-                .postFileSystemUploadCSV(inventoryId, formData)
-                .subscribe({
-                    next: async () => {
-                        this.loadingService
-                            .launchLoading(bodyLaunchLoading, inventoryId)
-                            .subscribe({
-                                next: async () => {
-                                    await delay(1000);
-                                    this.sidebarVisibleChange.emit(false);
-                                    this.reloadInventoriesAndLoop.emit(inventoryId);
-                                    this.close();
-                                },
-                                error: () => {},
-                            });
-                    },
-                    error: () => {
-                        this.sidebarPurposeChange.emit("upload");
-                    },
-                });
-        }
+    uploadAndLaunchLoading(formData: FormData, inventoryId: number = 0) {
+        this.loadingService.launchLoadInputFiles(inventoryId, formData).subscribe({
+            next: async () => {
+                await delay(500);
+                this.sidebarVisibleChange.emit(false);
+                this.reloadInventoriesAndLoop.emit(inventoryId);
+                this.close();
+            },
+            error: () => {
+                this.sidebarPurposeChange.emit("upload");
+            },
+        });
     }
 
     clearSidePanel() {

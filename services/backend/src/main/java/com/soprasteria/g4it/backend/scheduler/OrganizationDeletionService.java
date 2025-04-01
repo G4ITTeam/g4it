@@ -7,7 +7,6 @@
  */
 package com.soprasteria.g4it.backend.scheduler;
 
-import com.soprasteria.g4it.backend.apibatchexport.business.InventoryExportService;
 import com.soprasteria.g4it.backend.apidigitalservice.business.DigitalServiceService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apiinventory.business.InventoryDeleteService;
@@ -28,9 +27,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class OrganizationDeletionService {
-
-    @Autowired
-    InventoryExportService inventoryExportService;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -91,8 +87,6 @@ public class OrganizationDeletionService {
                 // Delete Export Files from storage
                 List<String> deletedExportFilePaths = fileDeletionService.deleteFiles(subscriber, organizationId.toString(), FileFolder.EXPORT, dataRetentionDay);
 
-                // Update Export Batch Status in database
-                deletedExportFilePaths.forEach(fileName -> inventoryExportService.updateBatchStatusCodeToRemove(fileName));
                 deletedFilePaths.addAll(deletedExportFilePaths);
 
                 // Delete Output Files from storage

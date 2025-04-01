@@ -8,7 +8,6 @@
 package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apiindicator.model.DataCentersInformationBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.DataCenterIndicatorView;
 import com.soprasteria.g4it.backend.apiindicator.modeldb.InDatacenterIndicatorView;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,12 +17,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DataCenterIndicatorMapper {
 
-    List<DataCentersInformationBO> toDto(final List<DataCenterIndicatorView> source);
 
-    List<DataCentersInformationBO> toDataCentersDto(final List<InDatacenterIndicatorView> source);
+    List<DataCentersInformationBO> toInDataCentersDto(final List<InDatacenterIndicatorView> source);
 
     @Mapping(target = "dataCenterName", source = "name")
     @Mapping(target = "country", source = "location")
-    DataCentersInformationBO toDataCentersDto(final InDatacenterIndicatorView source);
+    DataCentersInformationBO toInDataCentersDto(final InDatacenterIndicatorView source);
 
 }

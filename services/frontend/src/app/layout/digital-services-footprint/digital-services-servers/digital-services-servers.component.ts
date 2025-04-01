@@ -5,7 +5,7 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
-import { Component, computed, inject, ViewChild } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { differenceInDays } from "date-fns";
 import { MessageService } from "primeng/api";
@@ -25,9 +25,6 @@ import { DigitalServicesDataService } from "src/app/core/service/data/digital-se
 import { InPhysicalEquipmentsService } from "src/app/core/service/data/in-out/in-physical-equipments.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { DigitalServiceStoreService } from "src/app/core/store/digital-service.store";
-import { SidePanelCreateServerComponent } from "./side-panel-create-server/side-panel-create-server.component";
-import { SidePanelServerParametersComponent } from "./side-panel-server-parameters/side-panel-server-parameters.component";
-
 @Component({
     selector: "app-digital-services-servers",
     templateUrl: "./digital-services-servers.component.html",
@@ -38,10 +35,6 @@ export class DigitalServicesServersComponent {
     private inPhysicalEquipmentsService = inject(InPhysicalEquipmentsService);
     private inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
 
-    @ViewChild(SidePanelServerParametersComponent)
-    parameterPanel: SidePanelServerParametersComponent | undefined;
-    @ViewChild(SidePanelCreateServerComponent)
-    createPanel: SidePanelCreateServerComponent | undefined;
     ngUnsubscribe = new Subject<void>();
 
     digitalService: DigitalService = {} as DigitalService;
@@ -58,7 +51,6 @@ export class DigitalServicesServersComponent {
     ];
 
     serverData = computed(() => {
-        if (!this.digitalServiceStore.isNewArch()) return [];
         const serverTypes = this.digitalServiceStore.serverTypes();
         const datacenters = this.digitalServiceStore.inDatacenters();
 
@@ -147,26 +139,6 @@ export class DigitalServicesServersComponent {
             .pipe(takeUntil(this.ngUnsubscribe))
             .subscribe((res) => {
                 this.digitalService = res;
-                if (this.digitalServiceStore.isNewArch()) return;
-
-                this.existingNames = this.digitalService.servers.map(
-                    (server) => server.name,
-                );
-                this.digitalService.servers.forEach((response) => {
-                    if (response.vm) {
-                        const quantity = response.vm?.map((resp) => resp.quantity);
-                        if (quantity.length > 0) {
-                            const sumOfVM = quantity?.reduce(
-                                (vm, value) => vm + value,
-                                0,
-                            );
-                            response.sumOfVmQuantity = sumOfVM;
-                        }
-                        if (response.sumOfVmQuantity === undefined) {
-                            response.sumOfVmQuantity = 0;
-                        }
-                    }
-                });
             });
         this.digitalServicesBusiness.panelSubject$
             .pipe(takeUntil(this.ngUnsubscribe))
@@ -227,26 +199,16 @@ export class DigitalServicesServersComponent {
             vm: [],
         };
 
-        if (this.digitalServiceStore.isNewArch()) {
-            this.digitalServiceStore.setServer(newServer);
-            this.router.navigate(["panel-create"], { relativeTo: this.route });
-        } else {
-            this.digitalServicesBusiness.setDataInitialized(false);
-            this.digitalServicesBusiness.setServerForm(newServer);
-            this.router.navigate(["create"], { relativeTo: this.route });
-        }
+        this.digitalServiceStore.setServer(newServer);
+        this.router.navigate(["panel-create"], { relativeTo: this.route });
+
         this.digitalServicesBusiness.openPanel();
     }
 
     updateServer(server: DigitalServiceServerConfig) {
-        if (this.digitalServiceStore.isNewArch()) {
-            this.digitalServiceStore.setServer(server);
-            this.router.navigate(["panel-parameters"], { relativeTo: this.route });
-        } else {
-            this.digitalServicesBusiness.setDataInitialized(false);
-            this.digitalServicesBusiness.setServerForm({ ...server });
-            this.router.navigate(["parameters"], { relativeTo: this.route });
-        }
+        this.digitalServiceStore.setServer(server);
+        this.router.navigate(["panel-parameters"], { relativeTo: this.route });
+
         this.digitalServicesBusiness.openPanel();
     }
 

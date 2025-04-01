@@ -21,7 +21,6 @@ export interface DigitalService {
     note?: Note;
     userId?: number;
     criteria?: string[];
-    isNewArch: boolean;
     creator?: DigitalServiceUserInfo;
     members: DigitalServiceUserInfo[];
 }
@@ -117,45 +116,6 @@ export interface NetworkType {
     type: string;
     annualQuantityOfGo: number;
     country: string;
-}
-
-export interface DigitalServiceTerminalResponse {
-    criteria: string;
-    impacts: TerminalImpact[];
-}
-
-export interface DigitalServiceCloudResponse {
-    criteria: string;
-    impacts: CloudImpact[];
-}
-
-export interface TerminalImpact {
-    acvStep: string;
-    country: string;
-    description: string;
-    numberUsers: number;
-    rawValue: number;
-    sipValue: number;
-    unit: string;
-    yearlyUsageTimePerUser: number;
-    status: string;
-    countValue: number;
-}
-
-export interface CloudImpact {
-    acvStep: string;
-    country: string;
-    description: string;
-    rawValue: number;
-    sipValue: number;
-    unit: string;
-    status: string;
-    quantity: number;
-    countValue: number;
-    instanceType: string;
-    cloudProvider: string;
-    averageWorkLoad: number;
-    averageUsage: number;
 }
 
 export interface DigitalServiceTerminalsImpact {
@@ -307,9 +267,6 @@ export interface DSCriteriaRest {
     lastUpdateDate: Date;
     lastCalculationDate: Date;
     criteria: string[];
-    terminals: DigitalServiceTerminalConfig[];
-    servers: DigitalServiceServerConfig[];
-    networks: DigitalServiceNetworkConfig[];
     note?: Note;
 }
 

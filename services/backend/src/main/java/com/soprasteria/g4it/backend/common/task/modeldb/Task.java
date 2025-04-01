@@ -9,11 +9,14 @@
 package com.soprasteria.g4it.backend.common.task.modeldb;
 
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
+import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -106,4 +109,12 @@ public class Task {
      * Filenames list
      */
     private List<String> filenames;
+
+    /**
+     * User which created the task
+     */
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private User createdBy;
 }

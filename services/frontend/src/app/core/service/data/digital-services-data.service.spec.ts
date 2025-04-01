@@ -15,7 +15,6 @@ import {
     DigitalService,
     Host,
     NetworkType,
-    ServerDC,
     TerminalsType,
 } from "../../interfaces/digital-service.interfaces";
 import { DigitalServicesDataService } from "./digital-services-data.service";
@@ -37,7 +36,6 @@ describe("DigitalServicesDataService", () => {
             {
                 uid: "",
                 name: "Digital Service#1",
-                isNewArch: false,
                 lastUpdateDate: Date.now(),
                 creationDate: Date.now(),
                 lastCalculationDate: null,
@@ -65,7 +63,6 @@ describe("DigitalServicesDataService", () => {
         const newDigitalService: DigitalService = {
             uid: "",
             name: "Digital Service#1",
-            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -91,7 +88,6 @@ describe("DigitalServicesDataService", () => {
         const updatedDigitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
-            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -117,7 +113,6 @@ describe("DigitalServicesDataService", () => {
         const digitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
-            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -143,7 +138,6 @@ describe("DigitalServicesDataService", () => {
         const digitalService: DigitalService = {
             uid: "ds-uuid",
             name: "Digital Service#1",
-            isNewArch: false,
             lastUpdateDate: Date.now(),
             creationDate: Date.now(),
             lastCalculationDate: null,
@@ -157,29 +151,6 @@ describe("DigitalServicesDataService", () => {
 
         const req = httpMock.expectOne(`digital-services/ds-uuid`);
         expect(req.request.method).toEqual("DELETE");
-
-        httpMock.verify();
-    });
-
-    it("should launch calcul", () => {
-        const digitalService: DigitalService = {
-            uid: "ds-uuid",
-            name: "Digital Service#1",
-            isNewArch: false,
-            lastUpdateDate: Date.now(),
-            creationDate: Date.now(),
-            lastCalculationDate: null,
-            networks: [],
-            servers: [],
-            terminals: [],
-            members: [],
-        };
-        service.launchCalcul(digitalService.uid).subscribe();
-
-        const req = httpMock.expectOne(
-            `digital-services/${digitalService.uid}/evaluation`,
-        );
-        expect(req.request.method).toEqual("POST");
 
         httpMock.verify();
     });
@@ -295,58 +266,5 @@ describe("DigitalServicesDataService", () => {
         expect(req.request.method).toEqual("GET");
 
         httpMock.verify();
-    });
-
-    it("should get referentials of datacenter of server", () => {
-        const datacenter: ServerDC[] = [
-            {
-                uid: "uid",
-                name: "Default DC",
-                location: "France",
-                pue: 1.5,
-            },
-        ];
-
-        service.getDatacenterServerReferential("uid").subscribe((res) => {
-            expect(res).toEqual(datacenter);
-            expect(res).toHaveSize(1);
-        });
-
-        const req = httpMock.expectOne(`digital-services/uid/datacenters`);
-
-        expect(req.request.method).toEqual("GET");
-
-        httpMock.verify();
-    });
-
-    it("should fetch cloud indicators", () => {
-        const uid = "12345";
-        const mockResponse: any = [
-            {
-                criteria: "criteria1",
-                impacts: [
-                    {
-                        acvStep: "step1",
-                        sipValue: 10,
-                        rawValue: 20,
-                        unit: "unit1",
-                        status: "ok",
-                        statusCount: {
-                            ok: 1,
-                            error: 0,
-                            total: 1,
-                        },
-                    },
-                ],
-            },
-        ];
-
-        service.getCloudsIndicators(uid).subscribe((response) => {
-            expect(response).toEqual(mockResponse);
-        });
-
-        const req = httpMock.expectOne(`digital-services/${uid}/cloud/indicators`);
-        expect(req.request.method).toBe("GET");
-        req.flush(mockResponse);
     });
 });

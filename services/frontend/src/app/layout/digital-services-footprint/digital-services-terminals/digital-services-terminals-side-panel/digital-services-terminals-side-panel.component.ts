@@ -72,6 +72,7 @@ export class DigitalServicesTerminalsSidePanelComponent {
         const referentials = await lastValueFrom(
             this.digitalDataService.getDeviceReferential(),
         );
+
         this.terminalDeviceTypes = referentials.sort((a, b) =>
             a.value.localeCompare(b.value),
         );

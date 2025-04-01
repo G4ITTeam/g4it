@@ -8,11 +8,11 @@
 package com.soprasteria.g4it.backend.apifiles.business;
 
 import com.azure.storage.blob.models.BlobStorageException;
-import com.soprasteria.g4it.backend.apibatchloading.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.apiuser.business.OrganizationService;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileStorage;
 import com.soprasteria.g4it.backend.common.filesystem.business.FileSystem;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileFolder;
+import com.soprasteria.g4it.backend.common.mapper.FileDescriptionRestMapper;
 import com.soprasteria.g4it.backend.common.utils.Constants;
 import com.soprasteria.g4it.backend.common.utils.SanitizeUrl;
 import com.soprasteria.g4it.backend.exception.BadRequestException;
@@ -43,7 +43,11 @@ public class FileSystemService {
     /**
      * Content types.
      */
-    private static final List<String> TYPES = List.of("text/csv", "application/vnd.ms-excel", "application/octet-stream");
+    private static final List<String> TYPES = List.of("text/csv",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.oasis.opendocument.spreadsheet",
+            "application/octet-stream");
     /**
      * File System.
      */
@@ -59,6 +63,20 @@ public class FileSystemService {
     private OrganizationService organizationService;
     @Value("${local.working.folder}")
     private String localWorkingFolder;
+
+    private static BufferedReader getBufferedReader(MultipartFile file) throws IOException {
+        var isr = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
+        boolean isOk = true;
+        while (isr.ready()) {
+            // if there is a character like this �, it means that the encoding was not utf-8
+            if (isr.read() == REPLACEMENT_CHAR) {
+                isOk = false;
+                break;
+            }
+        }
+        String encoding = isOk ? StandardCharsets.UTF_8.toString() : "Cp1252";
+        return new BufferedReader(new InputStreamReader(file.getInputStream(), encoding));
+    }
 
     @PostConstruct
     public void initFolder() throws IOException {
@@ -109,25 +127,6 @@ public class FileSystemService {
      */
     public InputStream downloadFile(final String subscriber, final Long organizationId, final FileFolder fileFolder, final String filename) throws IOException {
         return fetchStorage(subscriber, organizationId.toString()).readFile(fileFolder, filename);
-    }
-
-
-    /**
-     * Manage files :
-     * - check files
-     * - get fileStorage
-     * - upload each file into fileStorage
-     *
-     * @param subscriber     the subscriber
-     * @param organizationId the organization's id
-     * @param files          the list of file
-     * @return the fileName list uploaded
-     */
-    public List<String> manageFiles(final String subscriber, final Long organizationId, final List<MultipartFile> files) {
-        if (files == null) return List.of();
-        checkFiles(files);
-        FileStorage fileStorage = fetchStorage(subscriber, organizationId.toString());
-        return files.stream().map(file -> this.uploadFile(file, fileStorage, null)).toList();
     }
 
     /**
@@ -204,18 +203,8 @@ public class FileSystemService {
     private String uploadFile(final MultipartFile file, final FileStorage fileStorage, final String newFilename) {
         final Path tempPath = Path.of(localWorkingFolder, "input", "inventory", UUID.randomUUID().toString());
         try {
-            BufferedReader br = getBufferedReader(file);
-            // if the encoding was not utf8, we open the file again with an encoding adapted to ANSI
-            File outputFile = tempPath.toFile();
-            try (Writer out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    out.append(line).append("\n");
-                }
-                out.flush();
-            }
-            InputStream tmpInputStream = new FileInputStream(outputFile);
+            Files.copy(file.getInputStream(), tempPath);
+            InputStream tmpInputStream = new FileInputStream(tempPath.toFile());
             var filename = newFilename == null ? file.getOriginalFilename() : newFilename;
             var result = fileStorage.upload(FileFolder.INPUT, filename, file.getName(), tmpInputStream);
             tmpInputStream.close();
@@ -224,20 +213,6 @@ public class FileSystemService {
         } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error occurred while uploading file: " + e.getMessage());
         }
-    }
-
-    private static BufferedReader getBufferedReader(MultipartFile file) throws IOException {
-        var isr = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
-        boolean isOk = true;
-        while (isr.ready()) {
-            // if there is a character like this �, it means that the encoding was not utf-8
-            if (isr.read() == REPLACEMENT_CHAR) {
-                isOk = false;
-                break;
-            }
-        }
-        String encoding = isOk ? StandardCharsets.UTF_8.toString() : "Cp1252";
-        return new BufferedReader(new InputStreamReader(file.getInputStream(), encoding));
     }
 
     /**

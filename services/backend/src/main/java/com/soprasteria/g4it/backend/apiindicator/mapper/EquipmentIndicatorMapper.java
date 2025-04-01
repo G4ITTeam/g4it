@@ -9,7 +9,6 @@ package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentImpactBO;
 import com.soprasteria.g4it.backend.apiindicator.model.EquipmentIndicatorBO;
-import com.soprasteria.g4it.backend.apiindicator.modeldb.AggEquipmentIndicator;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,11 +17,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EquipmentIndicatorMapper {
-
-
-    List<EquipmentImpactBO> toImpact(final List<AggEquipmentIndicator> source);
-
-    EquipmentImpactBO toImpact(final AggEquipmentIndicator source);
 
     List<EquipmentImpactBO> toOldImpact(final List<OutPhysicalEquipment> source);
 
@@ -37,15 +31,6 @@ public interface EquipmentIndicatorMapper {
     @Mapping(target = "statusIndicator", source = "statusIndicator")
     @Mapping(target = "countValue", source = "countValue")
     EquipmentImpactBO toImpact(final OutPhysicalEquipment source);
-
-    @Mapping(target = "impacts", source = "source")
-    default EquipmentIndicatorBO toDto(final List<AggEquipmentIndicator> source) {
-        return EquipmentIndicatorBO.builder()
-                .unit(source.get(0).getUnit())
-                .label(source.get(0).getCriteria())
-                .impacts(toImpact(source))
-                .build();
-    }
 
     @Mapping(target = "impacts", source = "source")
     default EquipmentIndicatorBO outToDto(final List<OutPhysicalEquipment> source) {

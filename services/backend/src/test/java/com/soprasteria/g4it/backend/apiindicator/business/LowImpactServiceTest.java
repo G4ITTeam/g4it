@@ -8,7 +8,8 @@
 
 package com.soprasteria.g4it.backend.apiindicator.business;
 
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,21 +32,25 @@ class LowImpactServiceTest {
     LowImpactService lowImpactService;
 
     @Mock
-    NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
+    ReferentialGetService referentialGetService;
+    @Mock
+    ReferentialService referentialService;
+
 
     @Test
     void shouldGetQuartileIndexForInventory() {
 
         Map<Pair<String, String>, Integer> quartileMap = Map.of(
-                Pair.of("France", "C1"), 1,
-                Pair.of("France", "C2"), 1,
-                Pair.of("Germany", "C1"), 4,
-                Pair.of("Germany", "C2"), 4
+                Pair.of("France", "CLIMATE_CHANGE"), 1,
+                Pair.of("France", "ACIDIFICATION"), 1,
+                Pair.of("Germany", "CLIMATE_CHANGE"), 4,
+                Pair.of("Germany", "ACIDIFICATION"), 4
         );
 
-        ReflectionTestUtils.setField(lowImpactService, "criterias", Set.of("C1", "C2"));
-        Mockito.when(numEcoEvalReferentialRemotingService.getCountryList()).thenReturn(List.of("France", "Germany"));
-        Mockito.when(numEcoEvalReferentialRemotingService.getElectricityMixQuartiles()).thenReturn(quartileMap);
+        ReflectionTestUtils.setField(lowImpactService, "criterias", Set.of("Climate change", "Acidification"));
+
+        Mockito.when(referentialGetService.getCountries(null)).thenReturn(List.of("France", "Germany"));
+        Mockito.when(referentialService.getElectricityMixQuartiles()).thenReturn(quartileMap);
 
         assertThat(lowImpactService.isLowImpact("France")).isTrue();
         assertThat(lowImpactService.isLowImpact("Germany")).isFalse();

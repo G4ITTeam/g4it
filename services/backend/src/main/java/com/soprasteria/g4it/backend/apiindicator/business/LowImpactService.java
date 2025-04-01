@@ -9,7 +9,10 @@
 package com.soprasteria.g4it.backend.apiindicator.business;
 
 import com.google.common.math.Quantiles;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalReferentialRemotingService;
+import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialGetService;
+import com.soprasteria.g4it.backend.apireferential.business.ReferentialService;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +38,16 @@ public class LowImpactService {
     private Set<String> criterias;
 
     /**
-     * NumEcoEval Referential service.
+     * Referential Service.
      */
     @Autowired
-    private NumEcoEvalReferentialRemotingService numEcoEvalReferentialRemotingService;
+    private ReferentialService referentialService;
+
+    /**
+     * ReferentialGet Service.
+     */
+    @Autowired
+    private ReferentialGetService referentialGetService;
 
     /**
      * For a country, estimate the environment impact regarding electricity mix and returns true if the country has a low impact
@@ -51,12 +60,18 @@ public class LowImpactService {
      */
     @Cacheable("isLowImpact")
     public boolean isLowImpact(final String country) {
-        var countrySumImpactMap = numEcoEvalReferentialRemotingService.getCountryList().stream()
+
+        Set<String> transformedCriteria = criterias.stream()
+                .map(criterion -> StringUtils.kebabToSnakeCase(
+                        CriteriaUtils.transformCriteriaNameToCriteriaKey(criterion)
+                ))
+                .collect(Collectors.toSet());
+        var countrySumImpactMap = referentialGetService.getCountries(null).stream()
                 .collect(Collectors.toMap(
                         refCountry -> refCountry,
-                        refCountry -> criterias.stream()
+                        refCountry -> transformedCriteria.stream()
                                 .mapToInt(criteria -> {
-                                    var quartile = numEcoEvalReferentialRemotingService.getElectricityMixQuartiles().get(Pair.of(refCountry, criteria));
+                                    var quartile = referentialService.getElectricityMixQuartiles().get(Pair.of(refCountry, criteria));
                                     if (quartile == null) {
                                         log.error("Electricity mix not found for country: {} and criteria: {}", refCountry, criteria);
                                         quartile = 4;

@@ -7,16 +7,11 @@
  */
 package com.soprasteria.g4it.backend.apidigitalservice.business;
 
-import com.soprasteria.g4it.backend.apidigitalservice.mapper.DatacenterDigitalServiceMapper;
 import com.soprasteria.g4it.backend.apidigitalservice.mapper.DigitalServiceMapper;
-import com.soprasteria.g4it.backend.apidigitalservice.model.*;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DatacenterDigitalService;
+import com.soprasteria.g4it.backend.apidigitalservice.model.DigitalServiceBO;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceLink;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalServiceShared;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.NetworkTypeRef;
-import com.soprasteria.g4it.backend.apidigitalservice.modeldb.referential.ServerHostRef;
-import com.soprasteria.g4it.backend.apidigitalservice.repository.DatacenterDigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceLinkRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceSharedRepository;
@@ -33,37 +28,19 @@ import com.soprasteria.g4it.backend.apiuser.model.UserInfoBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.modeldb.User;
 import com.soprasteria.g4it.backend.apiuser.repository.UserRepository;
-import com.soprasteria.g4it.backend.client.gen.connector.apiexposition.dto.ModeRest;
 import com.soprasteria.g4it.backend.common.criteria.CriteriaService;
 import com.soprasteria.g4it.backend.common.filesystem.model.FileMapperInfo;
-import com.soprasteria.g4it.backend.common.filesystem.model.FileType;
-import com.soprasteria.g4it.backend.common.filesystem.model.Header;
-import com.soprasteria.g4it.backend.common.model.Context;
 import com.soprasteria.g4it.backend.common.task.business.TaskService;
-import com.soprasteria.g4it.backend.common.task.model.TaskStatus;
-import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.exception.G4itRestException;
-import com.soprasteria.g4it.backend.exception.InvalidReferentialException;
-import com.soprasteria.g4it.backend.exception.UnableToGenerateFileException;
-import com.soprasteria.g4it.backend.external.numecoeval.business.NumEcoEvalRemotingService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,8 +57,6 @@ public class DigitalServiceService {
     @Autowired
     private DigitalServiceRepository digitalServiceRepository;
     @Autowired
-    private DatacenterDigitalServiceRepository datacenterDigitalServiceRepository;
-    @Autowired
     private DigitalServiceReferentialService digitalServiceReferentialService;
     @Autowired
     private UserRepository userRepository;
@@ -89,10 +64,7 @@ public class DigitalServiceService {
     private DigitalServiceLinkRepository digitalServiceLinkRepository;
     @Autowired
     private DigitalServiceMapper digitalServiceMapper;
-    @Autowired
-    private DatacenterDigitalServiceMapper datacenterDigitalServiceMapper;
-    @Autowired
-    private NumEcoEvalRemotingService numEcoEvalRemotingService;
+
     @Autowired
     private IndicatorService indicatorService;
     @Autowired
@@ -152,11 +124,6 @@ public class DigitalServiceService {
                 .creationDate(now)
                 .lastUpdateDate(now)
                 .build();
-        digitalServiceToSave.addDatacenter(DatacenterDigitalService.builder()
-                .name("Default DC")
-                .location("France")
-                .pue(BigDecimal.valueOf(1.5))
-                .build());
         final DigitalService digitalServiceSaved = digitalServiceRepository.save(digitalServiceToSave);
 
         // Return the business object.
@@ -218,7 +185,6 @@ public class DigitalServiceService {
      * @param digitalServiceUid the digital service UID.
      */
     public void deleteDigitalService(final String digitalServiceUid) {
-        indicatorService.deleteIndicators(digitalServiceUid);
         inVirtualEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inPhysicalEquipmentRepository.deleteByDigitalServiceUid(digitalServiceUid);
         inDatacenterRepository.deleteByDigitalServiceUid(digitalServiceUid);
@@ -294,277 +260,10 @@ public class DigitalServiceService {
         return digitalServiceBO;
     }
 
-    /**
-     * Get the existing data centers linked to digital service.
-     *
-     * @param digitalServiceUid the inventory date.
-     * @return existing datacenters linked to digital service.
-     */
-    public List<ServerDataCenterBO> getDigitalServiceDataCenter(final String digitalServiceUid) {
-        return datacenterDigitalServiceMapper.toBusinessObject(datacenterDigitalServiceRepository.findByDigitalServiceUid(digitalServiceUid));
-    }
-
-    /**
-     * Run calculations in numEcoEval.
-     *
-     * @param organizationId    the linked organization's id.
-     * @param digitalServiceUid the digital service id.
-     */
-    public void runCalculations(final String subscriber, final Long organizationId, final String digitalServiceUid) {
-        final Organization linkedOrganization = organizationService.getOrganizationById(organizationId);
-
-        // Remove indicators.
-        indicatorService.deleteIndicators(digitalServiceUid);
-        taskService.getTask(digitalServiceUid)
-                .ifPresent(value -> outVirtualEquipmentRepository.deleteByTaskId(value.getId()));
-
-        final DigitalServiceBO digitalService = getDigitalService(digitalServiceUid);
-
-        // Build Physical Equipment file content.
-        final String physicalEquipmentHeadersFileContent = fileInfo.getMapping(FileType.EQUIPEMENT_PHYSIQUE).stream().map(Header::getName).collect(Collectors.joining(";"));
-        final String physicalEquipmentTerminalsFileContent = Optional.ofNullable(digitalService.getTerminals()).orElse(new ArrayList<>()).stream().map(this::buildLineForTerminal).collect(Collectors.joining(System.lineSeparator()));
-        final String physicalEquipmentNetworksFileContent = Optional.ofNullable(digitalService.getNetworks()).orElse(new ArrayList<>()).stream().map(this::buildLineForNetwork).collect(Collectors.joining(System.lineSeparator()));
-        final String physicalEquipmentServerFileContent = Optional.ofNullable(digitalService.getServers()).orElse(new ArrayList<>()).stream().map(this::buildLineForServer).collect(Collectors.joining(System.lineSeparator()));
-        final String physicalEquipmentFileContent = String.join(System.lineSeparator(), physicalEquipmentHeadersFileContent, physicalEquipmentTerminalsFileContent, physicalEquipmentNetworksFileContent, physicalEquipmentServerFileContent);
-
-        // Build Datacenter file content.
-        final String datacenterHeadersFileContent = fileInfo.getMapping(FileType.DATACENTER).stream().map(Header::getName).collect(Collectors.joining(";"));
-        final String datacenterServerFileContent = Optional.ofNullable(digitalService.getServers()).orElse(new ArrayList<>()).stream().map(ServerBO::getDatacenter).map(this::buildDatacenterLineWithServer).collect(Collectors.joining(System.lineSeparator()));
-        final String datacenterFileContent = String.join(System.lineSeparator(), datacenterHeadersFileContent, datacenterServerFileContent);
-
-        final String virtualEquipmentHeadersFileContent = fileInfo.getMapping(FileType.EQUIPEMENT_VIRTUEL).stream().map(Header::getName).collect(Collectors.joining(";"));
-        final String virtualEquipmentServerFileContent = Optional.ofNullable(digitalService.getServers())
-                .orElse(new ArrayList<>())
-                .stream()
-                .map(this::buildVirtualEquipmentLineWithServer)
-                .collect(Collectors.joining(System.lineSeparator()));
-        final String virtualEquipmentFileContent = String.join(System.lineSeparator(), virtualEquipmentHeadersFileContent, virtualEquipmentServerFileContent);
-
-        // Write Files.
-        final File dir = Path.of(localWorkingPath, UUID.randomUUID().toString()).toFile();
-        if (dir.mkdirs()) {
-            final FileSystemResource physicalEquipmentResource = writeToFile(dir, "physicalequipment.csv", physicalEquipmentFileContent);
-            final FileSystemResource datacenterResource = writeToFile(dir, "datacenter.csv", datacenterFileContent);
-            final FileSystemResource virtualEquipmentResource = writeToFile(dir, "virtualequipment.csv", virtualEquipmentFileContent);
-
-            // Call numEcoEval.
-            numEcoEvalRemotingService.callInputDataExposition(datacenterResource, physicalEquipmentResource, virtualEquipmentResource, null,
-                    String.valueOf(linkedOrganization.getId()), null, digitalServiceUid);
-
-            final boolean isDelete = FileSystemUtils.deleteRecursively(dir);
-            if (!isDelete) {
-                log.error("Unable to delete temp csv folder {}", dir.getAbsolutePath());
-                throw new UnableToGenerateFileException();
-            }
-            // Get criteria for digital service
-            List<String> criteriaKeyList = criteriaService.getSelectedCriteriaForDigitalService(subscriber, organizationId, digitalService.getCriteria()).active();
-            // Call NumEcoEval in SYNC mode, it means calculations are finished after this statement
-            numEcoEvalRemotingService.callCalculation(digitalServiceUid, ModeRest.SYNC, criteriaKeyList);
-
-            // Update last calculation date.
-            final DigitalService digitalServiceToUpdate = getDigitalServiceEntity(digitalServiceUid);
-            digitalServiceToUpdate.setLastCalculationDate(LocalDateTime.now());
-            digitalServiceRepository.save(digitalServiceToUpdate);
-
-            if (inVirtualEquipmentRepository.countByDigitalServiceUid(digitalServiceUid) == 0) return;
-
-            Task task = taskService.createDigitalServiceTask(digitalServiceToUpdate, criteriaKeyList);
-
-            Context context = Context.builder()
-                    .subscriber(subscriber)
-                    .organizationId(organizationId)
-                    .digitalServiceUid(digitalServiceUid)
-                    .digitalServiceName(digitalService.getName())
-                    .datetime(LocalDateTime.now())
-                    .build();
-
-            Path exportDirectory = exportService.createExportDirectory(task.getId());
-            evaluateCloudService.doEvaluate(context, task, exportDirectory);
-            exportService.uploadExportZip(task.getId(), context.getSubscriber(), context.getOrganizationId().toString());
-
-            task.setProgressPercentage("100%");
-            task.setStatus(TaskStatus.COMPLETED.toString());
-            task.setLastUpdateDate(LocalDateTime.now());
-            taskService.saveTask(task);
-        } else {
-            log.error("Unable to write in folder {}.", dir.getAbsolutePath());
-            throw new UnableToGenerateFileException();
-        }
-    }
 
     private DigitalService getDigitalServiceEntity(final String digitalServiceUid) {
         return digitalServiceRepository.findById(digitalServiceUid)
                 .orElseThrow(() -> new G4itRestException("404", String.format("Digital Service %s not found.", digitalServiceUid)));
-    }
-
-    private FileSystemResource writeToFile(final File dir, final String filename, final String fileContent) {
-        final File file = new File(dir, filename);
-        try (final FileWriter fileWriter = new FileWriter(file)) {
-            final PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.print(fileContent);
-            printWriter.close();
-        } catch (final IOException e) {
-            log.error("Unable to create temp csv file {}", fileContent, e);
-            throw new UnableToGenerateFileException();
-        }
-        return new FileSystemResource(file);
-    }
-
-    private String buildLineForTerminal(final TerminalBO terminalBO) {
-        return String.join(";",
-                terminalBO.getUid(), // physicalEquipment name.
-                "", // entity name.
-                "", // source.
-                terminalBO.getType().getCode(), // model (type is mandatory, so, not nullable.
-                String.valueOf(calculateQuantity(terminalBO)), // quantity.
-                "Terminal", // type.
-                "", // status.
-                Optional.ofNullable(terminalBO.getCountry()).orElse(""), // country of use.
-                "", // user.
-                LocalDate.now()
-                        .minusDays((long) Math.floor(365d * terminalBO.getLifespan()))
-                        .format(DateTimeFormatter.ISO_LOCAL_DATE), // date of purchase.
-                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
-                "", // core number.
-                "", // datacenter short name.
-                "", // annual electricity consumption.
-                "", // manufacturer.
-                "", // hard drive size.
-                "", // memory size.
-                "" // processor type.
-        );
-    }
-
-    private String buildLineForNetwork(final NetworkBO networkBO) {
-        final NetworkTypeRef networkType = digitalServiceReferentialService.getNetworkType(networkBO.getType().getCode());
-        final String country = networkType.getCountry();
-        return String.join(";",
-                networkBO.getUid(), // physicalEquipment name.
-                "", // entity name.
-                "", // source.
-                networkBO.getType().getCode(), // model (type is mandatory, so, not nullable.
-                String.valueOf(calculateQuantity(networkBO, networkType.getAnnualQuantityOfGo())), // quantity.
-                "Network", // type.
-                "", // status.
-                Optional.ofNullable(country).orElse(""), // country of use.
-                "", // user.
-                LocalDate.now().minusYears(1).format(DateTimeFormatter.ISO_LOCAL_DATE), // date of purchase.
-                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
-                "", // core number.
-                "", // datacenter short name.
-                "", // annual electricity consumption.
-                "", // manufacturer.
-                "", // hard drive size.
-                "", // memory size.
-                "" // processor type.
-        );
-    }
-
-    private String buildLineForServer(final ServerBO serverBO) {
-        final ServerHostRef host = digitalServiceReferentialService.getServerHost(serverBO.getHost().getCode());
-        return String.join(";",
-                serverBO.getUid(), // physicalEquipment name.
-                "", // entity name.
-                "", // source.
-                host.getReference(), // model (type is mandatory, so, not nullable.
-                String.valueOf(calculateQuantity(serverBO)), // quantity.
-                StringUtils.equalsIgnoreCase("Dedicated", serverBO.getMutualizationType()) ? "Dedicated Server" : "Shared Server", // type.
-                "", // status.
-                serverBO.getDatacenter().getLocation(), // country of use.
-                "", // user.
-                LocalDate.now().minusDays((long) Math.floor(365d * serverBO.getLifespan())).format(DateTimeFormatter.ISO_LOCAL_DATE), // date of purchase.
-                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), // date of withdrawal.
-                "", // core number.
-                serverBO.getDatacenter().getUid(), // datacenter short name.
-                String.valueOf(serverBO.getAnnualElectricConsumption()), // annual electricity consumption.
-                "", // manufacturer.
-                "", // hard drive size.
-                "", // memory size.
-                "" // processor type.
-        );
-    }
-
-    private String buildDatacenterLineWithServer(final ServerDataCenterBO datacenterBO) {
-        return String.join(";",
-                datacenterBO.getUid(), // nomCourtDatacenter
-                datacenterBO.getName(), // nomLongDatacenter
-                String.valueOf(datacenterBO.getPue()), // pue
-                datacenterBO.getLocation(), // country
-                "", // entityName
-                "" // source
-        );
-    }
-
-    private String buildVirtualEquipmentLineWithServer(final ServerBO serverBO) {
-        if (!serverBO.getVm().isEmpty()) {
-            return serverBO.getVm().stream().map(vm -> buildVirtualEquipmentLineWithServer(vm, serverBO)).collect(Collectors.joining(System.lineSeparator()));
-        }
-        return "";
-    }
-
-    private String buildVirtualEquipmentLineWithServer(final VirtualEquipmentBO virtualEquipmentBO,
-                                                       final ServerBO serverBO) {
-        return String.join(";",
-                virtualEquipmentBO.getUid(), // virtual equipment name.
-                serverBO.getUid(), // physical equipment name.
-                "", // source physical equipment.
-                "", // VCPU.
-                "", // entity name.
-                "", // Cluster.
-                "", // electricity consumption.
-                "", // type.
-                String.valueOf(StringUtils.equalsIgnoreCase("Compute", serverBO.getType()) ?
-                        (virtualEquipmentBO.getVCpu().doubleValue() / serverBO.getTotalVCpu().doubleValue()) * (virtualEquipmentBO.getAnnualOperatingTime().doubleValue() / 8760d) * virtualEquipmentBO.getQuantity() :
-                        (virtualEquipmentBO.getDisk().doubleValue() / serverBO.getTotalDisk().doubleValue()) * (virtualEquipmentBO.getAnnualOperatingTime().doubleValue() / 8760d) * virtualEquipmentBO.getQuantity()), // repartition.
-                "", // source.
-                "" // hdd capacity.
-        );
-    }
-
-    /**
-     * Calculate quantity.
-     *
-     * @param networkBO          object contains the data necessary for the calculation.
-     * @param annualQuantityOfGo referential data for fixed network.
-     * @return the result.
-     */
-    private Double calculateQuantity(final NetworkBO networkBO, final Integer annualQuantityOfGo) {
-        final double yearlyQuantityOfGbExchanged = Optional.ofNullable(networkBO.getYearlyQuantityOfGbExchanged()).orElse((double) 0);
-        if (networkBO.getType().getCode().contains("mobile")) {
-            return yearlyQuantityOfGbExchanged;
-        } else {
-            if (annualQuantityOfGo != null && annualQuantityOfGo != 0) {
-                return (yearlyQuantityOfGbExchanged) / ((double) annualQuantityOfGo);
-            }
-            log.error("Annual quantity of Go in referential table is invalid (null or zero).");
-            throw new InvalidReferentialException("network.type.code.annualQuantityOfGo");
-        }
-    }
-
-    /**
-     * Calculate quantity.
-     *
-     * @param terminalBO object contains the data necessary for the calculation.
-     * @return the result.
-     */
-    private Double calculateQuantity(final TerminalBO terminalBO) {
-        final Double numberOfUser = Optional.ofNullable(terminalBO.getNumberOfUsers()).map(Double::valueOf).orElse((double) 0);
-        final Double yearlyUsageTime = Optional.ofNullable(terminalBO.getYearlyUsageTimePerUser()).map(Double::valueOf).orElse((double) 0);
-        return (numberOfUser * yearlyUsageTime) / (365 * 24);
-    }
-
-    /**
-     * Calculate quantity.
-     *
-     * @param serverBO object containing the data necessary to calculation.
-     * @return the result.
-     */
-    private Double calculateQuantity(final ServerBO serverBO) {
-        if (StringUtils.equalsIgnoreCase("Dedicated", serverBO.getMutualizationType())) {
-            return serverBO.getQuantity().doubleValue() * (serverBO.getAnnualOperatingTime().doubleValue() / 8760d);
-        } else {
-            return 1d;
-        }
     }
 
     /**
