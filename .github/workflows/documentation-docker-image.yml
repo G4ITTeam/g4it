@@ -16,11 +16,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Extract branch or tag name
+        id: extract_ref
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "REF_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "REF_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          fi
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           name: g4it/documentation
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          workdir: services/documentation
-          tag_names: true
+          workdir: services/backend
+          tags: ${{ env.REF_NAME }}

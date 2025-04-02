@@ -16,14 +16,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      #     - name: Run Trivy vulnerability scanner in fs mode
-      #        uses: aquasecurity/trivy-action@0.20.0
-      #        with:
-      #          scan-type: "fs"
-      #          scan-ref: "services/backend"
-      #          exit-code: "0"
-      #          ignore-unfixed: true
-      #          severity: "CRITICAL,HIGH"
+      - name: Extract branch or tag name
+        id: extract_ref
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "REF_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "REF_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          fi
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
@@ -31,4 +31,4 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           workdir: services/backend
-          tag_names: true
+          tags: ${{ env.REF_NAME }}
