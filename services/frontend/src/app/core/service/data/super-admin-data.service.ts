@@ -18,6 +18,6 @@ export class SuperAdminDataService {
     constructor(private http: HttpClient) {}
 
     migrateDataToNewFormat(): Observable<void> {
-        return this.http.post<void>(`${endpoint}/migrate-data-to-new-format`, {});
+        return this.http.post<void>(`${endpoint}/evaluate-all-digital-services`, {});
     }
 }
