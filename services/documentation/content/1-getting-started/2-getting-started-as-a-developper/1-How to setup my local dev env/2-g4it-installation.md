@@ -25,9 +25,14 @@ git clone https://github.com/G4ITTeam/g4it.git
 cd g4it
 git pull
 
-# Add submodules: 
-#  - documentation theme
-git submodule update --init --remote --recursive
+# Add documentation themes
+
+
+cd /c/G4IT/_repo/g4it/service/documentation
+
+git clone -b main --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
+git clone -b main --single-branch https://github.com/martignoni/hugo-video.git themes/hugo-video
+
 ```
 
 ### IntelliJ Workspace
