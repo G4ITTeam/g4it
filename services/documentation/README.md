@@ -10,7 +10,7 @@ A web application based on Hugo and theme [hugo-theme-relearn](https://mcshelby.
 
 ### Software requirements
 
-Check [deployed documentation](https://saas-g4it.com/documentation/1-getting-started/1-local-configuration/index.html)
+Check [deployed documentation](https://saas-g4it.com/documentation/1-getting-started/2-getting-started-as-a-developper/1-how-to-setup-my-local-dev-env/index.html)
 
 ### Import needed themes:
 
