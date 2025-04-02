@@ -12,6 +12,14 @@ A web application based on Hugo and theme [hugo-theme-relearn](https://mcshelby.
 
 Check [deployed documentation](https://saas-g4it.com/documentation/1-getting-started/1-local-configuration/index.html)
 
+### Import needed themes:
+
+cd service/documentation
+
+git clone -b main --single-branch https://github.com/McShelby/hugo-theme-relearn.git themes/hugo-theme-relearn
+git clone -b main --single-branch https://github.com/martignoni/hugo-video.git themes/hugo-video
+
+
 ### How to run locally
 
 #### Development server

@@ -1,6 +1,6 @@
 ---
-title: "Module Information System"
-description: "This section describes everything you need to know to use the module Information System"
+title: "I want to evaluate an inventory of equipment"
+description: "This section describes everything you need to know to evaluate an inventory of equipment"
 weight: 2
 ---
 ## Overview

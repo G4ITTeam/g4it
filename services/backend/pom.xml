@@ -44,7 +44,7 @@
         <spring-cloud-azure-starter-storage-blob.version>5.18.0</spring-cloud-azure-starter-storage-blob.version>
         <spring-cloud-azure-starter-keyvault.version>5.18.0</spring-cloud-azure-starter-keyvault.version>
 
-        <!-- springdoc 2.7.0 is not working-->
+        <!-- springdoc 2.7.0 is not working -->
         <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
 
         <guava.version>33.3.1-jre</guava.version>
@@ -90,7 +90,7 @@
 
     <dependencies>
 
-        <!-- NumEcoEval library -->
+        <!-- NumEcoEval library, we only depend on the library -->
         <dependency>
             <groupId>org.mte.numecoeval</groupId>
             <artifactId>calculs</artifactId>

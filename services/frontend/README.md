@@ -1,8 +1,8 @@
 ## Things to know to happily work on this project 🌈
-
+ 
 ### Getting started
 
-To start the project, follow these steps:
+To start the project, follow these steps :
 
 ```
 npm i
@@ -12,7 +12,7 @@ npm start
 Open your browser on `http://localhost:4200/`. The app will automatically reload if you
 change any of the source files.
 
-### Backend Configuration
+### Backend Configuration   
 
 You have two options for working with the backend:
 
