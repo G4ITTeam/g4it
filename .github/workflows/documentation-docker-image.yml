@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - main
   pull_request:
     paths:
       - "services/documentation/**"
@@ -21,6 +23,8 @@ jobs:
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             REF_NAME=${GITHUB_REF#refs/tags/}
+          elif [[ "${GITHUB_REF}" == refs/heads/main ]]; then
+            REF_NAME=${GITHUB_REF#refs/heads/}
           else
             REF_NAME=${GITHUB_HEAD_REF#refs/heads/}
           fi
