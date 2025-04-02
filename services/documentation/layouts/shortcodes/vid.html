@@ -1,0 +1,30 @@
+<!--
+  ~ G4IT
+  ~ Copyright 2023 Sopra Steria
+  ~
+  ~ This product includes software developed by
+  ~ French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
+  -->
+
+<div class="container">
+    <div id="player-wrapper" class="{{ .Get 1 }}"></div>
+</div>
+
+<script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"
+>
+</script>
+
+<script>
+  var playerElement = document.getElementById("player-wrapper");
+
+  var player = new Clappr.Player({
+    source: {{ .Get 0 }},
+    mute: true,
+    height: 360,
+    width: 640
+  });
+
+  player.attachTo(playerElement);
+</script>
