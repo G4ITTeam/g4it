@@ -1,0 +1,3 @@
+nomEquipementVirtuel;quantite;typeInfrastructure;nomSourceDonnee;provider;typeInstance;location;chargeMoy;dureeUtilisationAnnuelle
+<instance name>;1;CLOUD_SERVICES;;azure;<name of the size>;<country>;25;<annual usage time calculated>
+;;;;;;;;

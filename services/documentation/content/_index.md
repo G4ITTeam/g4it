@@ -80,5 +80,9 @@ G4IT is at the service of :
 
 ---
 
-
+## In a nutshell
+#### [ENG] G4IT overview
+{{<video src="media/Formation_G4IT_ENG_V2.mp4" width="600px">}}
+#### [FR] G4IT overview
+{{<video src="media/Formation_G4IT_FR_V2-1.mp4" width="600px">}}
 
