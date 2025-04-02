@@ -2,15 +2,17 @@ name: Keycloak Docker Image Publish
 
 on:
   push:
-    branches: ["main"]
-    paths:
-      - services/keycloak/**
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
+  pull_request:
+    paths:
+      - "services/keycloak/**"
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v4

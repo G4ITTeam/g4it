@@ -1,10 +1,10 @@
 # Keycloak
-
+ 
 A keycloak instance to manage user authentications for G4IT
 
 ## Export realm config
 
-Open git bash in the `g4it` repository.
+Open git bash in the `g4it` repository:
 
 ```shell
 podman exec -it keycloak bash
