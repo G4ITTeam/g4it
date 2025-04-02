@@ -20,10 +20,14 @@ jobs:
         id: extract_ref
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            echo "REF_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            REF_NAME=${GITHUB_REF#refs/tags/}
           else
-            echo "REF_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+            REF_NAME=${GITHUB_HEAD_REF#refs/heads/}
           fi
+          REF_NAME=$(echo "${REF_NAME}" | tr '/' '_')
+          echo "REF_NAME=${REF_NAME}" >> $GITHUB_ENV
+          sed -i "s|^version: .*|version: \"${REF_NAME}\"|" services/backend/src/main/resources/application.yml
+          cat services/backend/src/main/resources/application.yml
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:

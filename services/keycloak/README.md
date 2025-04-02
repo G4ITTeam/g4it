@@ -13,7 +13,7 @@ exit
 podman cp keycloak:/tmp/dev-realm-export.json services/keycloak/imports/dev-realm-export.json
 ```
 
-## Upgrade Keycloak version
+## Upgrade Keycloak version 
 
 For upgrading the Keycloak version:
 - Update the image tag in :
