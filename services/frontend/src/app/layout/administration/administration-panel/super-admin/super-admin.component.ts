@@ -37,7 +37,7 @@ export class SuperAdminComponent implements OnInit {
     }
 
     async migrateDataToNewFormat() {
-        await firstValueFrom(this.superAdminDataService.migrateDataToNewFormat());
         this.isMigrateDataButtonDisabled = true;
+        await firstValueFrom(this.superAdminDataService.migrateDataToNewFormat());
     }
 }
