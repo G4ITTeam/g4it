@@ -9,7 +9,7 @@ tags:
     description: Endpoint for subscriber administration actions
 
 paths:
-  /administrator-actions/evaluate-all-digital-services:
+  /administrator-actions/evaluate-all-ds-data:
     post:
       tags:
         - administrator-actions

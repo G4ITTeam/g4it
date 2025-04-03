@@ -39,7 +39,7 @@ public class AdministratorActionsService {
 
     public String evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
-
+        int count = 0;
         for (DigitalService digitalService : digitalServices) {
             //evaluating
             String digitalServiceUid = digitalService.getUid();
@@ -50,10 +50,13 @@ public class AdministratorActionsService {
             if (!physicalEquipments.isEmpty()) {
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
                 if (!networkEquipments.isEmpty()) {
+                    log.info("Digital-service re-evaluation - {}", digitalServiceUid);
                     evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
+                    count++;
                 }
             }
         }
+        log.info("Digital-service re-evaluation count- {}", count);
         return "success";
     }
 }
