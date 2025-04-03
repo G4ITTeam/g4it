@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.0.1
+
+### Minor Changes
+
+- 1071 | Location has not been set during data migration for network
+
 ## 3.0.0
 
 ### Major Changes

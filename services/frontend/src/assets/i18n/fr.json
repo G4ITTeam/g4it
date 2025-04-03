@@ -717,7 +717,7 @@
             "digital-service-module": "Digital service module"
         },
         "super-admin": {
-            "migrate-data-title": "Migrer les données vers le nouveau format"
+            "migrate-data-title": "Évaluer tous les services numériques"
         }
     },
     "error-graph": {

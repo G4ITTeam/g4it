@@ -719,7 +719,7 @@
             "digital-service-module": "Module de services numériques"
         },
         "super-admin": {
-            "migrate-data-title": "Migrate data to new format"
+            "migrate-data-title": "Evaluate all digital services"
         }
     },
     "error-graph": {
