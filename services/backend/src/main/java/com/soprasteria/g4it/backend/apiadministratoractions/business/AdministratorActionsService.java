@@ -11,6 +11,8 @@ package com.soprasteria.g4it.backend.apiadministratoractions.business;
 import com.soprasteria.g4it.backend.apidigitalservice.modeldb.DigitalService;
 import com.soprasteria.g4it.backend.apidigitalservice.repository.DigitalServiceRepository;
 import com.soprasteria.g4it.backend.apievaluating.business.EvaluatingService;
+import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
+import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,9 @@ public class AdministratorActionsService {
     @Autowired
     OrganizationRepository organizationRepository;
 
+    @Autowired
+    InPhysicalEquipmentRepository physicalEquipmentRepository;
+
     public String evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
 
@@ -41,7 +46,13 @@ public class AdministratorActionsService {
             Organization organization = organizationRepository.findById(digitalService.getOrganization().getId()).orElseThrow();
             Long organizationId = organization.getId();
             String subscriber = organization.getSubscriber().getName();
-            evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
+            List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
+            if (!physicalEquipments.isEmpty()) {
+                List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
+                if (!networkEquipments.isEmpty()) {
+                    evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
+                }
+            }
         }
         return "success";
     }
