@@ -6,3 +6,4 @@ public/
 *.iml
 *.idea/*
 themes/hugo-theme-relearn
+themes/hugo-video
