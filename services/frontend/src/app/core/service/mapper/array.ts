@@ -15,7 +15,14 @@ export const transformCriterion = (criterion: string) => {
 
 //Below method is to remove the current organization name from the equipment type
 export const transformEquipmentType = (eqType: string, currentOrganization: string) => {
-    return eqType?.trim()?.replace(`${currentOrganization}_`, "");
+    const lowerEqType = eqType?.toLowerCase()?.trim();
+    const lowerPrefix = currentOrganization?.toLowerCase()?.trim();
+
+    if (lowerEqType.startsWith(lowerPrefix)) {
+        return eqType.slice(currentOrganization.length + 1); // Remove only if it matches
+    }
+
+    return eqType;
 };
 
 export const groupByField = (arr: any[], field: string) => {
