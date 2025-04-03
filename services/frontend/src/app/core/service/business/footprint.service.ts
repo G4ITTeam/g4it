@@ -7,7 +7,7 @@
  */
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { tap } from "rxjs";
+import { map, tap } from "rxjs";
 import {
     ApplicationFootprint,
     ApplicationImpact,
@@ -40,8 +40,14 @@ export class FootprintService {
         return this.footprintDataService.deleteIndicators(inventoryId);
     }
 
-    initApplicationFootprint(inventoryId: number) {
+    initApplicationFootprint(inventoryId: number, currentOrgName: string) {
         return this.footprintDataService.getApplicationFootprint(inventoryId).pipe(
+            map((footprint) =>
+                this.footprintDataService.transformApplicationEquipmentType(
+                    footprint,
+                    currentOrgName,
+                ),
+            ),
             tap((footprint) => {
                 footprint = this.setUnspecifiedData(footprint);
                 footprint.forEach((indicateur) => {
