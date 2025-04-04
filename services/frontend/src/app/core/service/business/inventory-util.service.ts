@@ -23,6 +23,7 @@ import { InVirtualEquipmentRest } from "../../interfaces/input.interface";
 import { InventoryFilterSet } from "../../interfaces/inventory.interfaces";
 import { DecimalsPipe } from "../../pipes/decimal.pipe";
 import { IntegerPipe } from "../../pipes/integer.pipe";
+import { transformEquipmentType } from "../mapper/array";
 
 @Injectable({
     providedIn: "root",
@@ -402,5 +403,50 @@ export class InventoryUtilService {
                 title: this.translate.instant("inventories-footprint.global.ave-pue"),
             },
         ];
+    }
+
+    removeOrganizationNameFromType(
+        equipment: [
+            PhysicalEquipmentAvgAge[],
+            PhysicalEquipmentLowImpact[],
+            PhysicalEquipmentsElecConsumption[],
+        ],
+        currentOrganization: string,
+    ): [
+        PhysicalEquipmentAvgAge[],
+        PhysicalEquipmentLowImpact[],
+        PhysicalEquipmentsElecConsumption[],
+    ] {
+        return equipment.map((eq) =>
+            eq.map((i) => ({
+                ...i,
+                type: transformEquipmentType(i.type, currentOrganization),
+            })),
+        ) as [
+            PhysicalEquipmentAvgAge[],
+            PhysicalEquipmentLowImpact[],
+            PhysicalEquipmentsElecConsumption[],
+        ];
+    }
+
+    removeOrganizationNameFromCriteriaType(
+        footprint: Criterias,
+        currentOrganization: string,
+    ): Criterias {
+        return Object.fromEntries(
+            Object.entries(footprint).map(([key, value]) => [
+                key,
+                {
+                    ...value,
+                    impacts: value.impacts?.map((i) => ({
+                        ...i,
+                        equipment: transformEquipmentType(
+                            i?.equipment!,
+                            currentOrganization,
+                        ),
+                    })),
+                },
+            ]),
+        );
     }
 }

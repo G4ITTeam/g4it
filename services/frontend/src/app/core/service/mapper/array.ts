@@ -13,6 +13,18 @@ export const transformCriterion = (criterion: string) => {
     return criterion.toLocaleLowerCase().replaceAll("_", "-");
 };
 
+//Below method is to remove the current organization name from the equipment type
+export const transformEquipmentType = (eqType: string, currentOrganization: string) => {
+    const lowerEqType = eqType?.toLowerCase()?.trim();
+    const lowerPrefix = currentOrganization?.toLowerCase()?.trim();
+
+    if (lowerEqType.startsWith(lowerPrefix)) {
+        return eqType.slice(currentOrganization.length + 1); // Remove only if it matches
+    }
+
+    return eqType;
+};
+
 export const groupByField = (arr: any[], field: string) => {
     return arr.reduce((acc: any, obj: any) => {
         const key = obj[field];

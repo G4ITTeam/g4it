@@ -22,6 +22,7 @@ import {
 } from "src/app/core/interfaces/footprint.interface";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
 import { InventoryService } from "src/app/core/service/business/inventory.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { OutApplicationsService } from "src/app/core/service/data/in-out/out-applications.service";
 import { FootprintStoreService } from "src/app/core/store/footprint.store";
@@ -39,6 +40,7 @@ export class InventoriesApplicationFootprintComponent {
     footprintDataService = inject(FootprintDataService);
     private outApplicationsService = inject(OutApplicationsService);
     private readonly inventoryService = inject(InventoryService);
+    private readonly userService = inject(UserService);
     currentLang: string = this.translate.currentLang;
     criteriakeys = Object.keys(this.translate.translations[this.currentLang]["criteria"]);
 
@@ -80,9 +82,15 @@ export class InventoriesApplicationFootprintComponent {
             +this.activatedRoute.snapshot.paramMap.get("inventoryId")! || 0;
 
         let footprint: ApplicationFootprint[] = [];
+        const currentOrgName = (
+            await firstValueFrom(this.userService.currentOrganization$)
+        ).name;
         [footprint] = await Promise.all([
             firstValueFrom(
-                this.footprintService.initApplicationFootprint(this.inventoryId),
+                this.footprintService.initApplicationFootprint(
+                    this.inventoryId,
+                    currentOrgName,
+                ),
             ),
         ]);
 

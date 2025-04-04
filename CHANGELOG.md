@@ -1,5 +1,11 @@
 # G4IT
 
+## 3.0.1
+
+### Minor Changes
+
+- 1051 | Organization name is displayed in equipment Type on the UI
+
 ## 3.0.0
 
 ### Major Changes
