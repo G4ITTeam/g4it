@@ -49,7 +49,7 @@ export class InventoryUtilService {
         let maxStepLength = -1;
         let maxStep = "UTILISATION";
 
-        const sizeBySteps = footprint[maxCriteria].impacts.reduce((p: any, c) => {
+        const sizeBySteps = footprint[maxCriteria]?.impacts.reduce((p: any, c) => {
             const name = c.acvStep;
             if (!p.hasOwnProperty(name)) {
                 p[name] = 0;
@@ -96,15 +96,15 @@ export class InventoryUtilService {
             filtersSet[item].has(Constants.ALL),
         );
 
-        const impacts = footprint[this.maxCriteriaAndStep(footprint)[0]].impacts
+        const impacts = footprint[this.maxCriteriaAndStep(footprint)[0]]?.impacts
             .filter((impact) => impact.acvStep === this.maxCriteriaAndStep(footprint)[1])
             .filter((i) => i.status !== Constants.CLOUD_SERVICES);
 
         const physicalEquipmentCount = hasAllFilters
-            ? impacts.reduce((n, impact) => n + impact.countValue, 0)
+            ? impacts?.reduce((n, impact) => n + impact.countValue, 0)
             : impacts
-                  .filter((impact) => this.isItemPresent(impact, filtersSet))
-                  .reduce((n, impact) => n + impact.countValue, 0);
+                  ?.filter((impact) => this.isItemPresent(impact, filtersSet))
+                  ?.reduce((n, impact) => n + impact.countValue, 0);
 
         const filteredEquipmentsAvgAge = hasAllFilters
             ? equipmentsAvgAge
