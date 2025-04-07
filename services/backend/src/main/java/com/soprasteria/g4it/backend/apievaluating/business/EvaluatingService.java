@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -195,7 +194,7 @@ public class EvaluatingService {
         taskRepository.save(task);
 
         // run loading async task
-        asyncEvaluatingService.execute(context, task);
+        taskExecutor.execute(new BackgroundTask(context, task, asyncEvaluatingService));
 
         digitalService.setLastCalculationDate(LocalDateTime.now());
         digitalServiceRepository.save(digitalService);
