@@ -4,6 +4,7 @@
 
 ### Minor Changes
 
+- 1071 | Location has not been set during data migration for network
 - 1051 | Organization name is displayed in equipment Type on the UI
 
 ## 3.0.0

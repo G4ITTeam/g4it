@@ -9,17 +9,19 @@ tags:
     description: Endpoint for subscriber administration actions
 
 paths:
-  /administrator-actions/migrate-data-to-new-format:
+  /administrator-actions/evaluate-all-ds-data:
     post:
       tags:
         - administrator-actions
-      summary: Migrate data to new format
-      operationId: migrateDataToNewFormat
+      summary: Evaluate all the digital services
+      operationId: evaluateDigitalService
       x-custom-role: "hasRole('SUPER_ADMINISTRATOR')"
       responses:
         '200':
-          description: The task id
+          description: response status
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: "#/components/schemas/TaskIdRest"
+                type: string
+          '500':
+            $ref: "#/components/responses/InternalServerError"
