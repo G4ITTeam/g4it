@@ -51,7 +51,7 @@ public class AdministratorActionsService {
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
                 if (!networkEquipments.isEmpty()) {
                     log.info("Digital-service re-evaluation - {}", digitalServiceUid);
-                    evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
+                    evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid, true);
                     count++;
                 }
             }
@@ -59,4 +59,5 @@ public class AdministratorActionsService {
         log.info("Digital-service re-evaluation count- {}", count);
         return "success";
     }
+
 }
