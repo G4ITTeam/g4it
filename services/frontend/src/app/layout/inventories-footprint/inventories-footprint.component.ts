@@ -88,7 +88,6 @@ export class InventoriesFootprintComponent implements OnInit {
     showTabMenu = false;
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     transformedInVirtualEquipments: InVirtualEquipmentRest[] = [];
-    footprint = {} as Criterias;
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         private readonly footprintDataService: FootprintDataService,
@@ -110,17 +109,8 @@ export class InventoriesFootprintComponent implements OnInit {
 
         this.footprintDataService
             .getFootprint(this.inventoryId)
-            .pipe(
-                finalize(() => (this.showTabMenu = true)),
-                map((data) =>
-                    this.inventoryUtilService.removeOrganizationNameFromCriteriaType(
-                        data,
-                        currentOrgName,
-                    ),
-                ),
-            )
+            .pipe(finalize(() => (this.showTabMenu = true)))
             .subscribe((criterias: Criterias) => {
-                this.footprint = criterias;
                 const footprintCriteriaKeys = Object.keys(criterias);
                 const sortedCriteriaKeys = Object.keys(this.global.criteriaList()).filter(
                     (key) => footprintCriteriaKeys.includes(key),
@@ -145,11 +135,24 @@ export class InventoriesFootprintComponent implements OnInit {
         this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
 
         const [
+            footprint,
             datacenters,
             physicalEquipments,
             outVirtualEquipments,
             inVirtualEquipments,
         ] = await Promise.all([
+            firstValueFrom(
+                this.footprintDataService
+                    .getFootprint(this.inventoryId)
+                    .pipe(
+                        map((data) =>
+                            this.inventoryUtilService.removeOrganizationNameFromCriteriaType(
+                                data,
+                                currentOrgName,
+                            ),
+                        ),
+                    ),
+            ),
             firstValueFrom(this.footprintDataService.getDatacenters(this.inventoryId)),
             firstValueFrom(
                 this.footprintDataService
@@ -174,16 +177,16 @@ export class InventoriesFootprintComponent implements OnInit {
             this.transformInVirtualEquipment(inVirtualEquipments);
         const transformedOutVirtualEquipments =
             this.transformOutVirtualEquipment(outVirtualEquipments);
-        this.tranformAcvStepFootprint(this.footprint);
+        this.tranformAcvStepFootprint(footprint);
 
         transformedOutVirtualEquipments.forEach((equipment) => {
-            const matchedFootprint = this.footprint[equipment.criteria];
+            const matchedFootprint = footprint[equipment.criteria];
 
             if (matchedFootprint) {
                 matchedFootprint.impacts.push(equipment);
             }
         });
-        this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(this.footprint));
+        this.allUnmodifiedFootprint = JSON.parse(JSON.stringify(footprint));
         this.allUnmodifiedDatacenters = datacenters;
         this.allUnmodifiedEquipments = physicalEquipments;
         this.allUnmodifiedFilters = {};
