@@ -99,6 +99,9 @@ export class InventoriesFootprintComponent implements OnInit {
 
     async ngOnInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
+        const currentOrgName = (
+            await firstValueFrom(this.userService.currentOrganization$)
+        ).name;
         this.global.setLoading(true);
         this.digitalBusinessService.initCountryMap();
         // Set active inventory based on route
@@ -140,9 +143,7 @@ export class InventoriesFootprintComponent implements OnInit {
             });
 
         this.footprintStore.setCriteria(criteria || Constants.MUTLI_CRITERIA);
-        const currentOrgName = (
-            await firstValueFrom(this.userService.currentOrganization$)
-        ).name;
+
         const [
             datacenters,
             physicalEquipments,
