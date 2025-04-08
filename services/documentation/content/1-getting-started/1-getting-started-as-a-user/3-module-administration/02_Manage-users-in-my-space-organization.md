@@ -1,5 +1,5 @@
 ---
-title: "2- Manage users in my space (organization)"
+title: "2- Manage users in my workspace (organization)"
 description: "This procedure explains how to an administrator how to configure users within their organization."
 weight: 20
 ---

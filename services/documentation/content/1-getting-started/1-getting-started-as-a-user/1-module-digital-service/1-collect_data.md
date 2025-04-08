@@ -4,7 +4,9 @@ description: "This section explains the kind of data you need to collect before 
 weight: 10
 ---
 
-![data_collected.png](../media/data_collected.png)
+## Data collected
+
+![Schema that described the data that need to be collected in case digital service impact evaluation : End-user devices, Data Exchange and Infrastructure](../media/data_collected.png)
 
 ### End-user Devices
 
@@ -13,7 +15,7 @@ environmental impact.
 
 - **Device Configuration**:
     - Information about the types of devices users employ to access the service (e.g., smartphones, tablets, desktops).
-    - Location of the devices when users access to the digital service. 
+    - Location of the devices when users access to the digital service.
 
 - **Annual Usage Time**:
     - The total time users engage with the service annually, on average.
@@ -94,9 +96,7 @@ I use cloud service providers (e.g., AWS, Azure) for certain infrastructure need
 
 ---
 
-### Scenario used as an example
-
-G4IT ?
+## Scenario used as an example
 
 ## Functional documentation
 
