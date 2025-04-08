@@ -18,6 +18,7 @@ import {
     PhysicalEquipmentLowImpact,
     PhysicalEquipmentsElecConsumption,
 } from "../../interfaces/footprint.interface";
+import { transformEquipmentType } from "../mapper/array";
 
 const endpoint = Constants.ENDPOINTS.inventories;
 
@@ -39,6 +40,25 @@ export class FootprintDataService {
         );
     }
 
+    transformApplicationEquipmentType(
+        applications: ApplicationFootprint[],
+        currentOrganization: string,
+    ): ApplicationFootprint[] {
+        return applications.map((app) => {
+            return {
+                ...app,
+                impacts: app?.impacts?.map((impact) => {
+                    return {
+                        ...impact,
+                        equipmentType: transformEquipmentType(
+                            impact?.equipmentType,
+                            currentOrganization,
+                        ),
+                    };
+                }),
+            };
+        });
+    }
     getApplicationCriteriaFootprint(
         inventoryId: number,
         app: string,

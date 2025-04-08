@@ -9,7 +9,7 @@ import { Component, OnInit, inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { MenuItem } from "primeng/api";
-import { finalize, firstValueFrom } from "rxjs";
+import { finalize, firstValueFrom, map } from "rxjs";
 import { Filter } from "src/app/core/interfaces/filter.interface";
 import {
     ChartData,
@@ -26,6 +26,8 @@ import { InVirtualEquipmentRest } from "src/app/core/interfaces/input.interface"
 import { OutVirtualEquipmentRest } from "src/app/core/interfaces/output.interface";
 import { DigitalServiceBusinessService } from "src/app/core/service/business/digital-services.service";
 import { FootprintService } from "src/app/core/service/business/footprint.service";
+import { InventoryUtilService } from "src/app/core/service/business/inventory-util.service";
+import { UserService } from "src/app/core/service/business/user.service";
 import { FootprintDataService } from "src/app/core/service/data/footprint-data.service";
 import { InVirtualEquipmentsService } from "src/app/core/service/data/in-out/in-virtual-equipments.service";
 import { OutVirtualEquipmentsService } from "src/app/core/service/data/in-out/out-virtual-equipments.service";
@@ -42,10 +44,12 @@ import { Constants } from "src/constants";
 })
 export class InventoriesFootprintComponent implements OnInit {
     protected footprintStore = inject(FootprintStoreService);
-    private global = inject(GlobalStoreService);
-    private outVirtualEquipmentService = inject(OutVirtualEquipmentsService);
-    private inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
-    private digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly global = inject(GlobalStoreService);
+    private readonly outVirtualEquipmentService = inject(OutVirtualEquipmentsService);
+    private readonly inVirtualEquipmentsService = inject(InVirtualEquipmentsService);
+    private readonly digitalServiceStore = inject(DigitalServiceStoreService);
+    private readonly userService = inject(UserService);
+    private readonly inventoryUtilService = inject(InventoryUtilService);
 
     selectedView: string = "";
 
@@ -85,15 +89,18 @@ export class InventoriesFootprintComponent implements OnInit {
     dimensions = Constants.EQUIPMENT_DIMENSIONS;
     transformedInVirtualEquipments: InVirtualEquipmentRest[] = [];
     constructor(
-        private activatedRoute: ActivatedRoute,
-        private footprintDataService: FootprintDataService,
-        private footprintService: FootprintService,
-        private translate: TranslateService,
-        private digitalBusinessService: DigitalServiceBusinessService,
+        private readonly activatedRoute: ActivatedRoute,
+        private readonly footprintDataService: FootprintDataService,
+        private readonly footprintService: FootprintService,
+        private readonly translate: TranslateService,
+        private readonly digitalBusinessService: DigitalServiceBusinessService,
     ) {}
 
     async ngOnInit() {
         const criteria = this.activatedRoute.snapshot.paramMap.get("criteria");
+        const currentOrgName = (
+            await firstValueFrom(this.userService.currentOrganization$)
+        ).name;
         this.global.setLoading(true);
         this.digitalBusinessService.initCountryMap();
         // Set active inventory based on route
@@ -134,10 +141,30 @@ export class InventoriesFootprintComponent implements OnInit {
             outVirtualEquipments,
             inVirtualEquipments,
         ] = await Promise.all([
-            firstValueFrom(this.footprintDataService.getFootprint(this.inventoryId)),
+            firstValueFrom(
+                this.footprintDataService
+                    .getFootprint(this.inventoryId)
+                    .pipe(
+                        map((data) =>
+                            this.inventoryUtilService.removeOrganizationNameFromCriteriaType(
+                                data,
+                                currentOrgName,
+                            ),
+                        ),
+                    ),
+            ),
             firstValueFrom(this.footprintDataService.getDatacenters(this.inventoryId)),
             firstValueFrom(
-                this.footprintDataService.getPhysicalEquipments(this.inventoryId),
+                this.footprintDataService
+                    .getPhysicalEquipments(this.inventoryId)
+                    .pipe(
+                        map((data) =>
+                            this.inventoryUtilService.removeOrganizationNameFromType(
+                                data,
+                                currentOrgName,
+                            ),
+                        ),
+                    ),
             ),
             firstValueFrom(
                 this.outVirtualEquipmentService.getByInventory(this.inventoryId),
@@ -150,7 +177,6 @@ export class InventoriesFootprintComponent implements OnInit {
             this.transformInVirtualEquipment(inVirtualEquipments);
         const transformedOutVirtualEquipments =
             this.transformOutVirtualEquipment(outVirtualEquipments);
-
         this.tranformAcvStepFootprint(footprint);
 
         transformedOutVirtualEquipments.forEach((equipment) => {
