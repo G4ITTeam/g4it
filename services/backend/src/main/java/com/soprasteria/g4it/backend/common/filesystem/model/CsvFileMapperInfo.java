@@ -35,7 +35,7 @@ public class CsvFileMapperInfo implements FileMapperInfo {
 
     private List<Header> physicalEquipmentIndicatorDigitalService;
 
-    private List<Header> virtualEquipmentIndicatorCloudInstance;
+    private List<Header> virtualEquipmentIndicatorDigitalService;
     private List<Header> virtualEquipmentCloudInstance;
 
 
@@ -54,9 +54,8 @@ public class CsvFileMapperInfo implements FileMapperInfo {
             case INVENTORY -> new ArrayList<>(List.copyOf(inventory));
             case PHYSICAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
                     new ArrayList<>(List.copyOf(physicalEquipmentIndicatorDigitalService));
-            case VIRTUAL_EQUIPMENT_INDICATOR_CLOUD_INSTANCE ->
-                    new ArrayList<>(List.copyOf(virtualEquipmentIndicatorCloudInstance));
-            case VIRTUAL_EQUIPMENT_CLOUD_INSTANCE -> new ArrayList<>(List.copyOf(virtualEquipmentCloudInstance));
+            case VIRTUAL_EQUIPMENT_INDICATOR_DIGITAL_SERVICE ->
+                    new ArrayList<>(List.copyOf(virtualEquipmentIndicatorDigitalService));
         };
     }
 
