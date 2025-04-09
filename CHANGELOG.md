@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.1.0
+
+### Major Changes
+
+### Minor Changes
+
+- 985 | Issue while exporting virtual equipment with new architecture
+
 ## 3.0.1
 
 ### Minor Changes
