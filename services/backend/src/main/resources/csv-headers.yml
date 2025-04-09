@@ -115,9 +115,9 @@ filesystem.config.headers:
       optional: true
     - name: "quantite"
       optional: true
-    - name: "cloudProvider"
+    - name: "provider"
       optional: true
-    - name: "instanceType"
+    - name: "typeInstance"
       optional: true
     - name: "location"
       optional: true
