@@ -36,8 +36,6 @@ public class CsvFileMapperInfo implements FileMapperInfo {
     private List<Header> physicalEquipmentIndicatorDigitalService;
 
     private List<Header> virtualEquipmentIndicatorDigitalService;
-    private List<Header> virtualEquipmentCloudInstance;
-
 
     @Override
     public List<Header> getMapping(final FileType type) {

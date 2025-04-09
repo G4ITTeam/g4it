@@ -121,9 +121,9 @@ filesystem.config.headers:
       optional: true
     - name: "location"
       optional: true
-    - name: "averageWorkload"
+    - name: "chargeMoy"
       optional: true
-    - name: "annualUsageDuration"
+    - name: "dureeUtilisationAnnuelle"
       optional: true
     - name: "nomEquipementPhysique"
       optional: true
@@ -430,21 +430,4 @@ filesystem.config.headers:
     - name: "dataSourceNameDiscriminator"
       optional: false
     - name: "sipImpact"
-      optional: false
-  virtualEquipmentCloudInstance:
-    - name: "digitalServiceName"
-      optional: false
-    - name: "name"
-      optional: false
-    - name: "cloudProvider"
-      optional: false
-    - name: "instanceType"
-      optional: false
-    - name: "quantity"
-      optional: false
-    - name: "location"
-      optional: false
-    - name: "usageDuration"
-      optional: false
-    - name: "averageWorkload"
       optional: false
