@@ -17,6 +17,7 @@ import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
 import com.soprasteria.g4it.backend.common.task.modeldb.Task;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
+import com.soprasteria.g4it.backend.server.gen.api.dto.AllEvaluationStatusRest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class AdministratorActionsService {
     @Autowired
     TaskRepository taskRepository;
 
-    public String evaluateAllDigitalServices() {
+    public AllEvaluationStatusRest evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
         int count = 0;
         final LocalDateTime now = LocalDateTime.now();
@@ -89,7 +90,7 @@ public class AdministratorActionsService {
         log.info("Missing Network equipment count - {}", countMissingNetworkEquipment);
         log.info("re-evaluation count- {}", count);
         log.info("skip-evaluation count- {}", skipEvaluationCount);
-        return "success";
+        return AllEvaluationStatusRest.builder().response("success").build();
     }
 
 }
