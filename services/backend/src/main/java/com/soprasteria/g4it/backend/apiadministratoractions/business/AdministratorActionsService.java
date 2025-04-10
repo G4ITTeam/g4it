@@ -61,6 +61,7 @@ public class AdministratorActionsService {
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {
                 Optional<Task> tasks = taskRepository.findByDigitalServiceUid(digitalService.getUid());
+//                List<Task> migartionTasks = taskRepository.findByStatusAndType("COMPLETED", "MIGRATING_NEW_TABLE");
                 if (tasks.isPresent()) {
                     Task task = tasks.get();
                     int day = task.getLastUpdateDate().getDayOfMonth();
@@ -71,14 +72,16 @@ public class AdministratorActionsService {
                         skipEvaluationCount++;
                     }
                 }
-                List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
+                List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(equipment -> "Network".equals(equipment.getType())).toList();
+                if (networkEquipments.isEmpty()) {
+                    log.info("Network equipment not found - {}", digitalServiceUid);
+                }
                 if (!networkEquipments.isEmpty() && runEvaluation) {
                     count++;
                     log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
                     evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
-                } else {
-                    log.info("Network equipment not found - {}", digitalServiceUid);
                 }
+
             }
         }
         log.info("re-evaluation total count- {}", count);
