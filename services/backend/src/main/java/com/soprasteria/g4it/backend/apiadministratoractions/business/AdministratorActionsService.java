@@ -46,9 +46,11 @@ public class AdministratorActionsService {
 
     public String evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
-        int count = 0;
+        int count = 1;
         final LocalDateTime now = LocalDateTime.now();
         boolean runEvaluation = true;
+        int skipEvaluationCount = 0;
+        log.info("Digital-service count before evaluation- {}", digitalServices.size());
         for (DigitalService digitalService : digitalServices) {
             //evaluating
             String digitalServiceUid = digitalService.getUid();
@@ -66,6 +68,7 @@ public class AdministratorActionsService {
                     int year = task.getLastUpdateDate().getYear();
                     if ((now.getDayOfMonth() == day || now.getDayOfMonth() - 1 == day) && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
                         runEvaluation = false;
+                        skipEvaluationCount++;
                     }
                 }
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
@@ -76,7 +79,8 @@ public class AdministratorActionsService {
                 }
             }
         }
-        log.info("Digital-service re-evaluation total count- {}", count);
+        log.info("re-evaluation total count- {}", count);
+        log.info("skip-evaluation total count- {}", skipEvaluationCount);
         return "success";
     }
 
