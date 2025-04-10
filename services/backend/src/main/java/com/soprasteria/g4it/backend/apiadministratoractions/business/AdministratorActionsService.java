@@ -46,7 +46,7 @@ public class AdministratorActionsService {
 
     public String evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
-        int count = 1;
+        int count = 0;
         final LocalDateTime now = LocalDateTime.now();
         boolean runEvaluation = true;
         int skipEvaluationCount = 0;
@@ -66,16 +66,18 @@ public class AdministratorActionsService {
                     int day = task.getLastUpdateDate().getDayOfMonth();
                     int month = task.getLastUpdateDate().getMonthValue();
                     int year = task.getLastUpdateDate().getYear();
-                    if ((now.getDayOfMonth() == day || now.getDayOfMonth() - 1 == day) && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
+                    if (now.getDayOfMonth() == day && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
                         runEvaluation = false;
                         skipEvaluationCount++;
                     }
                 }
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
                 if (!networkEquipments.isEmpty() && runEvaluation) {
+                    count++;
                     log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
                     evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
-                    count++;
+                } else {
+                    log.info("Network equipment not found - {}", digitalServiceUid);
                 }
             }
         }
