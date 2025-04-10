@@ -15,11 +15,15 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.InPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Organization;
 import com.soprasteria.g4it.backend.apiuser.repository.OrganizationRepository;
+import com.soprasteria.g4it.backend.common.task.modeldb.Task;
+import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -37,26 +41,42 @@ public class AdministratorActionsService {
     @Autowired
     InPhysicalEquipmentRepository physicalEquipmentRepository;
 
+    @Autowired
+    TaskRepository taskRepository;
+
     public String evaluateAllDigitalServices() {
         List<DigitalService> digitalServices = digitalServiceRepository.findAll();
         int count = 0;
+        final LocalDateTime now = LocalDateTime.now();
+        boolean runEvaluation = true;
         for (DigitalService digitalService : digitalServices) {
             //evaluating
             String digitalServiceUid = digitalService.getUid();
             Organization organization = organizationRepository.findById(digitalService.getOrganization().getId()).orElseThrow();
             Long organizationId = organization.getId();
             String subscriber = organization.getSubscriber().getName();
+
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {
+                Optional<Task> tasks = taskRepository.findByDigitalServiceUid(digitalService.getUid());
+                if (tasks.isPresent()) {
+                    Task task = tasks.get();
+                    int day = task.getLastUpdateDate().getDayOfMonth();
+                    int month = task.getLastUpdateDate().getMonthValue();
+                    int year = task.getLastUpdateDate().getYear();
+                    if ((now.getDayOfMonth() == day || now.getDayOfMonth() - 1 == day) && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
+                        runEvaluation = false;
+                    }
+                }
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(physicalEquipment -> "Network".equals(physicalEquipment.getType())).toList();
-                if (!networkEquipments.isEmpty()) {
-                    log.info("Digital-service re-evaluation - {}", digitalServiceUid);
-                    evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid, true);
+                if (!networkEquipments.isEmpty() && runEvaluation) {
+                    log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
+                    evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
                     count++;
                 }
             }
         }
-        log.info("Digital-service re-evaluation count- {}", count);
+        log.info("Digital-service re-evaluation total count- {}", count);
         return "success";
     }
 
