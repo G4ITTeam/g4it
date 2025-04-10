@@ -980,3 +980,17 @@ components:
           format: float
         quantity:
           type: number
+
+    UserDetailsRest:
+      description: user email
+      type: object
+      properties:
+        email:
+          type: string
+
+    SubscriberDetailsRest:
+      description: subscribers linked to user's domain
+      type: object
+      properties:
+        email:
+          type: string
