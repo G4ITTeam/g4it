@@ -50,6 +50,7 @@ public class AdministratorActionsService {
         final LocalDateTime now = LocalDateTime.now();
         boolean runEvaluation = true;
         int skipEvaluationCount = 0;
+        int countMissingNetworkEquipment = 0;
         log.info("Digital-service count before evaluation- {}", digitalServices.size());
         for (DigitalService digitalService : digitalServices) {
             //evaluating
@@ -74,6 +75,7 @@ public class AdministratorActionsService {
                 }
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(equipment -> "Network".equals(equipment.getType())).toList();
                 if (networkEquipments.isEmpty()) {
+                    countMissingNetworkEquipment++;
                     log.info("Network equipment not found - {}", digitalServiceUid);
                 }
                 if (!networkEquipments.isEmpty() && runEvaluation) {
@@ -81,11 +83,11 @@ public class AdministratorActionsService {
                     log.info("Digital-service re-evaluation and count- {}: {}", digitalServiceUid, count);
                     evaluatingService.evaluatingDigitalService(subscriber, organizationId, digitalServiceUid);
                 }
-
             }
         }
-        log.info("re-evaluation total count- {}", count);
-        log.info("skip-evaluation total count- {}", skipEvaluationCount);
+        log.info("Missing Network equipment count - {}", countMissingNetworkEquipment);
+        log.info("re-evaluation count- {}", count);
+        log.info("skip-evaluation count- {}", skipEvaluationCount);
         return "success";
     }
 
