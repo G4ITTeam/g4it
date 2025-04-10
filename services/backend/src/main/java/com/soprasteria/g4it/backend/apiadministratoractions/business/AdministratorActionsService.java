@@ -62,7 +62,6 @@ public class AdministratorActionsService {
             List<InPhysicalEquipment> physicalEquipments = physicalEquipmentRepository.findByDigitalServiceUid(digitalServiceUid);
             if (!physicalEquipments.isEmpty()) {
                 Optional<Task> tasks = taskRepository.findByDigitalServiceUid(digitalService.getUid());
-//                List<Task> migartionTasks = taskRepository.findByStatusAndType("COMPLETED", "MIGRATING_NEW_TABLE");
                 if (tasks.isPresent()) {
                     Task task = tasks.get();
                     int day = task.getLastUpdateDate().getDayOfMonth();
@@ -71,6 +70,8 @@ public class AdministratorActionsService {
                     if (now.getDayOfMonth() == day && now.getMonthValue() == month && now.getYear() == year && "COMPLETED".equals(task.getStatus())) {
                         runEvaluation = false;
                         skipEvaluationCount++;
+                    } else {
+                        runEvaluation = true;
                     }
                 }
                 List<InPhysicalEquipment> networkEquipments = physicalEquipments.stream().filter(equipment -> "Network".equals(equipment.getType())).toList();
