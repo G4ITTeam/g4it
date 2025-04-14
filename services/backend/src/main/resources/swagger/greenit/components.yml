@@ -981,6 +981,13 @@ components:
         quantity:
           type: number
 
+    AllEvaluationStatusRest:
+      description: evaluation status
+      type: object
+      properties:
+        response:
+          type: string
+
     UserDetailsRest:
       description: user email
       type: object
@@ -992,5 +999,7 @@ components:
       description: subscribers linked to user's domain
       type: object
       properties:
-        email:
+        id:
+          type: number
+        name:
           type: string

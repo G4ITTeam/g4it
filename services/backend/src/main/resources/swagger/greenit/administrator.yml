@@ -293,7 +293,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
 
-  /api/domain-subscribers:
+  /administrator/domain-subscribers:
     post:
       summary: get subscribers for domain
       operationId: getDomainSubscribers
@@ -308,13 +308,16 @@ paths:
         - administrator
       responses:
         '200':
-          description: Organization has been created
+          description: Return subscribers information
           content:
             application/json:
               schema:
                 type: array
-                $ref: "#/components/schemas/SubscriberDetailsRest"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+                items:
+                  $ref: "#/components/schemas/SubscriberDetailsRest"
         '500':
           $ref: "#/components/responses/InternalServerError"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
