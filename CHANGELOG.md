@@ -1,5 +1,13 @@
 # G4IT
 
+## 3.1.0
+
+### Major Changes
+
+### Minor Changes
+
+- 988 | [Digital service] Edit a value with a decimal reset the values to 0
+
 ## 3.0.1
 
 ### Minor Changes
