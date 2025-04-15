@@ -7,6 +7,7 @@
 ### Minor Changes
 
 - 988 | [Digital service] Edit a value with a decimal reset the values to 0
+- 985 | Issue while exporting virtual equipment with new architecture
 
 ## 3.0.1
 
