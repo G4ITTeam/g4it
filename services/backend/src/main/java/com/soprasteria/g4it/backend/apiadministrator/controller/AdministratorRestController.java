@@ -11,10 +11,7 @@ import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorOrgan
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorRoleService;
 import com.soprasteria.g4it.backend.apiadministrator.business.AdministratorService;
 import com.soprasteria.g4it.backend.apiuser.business.AuthService;
-import com.soprasteria.g4it.backend.apiuser.mapper.OrganizationRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.RoleRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
-import com.soprasteria.g4it.backend.apiuser.mapper.UserRestMapper;
+import com.soprasteria.g4it.backend.apiuser.mapper.*;
 import com.soprasteria.g4it.backend.server.gen.api.AdministratorApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.*;
 import lombok.NoArgsConstructor;
@@ -53,6 +50,9 @@ public class AdministratorRestController implements AdministratorApiDelegate {
 
     @Autowired
     private RoleRestMapper roleRestMapper;
+
+    @Autowired
+    SubscriberDetailsRestMapper subscriberDetailsRestMapper;
 
     /**
      * {@inheritDoc}
@@ -152,6 +152,15 @@ public class AdministratorRestController implements AdministratorApiDelegate {
     public ResponseEntity<Void> deleteUserOrgLink(final LinkUserRoleRest linkUserRoleRest) {
         administratorOrganizationService.deleteUserOrgLink(linkUserRoleRest, authService.getUser());
         return ResponseEntity.noContent().<Void>build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<List<SubscriberDetailsRest>> getDomainSubscribers(UserDetailsRest userDetailsRest) {
+        return new ResponseEntity<>(
+                subscriberDetailsRestMapper.toDto(this.administratorService.searchSubscribersByDomainName(userDetailsRest.getEmail())), HttpStatus.OK);
     }
 }
 
