@@ -293,31 +293,4 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
 
-  /administrator/domain-subscribers:
-    post:
-      summary: get subscribers for domain
-      operationId: getDomainSubscribers
-      requestBody:
-        description: user's email.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserDetailsRest"
-      tags:
-        - administrator
-      responses:
-        '200':
-          description: Return subscribers information
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SubscriberDetailsRest"
-        '500':
-          $ref: "#/components/responses/InternalServerError"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          $ref: '#/components/responses/NotFoundError'
+

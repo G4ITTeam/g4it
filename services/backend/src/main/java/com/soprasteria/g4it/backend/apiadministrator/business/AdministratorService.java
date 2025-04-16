@@ -12,7 +12,6 @@ import com.soprasteria.g4it.backend.apiuser.business.SubscriberService;
 import com.soprasteria.g4it.backend.apiuser.business.UserService;
 import com.soprasteria.g4it.backend.apiuser.mapper.SubscriberRestMapper;
 import com.soprasteria.g4it.backend.apiuser.model.SubscriberBO;
-import com.soprasteria.g4it.backend.apiuser.model.SubscriberDetailsBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserBO;
 import com.soprasteria.g4it.backend.apiuser.model.UserSearchBO;
 import com.soprasteria.g4it.backend.apiuser.modeldb.Role;
@@ -170,16 +169,6 @@ public class AdministratorService {
                             .build();
                 })
                 .toList();
-    }
-
-    public List<SubscriberDetailsBO> searchSubscribersByDomainName(final String userEmail) {
-        String domainName = userEmail.substring(userEmail.indexOf("@") + 1);
-        List<Subscriber> subscribers = subscriberRepository.findByAuthorizedDomainsContaining(domainName);
-        List<SubscriberDetailsBO> lstSubscriber = new ArrayList<>();
-        for (Subscriber subscriber : subscribers) {
-            lstSubscriber.add(SubscriberDetailsBO.builder().id(subscriber.getId()).name(subscriber.getName()).build());
-        }
-        return lstSubscriber;
     }
 
 }
