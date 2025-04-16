@@ -110,7 +110,7 @@ front ->> back: GET /api/{subscriber}/{organization}/inventories/{inventory_id}
 back-->> front: Get the updated inventory
 back ->> front: Display the updated loading history
 front ->> RND : Display the 'completed' button if all the uploaded data is correct
-front -->> RND : Display the 'error' button if most of the uploaded data is incorrect
+front -->> RND : Display the 'failed' button if most of the uploaded data is incorrect or <br> mandatory headers missing
 front ->> RND : Display the 'completed with errors' and 'download' button if some of the uploaded data is incorrect
 RND ->> front : Click the 'completed with errors' button to download the rejected data
 front -->> back: GET /subscribers/{subscriber}/organizations/{organization}/inventories/{inventoryId}/output/{taskId}
