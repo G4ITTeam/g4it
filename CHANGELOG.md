@@ -1,5 +1,15 @@
 # G4IT
 
+## 3.1.0
+
+### Major Changes
+
+### Minor Changes
+
+- 1078 | 2 files where without explicit error
+- 988 | [Digital service] Edit a value with a decimal reset the values to 0
+- 985 | Issue while exporting virtual equipment with new architecture
+
 ## 3.0.1
 
 ### Minor Changes

@@ -980,3 +980,10 @@ components:
           format: float
         quantity:
           type: number
+
+    AllEvaluationStatusRest:
+      description: evaluation status
+      type: object
+      properties:
+        response:
+          type: string
