@@ -20,6 +20,14 @@ const routes: Routes = [
         component: ErrorComponent,
     },
     {
+        path: "useful-information",
+        loadComponent: () =>
+            import(
+                "./layout/about-us/useful-information/useful-information.component"
+            ).then((m) => m.UsefulInformationComponent),
+        canActivate,
+    },
+    {
         path: "administration",
         loadChildren: () =>
             import("./layout/administration/administration.module").then(

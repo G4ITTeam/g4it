@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- 885 | New Header with Menu added, Left sidebar, Useful information page
+
 ### Minor Changes
 
 - 1078 | 2 files where without explicit error
