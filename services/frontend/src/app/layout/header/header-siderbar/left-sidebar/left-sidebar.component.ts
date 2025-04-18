@@ -5,21 +5,21 @@
  * This product includes software developed by
  * French Ecological Ministery (https://gitlab-forge.din.developpement-durable.gouv.fr/pub/numeco/m4g/numecoeval)
  */
+import { CommonModule } from "@angular/common";
 import { Component, computed, OnInit, signal } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { NavigationEnd, Router, RouterModule } from "@angular/router";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { KeycloakService } from "keycloak-angular";
 import { Subject, takeUntil } from "rxjs";
-import { sortByProperty } from "sort-by-property";
+import { Subscriber } from "src/app/core/interfaces/administration.interfaces";
 import { BusinessHours } from "src/app/core/interfaces/business-hours.interface";
 import {
     Organization,
     OrganizationData,
-    Subscriber,
     User,
     UserInfo,
 } from "src/app/core/interfaces/user.interfaces";
-import { Version, VersionRest } from "src/app/core/interfaces/version.interfaces";
+import { Version } from "src/app/core/interfaces/version.interfaces";
 import { UserService } from "src/app/core/service/business/user.service";
 import { BusinessHoursService } from "src/app/core/service/data/business-hours.service";
 import { VersionDataService } from "src/app/core/service/data/version-data.service";
@@ -28,10 +28,13 @@ import { Constants } from "src/constants";
 import { environment } from "src/environments/environment";
 
 @Component({
-    selector: "app-header",
-    templateUrl: "./header.component.html",
+    standalone: true,
+    selector: "app-left-sidebar",
+    templateUrl: "./left-sidebar.component.html",
+    styleUrls: ["./left-sidebar.component.scss"],
+    imports: [CommonModule, TranslateModule, RouterModule],
 })
-export class HeaderComponent implements OnInit {
+export class LeftSidebarComponent implements OnInit {
     digitalServicesTitle = computed(() =>
         this.getTitle("digital-services.title", "digital-services"),
     );
@@ -99,8 +102,8 @@ export class HeaderComponent implements OnInit {
                     email: user.email,
                 };
                 this.organizations = [];
-                user.subscribers.forEach((subscriber) => {
-                    subscriber.organizations.forEach((organization) => {
+                user.subscribers.forEach((subscriber: any) => {
+                    subscriber.organizations.forEach((organization: any) => {
                         this.organizations.push({
                             color: generateColor(organization.name + subscriber.name),
                             id: organization.id,
@@ -119,36 +122,21 @@ export class HeaderComponent implements OnInit {
             });
 
         this.userService.currentSubscriber$.subscribe(
-            (subscriber) => (this.currentSubscriber = subscriber),
+            (subscriber: any) => (this.currentSubscriber = subscriber),
         );
 
         this.userService.currentOrganization$
             .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((organization: Organization) => {
+            .subscribe((organization: any) => {
                 this.selectedOrganization = organization;
                 this.selectedOrganizationData = {
                     color: generateColor(organization.name + this.currentSubscriber.name),
                     id: organization.id,
                     name: organization.name,
                     organization,
-                    subscriber: this.currentSubscriber,
+                    subscriber: this.currentSubscriber as any,
                 };
                 this.selectedPath = `/subscribers/${this.currentSubscriber.name}/organizations/${this.selectedOrganization?.id}`;
-            });
-
-        this.versionDataService
-            .getVersion()
-            .pipe(takeUntil(this.ngUnsubscribe))
-            .subscribe((version: VersionRest) => {
-                this.versions.push({ name: "g4it", version: version["g4it"] });
-                const externalVersions = [];
-                for (const key in version) {
-                    if (key !== "g4it") {
-                        externalVersions.push({ name: key, version: version[key] });
-                    }
-                }
-                externalVersions.sort(sortByProperty("name", "asc"));
-                this.versions.push(...externalVersions);
             });
     }
 

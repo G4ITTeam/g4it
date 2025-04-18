@@ -156,6 +156,10 @@ export class UserService {
             organization = this.getOrganization(subscriber);
         }
 
+        if (subscribers === "useful-information") {
+            this.setSubscriberAndOrganization(subscriber, organization!);
+            return;
+        }
         if (subscribers === "administration") {
             if (this.hasAnyAdminRole(currentUser)) {
                 this.setSubscriberAndOrganization(subscriber, organization!);
