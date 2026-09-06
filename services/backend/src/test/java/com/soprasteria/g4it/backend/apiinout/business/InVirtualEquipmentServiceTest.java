@@ -300,22 +300,6 @@ class InVirtualEquipmentServiceTest {
         inVirtualEquipmentService.deleteInVirtualEquipment(inventoryId, id);
     }
 
-    /*@Test
-    void getByDigitalServiceReturnsVirtualEquipmentListWhenDigitalServiceExists() {
-        String digitalServiceUid = "service-123";
-        List<InVirtualEquipment> virtualEquipments = List.of(new InVirtualEquipment());
-        List<InVirtualEquipmentRest> virtualEquipmentRests = List.of(new InVirtualEquipmentRest());
-
-        when(inVirtualEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceUid)).thenReturn(virtualEquipments);
-        when(inVirtualEquipmentMapper.toRest(virtualEquipments)).thenReturn(virtualEquipmentRests);
-
-        List<InVirtualEquipmentRest> result = inVirtualEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
-
-        assertEquals(virtualEquipmentRests, result);
-        verify(inVirtualEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
-        verify(inVirtualEquipmentMapper).toRest(virtualEquipments);
-    }*/
-
     @Test
     void getByDigitalServiceAndId() {
         String digitalServiceUid = "service-123";

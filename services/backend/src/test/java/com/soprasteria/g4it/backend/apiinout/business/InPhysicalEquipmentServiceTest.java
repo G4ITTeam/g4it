@@ -37,7 +37,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class InPhysicalEquipmentServiceTest {
@@ -297,18 +296,6 @@ class InPhysicalEquipmentServiceTest {
         assertEquals("409", exception.getCode());
         assertEquals("the inventory id provided: 1 is not compatible with the inventory id : null linked to this physical equipment id: 2", exception.getMessage());
     }
-
-    /*@Test
-    void getByDigitalService_returnsEmptyList_whenNoPhysicalEquipmentExists() {
-        String digitalServiceUid = "service-123";
-
-        when(inPhysicalEquipmentRepository.findByDigitalServiceVersionUidOrderByName(digitalServiceUid)).thenReturn(List.of());
-
-        List<InPhysicalEquipmentRest> result = inPhysicalEquipmentService.getByDigitalServiceVersion(digitalServiceUid);
-
-        assertEquals(0, result.size());
-        verify(inPhysicalEquipmentRepository).findByDigitalServiceVersionUidOrderByName(digitalServiceUid);
-    }*/
 
     @Test
     void getByDigitalServiceAndId() {
