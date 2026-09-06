@@ -90,7 +90,7 @@ public class OutPhysicalEquipmentService {
         List<OutPhysicalEquipmentRest> result = new ArrayList<>();
 
         while (true) {
-            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_50000);
+            Pageable page = PageRequest.of(pageNumber, Constants.BATCH_SIZE_10000);
             List<OutPhysicalEquipment> physicalEquipments = useOrderedQuery
                     ? outPhysicalEquipmentRepository.findByTaskIdOrderByIdAsc(taskId, page)
                     : outPhysicalEquipmentRepository.findByTaskId(taskId, page);
