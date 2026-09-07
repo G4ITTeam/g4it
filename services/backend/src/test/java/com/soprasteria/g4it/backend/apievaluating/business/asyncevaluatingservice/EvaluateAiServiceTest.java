@@ -519,7 +519,7 @@ class EvaluateAiServiceTest {
                 .thenReturn(List.of(physicalImpact));
 
 
-        when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()));
+
         ImpactEquipementVirtuel virtualImpact = mock(ImpactEquipementVirtuel.class);
         when(evaluateNumEcoEvalService.calculateVirtualEquipment(any(), any(), anyInt(), any(), any(), any(), any()))
                 .thenReturn(List.of(virtualImpact));
