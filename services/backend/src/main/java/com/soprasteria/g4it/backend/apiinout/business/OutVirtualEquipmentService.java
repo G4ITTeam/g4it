@@ -83,6 +83,7 @@ public class OutVirtualEquipmentService {
      * @param taskId the task id
      * @return list of aggregated virtual equipments
      */
+    @Transactional(readOnly = true)
     private List<OutVirtualEquipmentRest> getVirtualEquipmentsByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutVirtualEquipmentRest> result = new ArrayList<>();
