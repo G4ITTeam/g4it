@@ -201,6 +201,9 @@ class InventoryServiceTest {
                 .physicalEquipmentCount(0L)
                 .virtualEquipmentCount(0L)
                 .applicationCount(0L)
+                .outApplicationCount(0L)
+                .outVirtualCount(0L)
+                .outPhysicalCount(0L)
                 .tasks(List.of())
                 .enableDataInconsistency(false)
                 .build();
