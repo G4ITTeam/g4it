@@ -81,6 +81,7 @@ public class OutApplicationService {
      * @param taskId the task id
      * @return list of aggregated applications
      */
+    @Transactional(readOnly = true)
     private List<OutApplicationRest> getApplicationsByTaskId(final Long taskId) {
         int pageNumber = 0;
         List<OutApplicationRest> result = new ArrayList<>();

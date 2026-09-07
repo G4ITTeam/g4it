@@ -83,6 +83,7 @@ public class OutPhysicalEquipmentService {
      * @param useOrderedQuery whether to use the ordered query (findByTaskIdOrderByIdAsc)
      * @return list of aggregated physical equipments
      */
+    @Transactional(readOnly = true)
     private List<OutPhysicalEquipmentRest> getPhysicalEquipmentsByTaskId(
             final Long taskId, 
             final boolean useOrderedQuery) {
