@@ -424,10 +424,12 @@ public class EvaluateService {
 
         // Save output counts to inventory
         if (inventory != null) {
-            inventory.setOutPhysicalCount((long) outPhysicalEquipmentSize);
-            inventory.setOutVirtualCount((long) outVirtualEquipmentSize);
-            inventory.setOutApplicationCount((long) outApplicationSize);
-            inventoryRepository.save(inventory);
+            inventoryRepository.updateOutputCounts(
+                    inventory.getId(),
+                    (long) outPhysicalEquipmentSize,
+                    (long) outVirtualEquipmentSize,
+                    (long) outApplicationSize
+            );
             log.info("Saved output counts to inventory: physical={}, virtual={}, application={}",
                     outPhysicalEquipmentSize, outVirtualEquipmentSize, outApplicationSize);
         }
