@@ -3,6 +3,7 @@
 
 ### Major Changes
 - 2384 | Improve performances and scalability for large datasets
+- 2386 | Improve scheduler and concurrent processing management
 
 ### Minor Changes
 - 2232 | Redesign digital service input journey to improve clarity, guidance, and usability
