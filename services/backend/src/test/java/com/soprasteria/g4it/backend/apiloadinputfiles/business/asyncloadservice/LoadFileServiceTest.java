@@ -295,26 +295,42 @@ class LoadFileServiceTest {
         LineError page1Error = new LineError("physical.csv", 2, "page 1 error");
 
         CSVParser parser = mockParserWithRows(totalRows);
+
         when(csvToInMapper.csvInPhysicalEquipmentToRest(any(), eq(123L), eq(null)))
                 .thenAnswer(invocation -> new InPhysicalEquipmentRest());
+
         List<List<InPhysicalEquipmentRest>> allBatches = new ArrayList<>();
-        when(loadPhysicalEquipmentService.execute(eq(context), eq(fileToLoad), anyInt(), anyList()))
+
+        when(loadPhysicalEquipmentService.execute(
+                eq(context), eq(fileToLoad), anyInt(), anyList()))
                 .thenAnswer(invocation -> {
                     allBatches.add(new ArrayList<>(invocation.getArgument(3)));
+
                     Integer pageNumber = invocation.getArgument(2);
-                    return pageNumber == 0 ? List.of(page0Error) : List.of(page1Error);
+
+                    if (pageNumber == 0) {
+                        return List.of(page0Error);
+                    }
+
+                    return List.of(page1Error);
                 });
 
         List<LineError> errors = invokeReadPhysicalEquipments(parser);
 
         assertEquals(List.of(page0Error, page1Error), errors);
-        verify(csvToInMapper, times(totalRows)).csvInPhysicalEquipmentToRest(any(), eq(123L), eq(null));
-        verify(loadPhysicalEquipmentService, times(2)).execute(eq(context), eq(fileToLoad), anyInt(), anyList());
+        verify(csvToInMapper, times(totalRows))
+                .csvInPhysicalEquipmentToRest(any(), eq(123L), eq(null));
+        verify(loadPhysicalEquipmentService, times(2))
+                .execute(eq(context), eq(fileToLoad), anyInt(), anyList());
+
         assertEquals(2, allBatches.size());
         assertEquals(Constants.BATCH_SIZE, allBatches.get(0).size());
         assertEquals(1, allBatches.get(1).size());
-        verify(loadPhysicalEquipmentService).execute(eq(context), eq(fileToLoad), eq(0), anyList());
-        verify(loadPhysicalEquipmentService).execute(eq(context), eq(fileToLoad), eq(1), anyList());
+
+        verify(loadPhysicalEquipmentService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
+        verify(loadPhysicalEquipmentService)
+                .execute(eq(context), eq(fileToLoad), eq(1), anyList());
     }
 
     @Test
@@ -361,26 +377,41 @@ class LoadFileServiceTest {
         LineError page1Error = new LineError("application.csv", 2, "page 1 error");
 
         CSVParser parser = mockParserWithRows(totalRows);
+
         when(csvToInMapper.csvInApplicationToRest(any(), eq(123L)))
                 .thenAnswer(invocation -> new InApplicationRest());
+
         List<List<InApplicationRest>> allBatches = new ArrayList<>();
+
         when(loadApplicationService.execute(eq(context), eq(fileToLoad), anyInt(), anyList()))
                 .thenAnswer(invocation -> {
                     allBatches.add(new ArrayList<>(invocation.getArgument(3)));
+
                     Integer pageNumber = invocation.getArgument(2);
-                    return pageNumber == 0 ? List.of(page0Error) : List.of(page1Error);
+
+                    if (pageNumber == 0) {
+                        return List.of(page0Error);
+                    }
+
+                    return List.of(page1Error);
                 });
 
         List<LineError> errors = invokeReadApplications(parser);
 
         assertEquals(List.of(page0Error, page1Error), errors);
-        verify(csvToInMapper, times(totalRows)).csvInApplicationToRest(any(), eq(123L));
-        verify(loadApplicationService, times(2)).execute(eq(context), eq(fileToLoad), anyInt(), anyList());
+        verify(csvToInMapper, times(totalRows))
+                .csvInApplicationToRest(any(), eq(123L));
+        verify(loadApplicationService, times(2))
+                .execute(eq(context), eq(fileToLoad), anyInt(), anyList());
+
         assertEquals(2, allBatches.size());
         assertEquals(Constants.BATCH_SIZE, allBatches.getFirst().size());
         assertEquals(1, allBatches.get(1).size());
-        verify(loadApplicationService).execute(eq(context), eq(fileToLoad), eq(0), anyList());
-        verify(loadApplicationService).execute(eq(context), eq(fileToLoad), eq(1), anyList());
+
+        verify(loadApplicationService)
+                .execute(eq(context), eq(fileToLoad), eq(0), anyList());
+        verify(loadApplicationService)
+                .execute(eq(context), eq(fileToLoad), eq(1), anyList());
     }
 
     private List<LineError> invokeReadPhysicalEquipments(CSVParser parser) throws Exception {
