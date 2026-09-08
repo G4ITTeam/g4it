@@ -4,6 +4,11 @@ databaseChangeLog:
       id: add-idx-check-inv-phys-eq-task-datacenter
       author: G4IT Performance Team
       comment: Add index to optimize coherence validation queries that scan 200k+ equipment rows during import. This addresses the 9+ minute delay in checkMetadataInventoryFileService.
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_phys_eq_task_datacenter
       changes:
         - createIndex:
             tableName: check_inv_load_physical_equipment
@@ -18,6 +23,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-phys-eq-task-type
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_phys_eq_task_type
       changes:
         - createIndex:
             tableName: check_inv_load_physical_equipment
@@ -33,6 +43,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-datacenter-dsv-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_datacenter_dsv_name
       changes:
         - createIndex:
             tableName: in_datacenter
@@ -46,6 +61,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-datacenter-inventory-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_datacenter_inventory_name
       changes:
         - createIndex:
             tableName: in_datacenter
@@ -60,6 +80,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-datacenter-task-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_datacenter_task_name
       changes:
         - createIndex:
             tableName: check_inv_load_datacenter
@@ -74,6 +99,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-virt-eq-task-parent
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_virt_eq_task_parent
       changes:
         - createIndex:
             tableName: check_inv_load_virtual_equipment
@@ -89,6 +119,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-physical-eq-dsv-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_physical_eq_dsv_name
       changes:
         - createIndex:
             tableName: in_physical_equipment
@@ -102,6 +137,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-physical-eq-inventory-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_physical_eq_inventory_name
       changes:
         - createIndex:
             tableName: in_physical_equipment
@@ -116,6 +156,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-phys-eq-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_phys_eq_name
       changes:
         - createIndex:
             tableName: check_inv_load_physical_equipment
@@ -130,6 +175,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-app-task-parent
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_app_task_parent
       changes:
         - createIndex:
             tableName: check_inv_load_application
@@ -145,6 +195,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-virtual-eq-dsv-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_virtual_eq_dsv_name
       changes:
         - createIndex:
             tableName: in_virtual_equipment
@@ -158,6 +213,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-virtual-eq-inventory-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_virtual_eq_inventory_name
       changes:
         - createIndex:
             tableName: in_virtual_equipment
@@ -172,6 +232,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-virt-eq-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_virt_eq_name
       changes:
         - createIndex:
             tableName: check_inv_load_virtual_equipment
@@ -186,6 +251,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-application-dsv-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_application_dsv_name
       changes:
         - createIndex:
             tableName: in_application
@@ -199,6 +269,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-in-application-inventory-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_in_application_inventory_name
       changes:
         - createIndex:
             tableName: in_application
@@ -213,6 +288,11 @@ databaseChangeLog:
   - changeSet:
       id: add-idx-check-inv-app-name
       author: G4IT Performance Team
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                indexName: idx_check_inv_app_name
       changes:
         - createIndex:
             tableName: check_inv_load_application
