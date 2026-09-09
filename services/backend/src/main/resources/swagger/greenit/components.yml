@@ -755,6 +755,31 @@ components:
           type: integer
           format: int64
 
+    ApplicationFiltersRest:
+      type: object
+      description: Distinct filter values available for the inventory's latest task, used to populate the application view's filter selectors (see solution.md §4.0).
+      properties:
+        environment:
+          type: array
+          items:
+            type: string
+        equipmentType:
+          type: array
+          items:
+            type: string
+        lifeCycle:
+          type: array
+          items:
+            type: string
+        domain:
+          type: array
+          items:
+            type: string
+        subDomain:
+          type: array
+          items:
+            type: string
+
     ApplicationIndicatorRowRest:
       type: object
       description: Flattened row (one per application/criterion) for the §4.4 paginated table view.

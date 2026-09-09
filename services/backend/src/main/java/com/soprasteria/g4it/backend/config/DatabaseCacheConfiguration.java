@@ -60,7 +60,8 @@ public class DatabaseCacheConfiguration {
             "inventoryExists",
             "applicationMultiCriteriaImpacts",
             "applicationMultiCriteria",
-            "applicationHierarchyCounts"
+            "applicationHierarchyCounts",
+            "applicationFilters"
     }, allEntries = true)
     @Scheduled(fixedRateString = "${g4it.cache.short.ttl}")
     public void emptyShortTtlCaches() {

@@ -170,6 +170,19 @@ public class IndicatorService {
     }
 
     /**
+     * §4.0 - retrieve distinct environment/equipmentType/lifeCycle/domain/subDomain
+     * values for the given task, used to populate the application view's filter
+     * selectors.
+     *
+     * @param taskId the task id.
+     * @return the distinct filter values.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "applicationFilters", key = "#taskId")
+    public ApplicationFiltersBO getApplicationFilters(final Long taskId) {
+        return applicationIndicatorMapper.toFiltersBO(outApplicationRepository.getDistinctFilters(taskId));
+    }
+
+    /**
      * Retrieve datacenter indicators.
      *
      * @param inventoryId the inventory id.

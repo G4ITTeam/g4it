@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
@@ -165,5 +166,27 @@ public interface ApplicationIndicatorMapper {
     ApplicationIndicatorRowBO toRowBO(final OutApplication source);
 
     List<ApplicationIndicatorRowBO> toRowBO(final List<OutApplication> source);
+
+    /**
+     * §4.0 - pure 1:1 copy from the DB projection (already distinct/aggregated) to the BO.
+     */
+    default ApplicationFiltersBO toFiltersBO(final ApplicationFiltersProjection source) {
+        if (source == null) {
+            return ApplicationFiltersBO.builder()
+                    .environment(List.of())
+                    .equipmentType(List.of())
+                    .lifeCycle(List.of())
+                    .domain(List.of())
+                    .subDomain(List.of())
+                    .build();
+        }
+        return ApplicationFiltersBO.builder()
+                .environment(source.getEnvironment())
+                .equipmentType(source.getEquipmentType())
+                .lifeCycle(source.getLifeCycle())
+                .domain(source.getDomain())
+                .subDomain(source.getSubDomain())
+                .build();
+    }
 
 }

@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
 import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
@@ -212,6 +213,30 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         return new HierarchyCountsProjectionImpl(toLong(row[0]), toLong(row[1]), toLong(row[2]), toLong(row[3]));
     }
 
+    @Override
+    public ApplicationFiltersProjection getDistinctFilters(final Long taskId) {
+        final Query query = entityManager.createNativeQuery("""
+                SELECT
+                    array_agg(DISTINCT environment)    FILTER (WHERE environment    IS NOT NULL) AS environments,
+                    array_agg(DISTINCT equipment_type) FILTER (WHERE equipment_type IS NOT NULL) AS equipment_types,
+                    array_agg(DISTINCT lifecycle_step) FILTER (WHERE lifecycle_step IS NOT NULL) AS lifecycle_steps,
+                    array_agg(DISTINCT filters[1])     FILTER (WHERE filters[1]     IS NOT NULL) AS domains,
+                    array_agg(DISTINCT filters[2])     FILTER (WHERE filters[2]     IS NOT NULL) AS sub_domains
+                FROM out_application
+                WHERE task_id = :taskId
+                """);
+        query.setParameter("taskId", taskId);
+
+        final Object[] row = (Object[]) query.getSingleResult();
+        return new ApplicationFiltersProjectionImpl(
+                toStringList(row[0]),
+                toStringList(row[1]),
+                toStringList(row[2]),
+                toStringList(row[3]),
+                toStringList(row[4])
+        );
+    }
+
     /**
      * Appends the shared filter dimensions (environment / equipmentType / lifeCycle
      * / domain / subDomain) as {@code AND (col = ANY(:param))} predicates, skipping
@@ -254,6 +279,38 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
 
     private static Long toLong(final Object value) {
         return value == null ? 0L : ((Number) value).longValue();
+    }
+
+    /**
+     * Converts a native array result (JDBC {@link java.sql.Array}, {@code String[]}
+     * or {@code List}, depending on driver/config) into a plain {@code List<String>}.
+     */
+    @SuppressWarnings("unchecked")
+    private static List<String> toStringList(final Object value) {
+        if (value == null) {
+            return List.of();
+        }
+        try {
+            if (value instanceof java.sql.Array sqlArray) {
+                final Object[] array = (Object[]) sqlArray.getArray();
+                final List<String> result = new ArrayList<>(array.length);
+                for (final Object o : array) {
+                    if (o != null) {
+                        result.add(o.toString());
+                    }
+                }
+                return result;
+            }
+            if (value instanceof List<?> list) {
+                return (List<String>) list;
+            }
+            if (value instanceof String[] array) {
+                return List.of(array);
+            }
+        } catch (final java.sql.SQLException e) {
+            throw new IllegalStateException("Unable to read distinct filter values array", e);
+        }
+        return List.of();
     }
 
     /**
@@ -392,6 +449,38 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         @Override
         public Long getVirtualEquipmentCount() {
             return virtualEquipmentCount;
+        }
+    }
+
+    /**
+     * Simple POJO implementation of {@link ApplicationFiltersProjection}.
+     */
+    private record ApplicationFiltersProjectionImpl(List<String> environment, List<String> equipmentType,
+                                                      List<String> lifeCycle, List<String> domain,
+                                                      List<String> subDomain) implements ApplicationFiltersProjection {
+        @Override
+        public List<String> getEnvironment() {
+            return environment;
+        }
+
+        @Override
+        public List<String> getEquipmentType() {
+            return equipmentType;
+        }
+
+        @Override
+        public List<String> getLifeCycle() {
+            return lifeCycle;
+        }
+
+        @Override
+        public List<String> getDomain() {
+            return domain;
+        }
+
+        @Override
+        public List<String> getSubDomain() {
+            return subDomain;
         }
     }
 }

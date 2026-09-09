@@ -175,6 +175,23 @@ public class InventoryIndicatorService {
     }
 
     /**
+     * §4.0 - get distinct environment/equipmentType/lifeCycle/domain/subDomain
+     * values for the inventory's latest task, used to populate the application
+     * view's filter selectors.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @return the distinct filter values.
+     */
+    public ApplicationFiltersBO getApplicationFilters(final String organization,
+                                                       final Long workspaceId,
+                                                       final Long inventoryId) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getApplicationFilters(getLastTaskId(inventory));
+    }
+
+    /**
      * Delete inventory indicators.
      *
      * @param organization the organization.
@@ -184,8 +201,10 @@ public class InventoryIndicatorService {
     @org.springframework.cache.annotation.Caching(evict = {
             @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteriaImpacts", allEntries = true),
             @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteria", allEntries = true),
-            @org.springframework.cache.annotation.CacheEvict(value = "applicationHierarchyCounts", allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "applicationHierarchyCounts", allEntries = true),
+            @org.springframework.cache.annotation.CacheEvict(value = "applicationFilters", allEntries = true)
     })
+
     public void deleteIndicators(final String organization, final Long workspaceId, final Long inventoryId) {
         // clean all evaluating tasks
         taskService.deleteEvaluatingTasksByInventoryId(organization, workspaceId, inventoryId);

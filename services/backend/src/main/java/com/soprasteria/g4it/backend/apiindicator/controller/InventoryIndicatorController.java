@@ -153,6 +153,20 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
 
     /**
      * {@inheritDoc}
+     * §4.0 - distinct environment/equipmentType/lifeCycle/domain/subDomain values for the
+     * inventory's latest task, used to populate the application view's filter selectors.
+     */
+    @Override
+    public ResponseEntity<ApplicationFiltersRest> getApplicationFilters(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId) {
+        return ResponseEntity.ok().body(indicatorRestMapper.toApplicationFiltersDto(
+                inventoryIndicatorService.getApplicationFilters(organization, workspace, inventoryId)));
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public ResponseEntity<List<PhysicalEquipmentLowImpactRest>> getPhysicalEquipmentsLowImpact(final String organization,

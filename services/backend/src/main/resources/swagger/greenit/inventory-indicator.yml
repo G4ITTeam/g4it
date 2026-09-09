@@ -203,6 +203,36 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/filters:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    get:
+      description: >
+        Endpoint to retrieve all distinct environment/equipmentType/lifeCycle/domain/subDomain
+        values available for the inventory's latest task, used to populate the application
+        view's filter selectors (see solution.md §4.0).
+      tags:
+        - inventory-indicator
+      operationId: getApplicationFilters
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      responses:
+        "200":
+          description: Return the distinct filter values
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/ApplicationFiltersRest"
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
   /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/datacenters:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'

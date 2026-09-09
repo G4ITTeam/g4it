@@ -71,4 +71,6 @@ public interface IndicatorRestMapper {
 
     ApplicationIndicatorsPageRest toApplicationIndicatorsPageDto(final ApplicationIndicatorsPageBO source);
 
+    ApplicationFiltersRest toApplicationFiltersDto(final ApplicationFiltersBO source);
+
 }
