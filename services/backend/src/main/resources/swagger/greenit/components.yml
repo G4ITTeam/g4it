@@ -757,7 +757,7 @@ components:
 
     ApplicationFiltersRest:
       type: object
-      description: Distinct filter values available for the inventory's latest task, used to populate the application view's filter selectors (see solution.md §4.0).
+      description: Distinct filter values available for the inventory's latest task, used to populate the application view's filter selectors (see solution.md §4.0). domains links each domain to its distinct subDomains as a tree.
       properties:
         environment:
           type: array
@@ -771,11 +771,18 @@ components:
           type: array
           items:
             type: string
-        domain:
+        domains:
           type: array
           items:
-            type: string
-        subDomain:
+            $ref: "#/components/schemas/ApplicationDomainHierarchyRest"
+
+    ApplicationDomainHierarchyRest:
+      type: object
+      description: One domain and the distinct subDomains linked to it (see solution.md §4.0).
+      properties:
+        domain:
+          type: string
+        subDomains:
           type: array
           items:
             type: string

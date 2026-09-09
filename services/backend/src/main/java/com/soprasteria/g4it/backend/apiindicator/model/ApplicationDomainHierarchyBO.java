@@ -15,18 +15,16 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * §4.0 - distinct environment/equipmentType/lifeCycle values, plus the
- * domain -> subDomains hierarchy, for the application view's filter selectors.
+ * §4.0 - one domain and the distinct subDomains linked to it, used to populate
+ * the application view's domain/subDomain filter tree.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApplicationFiltersBO {
+public class ApplicationDomainHierarchyBO {
 
-    private List<String> environment;
-    private List<String> equipmentType;
-    private List<String> lifeCycle;
-    private List<ApplicationDomainHierarchyBO> domains;
+    private String domain;
+    private List<String> subDomains;
 }
 

@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
 import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
@@ -215,25 +216,40 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
 
     @Override
     public ApplicationFiltersProjection getDistinctFilters(final Long taskId) {
-        final Query query = entityManager.createNativeQuery("""
+        final Query scalarsQuery = entityManager.createNativeQuery("""
                 SELECT
                     array_agg(DISTINCT environment)    FILTER (WHERE environment    IS NOT NULL) AS environments,
                     array_agg(DISTINCT equipment_type) FILTER (WHERE equipment_type IS NOT NULL) AS equipment_types,
-                    array_agg(DISTINCT lifecycle_step) FILTER (WHERE lifecycle_step IS NOT NULL) AS lifecycle_steps,
-                    array_agg(DISTINCT filters[1])     FILTER (WHERE filters[1]     IS NOT NULL) AS domains,
-                    array_agg(DISTINCT filters[2])     FILTER (WHERE filters[2]     IS NOT NULL) AS sub_domains
+                    array_agg(DISTINCT lifecycle_step) FILTER (WHERE lifecycle_step IS NOT NULL) AS lifecycle_steps
                 FROM out_application
                 WHERE task_id = :taskId
                 """);
-        query.setParameter("taskId", taskId);
+        scalarsQuery.setParameter("taskId", taskId);
+        final Object[] scalarRow = (Object[]) scalarsQuery.getSingleResult();
 
-        final Object[] row = (Object[]) query.getSingleResult();
+        // domain -> subDomains tree, built entirely DB-side via GROUP BY + array_agg
+        // so subDomains stay correctly linked to their parent domain.
+        final Query domainsQuery = entityManager.createNativeQuery("""
+                SELECT filters[1] AS domain,
+                       array_agg(DISTINCT filters[2]) FILTER (WHERE filters[2] IS NOT NULL) AS sub_domains
+                FROM out_application
+                WHERE task_id = :taskId AND filters[1] IS NOT NULL
+                GROUP BY filters[1]
+                ORDER BY filters[1]
+                """);
+        domainsQuery.setParameter("taskId", taskId);
+
+        final List<Object[]> domainRows = domainsQuery.getResultList();
+        final List<ApplicationDomainHierarchyProjection> domains = new ArrayList<>(domainRows.size());
+        for (final Object[] domainRow : domainRows) {
+            domains.add(new ApplicationDomainHierarchyProjectionImpl((String) domainRow[0], toStringList(domainRow[1])));
+        }
+
         return new ApplicationFiltersProjectionImpl(
-                toStringList(row[0]),
-                toStringList(row[1]),
-                toStringList(row[2]),
-                toStringList(row[3]),
-                toStringList(row[4])
+                toStringList(scalarRow[0]),
+                toStringList(scalarRow[1]),
+                toStringList(scalarRow[2]),
+                domains
         );
     }
 
@@ -453,11 +469,27 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
     }
 
     /**
+     * Simple POJO implementation of {@link ApplicationDomainHierarchyProjection}.
+     */
+    private record ApplicationDomainHierarchyProjectionImpl(String domain,
+                                                             List<String> subDomains) implements ApplicationDomainHierarchyProjection {
+        @Override
+        public String getDomain() {
+            return domain;
+        }
+
+        @Override
+        public List<String> getSubDomains() {
+            return subDomains;
+        }
+    }
+
+    /**
      * Simple POJO implementation of {@link ApplicationFiltersProjection}.
      */
     private record ApplicationFiltersProjectionImpl(List<String> environment, List<String> equipmentType,
-                                                      List<String> lifeCycle, List<String> domain,
-                                                      List<String> subDomain) implements ApplicationFiltersProjection {
+                                                      List<String> lifeCycle,
+                                                      List<ApplicationDomainHierarchyProjection> domains) implements ApplicationFiltersProjection {
         @Override
         public List<String> getEnvironment() {
             return environment;
@@ -474,16 +506,12 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         }
 
         @Override
-        public List<String> getDomain() {
-            return domain;
-        }
-
-        @Override
-        public List<String> getSubDomain() {
-            return subDomain;
+        public List<ApplicationDomainHierarchyProjection> getDomains() {
+            return domains;
         }
     }
 }
+
 
 
 

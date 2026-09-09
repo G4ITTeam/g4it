@@ -10,8 +10,9 @@ package com.soprasteria.g4it.backend.apiinout.repository.projection;
 import java.util.List;
 
 /**
- * §4.0 - distinct environment/equipmentType/lifeCycle/domain/subDomain values
- * for the given task, used to populate the application view's filter selectors.
+ * §4.0 - distinct environment/equipmentType/lifeCycle values, plus the
+ * domain -> subDomains hierarchy, for the given task, used to populate the
+ * application view's filter selectors.
  */
 public interface ApplicationFiltersProjection {
 
@@ -21,8 +22,6 @@ public interface ApplicationFiltersProjection {
 
     List<String> getLifeCycle();
 
-    List<String> getDomain();
-
-    List<String> getSubDomain();
+    List<ApplicationDomainHierarchyProjection> getDomains();
 }
 

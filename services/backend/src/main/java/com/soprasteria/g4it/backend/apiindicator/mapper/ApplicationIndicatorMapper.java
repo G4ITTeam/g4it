@@ -9,6 +9,7 @@ package com.soprasteria.g4it.backend.apiindicator.mapper;
 
 import com.soprasteria.g4it.backend.apiindicator.model.*;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
@@ -176,17 +177,33 @@ public interface ApplicationIndicatorMapper {
                     .environment(List.of())
                     .equipmentType(List.of())
                     .lifeCycle(List.of())
-                    .domain(List.of())
-                    .subDomain(List.of())
+                    .domains(List.of())
                     .build();
         }
         return ApplicationFiltersBO.builder()
                 .environment(source.getEnvironment())
                 .equipmentType(source.getEquipmentType())
                 .lifeCycle(source.getLifeCycle())
-                .domain(source.getDomain())
-                .subDomain(source.getSubDomain())
+                .domains(toDomainHierarchyBO(source.getDomains()))
                 .build();
     }
 
+    /**
+     * §4.0 - maps each domain's linked distinct subDomains (already grouped
+     * DB-side) into the BO tree; no in-memory grouping/aggregation performed.
+     */
+    default List<ApplicationDomainHierarchyBO> toDomainHierarchyBO(final List<ApplicationDomainHierarchyProjection> source) {
+        if (source == null) {
+            return List.of();
+        }
+        return source.stream()
+                .map(d -> ApplicationDomainHierarchyBO.builder()
+                        .domain(d.getDomain())
+                        .subDomains(d.getSubDomains())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }
+
+
