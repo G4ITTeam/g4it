@@ -53,6 +53,11 @@ public class LoadMetadataService {
      */
     public void loadMetadataFile(FileToLoad fileToLoad, Context context) {
 
+        // AI Services do not require the unicity/coherence staging pipeline used by the other file types.
+        if (fileToLoad.getFileType() == FileType.AI_SERVICE) {
+            return;
+        }
+
         log.info("Load metadata for file {} {}", fileToLoad.getFilename(), context.log());
 
         IMetadataLoaderService retrieveMetadataLoaderService = retrieveMetadataLoaderService(fileToLoad.getFileType());

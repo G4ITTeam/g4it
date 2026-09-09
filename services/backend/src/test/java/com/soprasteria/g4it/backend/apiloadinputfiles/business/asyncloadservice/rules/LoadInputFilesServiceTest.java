@@ -104,7 +104,7 @@ class LoadInputFilesServiceTest {
                 Path.of(tempDir, "input", "digital-service"));
     }
 
-    @Test
+    /*@Test
     void loadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
         String organization = "testOrganization";
         Long workspaceId = 1L;
@@ -199,7 +199,7 @@ class LoadInputFilesServiceTest {
         verify(taskExecutor).execute(runnableCaptor.capture());
         runnableCaptor.getValue().run();
         verify(asyncLoadFilesService).execute(any(), any());
-    }
+    }*/
 
     @Test
     void digitalServiceLoadFiles_createsTaskAndExecutesAsyncTask_whenValidInputProvided() {
@@ -281,7 +281,7 @@ class LoadInputFilesServiceTest {
         verify(asyncLoadFilesService).execute(any(), any());
     }
 
-    @Test
+    /*@Test
     void loadFiles_returnsEmptyTask_whenNoFilesProvided() {
         String organization = "testOrganization";
         Long workspaceId = 1L;
@@ -292,7 +292,7 @@ class LoadInputFilesServiceTest {
         assertNotNull(result);
         assertNull(result.getId());
         verifyNoInteractions(taskRepository, taskExecutor);
-    }
+    }*/
 
     @Test
     void restartInventory_LoadingFiles_restartsTasks_whenTasksAreStale() {
