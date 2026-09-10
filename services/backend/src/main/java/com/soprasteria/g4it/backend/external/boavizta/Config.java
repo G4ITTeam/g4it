@@ -24,4 +24,5 @@ public class Config {
         return WebClient.builder().baseUrl(boaviztapiBaseUrl).build();
     }
 
+
 }
