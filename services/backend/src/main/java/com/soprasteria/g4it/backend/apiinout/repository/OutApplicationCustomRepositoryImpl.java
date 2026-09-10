@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
 import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationDomainHierarchyProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
@@ -19,6 +20,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -253,6 +257,35 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         );
     }
 
+    @Override
+    public Page<OutApplication> findByTaskId(final Long taskId, final ApplicationCriteriaFilterBO filters,
+                                              final Pageable pageable) {
+        final StringBuilder dataSql = new StringBuilder("SELECT * FROM out_application WHERE task_id = :taskId");
+        final List<Object[]> dataBindings = new ArrayList<>();
+        appendFilterPredicates(dataSql, dataBindings, filters);
+        dataSql.append(" ORDER BY id");
+
+        final StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM out_application WHERE task_id = :taskId");
+        final List<Object[]> countBindings = new ArrayList<>();
+        appendFilterPredicates(countSql, countBindings, filters);
+
+        final Query dataQuery = entityManager.createNativeQuery(dataSql.toString(), OutApplication.class);
+        dataQuery.setParameter("taskId", taskId);
+        bindParameters(dataQuery, dataBindings);
+        dataQuery.setFirstResult((int) pageable.getOffset());
+        dataQuery.setMaxResults(pageable.getPageSize());
+
+        final Query countQuery = entityManager.createNativeQuery(countSql.toString());
+        countQuery.setParameter("taskId", taskId);
+        bindParameters(countQuery, countBindings);
+
+        @SuppressWarnings("unchecked")
+        final List<OutApplication> content = dataQuery.getResultList();
+        final long total = ((Number) countQuery.getSingleResult()).longValue();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
     /**
      * Appends the shared filter dimensions (environment / equipmentType / lifeCycle
      * / domain / subDomain) as {@code AND (col = ANY(:param))} predicates, skipping
@@ -260,8 +293,7 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
      */
     private static void appendFilterPredicates(final StringBuilder sql,
                                                 final List<Object[]> bindings,
-                                                final ApplicationCriteriaFilterBO filters) {
-        if (filters == null) {
+                                                final ApplicationCriteriaFilterBO filters) {        if (filters == null) {
             return;
         }
         appendInPredicate(sql, bindings, "environment", filters.getEnvironment());

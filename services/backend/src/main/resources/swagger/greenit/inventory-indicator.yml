@@ -80,6 +80,51 @@ paths:
             type: integer
             default: 10
           required: false
+        - in: query
+          name: environment
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          required: false
+        - in: query
+          name: equipmentType
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          required: false
+        - in: query
+          name: lifeCycle
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          required: false
+        - in: query
+          name: domain
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          required: false
+        - in: query
+          name: subDomain
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          required: false
       responses:
         "200":
           description: Return a page of flattened application indicator rows

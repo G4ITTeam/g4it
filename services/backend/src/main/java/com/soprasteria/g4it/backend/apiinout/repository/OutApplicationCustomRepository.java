@@ -10,10 +10,13 @@ package com.soprasteria.g4it.backend.apiinout.repository;
 import com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO;
 import com.soprasteria.g4it.backend.apiindicator.model.GraphLevel;
 import com.soprasteria.g4it.backend.apiindicator.model.RepartitionType;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFiltersProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -53,4 +56,11 @@ public interface OutApplicationCustomRepository {
      * for the given task, used to populate the application view's filter selectors.
      */
     ApplicationFiltersProjection getDistinctFilters(Long taskId);
+
+    /**
+     * §4.4 - DB-side filtered + paginated (WHERE + LIMIT/OFFSET) listing of
+     * application rows for the table view, applying the same shared filter
+     * dimensions as §4.1-4.3.
+     */
+    Page<OutApplication> findByTaskId(Long taskId, ApplicationCriteriaFilterBO filters, Pageable pageable);
 }

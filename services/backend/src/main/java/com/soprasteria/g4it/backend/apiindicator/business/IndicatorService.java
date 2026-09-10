@@ -94,16 +94,19 @@ public class IndicatorService {
     }
 
     /**
-     * §4.4 - retrieve a single DB-side page (LIMIT/OFFSET) of flattened
-     * application indicator rows, for the table view.
+     * §4.4 - retrieve a single DB-side page (WHERE + LIMIT/OFFSET) of flattened
+     * application indicator rows, filtered by the shared dimensions, for the
+     * table view.
      *
      * @param taskId   the task id.
+     * @param filters  the shared filter dimensions.
      * @param pageable the page/size request.
      * @return the requested page.
      */
     public ApplicationIndicatorsPageBO getApplicationIndicatorsPage(final Long taskId,
+                                                                     final ApplicationCriteriaFilterBO filters,
                                                                      final org.springframework.data.domain.Pageable pageable) {
-        final org.springframework.data.domain.Page<OutApplication> page = outApplicationRepository.findByTaskId(taskId, pageable);
+        final org.springframework.data.domain.Page<OutApplication> page = outApplicationRepository.findByTaskId(taskId, filters, pageable);
         page.getContent().forEach(app -> app.setLifecycleStep(LifecycleStepUtils.getReverse(app.getLifecycleStep())));
 
         return ApplicationIndicatorsPageBO.builder()

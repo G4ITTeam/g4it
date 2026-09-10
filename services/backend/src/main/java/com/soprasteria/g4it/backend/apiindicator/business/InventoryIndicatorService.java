@@ -99,19 +99,22 @@ public class InventoryIndicatorService {
     }
 
     /**
-     * §4.4 - get a single DB-side page of application indicators for the table view.
+     * §4.4 - get a single DB-side page of application indicators for the table view,
+     * filtered by the shared dimensions.
      *
      * @param organization the organization.
      * @param workspaceId  the workspaceId.
      * @param inventoryId  the inventory id.
+     * @param filters      the shared filter dimensions.
      * @param pageable     the page/size request.
      * @return the requested page.
      */
     public ApplicationIndicatorsPageBO getApplicationIndicatorsPage(final String organization, final Long workspaceId,
                                                                      final Long inventoryId,
+                                                                     final ApplicationCriteriaFilterBO filters,
                                                                      final org.springframework.data.domain.Pageable pageable) {
         final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
-        return indicatorService.getApplicationIndicatorsPage(getLastTaskId(inventory), pageable);
+        return indicatorService.getApplicationIndicatorsPage(getLastTaskId(inventory), filters, pageable);
     }
 
     /**

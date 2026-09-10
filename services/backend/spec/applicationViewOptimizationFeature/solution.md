@@ -538,12 +538,20 @@ in total across the whole scope" rather than "how many under this specific node"
 
 ### 4.4 Refactor existing endpoint — Paginated table view
 ```
-GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications?page=0&size=20
+GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications?page=0&size=20&environment=PROD&equipmentType=Server&lifeCycle=USE&domain=Domain1&subDomain=SubDomain1
 → 200: ApplicationIndicatorsPageRest { content: ApplicationIndicatorRowRest[], pageNumber, pageSize, totalElements, totalPages }
 ```
-- Backend: `OutApplicationRepository.findByTaskId(taskId, Pageable)` uses Spring Data's
-  native `LIMIT`/`OFFSET` pagination — the database returns only the rows for the
-  requested page; no full-table load and no in-memory pagination/slicing.
+- Backend: `OutApplicationCustomRepository.findByTaskId(taskId, filters, Pageable)` builds a
+  single native SQL statement doing `WHERE` (shared filter dimensions: environment /
+  equipmentType / lifeCycle / domain / subDomain, same predicates as §4.1-4.3) followed
+  by `LIMIT`/`OFFSET` — the database returns only the rows for the requested page; no
+  full-table load and no in-memory pagination/filtering/slicing. A paired
+  `SELECT COUNT(*) ... WHERE ...` (same predicates, no `LIMIT`) supplies `totalElements`/
+  `totalPages` for a Spring Data `Page`.
+- The five filter dimensions are accepted as repeated query parameters (`environment`,
+  `equipmentType`, `lifeCycle`, `domain`, `subDomain`), each optional, combined with `AND`
+  across dimensions and `OR` within a dimension — identical semantics to
+  `ApplicationCriteriaFilterBO` used by §4.1/§4.2/§4.3.
 - The response is flattened to one row per application/criterion (`ApplicationIndicatorRowRest`)
   which is what a table view needs, rather than the previous "grouped by criteria"
   shape — avoiding the need to reconstruct groups client-side and keeping the payload
