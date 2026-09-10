@@ -105,7 +105,8 @@ public class LoadInputFilesService {
                           final List<MultipartFile> datacenters,
                           final List<MultipartFile> physicalEquipments,
                           final List<MultipartFile> virtualEquipments,
-                          final List<MultipartFile> applications) {
+                          final List<MultipartFile> applications,
+                          final List<MultipartFile> aiServices) {
         final Map<FileType, List<MultipartFile>> allFiles =
                 new EnumMap<>(FileType.class);
 
@@ -130,6 +131,11 @@ public class LoadInputFilesService {
         if (applications != null) {
             allFiles.put(FileType.APPLICATION, applications);
         }
+
+        if (aiServices != null) {
+            allFiles.put(FileType.AI_SERVICE, aiServices);
+        }
+
 
         if (allFiles.isEmpty()) return new Task();
 
@@ -420,7 +426,8 @@ public class LoadInputFilesService {
                             FileType.DATACENTER,
                             FileType.EQUIPEMENT_PHYSIQUE,
                             FileType.EQUIPEMENT_VIRTUEL,
-                            FileType.APPLICATION )
+                            FileType.APPLICATION,
+                            FileType.AI_SERVICE)
                     .map(fileType -> {
                         List<StoredFile> files = storedFiles.get(fileType);
                         List<String> typeFileNames = newFilenames(files, fileType);
