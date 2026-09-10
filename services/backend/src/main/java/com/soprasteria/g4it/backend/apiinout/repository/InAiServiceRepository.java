@@ -11,6 +11,7 @@ import com.soprasteria.g4it.backend.apiinout.modeldb.InAiService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,6 +29,10 @@ public interface InAiServiceRepository extends JpaRepository<InAiService, Long> 
      * @return return a list of AI services
      */
     List<InAiService> findByInventoryId(Long inventoryId);
+
+    List<InAiService> findByInventoryIdOrderByIdAsc(Long inventoryId, Pageable pageable);
+
+    long countByInventoryId(Long inventoryId);
 
     /**
      * Delete AI services of one inventory

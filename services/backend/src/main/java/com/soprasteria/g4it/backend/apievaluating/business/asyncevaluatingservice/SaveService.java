@@ -12,9 +12,11 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -45,6 +47,9 @@ public class SaveService {
 
     @Autowired
     OutApplicationRepository outApplicationRepository;
+
+    @Autowired
+    OutAiServiceRepository outAiServiceRepository;
 
     @Autowired
     AggregationToOutput aggregationToOutput;
@@ -179,5 +184,21 @@ public class SaveService {
         outVirtualEquipmentRepository.saveAll(outVirtualEquipments);
         outVirtualEquipments.clear();
         return finalizeSaveAndCleanup(aggregation);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public int saveOutAiServices(final List<OutAiService> outAiServices) {
+        if (outAiServices.isEmpty()) {
+            return 0;
+        }
+
+        int fromIndex = 0;
+        while (fromIndex < outAiServices.size()) {
+            int toIndex = Math.min(fromIndex + Constants.BATCH_SIZE, outAiServices.size());
+            outAiServiceRepository.saveAll(outAiServices.subList(fromIndex, toIndex));
+            flushAndClearEntityManager();
+            fromIndex = toIndex;
+        }
+        return outAiServices.size();
     }
 }

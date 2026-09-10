@@ -31,4 +31,12 @@ public class EcoImpactsRest {
 
     private EcoMetricRest wcf;
 
+    private EcoImpactPhaseRest usage;
+
+    private EcoImpactPhaseRest embodied;
+
+    private java.util.List<EcoStatusMessageRest> warnings;
+
+    private java.util.List<EcoStatusMessageRest> errors;
+
 }

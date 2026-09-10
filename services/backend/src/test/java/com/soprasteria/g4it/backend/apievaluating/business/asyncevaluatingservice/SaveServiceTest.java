@@ -12,9 +12,11 @@ import com.soprasteria.g4it.backend.apievaluating.mapper.AggregationToOutput;
 import com.soprasteria.g4it.backend.apievaluating.model.AggValuesBO;
 import com.soprasteria.g4it.backend.apievaluating.model.RefShortcutBO;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
+import com.soprasteria.g4it.backend.apiinout.modeldb.OutAiService;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutVirtualEquipment;
 import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository;
+import com.soprasteria.g4it.backend.apiinout.repository.OutAiServiceRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiinout.repository.OutVirtualEquipmentRepository;
 import com.soprasteria.g4it.backend.common.task.repository.TaskRepository;
@@ -47,6 +49,9 @@ class SaveServiceTest {
 
     @Mock
     private OutApplicationRepository outApplicationRepository;
+
+    @Mock
+    private OutAiServiceRepository outAiServiceRepository;
 
     @Mock
     private AggregationToOutput aggregationToOutput;
@@ -225,6 +230,21 @@ class SaveServiceTest {
         verify(entityManager, atLeastOnce()).flush();
         verify(entityManager, atLeastOnce()).clear();
         assertEquals(batch + 1, result);
+    }
+
+    @Test
+    void saveOutAiServices_triggersBatchFlush() {
+        List<OutAiService> outAiServices = new java.util.ArrayList<>();
+        for (int i = 0; i < Constants.BATCH_SIZE + 1; i++) {
+            outAiServices.add(new OutAiService());
+        }
+
+        int result = saveService.saveOutAiServices(outAiServices);
+
+        verify(outAiServiceRepository, times(2)).saveAll(anyList());
+        verify(entityManager, atLeastOnce()).flush();
+        verify(entityManager, atLeastOnce()).clear();
+        assertEquals(Constants.BATCH_SIZE + 1, result);
     }
 
 

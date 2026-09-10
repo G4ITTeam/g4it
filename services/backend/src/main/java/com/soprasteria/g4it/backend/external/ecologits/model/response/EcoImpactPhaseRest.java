@@ -13,22 +13,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Min/max approximation interval used in every EcoLogits metric.
+ * EcoLogits phase payload containing phase-specific impacts.
  */
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EcoValueRangeRest {
+public class EcoImpactPhaseRest {
 
-    private Double min;
+    private String type;
 
-    private Double max;
+    private String name;
 
-    public Double getMean() {
-        if (min == null || max == null) {
-            return null;
-        }
-        return (min + max) / 2d;
-    }
+    private EcoMetricRest energy;
 
+    private EcoMetricRest gwp;
+
+    private EcoMetricRest adpe;
+
+    private EcoMetricRest pe;
+
+    private EcoMetricRest wcf;
 }

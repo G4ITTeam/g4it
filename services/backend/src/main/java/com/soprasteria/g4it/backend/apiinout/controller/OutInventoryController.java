@@ -8,11 +8,13 @@
 package com.soprasteria.g4it.backend.apiinout.controller;
 
 import com.soprasteria.g4it.backend.apiinout.business.OutApplicationService;
+import com.soprasteria.g4it.backend.apiinout.business.OutAiServiceService;
 import com.soprasteria.g4it.backend.apiinout.business.OutPhysicalEquipmentService;
 import com.soprasteria.g4it.backend.apiinout.business.OutVirtualEquipmentService;
 import com.soprasteria.g4it.backend.apiinventory.modeldb.Inventory;
 import com.soprasteria.g4it.backend.server.gen.api.InventoryOutputsApiDelegate;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutApplicationRest;
+import com.soprasteria.g4it.backend.server.gen.api.dto.OutAiServiceRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutPhysicalEquipmentRest;
 import com.soprasteria.g4it.backend.server.gen.api.dto.OutVirtualEquipmentRest;
 import lombok.AllArgsConstructor;
@@ -45,6 +47,8 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
      */
     private OutApplicationService outApplicationService;
 
+    private OutAiServiceService outAiServiceService;
+
     /**
      * {@inheritDoc}
      */
@@ -73,6 +77,13 @@ public class OutInventoryController implements InventoryOutputsApiDelegate {
                                                                                         Long workspace,
                                                                                         Long inventoryId) {
         return ResponseEntity.ok().body(outApplicationService.getByInventory(Inventory.builder().id(inventoryId).build()));
+    }
+
+    @Override
+    public ResponseEntity<List<OutAiServiceRest>> getInventoryOutputsAiServicesRest(String organization,
+                                                                                    Long workspace,
+                                                                                    Long inventoryId) {
+        return ResponseEntity.ok().body(outAiServiceService.getByInventory(Inventory.builder().id(inventoryId).build()));
     }
 
 }
