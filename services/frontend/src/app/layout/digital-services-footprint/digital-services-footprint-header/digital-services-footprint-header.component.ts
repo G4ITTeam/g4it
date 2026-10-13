@@ -209,7 +209,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     backButton() {
-        this.router.navigateByUrl(this.changePageToDigitalServices());
+        void this.router.navigateByUrl(this.changePageToDigitalServices());
     }
 
     changePageToDigitalServices() {
@@ -225,7 +225,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
         } else if (footprint.includes("compare-versions")) {
             return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/manage-versions`;
         } else {
-            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/resources`;
+            return `/organizations/${organization}/workspaces/${workspace}/${serviceType}/${dsVId}/footprint/${serviceType === "eco-mind-ai" ? "ecomind-parameters" : "resources"}`;
         }
     }
 
@@ -289,7 +289,7 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
     }
 
     goToManageVersions() {
-        this.router.navigate(["../manage-versions"], { relativeTo: this.route });
+        void this.router.navigate(["../manage-versions"], { relativeTo: this.route });
     }
 
     getShareLink(extendLink = false): void {
@@ -325,14 +325,14 @@ export class DigitalServicesFootprintHeaderComponent implements OnInit {
             .subscribe((version) => {
                 let [_, _1, _2, _3, _4, moduleType] = this.router.url.split("/");
                 if (moduleType === "eco-mind-ai") {
-                    this.router.navigate(
+                    void this.router.navigate(
                         ["../../", version.uid, "footprint", "ecomind-parameters"],
                         {
                             relativeTo: this.route,
                         },
                     );
                 } else {
-                    this.router.navigate(
+                    void this.router.navigate(
                         ["../../", version.uid, "footprint", "resources"],
                         {
                             relativeTo: this.route,
