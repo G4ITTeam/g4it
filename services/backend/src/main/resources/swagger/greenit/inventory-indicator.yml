@@ -61,8 +61,11 @@ paths:
       - $ref: '#/components/parameters/organizationPathParam'
       - $ref: '#/components/parameters/workspacePathParam'
       - $ref: '#/components/parameters/inventoryIdPathParam'
-    get:
-      description: Endpoint to retrieve application indicators following unit calculations of ecological impact.
+    post:
+      description: >
+        Endpoint to retrieve application indicators following unit calculations of ecological impact.
+        POST + JSON body is used because the filter lists (environment/equipmentType/lifeCycle/
+        domain/subDomain/criterion) may contain several thousand values (see solution.md §4.4).
       tags:
         - inventory-indicator
       operationId: getApplicationIndicators
@@ -80,51 +83,13 @@ paths:
             type: integer
             default: 10
           required: false
-        - in: query
-          name: environment
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          required: false
-        - in: query
-          name: equipmentType
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          required: false
-        - in: query
-          name: lifeCycle
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          required: false
-        - in: query
-          name: domain
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          required: false
-        - in: query
-          name: subDomain
-          schema:
-            type: array
-            items:
-              type: string
-          style: form
-          explode: true
-          required: false
+      requestBody:
+        description: shared filter dimensions, including criterion
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
       responses:
         "200":
           description: Return a page of flattened application indicator rows

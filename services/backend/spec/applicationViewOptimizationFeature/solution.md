@@ -538,28 +538,39 @@ in total across the whole scope" rather than "how many under this specific node"
 
 ### 4.4 Refactor existing endpoint — Paginated table view
 ```
-GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications?page=0&size=20&environment=PROD&equipmentType=Server&lifeCycle=USE&domain=Domain1&subDomain=SubDomain1
+POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications?page=0&size=20
+Body: ApplicationCriteriaFilterRest { environment[], equipmentType[], lifeCycle[], domain[], subDomain[], applicationName[], criterion[] }
 → 200: ApplicationIndicatorsPageRest { content: ApplicationIndicatorRowRest[], pageNumber, pageSize, totalElements, totalPages }
 ```
 - Backend: `OutApplicationCustomRepository.findByTaskId(taskId, filters, Pageable)` builds a
   single native SQL statement doing `WHERE` (shared filter dimensions: environment /
-  equipmentType / lifeCycle / domain / subDomain, same predicates as §4.1-4.3) followed
-  by `LIMIT`/`OFFSET` — the database returns only the rows for the requested page; no
+  equipmentType / lifeCycle / domain / subDomain / criterion, same predicates as §4.1-4.3)
+  followed by `LIMIT`/`OFFSET` — the database returns only the rows for the requested page; no
   full-table load and no in-memory pagination/filtering/slicing. A paired
   `SELECT COUNT(*) ... WHERE ...` (same predicates, no `LIMIT`) supplies `totalElements`/
   `totalPages` for a Spring Data `Page`.
-- The five filter dimensions are accepted as repeated query parameters (`environment`,
-  `equipmentType`, `lifeCycle`, `domain`, `subDomain`), each optional, combined with `AND`
+- `page`/`size` remain simple query parameters, but `environment`, `equipmentType`,
+  `lifeCycle`, `domain`, `subDomain` and `criterion` are accepted via the JSON request
+  body (`ApplicationCriteriaFilterRest`) instead of repeated query parameters, because
+  these filter lists can contain several thousand values each — consistent with how
+  §4.1/§4.2/§4.3 already pass filters in the body rather than the URL. Each dimension is
+  optional (`null`/absent means "no filtering on this dimension"), combined with `AND`
   across dimensions and `OR` within a dimension — identical semantics to
-  `ApplicationCriteriaFilterBO` used by §4.1/§4.2/§4.3.
+  `ApplicationCriteriaFilterBO` used elsewhere.
+- **`criterion`** is a new optional filter dimension added to this endpoint: when
+  absent/empty, no criterion restriction is applied (current behavior); when provided,
+  it is appended as `AND criterion = ANY(:criterion)` to both the data and count SQL
+  statements, via the same generic `appendInPredicate` helper used for the other
+  dimensions.
 - The response is flattened to one row per application/criterion (`ApplicationIndicatorRowRest`)
   which is what a table view needs, rather than the previous "grouped by criteria"
   shape — avoiding the need to reconstruct groups client-side and keeping the payload
   minimal per page.
-- Backward compatibility: this is a breaking response-shape change, intentionally
-  accepted per the source document ("this may involve refactoring the endpoint");
-  frontend must be updated in lockstep (tracked separately from this backend-focused
-  document).
+- Backward compatibility: this is a breaking response-shape AND request-shape change
+  (GET with a JSON body instead of query-only params), intentionally accepted per the
+  source document ("this may involve refactoring the endpoint"); frontend must be
+  updated in lockstep (tracked separately from this backend-focused document).
+
 
 ### 4.5 Caching
 - Reuse the existing Spring `@Cacheable`/`@CacheEvict` pattern already used across the

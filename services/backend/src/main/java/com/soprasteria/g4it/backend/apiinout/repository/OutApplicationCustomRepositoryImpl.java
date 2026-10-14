@@ -263,11 +263,13 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         final StringBuilder dataSql = new StringBuilder("SELECT * FROM out_application WHERE task_id = :taskId");
         final List<Object[]> dataBindings = new ArrayList<>();
         appendFilterPredicates(dataSql, dataBindings, filters);
+        appendInPredicate(dataSql, dataBindings, "criterion", filters == null ? null : filters.getCriterion());
         dataSql.append(" ORDER BY id");
 
         final StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM out_application WHERE task_id = :taskId");
         final List<Object[]> countBindings = new ArrayList<>();
         appendFilterPredicates(countSql, countBindings, filters);
+        appendInPredicate(countSql, countBindings, "criterion", filters == null ? null : filters.getCriterion());
 
         final Query dataQuery = entityManager.createNativeQuery(dataSql.toString(), OutApplication.class);
         dataQuery.setParameter("taskId", taskId);

@@ -89,7 +89,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     /**
      * {@inheritDoc}
      * §4.4 - DB-side filtered + paginated table view, using the same shared
-     * filter dimensions as §4.1-4.3.
+     * filter dimensions as §4.1-4.3, including criterion. POST + JSON body is
+     * used because the filter lists can contain large numbers of values.
      */
     @Override
     public ResponseEntity<ApplicationIndicatorsPageRest> getApplicationIndicators(final String organization,
@@ -97,20 +98,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                    final Long inventoryId,
                                                                                    final Integer page,
                                                                                    final Integer size,
-                                                                                   final List<String> environment,
-                                                                                   final List<String> equipmentType,
-                                                                                   final List<String> lifeCycle,
-                                                                                   final List<String> domain,
-                                                                                   final List<String> subDomain) {
+                                                                                   final ApplicationCriteriaFilterRest requestRest) {
         final int pageNumber = page == null ? 0 : page;
         final int pageSize = size == null || size < 1 ? 20 : size;
-        final var filters = com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO.builder()
-                .environment(environment)
-                .equipmentType(equipmentType)
-                .lifeCycle(lifeCycle)
-                .domain(domain)
-                .subDomain(subDomain)
-                .build();
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
         return ResponseEntity.ok().body(indicatorRestMapper.toApplicationIndicatorsPageDto(
                 inventoryIndicatorService.getApplicationIndicatorsPage(organization, workspace, inventoryId,
                         filters, PageRequest.of(pageNumber, pageSize))));

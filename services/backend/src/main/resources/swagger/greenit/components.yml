@@ -611,6 +611,10 @@ components:
           type: array
           items:
             type: string
+        criterion:
+          type: array
+          items:
+            type: string
 
     ApplicationMultiCriteriaImpactsRequestRest:
       type: object
