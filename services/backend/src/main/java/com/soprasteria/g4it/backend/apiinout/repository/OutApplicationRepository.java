@@ -24,10 +24,6 @@ import java.util.List;
  */
 @Repository
 public interface OutApplicationRepository extends JpaRepository<OutApplication, Long>, OutApplicationCustomRepository {
-
-    //List<OutApplication> findByTaskId(Long taskId);
-    Slice<OutApplication> findByTaskId(Long taskId, Pageable pageable);
-
     List<OutApplication> findByTaskIdOrderByIdAsc(
             Long taskId,
             Pageable pageable);
