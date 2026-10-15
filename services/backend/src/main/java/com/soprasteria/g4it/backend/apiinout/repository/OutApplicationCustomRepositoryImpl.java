@@ -314,7 +314,11 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         }
         final String paramName = "p" + bindings.size();
         sql.append(" AND ").append(column).append(" = ANY(:").append(paramName).append(")");
-        bindings.add(new Object[]{paramName, values});
+        // Bind as a plain array (not a List) so Hibernate does NOT apply its automatic
+        // multi-value "IN (:param)" -> "IN (?,?,?)" expansion, which would otherwise turn
+        // "ANY(:param)" into the invalid "ANY(?,?,?)". A single array parameter binds to
+        // exactly one "?" placeholder, as required by PostgreSQL's ANY(array) syntax.
+        bindings.add(new Object[]{paramName, values.toArray(new String[0])});
     }
 
     private static void bindParameters(final Query query, final List<Object[]> bindings) {
