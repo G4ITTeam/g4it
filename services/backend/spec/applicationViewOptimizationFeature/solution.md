@@ -178,7 +178,7 @@ and accumulated drill-path filters (see §4.3).
 ```
 POST /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/applications/multi-criteria
 Body: ApplicationMultiCriteriaRequestRest {
-  criteria: string[]                                              // required — criteria to aggregate
+  criteria: string[]                                              // optional when graphLevel=global (null/empty = ALL criteria); required (non-empty) for every other graphLevel
   graphLevel: global|domain|subDomain|application|virtualEquipment // required — current drill/tree position (primary grouping)
   repartition: lifeCycle|environment|equipmentType                 // required — fixed secondary breakdown axis
   filters: {                          // optional — same dimensions as §4.1 (+ applicationName for the deepest drill filter)
@@ -205,8 +205,16 @@ Body: ApplicationMultiCriteriaRequestRest {
 }
 ```
 
-- `criteria`, `graphLevel` and `repartition` are all mandatory. `filters` is optional —
-  when omitted/empty on a dimension, no constraint is applied there.
+- `graphLevel` and `repartition` are always mandatory. `criteria` is mandatory
+  (non-empty) for every `graphLevel` **except** `global`: when `graphLevel = global`
+  **and the user has not yet selected specific criteria** (i.e. the initial/overview
+  page load), `criteria` may be `null`/omitted/empty, meaning **no criterion
+  restriction is applied — the aggregation covers every criterion present for the
+  task**, each returned as its own `(criteria, unit)` entry in the response array
+  (unchanged response shape: `ApplicationMultiCriteriaRest[]`, one per criterion ×
+  unit). If the caller still supplies a non-empty `criteria` list at
+  `graphLevel = global`, it is honored as a restriction exactly as today. `filters` is
+  optional — when omitted/empty on a dimension, no constraint is applied there.
 - **Data consistency counts (`consistentCount` / `inconsistentCount`).** Every
   `nodes[]` entry **and** every nested `repartitions[]` entry carries two additional
   aggregate counts derived from `OutApplication.statusIndicator`: `consistentCount` =
@@ -259,7 +267,7 @@ Body: ApplicationMultiCriteriaRequestRest {
          COUNT(*) FILTER (WHERE status_indicator = 'ERREUR') AS inconsistent_count
   FROM out_application
   WHERE task_id = :taskId
-    AND criterion = ANY(:criteria)
+    AND (:criteria       IS NULL OR criterion      = ANY(:criteria))
     AND (:environments   IS NULL OR environment    = ANY(:environments))
     AND (:equipmentTypes IS NULL OR equipment_type = ANY(:equipmentTypes))
     AND (:lifecycleSteps IS NULL OR lifecycle_step = ANY(:lifecycleSteps))
@@ -278,7 +286,7 @@ Body: ApplicationMultiCriteriaRequestRest {
          COUNT(DISTINCT name)       AS application_count
   FROM out_application
   WHERE task_id = :taskId
-    AND criterion = ANY(:criteria)
+    AND (:criteria       IS NULL OR criterion      = ANY(:criteria))
     AND (:environments   IS NULL OR environment    = ANY(:environments))
     AND (:equipmentTypes IS NULL OR equipment_type = ANY(:equipmentTypes))
     AND (:lifecycleSteps IS NULL OR lifecycle_step = ANY(:lifecycleSteps))
@@ -286,6 +294,12 @@ Body: ApplicationMultiCriteriaRequestRest {
     AND (:subDomains     IS NULL OR filters[2]      = ANY(:subDomains))
   GROUP BY criterion, unit, filters[1], environment
   ```
+  When `criteria` is null/empty (only possible at `graphLevel = global`), the
+  `criterion` predicate is skipped entirely — the same null/empty-skip convention used
+  by every other optional filter dimension in this document — and
+  `GROUP BY criterion, unit, ...` naturally produces one row-group per criterion
+  actually present in the task's data, i.e. the full criteria set, computed 100%
+  DB-side, with no separate "list all criteria" round trip.
   - Repository methods are named by **both** axes, e.g.
     `aggregateGlobalByEnvironment(...)`, `aggregateGlobalByEquipmentType(...)`,
     `aggregateGlobalByLifecycleStep(...)` (single-column `GROUP BY`, no node label),
@@ -655,6 +669,13 @@ GET /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryI
   query becomes a 2-column `GROUP BY` (node label + repartition label). This keeps the
   initial page load cheap and avoids fetching/aggregating hierarchy data the user
   hasn't asked to see yet.
+- **`criteria` is optional only at `graphLevel = global`** (the initial/overview page,
+  before the user has picked specific criteria to compare): `null`/empty means
+  "aggregate over every criterion present for the task", computed via the same DB-side
+  `GROUP BY criterion, unit, ...` — no extra query, no in-memory enumeration of
+  criteria. At every other `graphLevel` (`domain`, `subDomain`, `application`,
+  `virtualEquipment`), `criteria` remains required/non-empty, since those views are
+  reached only after the user has explicitly selected criteria to drill into.
 - **§4.3 drill-down builds on §4.2's dual-axis request/response shape**: new optional
   response fields per node (`subDomainCount`, `applicationCount`, `cluster`,
   `equipmentType`, `environment`) each populated **only at the `graphLevel` that

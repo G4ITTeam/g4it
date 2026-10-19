@@ -136,6 +136,13 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         final RepartitionType repartition = RepartitionType.valueOf(requestRest.getRepartition().name());
         final var filters = requestRest.getFilters() == null ? null : applicationIndicatorMapper.toFilterBO(requestRest.getFilters());
 
+        // criteria is optional only at graphLevel=global (null/empty = all criteria);
+        // required (non-empty) at every other graphLevel - see solution.md §4.2/§6.
+        if (graphLevel != GraphLevel.GLOBAL
+                && (requestRest.getCriteria() == null || requestRest.getCriteria().isEmpty())) {
+            throw new G4itRestException("400", "criteria is required when graphLevel is not 'global'");
+        }
+
         return ResponseEntity.ok().body(indicatorRestMapper.toApplicationMultiCriteriaDto(
                 inventoryIndicatorService.getApplicationMultiCriteriaIndicators(organization, workspace, inventoryId,
                         requestRest.getCriteria(), graphLevel, repartition, filters)));

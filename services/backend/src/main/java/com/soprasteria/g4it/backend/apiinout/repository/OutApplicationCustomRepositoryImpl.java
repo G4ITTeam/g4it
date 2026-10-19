@@ -141,9 +141,15 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         }
 
         final StringBuilder sql = new StringBuilder(select)
-                .append(" FROM out_application WHERE task_id = :taskId AND criterion IN (:criteria)");
+                .append(" FROM out_application WHERE task_id = :taskId");
 
         final List<Object[]> bindings = new ArrayList<>();
+
+        // criteria is optional only at graphLevel = GLOBAL (null/empty = all criteria
+        // present for the task); the controller enforces non-empty criteria at every
+        // other graphLevel - see solution.md §4.2/§6. Reuses the same null/empty-skip
+        // convention as every other optional filter dimension.
+        appendInPredicate(sql, bindings, "criterion", criteria);
 
         // click-path / hierarchy scoping filters, applied on top of the shared filter dimensions
         if (graphLevel == GraphLevel.SUB_DOMAIN || graphLevel == GraphLevel.APPLICATION
@@ -166,7 +172,6 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
 
         final Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("taskId", taskId);
-        query.setParameter("criteria", criteria);
         bindParameters(query, bindings);
 
         final List<Object[]> rows = query.getResultList();

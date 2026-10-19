@@ -670,12 +670,16 @@ components:
 
     ApplicationMultiCriteriaRequestRest:
       type: object
-      required: [ criteria, graphLevel, repartition ]
+      required: [ graphLevel, repartition ]
       properties:
         criteria:
           type: array
           items:
             type: string
+          description: >
+            Criteria to aggregate. Optional only when graphLevel=global (null/empty
+            means "all criteria present for the task"); required (non-empty) for
+            every other graphLevel.
         graphLevel:
           $ref: "#/components/schemas/GraphLevelRest"
         repartition:
