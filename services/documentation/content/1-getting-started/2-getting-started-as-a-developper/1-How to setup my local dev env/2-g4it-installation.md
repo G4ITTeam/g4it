@@ -56,17 +56,40 @@ The workspace comes with :
 __NumEcoEval__ needs kafka and postgresql to work.  
 __G4IT__ needs postgresql, keycloak, and NumEcoEval to work.
 
-Start prerequisites :
-- Open IntelliJ workspace
-- Select the configuration to run `podman-compose up -d` or `python -m podman_compose up -d` and run it
-  - it will start all containers
+Start prerequisites:
+- Open the IntelliJ workspace, or open a terminal at the repository root.
+- From the repository root, run:
+  ```shell
+  cd workspace/docker
+  podman-compose up -d
+  ```
+  This starts the supporting containers defined in `workspace/docker/docker-compose.yml`.
 
-Verifications :
-- Open dbeaver
-  - Connect to the local database : localhost:5432/postgres (postgres:postgres) 
-  - You should have two tables:
-    - postgres : with tables en_*, ind_*, ref_*
-    - keycloak : with internal keycloak tables
+Verification:
+
+You can inspect PostgreSQL from inside its container :
+
+```shell
+podman exec -it postgresdb psql -U postgres -d postgres
+```
+
+The local defaults are username `postgres` and password `postgres`, as configured in
+`workspace/docker/.env`. The `postgres` database contains G4IT and NumEcoEval data,
+including tables with `en_*`, `ind_*`, and `ref_*` prefixes. At the `psql` prompt, list
+tables in the `public` schema:
+
+```sql
+SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public';
+```
+
+Keycloak stores its own tables in a separate database named `keycloak`. To inspect it,
+connect with:
+
+```shell
+podman exec -it postgresdb psql -U postgres -d keycloak
+```
+
+Enter `\q` to exit `psql`.
  
 Possible errors :
 - toomanyrequests when we use `podman-compose up -d` :
@@ -147,10 +170,10 @@ If the Keycloak container fails to start, it may be due to image pull issues. Ch
 - Go to C:\G4IT\_repo\g4it\workspace\docker path.
 - Try pulling the images manually using the command:
 ```bash
-python -m podman_compose up -d
+podman-compose up -d
 ```
 - If the issue persists, check the logs for more details:
 ```bash
-python -m podman_compose logs keycloak
+podman-compose logs keycloak
 ```
 

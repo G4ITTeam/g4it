@@ -82,19 +82,6 @@ choco install -y hugo-extended
 hugo version
 ```
 
-## Dbeaver
-
-### Installation
-
-```shell
-choco install -y dbeaver
-
-# the postgresql connection will be :
-# localhost:5432/postgres
-# user: postgres
-# password: postgres
-```
-
 ## PodMan
 
 ### Installation
