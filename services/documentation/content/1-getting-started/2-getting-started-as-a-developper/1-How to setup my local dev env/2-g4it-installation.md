@@ -91,8 +91,9 @@ podman exec -it postgresdb psql -U postgres -d keycloak
 
 Enter `\q` to exit `psql`.
  
-Possible errors :
-- toomanyrequests when we use `podman-compose up -d` :
+Possible errors:
+
+- `toomanyrequests` when running `podman-compose up -d`:
 
 In podman desktop, there is a Settings button with Proxy/Registries menu :
 
@@ -100,7 +101,10 @@ Proxy : if you have a company proxy, set it here
 
 Registries -> Docker hub : Login with your user account if you reach toomanyrequests limits
 
-- api containers crash : can be the consequence of postgres port already used (5432).
+- Maven may report HTTP `429 Too Many Requests` while downloading dependencies. This can
+  be a temporary Maven Central rate limit; wait and retry later or try from another network.
+- API containers crash: this can be caused by PostgreSQL's port already being in use
+  (`5432`).
 
 ### Start G4IT :rocket:
 
