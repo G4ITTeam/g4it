@@ -121,6 +121,10 @@ Verifications :
   - password: `password`
 - You should be able to navigate in G4IT
 
+The `admin@g4it.com` account is the G4IT application super-admin. It is distinct from the
+Keycloak realm administrator account `admin`; G4IT application roles are managed by the
+backend, not by granting Keycloak roles.
+
 ##### Debug with keycloak in local (optional):
  - Make sure the keycloak podman container is started in local
  - In services/backend/src/main/resources/application.yml, remove __nosecurity__ in spring.profiles.active (restart backend)
@@ -165,13 +169,13 @@ Sometimes, the backend may not start because of a missing dependency.
 - Click on compile (Lifecycle > compile) to build the project
 - Then, try to run the backend again
 
-![missing_dependency.png](../missing_dependency.png)
+![missing_dependency.png](../../missing_dependency.png)
 
 #### Keycloak container not starting
 If the Keycloak container fails to start, it may be due to image pull issues. Check the following:
 - Ensure you have a stable internet connection.
 - If you are behind a proxy, configure your proxy settings in Podman Desktop.
-- Go to C:\G4IT\_repo\g4it\workspace\docker path.
+- Go to the repository's `workspace/docker` directory.
 - Try pulling the images manually using the command:
 ```bash
 podman-compose up -d
@@ -180,4 +184,3 @@ podman-compose up -d
 ```bash
 podman-compose logs keycloak
 ```
-
