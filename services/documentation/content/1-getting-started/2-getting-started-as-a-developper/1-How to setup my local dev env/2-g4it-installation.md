@@ -128,7 +128,7 @@ backend, not by granting Keycloak roles.
 ##### Debug with keycloak in local (optional):
  - Make sure the keycloak podman container is started in local
  - In services/backend/src/main/resources/application.yml, remove __nosecurity__ in spring.profiles.active (restart backend)
- - In services/frontend/environments/environment.ts, update keycloak.enabled to __"true"__
+ - In services/frontend/src/environments/environment.ts, update keycloak.enabled to __"true"__
  -  :warning: Do not commit the changes :warning:
 
 ### Test G4IT features
