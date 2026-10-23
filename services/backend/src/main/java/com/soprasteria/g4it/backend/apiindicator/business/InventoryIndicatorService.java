@@ -178,6 +178,24 @@ public class InventoryIndicatorService {
     }
 
     /**
+     * Get aggregated total and low-impact virtual equipment counts, filtered by
+     * the shared dimensions.
+     *
+     * @param organization the organization.
+     * @param workspaceId  the workspaceId.
+     * @param inventoryId  the inventory id.
+     * @param filters      the shared filter dimensions.
+     * @return the aggregated total and low-impact counts.
+     */
+    public VirtualEquipmentLowImpactCountBO getVirtualEquipmentLowImpactCount(final String organization,
+                                                                               final Long workspaceId,
+                                                                               final Long inventoryId,
+                                                                               final ApplicationCriteriaFilterBO filters) {
+        final InventoryBO inventory = inventoryService.getInventory(organization, workspaceId, inventoryId);
+        return indicatorService.getVirtualEquipmentLowImpactCount(getLastTaskId(inventory), inventoryId, workspaceId, filters);
+    }
+
+    /**
      * §4.0 - get distinct environment/equipmentType/lifeCycle/domain/subDomain
      * values for the inventory's latest task, used to populate the application
      * view's filter selectors.
@@ -205,7 +223,8 @@ public class InventoryIndicatorService {
             @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteriaImpacts", allEntries = true),
             @org.springframework.cache.annotation.CacheEvict(value = "applicationMultiCriteria", allEntries = true),
             @org.springframework.cache.annotation.CacheEvict(value = "applicationHierarchyCounts", allEntries = true),
-            @org.springframework.cache.annotation.CacheEvict(value = "applicationFilters", allEntries = true)
+            @org.springframework.cache.annotation.CacheEvict(value = "applicationFilters", allEntries = true),
+            @org.springframework.cache.annotation.CacheEvict(value = "virtualEquipmentLowImpactCount", allEntries = true)
     })
 
     public void deleteIndicators(final String organization, final Long workspaceId, final Long inventoryId) {

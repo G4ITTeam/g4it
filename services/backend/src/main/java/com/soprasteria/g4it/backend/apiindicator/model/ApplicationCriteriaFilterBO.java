@@ -36,5 +36,7 @@ public class ApplicationCriteriaFilterBO {
     private List<String> subDomain;
 
     private List<String> applicationName;
+
+    private List<String> criterion;
 }
 

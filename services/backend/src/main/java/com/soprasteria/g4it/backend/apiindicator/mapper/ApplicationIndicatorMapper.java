@@ -14,12 +14,16 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -88,13 +92,21 @@ public interface ApplicationIndicatorMapper {
      * numbers only to reshape them - it never recomputes a sum/count.
      */
     default List<ApplicationMultiCriteriaBO> toMultiCriteriaBO(final List<MultiCriteriaAggregateProjection> source) {
-        return source.stream()
-                .collect(Collectors.groupingBy(p -> Pair.of(p.getCriterion(), p.getUnit())))
-                .entrySet().stream()
+        // Collectors.groupingBy() throws NPE on a null key (e.g. nodeLabel is always
+        // null for GraphLevel.GLOBAL, since there is no hierarchy grouping). Use a
+        // manual LinkedHashMap grouping instead, which supports null keys.
+        final Map<Pair<String, String>, List<MultiCriteriaAggregateProjection>> byCriteria = new LinkedHashMap<>();
+        for (final MultiCriteriaAggregateProjection p : source) {
+            byCriteria.computeIfAbsent(Pair.of(p.getCriterion(), p.getUnit()), k -> new ArrayList<>()).add(p);
+        }
+
+        return byCriteria.entrySet().stream()
                 .map(criteriaEntry -> {
-                    final List<ApplicationNodeBO> nodes = criteriaEntry.getValue().stream()
-                            .collect(Collectors.groupingBy(MultiCriteriaAggregateProjection::getNodeLabel))
-                            .entrySet().stream()
+                    final Map<String, List<MultiCriteriaAggregateProjection>> byNode = new LinkedHashMap<>();
+                    for (final MultiCriteriaAggregateProjection p : criteriaEntry.getValue()) {
+                        byNode.computeIfAbsent(p.getNodeLabel(), k -> new ArrayList<>()).add(p);
+                    }
+                    final List<ApplicationNodeBO> nodes = byNode.entrySet().stream()
                             .map(nodeEntry -> toNodeBO(nodeEntry.getKey(), nodeEntry.getValue()))
                             .toList();
                     return ApplicationMultiCriteriaBO.builder()
@@ -150,6 +162,17 @@ public interface ApplicationIndicatorMapper {
                 .subDomainCount(source.getSubDomainCount())
                 .applicationCount(source.getApplicationCount())
                 .virtualEquipmentCount(source.getVirtualEquipmentCount())
+                .build();
+    }
+
+    /**
+     * Pure 1:1 mapping of the single aggregated virtual equipment low-impact
+     * counts row (total count / low-impact count).
+     */
+    default VirtualEquipmentLowImpactCountBO toVirtualEquipmentLowImpactCountBO(final VirtualEquipmentLowImpactCountProjection source) {
+        return VirtualEquipmentLowImpactCountBO.builder()
+                .virtualEquipmentTotalCount(source.getTotalCount())
+                .lowImpactVirtualEquipmentCount(source.getLowImpactCount())
                 .build();
     }
 

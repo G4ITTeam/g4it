@@ -89,7 +89,8 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
     /**
      * {@inheritDoc}
      * §4.4 - DB-side filtered + paginated table view, using the same shared
-     * filter dimensions as §4.1-4.3.
+     * filter dimensions as §4.1-4.3, including criterion. POST + JSON body is
+     * used because the filter lists can contain large numbers of values.
      */
     @Override
     public ResponseEntity<ApplicationIndicatorsPageRest> getApplicationIndicators(final String organization,
@@ -97,20 +98,10 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
                                                                                    final Long inventoryId,
                                                                                    final Integer page,
                                                                                    final Integer size,
-                                                                                   final List<String> environment,
-                                                                                   final List<String> equipmentType,
-                                                                                   final List<String> lifeCycle,
-                                                                                   final List<String> domain,
-                                                                                   final List<String> subDomain) {
+                                                                                   final ApplicationCriteriaFilterRest requestRest) {
         final int pageNumber = page == null ? 0 : page;
         final int pageSize = size == null || size < 1 ? 20 : size;
-        final var filters = com.soprasteria.g4it.backend.apiindicator.model.ApplicationCriteriaFilterBO.builder()
-                .environment(environment)
-                .equipmentType(equipmentType)
-                .lifeCycle(lifeCycle)
-                .domain(domain)
-                .subDomain(subDomain)
-                .build();
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
         return ResponseEntity.ok().body(indicatorRestMapper.toApplicationIndicatorsPageDto(
                 inventoryIndicatorService.getApplicationIndicatorsPage(organization, workspace, inventoryId,
                         filters, PageRequest.of(pageNumber, pageSize))));
@@ -144,6 +135,13 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         final GraphLevel graphLevel = GraphLevel.valueOf(requestRest.getGraphLevel().name());
         final RepartitionType repartition = RepartitionType.valueOf(requestRest.getRepartition().name());
         final var filters = requestRest.getFilters() == null ? null : applicationIndicatorMapper.toFilterBO(requestRest.getFilters());
+
+        // criteria is optional only at graphLevel=global (null/empty = all criteria);
+        // required (non-empty) at every other graphLevel - see solution.md §4.2/§6.
+        if (graphLevel != GraphLevel.GLOBAL
+                && (requestRest.getCriteria() == null || requestRest.getCriteria().isEmpty())) {
+            throw new G4itRestException("400", "criteria is required when graphLevel is not 'global'");
+        }
 
         return ResponseEntity.ok().body(indicatorRestMapper.toApplicationMultiCriteriaDto(
                 inventoryIndicatorService.getApplicationMultiCriteriaIndicators(organization, workspace, inventoryId,
@@ -288,6 +286,21 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         return ResponseEntity.ok(
                 indicatorRestMapper.toVirtualLowImpactDto(bos)
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     * Aggregated total and low-impact virtual equipment counts, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<VirtualEquipmentLowImpactCountRest> getVirtualEquipmentsLowImpactCount(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok(indicatorRestMapper.toVirtualEquipmentLowImpactCountDto(
+                inventoryIndicatorService.getVirtualEquipmentLowImpactCount(organization, workspace, inventoryId, filters)));
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -141,9 +142,15 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         }
 
         final StringBuilder sql = new StringBuilder(select)
-                .append(" FROM out_application WHERE task_id = :taskId AND criterion IN (:criteria)");
+                .append(" FROM out_application WHERE task_id = :taskId");
 
         final List<Object[]> bindings = new ArrayList<>();
+
+        // criteria is optional only at graphLevel = GLOBAL (null/empty = all criteria
+        // present for the task); the controller enforces non-empty criteria at every
+        // other graphLevel - see solution.md §4.2/§6. Reuses the same null/empty-skip
+        // convention as every other optional filter dimension.
+        appendInPredicate(sql, bindings, "criterion", criteria);
 
         // click-path / hierarchy scoping filters, applied on top of the shared filter dimensions
         if (graphLevel == GraphLevel.SUB_DOMAIN || graphLevel == GraphLevel.APPLICATION
@@ -166,7 +173,6 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
 
         final Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("taskId", taskId);
-        query.setParameter("criteria", criteria);
         bindParameters(query, bindings);
 
         final List<Object[]> rows = query.getResultList();
@@ -218,6 +224,117 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         return new HierarchyCountsProjectionImpl(toLong(row[0]), toLong(row[1]), toLong(row[2]), toLong(row[3]));
     }
 
+    /**
+     * Aggregated total and low-impact virtual equipment counts, filtered by the
+     * shared dimensions. Entirely computed in SQL:
+     * <ul>
+     *     <li>{@code iso_map} binds the external (Boavizta) ISO -&gt; country name
+     *     mapping, since that mapping is not itself stored in the database;</li>
+     *     <li>{@code criterion_quartile}/{@code country_score}/{@code threshold}/
+     *     {@code country_low_impact} replicate {@code LowImpactService.isLowImpact}
+     *     (per-criterion electricity-mix quartile, summed per country, compared to
+     *     the first quartile of all countries) using window functions;</li>
+     *     <li>{@code distinct_applications} replicates the exact collapsing GROUP BY
+     *     used by the legacy {@code InVirtualEquipmentLowImpactView} native query
+     *     (virtual_equipment_name, name, location, lifecycle_step, domain, subDomain,
+     *     environment, equipment_type) - {@code out_application} has one row per
+     *     evaluated criterion for the same application, so this step is required to
+     *     avoid counting the same application multiple times, and keeps this endpoint
+     *     consistent with the legacy per-row endpoint's quantity/lowImpact semantics
+     *     (quantity is always 1 per group there, since {@code name} is itself part
+     *     of that GROUP BY);</li>
+     *     <li>the final SELECT counts that deduplicated set, total vs. low-impact.</li>
+     * </ul>
+     */
+    @Override
+    public VirtualEquipmentLowImpactCountProjection countVirtualEquipmentLowImpact(final Long taskId,
+                                                                                    final Long inventoryId,
+                                                                                    final Long workspaceId,
+                                                                                    final String[] criteria,
+                                                                                    final String[] isoCodes,
+                                                                                    final String[] countryNames,
+                                                                                    final ApplicationCriteriaFilterBO filters) {
+        final StringBuilder sql = new StringBuilder("""
+                WITH iso_map AS (
+                    SELECT iso, country FROM unnest(:isoCodes, :countryNames) AS t(iso, country)
+                ),
+                criterion_quartile AS (
+                    SELECT location AS country,
+                        CASE
+                            WHEN value <= PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY value) OVER (PARTITION BY criterion) THEN 1
+                            WHEN value <= PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY value) OVER (PARTITION BY criterion) THEN 2
+                            WHEN value <= PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY value) OVER (PARTITION BY criterion) THEN 3
+                            ELSE 4
+                        END AS quartile
+                    FROM ref_item_impact
+                    WHERE category = 'electricity-mix'
+                      AND criterion = ANY(:criteria)
+                      AND (workspace_id = :workspaceId OR workspace_id IS NULL)
+                ),
+                country_score AS (
+                    SELECT country, SUM(quartile) AS total_score FROM criterion_quartile GROUP BY country
+                ),
+                threshold AS (
+                    SELECT PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY total_score) AS q1 FROM country_score
+                ),
+                country_low_impact AS (
+                    SELECT cs.country, (cs.total_score < t.q1) AS low_impact
+                    FROM country_score cs CROSS JOIN threshold t
+                ),
+                distinct_applications AS (
+                    SELECT
+                        oa.name AS application_name,
+                        COALESCE(dc.location, ive.location, 'Unknown') AS location
+                    FROM out_application oa
+                    JOIN in_virtual_equipment ive
+                          ON ive.name = oa.virtual_equipment_name AND ive.inventory_id = :inventoryId
+                    LEFT JOIN in_datacenter dc
+                          ON dc.inventory_id = ive.inventory_id AND dc.name = ive.datacenter_name
+                    WHERE oa.task_id = :taskId AND oa.status_indicator = 'OK'
+                """);
+
+        final List<Object[]> bindings = new ArrayList<>();
+        if (filters != null) {
+            appendInPredicate(sql, bindings, "oa.environment", filters.getEnvironment());
+            appendInPredicate(sql, bindings, "oa.equipment_type", filters.getEquipmentType());
+            appendInPredicate(sql, bindings, "oa.lifecycle_step", filters.getLifeCycle());
+            appendInPredicate(sql, bindings, "oa.filters[1]", filters.getDomain());
+            appendInPredicate(sql, bindings, "oa.filters[2]", filters.getSubDomain());
+            appendInPredicate(sql, bindings, "oa.name", filters.getApplicationName());
+        }
+
+        sql.append("""
+                    GROUP BY
+                        oa.virtual_equipment_name,
+                        oa.name,
+                        COALESCE(dc.location, ive.location, 'Unknown'),
+                        oa.lifecycle_step,
+                        oa.filters[1],
+                        oa.filters[2],
+                        oa.environment,
+                        oa.equipment_type
+                )
+                SELECT
+                    COUNT(*)                                                AS total_count,
+                    COUNT(*) FILTER (WHERE COALESCE(cli.low_impact, false)) AS low_impact_count
+                FROM distinct_applications da
+                LEFT JOIN iso_map im ON im.iso = da.location
+                LEFT JOIN country_low_impact cli ON cli.country = im.country
+                """);
+
+        final Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("taskId", taskId);
+        query.setParameter("inventoryId", inventoryId);
+        query.setParameter("workspaceId", workspaceId);
+        query.setParameter("criteria", criteria);
+        query.setParameter("isoCodes", isoCodes);
+        query.setParameter("countryNames", countryNames);
+        bindParameters(query, bindings);
+
+        final Object[] row = (Object[]) query.getSingleResult();
+        return new VirtualEquipmentLowImpactCountProjectionImpl(toLong(row[0]), toLong(row[1]));
+    }
+
     @Override
     public ApplicationFiltersProjection getDistinctFilters(final Long taskId) {
         final Query scalarsQuery = entityManager.createNativeQuery("""
@@ -263,11 +380,13 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         final StringBuilder dataSql = new StringBuilder("SELECT * FROM out_application WHERE task_id = :taskId");
         final List<Object[]> dataBindings = new ArrayList<>();
         appendFilterPredicates(dataSql, dataBindings, filters);
+        appendInPredicate(dataSql, dataBindings, "criterion", filters == null ? null : filters.getCriterion());
         dataSql.append(" ORDER BY id");
 
         final StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM out_application WHERE task_id = :taskId");
         final List<Object[]> countBindings = new ArrayList<>();
         appendFilterPredicates(countSql, countBindings, filters);
+        appendInPredicate(countSql, countBindings, "criterion", filters == null ? null : filters.getCriterion());
 
         final Query dataQuery = entityManager.createNativeQuery(dataSql.toString(), OutApplication.class);
         dataQuery.setParameter("taskId", taskId);
@@ -312,7 +431,11 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
         }
         final String paramName = "p" + bindings.size();
         sql.append(" AND ").append(column).append(" = ANY(:").append(paramName).append(")");
-        bindings.add(new Object[]{paramName, values});
+        // Bind as a plain array (not a List) so Hibernate does NOT apply its automatic
+        // multi-value "IN (:param)" -> "IN (?,?,?)" expansion, which would otherwise turn
+        // "ANY(:param)" into the invalid "ANY(?,?,?)". A single array parameter binds to
+        // exactly one "?" placeholder, as required by PostgreSQL's ANY(array) syntax.
+        bindings.add(new Object[]{paramName, values.toArray(new String[0])});
     }
 
     private static void bindParameters(final Query query, final List<Object[]> bindings) {
@@ -542,7 +665,25 @@ public class OutApplicationCustomRepositoryImpl implements OutApplicationCustomR
             return domains;
         }
     }
+
+    /**
+     * Simple POJO implementation of {@link VirtualEquipmentLowImpactCountProjection}.
+     */
+    private record VirtualEquipmentLowImpactCountProjectionImpl(Long totalCount,
+                                                                  Long lowImpactCount) implements VirtualEquipmentLowImpactCountProjection {
+        @Override
+        public Long getTotalCount() {
+            return totalCount;
+        }
+
+        @Override
+        public Long getLowImpactCount() {
+            return lowImpactCount;
+        }
+    }
 }
+
+
 
 
 
