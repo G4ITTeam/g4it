@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This document describes the frontend implementation of the application-view optimization feature. The short functional brief is in `specification-frontend 3.md`; the backend contracts and database-side aggregation design are in the backend feature's `solution.md`.
+This document describes the frontend implementation of the application-view optimization feature. The short functional brief is in `specification-frontend.md`; the backend contracts and database-side aggregation design are in the backend feature's `solution.md`.
 
 The current application screen downloads all application impact rows from `GET .../indicators/applications` and derives filters, summaries, graph data, and pages in the browser. The frontend will instead load filter metadata, aggregate summaries, graph aggregates, and table pages from their dedicated APIs. It must not rebuild aggregates or pagination by iterating over the complete impact dataset.
 
