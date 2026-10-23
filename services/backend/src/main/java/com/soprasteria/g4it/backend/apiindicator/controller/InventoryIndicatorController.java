@@ -288,6 +288,21 @@ public class InventoryIndicatorController implements InventoryIndicatorApiDelega
         );
     }
 
+    /**
+     * {@inheritDoc}
+     * Aggregated total and low-impact virtual equipment counts, filtered by the shared dimensions.
+     */
+    @Override
+    public ResponseEntity<VirtualEquipmentLowImpactCountRest> getVirtualEquipmentsLowImpactCount(
+            final String organization,
+            final Long workspace,
+            final Long inventoryId,
+            final ApplicationCriteriaFilterRest requestRest) {
+        final var filters = requestRest == null ? null : applicationIndicatorMapper.toFilterBO(requestRest);
+        return ResponseEntity.ok(indicatorRestMapper.toVirtualEquipmentLowImpactCountDto(
+                inventoryIndicatorService.getVirtualEquipmentLowImpactCount(organization, workspace, inventoryId, filters)));
+    }
+
     @Override
     public ResponseEntity<List<VirtualEquipmentElecConsumptionRest>>
     getVirtualEquipmentElecConsumption(final String organization, final Long workspace, final Long inventoryId) {

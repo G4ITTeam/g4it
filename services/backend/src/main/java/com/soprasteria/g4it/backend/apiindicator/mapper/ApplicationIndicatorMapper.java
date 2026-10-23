@@ -14,6 +14,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import com.soprasteria.g4it.backend.common.utils.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.mapstruct.Mapper;
@@ -161,6 +162,17 @@ public interface ApplicationIndicatorMapper {
                 .subDomainCount(source.getSubDomainCount())
                 .applicationCount(source.getApplicationCount())
                 .virtualEquipmentCount(source.getVirtualEquipmentCount())
+                .build();
+    }
+
+    /**
+     * Pure 1:1 mapping of the single aggregated virtual equipment low-impact
+     * counts row (total count / low-impact count).
+     */
+    default VirtualEquipmentLowImpactCountBO toVirtualEquipmentLowImpactCountBO(final VirtualEquipmentLowImpactCountProjection source) {
+        return VirtualEquipmentLowImpactCountBO.builder()
+                .virtualEquipmentTotalCount(source.getTotalCount())
+                .lowImpactVirtualEquipmentCount(source.getLowImpactCount())
                 .build();
     }
 

@@ -781,6 +781,17 @@ components:
           type: integer
           format: int64
 
+    VirtualEquipmentLowImpactCountRest:
+      type: object
+      description: Aggregated total and low-impact virtual equipment counts, filtered by the shared dimensions. 100% database-side aggregation.
+      properties:
+        virtualEquipmentTotalCount:
+          type: integer
+          format: int64
+        lowImpactVirtualEquipmentCount:
+          type: integer
+          format: int64
+
     ApplicationFiltersRest:
       type: object
       description: Distinct filter values available for the inventory's latest task, used to populate the application view's filter selectors (see solution.md §4.0). domains links each domain to its distinct subDomains as a tree.

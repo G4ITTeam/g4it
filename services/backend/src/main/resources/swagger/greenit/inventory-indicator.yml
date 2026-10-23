@@ -410,6 +410,45 @@ paths:
         "500":
           $ref: '#/components/responses/InternalServerError'
 
+  /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsLowImpact/count:
+    parameters:
+      - $ref: '#/components/parameters/organizationPathParam'
+      - $ref: '#/components/parameters/workspacePathParam'
+      - $ref: '#/components/parameters/inventoryIdPathParam'
+    post:
+      summary: endpoint to retrieve aggregated total and low-impact virtual equipment counts
+      description: >
+        Returns the aggregated total and low-impact virtual equipment counts for the given
+        filters. 100% database-side aggregation, replacing the client-side reduce previously
+        performed on the full virtualEquipmentsLowImpact list. POST + JSON body is used because
+        the filter lists (environment/equipmentType/lifeCycle/domain/subDomain) may contain
+        several thousand values, following the same pattern as the other application indicator
+        endpoints.
+      tags:
+        - inventory-indicator
+      operationId: getVirtualEquipmentsLowImpactCount
+      x-custom-role: "hasRole('INVENTORY_READ')"
+      requestBody:
+        description: shared filter dimensions
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationCriteriaFilterRest"
+      responses:
+        "200":
+          description: return the aggregated total and low-impact virtual equipment counts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualEquipmentLowImpactCountRest'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+
   /organizations/{organization}/workspaces/{workspace}/inventories/{inventoryId}/indicators/virtualEquipmentsElecConsumption:
     parameters:
       - $ref: '#/components/parameters/organizationPathParam'

@@ -10,6 +10,7 @@ package com.soprasteria.g4it.backend.apiindicator.business;
 import com.soprasteria.g4it.backend.apiindicator.mapper.ApplicationIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.mapper.EquipmentIndicatorMapper;
 import com.soprasteria.g4it.backend.apiindicator.model.*;
+import com.soprasteria.g4it.backend.apiindicator.utils.CriteriaUtils;
 import com.soprasteria.g4it.backend.apiindicator.utils.LifecycleStepUtils;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutApplication;
 import com.soprasteria.g4it.backend.apiinout.modeldb.OutPhysicalEquipment;
@@ -17,11 +18,14 @@ import com.soprasteria.g4it.backend.apiinout.repository.OutApplicationRepository
 import com.soprasteria.g4it.backend.apiinout.repository.OutPhysicalEquipmentRepository;
 import com.soprasteria.g4it.backend.apiuser.business.WorkspaceService;
 import com.soprasteria.g4it.backend.common.utils.Constants;
+import com.soprasteria.g4it.backend.common.utils.StringUtils;
+import com.soprasteria.g4it.backend.external.boavizta.business.BoaviztapiService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -64,6 +69,16 @@ public class IndicatorService {
 
     @Autowired
     private OutApplicationRepository outApplicationRepository;
+
+    @Autowired
+    private BoaviztapiService boaviztapiService;
+
+    /**
+     * Set containing the criteria, used to compute the virtual equipment
+     * low-impact country quartiles (same source as {@link LowImpactService}).
+     */
+    @Value("${g4it.criteria}")
+    private Set<String> criterias;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -242,6 +257,37 @@ public class IndicatorService {
     public ApplicationHierarchyCountsBO getApplicationHierarchyCounts(final Long taskId,
                                                                        final ApplicationCriteriaFilterBO filters) {
         return applicationIndicatorMapper.toHierarchyCountsBO(outApplicationRepository.countHierarchy(taskId, filters));
+    }
+
+    /**
+     * Retrieve aggregated total and low-impact virtual equipment counts, filtered
+     * by the shared dimensions. 100% database-side aggregation, replacing the
+     * client-side reduce previously performed on the full virtualEquipmentsLowImpact
+     * list (see {@link VirtualEquipmentIndicatorService#getVirtualEquipmentsLowImpact}).
+     *
+     * @param taskId      the task id.
+     * @param inventoryId the inventory id.
+     * @param workspaceId the workspace id.
+     * @param filters     the shared filter dimensions.
+     * @return the aggregated total and low-impact counts.
+     */
+    @org.springframework.cache.annotation.Cacheable(value = "virtualEquipmentLowImpactCount", key = "{#taskId, #inventoryId, #workspaceId, #filters}")
+    public VirtualEquipmentLowImpactCountBO getVirtualEquipmentLowImpactCount(final Long taskId,
+                                                                               final Long inventoryId,
+                                                                               final Long workspaceId,
+                                                                               final ApplicationCriteriaFilterBO filters) {
+        final Map<String, String> countryToIso = boaviztapiService.getCountryMap();
+        final String[] countryNames = countryToIso.keySet().toArray(new String[0]);
+        final String[] isoCodes = countryToIso.values().toArray(new String[0]);
+
+        final String[] criteria = criterias.stream()
+                .map(criterion -> StringUtils.kebabToSnakeCase(CriteriaUtils.transformCriteriaNameToCriteriaKey(criterion)))
+                .collect(Collectors.toSet())
+                .toArray(new String[0]);
+
+        return applicationIndicatorMapper.toVirtualEquipmentLowImpactCountBO(
+                outApplicationRepository.countVirtualEquipmentLowImpact(
+                        taskId, inventoryId, workspaceId, criteria, isoCodes, countryNames, filters));
     }
 
     /**

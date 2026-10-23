@@ -15,6 +15,7 @@ import com.soprasteria.g4it.backend.apiinout.repository.projection.ApplicationFi
 import com.soprasteria.g4it.backend.apiinout.repository.projection.HierarchyCountsProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaAggregateProjection;
 import com.soprasteria.g4it.backend.apiinout.repository.projection.MultiCriteriaImpactProjection;
+import com.soprasteria.g4it.backend.apiinout.repository.projection.VirtualEquipmentLowImpactCountProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -63,4 +64,20 @@ public interface OutApplicationCustomRepository {
      * dimensions as §4.1-4.3.
      */
     Page<OutApplication> findByTaskId(Long taskId, ApplicationCriteriaFilterBO filters, Pageable pageable);
+
+    /**
+     * Aggregated total and low-impact virtual equipment counts, filtered by the
+     * shared dimensions. Joins out_application with in_virtual_equipment/in_datacenter
+     * to resolve location, and with ref_item_impact (electricity-mix) to compute the
+     * low-impact flag per country entirely in SQL (quartile of summed per-criterion
+     * quartiles). isoCodes/countryNames bind the external (Boavizta) ISO -> country
+     * name mapping, since it is not itself stored in the database.
+     */
+    VirtualEquipmentLowImpactCountProjection countVirtualEquipmentLowImpact(Long taskId,
+                                                                             Long inventoryId,
+                                                                             Long workspaceId,
+                                                                             String[] criteria,
+                                                                             String[] isoCodes,
+                                                                             String[] countryNames,
+                                                                             ApplicationCriteriaFilterBO filters);
 }

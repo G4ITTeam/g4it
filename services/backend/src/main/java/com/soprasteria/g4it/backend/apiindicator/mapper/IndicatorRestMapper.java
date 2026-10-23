@@ -69,6 +69,8 @@ public interface IndicatorRestMapper {
 
     ApplicationHierarchyCountsRest toApplicationHierarchyCountsDto(final ApplicationHierarchyCountsBO source);
 
+    VirtualEquipmentLowImpactCountRest toVirtualEquipmentLowImpactCountDto(final VirtualEquipmentLowImpactCountBO source);
+
     ApplicationIndicatorsPageRest toApplicationIndicatorsPageDto(final ApplicationIndicatorsPageBO source);
 
     ApplicationFiltersRest toApplicationFiltersDto(final ApplicationFiltersBO source);
